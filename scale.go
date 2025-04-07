@@ -80,8 +80,7 @@ func (s Scale) AsNotes() []Note {
 }
 
 func (s Scale) IntoNotes(target []Note) ([]Note, error) {
-	buffer := make([]Interval, 0, 12)
-	intervals, err := s.Pattern.IntoIntervals(buffer)
+	intervals, err := s.Pattern.IntoIntervals(make([]Interval, 0, 12), nil)
 	if err := CheckOutputBuffer(target, len(intervals)); err != nil {
 		return nil, err
 	}

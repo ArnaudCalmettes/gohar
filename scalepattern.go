@@ -39,46 +39,66 @@ func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 }
 
 // AsIntervals converts the scale pattern into intervals relative to the tonic.
-func (s ScalePattern) AsIntervals() []Interval {
+// If degrees == nil, the scale is assumed to have stepwise motion, which is suitable
+// for most common scales in western music (heptatonic scales).
+// Otherwise, degrees describe the absolute pitch class intervals to use.
+//
+// Eg. for a major pentatonic scale (degrees are the same for minor):
+//
+//	notes:          C        D          E          G            A
+//	intervals:      unisson, major 2nd, major 3rd, perfect 5th, major 6th
+//	degrees: []int8{0,       1,         2,         4,           5}
+func (s ScalePattern) AsIntervals(degrees []int8) []Interval {
 	is, _ := s.IntoIntervals(
 		make([]Interval, 0, s.CountNotes()),
+		nil,
 	)
 	return is
 }
 
-func (s ScalePattern) IntoIntervals(intervals []Interval) ([]Interval, error) {
-	if err := CheckOutputBuffer(intervals, s.CountNotes()); err != nil {
+var range12 = []int8{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+// IntoIntervals converts the scale pattern into intervals relative to the tonic
+// and writes them into the target slice.
+// ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
+func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interval, error) {
+	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
 		return nil, err
 	}
-	intervals = intervals[:0]
-	var degree int8
+	if degrees == nil {
+		degrees = range12[:s.CountNotes()]
+	}
+	target = target[:0]
+	var d int8
 	for i := 0; i < 12; i++ {
 		if s&(1<<i) != 0 {
-			intervals = append(intervals, Interval{degree, Pitch(i)})
-			degree++
+			target = append(target, Interval{degrees[d], Pitch(i)})
+			d++
 		}
 	}
-	return intervals, nil
+	return target, nil
 }
 
+// CountNotes returns the number of notes within the ScalePattern.
 func (s ScalePattern) CountNotes() int {
 	return bits.OnesCount16(uint16(s))
 }
 
-const octaveMask = 0b111111111111
-
-func (s ScalePattern) Mode(degree int) ScalePattern {
+// Mode computes the n-th mode of the ScalePattern.
+// n is expected to be between 1 and s.CountNotes() included, otherwise ScalePattern(0) is returned.
+func (s ScalePattern) Mode(n int) ScalePattern {
+	const mask = 0b0000111111111111 // 12 lowest bits
 	var offset int
-	if degree < 1 || degree > s.CountNotes() {
+	if n < 1 || n > s.CountNotes() {
 		return 0
 	}
-	for d := degree; d > 1; d-- {
+	for d := n; d > 1; d-- {
 		offset = wrap(offset+1, 12)
 		for s&(1<<offset) == 0 {
 			offset = wrap(offset+1, 12)
 		}
 	}
-	return s>>offset | (s<<(12-offset))&octaveMask
+	return s>>offset | (s<<(12-offset))&mask
 }
 
 func wrap(n, mod int) int {

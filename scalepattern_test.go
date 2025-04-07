@@ -71,31 +71,33 @@ func BenchmarkScalePatternIntoPitches(b *testing.B) {
 }
 
 func TestScalePatternAsIntervals(t *testing.T) {
-	Expect(t,
-		Equal(
-			[]Interval{
-				IntUnisson, IntMajorSecond, IntMajorThird, IntPerfectFourth,
-				IntPerfectFifth, IntMajorSixth, IntMajorSeventh,
-			},
-			ScalePatternMajor.AsIntervals(),
-		),
-	)
+	t.Run("major scale", func(t *testing.T) {
+		Expect(t,
+			Equal(
+				[]Interval{
+					IntUnisson, IntMajorSecond, IntMajorThird, IntPerfectFourth,
+					IntPerfectFifth, IntMajorSixth, IntMajorSeventh,
+				},
+				ScalePatternMajor.AsIntervals(nil),
+			),
+		)
+	})
 }
 
 func BenchmarkScalePatternAsIntervals(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		if ScalePatternMajor.AsIntervals() == nil {
+		if ScalePatternMajor.AsIntervals(nil) == nil {
 			b.Fatal()
 		}
 	}
 }
 
 func TestScalePatternIntoIntervals(t *testing.T) {
-	_, err := ScalePatternMajor.IntoIntervals(nil)
+	_, err := ScalePatternMajor.IntoIntervals(nil, nil)
 	Expect(t,
 		IsError(ErrNilBuffer, err),
 	)
-	_, err = ScalePatternMajor.IntoIntervals([]Interval{})
+	_, err = ScalePatternMajor.IntoIntervals([]Interval{}, nil)
 	Expect(t,
 		IsError(ErrBufferOverflow, err),
 	)
@@ -104,7 +106,7 @@ func TestScalePatternIntoIntervals(t *testing.T) {
 func BenchmarkScalePatternIntoIntervals(b *testing.B) {
 	buffer := make([]Interval, 0, 12)
 	for i := 0; i < b.N; i++ {
-		_, err := ScalePatternMajor.IntoIntervals(buffer)
+		_, err := ScalePatternMajor.IntoIntervals(buffer, nil)
 		if err != nil {
 			b.Fatal(err)
 		}
