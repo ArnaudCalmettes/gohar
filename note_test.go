@@ -68,8 +68,10 @@ func TestNotePitch(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		got := tc.Note.Pitch()
-		Expect(t, tc.Check(got, nil))
+		t.Run(fmt.Sprint(tc.Note), func(t *testing.T) {
+			got := tc.Note.Pitch()
+			Expect(t, tc.Check(got, nil))
+		})
 	}
 }
 

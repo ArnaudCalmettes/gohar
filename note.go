@@ -4,19 +4,17 @@ import (
 	"fmt"
 )
 
-// A Note is an abstract music note that can be manipulated before it is converted to pitch.
-//
-// Each note has:
-// * a base name (A, B, C, D, E, F, G),
-// * an optional alteration (number of sharps or flats) usually between -2 and +2.
-// * an optional octave (for example C#1 is one octave above C#0). Default is 0.
+// A Note is an abstract music note that can be converted to pitch.
 //
 // Multiple notes can correspond to the same pitch (e.g.: E# and F). Notes that have the same pitch but different
 // names are called "enharmonic".
 type Note struct {
+	// Base is the base pitch class of the note, represented as a byte between 'A' and 'G'.
 	Base byte
-	Alt  Pitch
-	Oct  int8
+	// Alt is the note's alteration, represented as a pitch offset between -2 (double flat) and +2 (double sharp).
+	Alt Pitch
+	// Oct transposes the note up (when Oct > 0) or down (when Oct < 0) relative to the default octave (0).
+	Oct int8
 }
 
 var (
@@ -131,24 +129,13 @@ func moveBaseNote(base byte, diff int) byte {
 	return byte(idx) + 'A'
 }
 
+var basePitches = [7]Pitch{PitchA, PitchB, PitchC, PitchD, PitchE, PitchF, PitchG}
+
 func basePitch(b byte) Pitch {
-	switch b {
-	case 'A':
-		return PitchA
-	case 'B':
-		return PitchB
-	case 'C':
-		return PitchC
-	case 'D':
-		return PitchD
-	case 'E':
-		return PitchE
-	case 'F':
-		return PitchF
-	case 'G':
-		return PitchG
+	if b < 'A' || 'G' < b {
+		return 0
 	}
-	return 0
+	return basePitches[int(b-'A')]
 }
 
 func altToString(alt Pitch) string {
