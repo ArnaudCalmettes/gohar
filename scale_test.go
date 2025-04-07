@@ -10,16 +10,14 @@ import (
 func TestScaleStringer(t *testing.T) {
 	testCases := []struct {
 		Scale
-		WantName   string
 		WantString string
 	}{
-		{Scale{NoteC, ScalePatternMajor, "major"}, "C major", "C major (101010110101)"},
-		{Scale{NoteD, ScalePatternMelodicMinor, "melodic minor"}, "D melodic minor", "D melodic minor (101010101101)"},
+		{Scale{NoteC, ScalePatternMajor}, "Scale(C0:101010110101)"},
+		{Scale{NoteD, ScalePatternMelodicMinor}, "Scale(D0:101010101101)"},
 	}
 
 	for _, tc := range testCases {
 		Expect(t,
-			Equalf(tc.WantName, tc.Scale.Name(), "name"),
 			Equalf(tc.WantString, tc.Scale.String(), "string"),
 		)
 	}
@@ -68,7 +66,7 @@ func TestScaleAsNoteSlice(t *testing.T) {
 		Expect(t, Equalf(
 			fmt.Sprint(tc.Want),
 			fmt.Sprint(scale.AsNoteSlice()),
-			"%s", scale.Name(),
+			"%s", scale,
 		))
 	}
 }

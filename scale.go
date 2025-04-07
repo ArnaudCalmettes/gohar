@@ -7,9 +7,8 @@ import (
 )
 
 type Scale struct {
-	Root      Note
-	Pattern   ScalePattern
-	ScaleName string
+	Root    Note
+	Pattern ScalePattern
 }
 
 type ScalePattern uint16
@@ -56,16 +55,12 @@ func GetScale(root Note, label string) (Scale, error) {
 	if pattern, ok := ScalePatternMap[label]; !ok {
 		return Scale{}, fmt.Errorf("%w %q", ErrUnknownScalePattern, label)
 	} else {
-		return Scale{root, pattern, label}, nil
+		return Scale{root, pattern}, nil
 	}
 }
 
-func (s Scale) Name() string {
-	return fmt.Sprintf("%s %s", s.Root.Name(), s.ScaleName)
-}
-
 func (s Scale) String() string {
-	return fmt.Sprintf("%s %s (%012b)", s.Root.Name(), s.ScaleName, s.Pattern)
+	return fmt.Sprintf("Scale(%s:%012b)", s.Root, s.Pattern)
 }
 
 func (s Scale) AsNoteSlice() []Note {
