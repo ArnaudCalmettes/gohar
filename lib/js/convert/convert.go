@@ -10,11 +10,11 @@ import (
 )
 
 func ScaleToJS(scale Scale) any {
-	pitches, err := scale.AsPitchSliceInto(make([]Pitch, 0, 12))
+	pitches, err := scale.IntoPitches(make([]Pitch, 0, 12))
 	if err != nil {
 		panic(fmt.Errorf("cannot convert Scale to JS: %w", err))
 	}
-	notes, err := scale.AsNoteSliceInto(make([]Note, 0, 12))
+	notes, err := scale.IntoNotes(make([]Note, 0, 12))
 	if err != nil {
 		panic(fmt.Errorf("cannot convert Scale to JS: %w", err))
 	}

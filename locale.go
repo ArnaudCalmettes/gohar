@@ -36,7 +36,7 @@ var (
 	CurrentLocale = &LocaleEnglish
 )
 
-func (loc *Locale) SprintNote(note Note) (string, error) {
+func (loc *Locale) NoteName(note Note) (string, error) {
 	if err := CheckNoteIsPrintable(note); err != nil {
 		return "", err
 	}
@@ -47,16 +47,16 @@ func (loc *Locale) SprintNote(note Note) (string, error) {
 	return s, nil
 }
 
-func (loc *Locale) SprintScalePatternName(pattern ScalePattern) (string, error) {
+func (loc *Locale) ScalePatternName(pattern ScalePattern) (string, error) {
 	if name, ok := loc.ScaleNames[pattern]; ok {
 		return name, nil
 	}
 	return "", ErrUnknownScalePattern
 }
 
-func (loc *Locale) SprintScale(scale Scale) (string, error) {
-	note, noteErr := loc.SprintNote(scale.Root)
-	name, nameErr := loc.SprintScalePatternName(scale.Pattern)
+func (loc *Locale) ScaleName(scale Scale) (string, error) {
+	note, noteErr := loc.NoteName(scale.Root)
+	name, nameErr := loc.ScalePatternName(scale.Pattern)
 	return note + " " + name, errors.Join(noteErr, nameErr)
 }
 
@@ -70,23 +70,23 @@ func (loc *Locale) basename(b byte) string {
 
 var ErrLocaleNotSet = errors.New("gohar.CurrentLocale is not set")
 
-func SprintNote(note Note) (string, error) {
+func NoteName(note Note) (string, error) {
 	if CurrentLocale != nil {
-		return CurrentLocale.SprintNote(note)
+		return CurrentLocale.NoteName(note)
 	}
 	return "", ErrLocaleNotSet
 }
 
-func SprintScalePatternName(pattern ScalePattern) (string, error) {
+func ScalePatternName(pattern ScalePattern) (string, error) {
 	if CurrentLocale != nil {
-		return CurrentLocale.SprintScalePatternName(pattern)
+		return CurrentLocale.ScalePatternName(pattern)
 	}
 	return "", ErrLocaleNotSet
 }
 
-func SprintScale(scale Scale) (string, error) {
+func ScaleName(scale Scale) (string, error) {
 	if CurrentLocale != nil {
-		return CurrentLocale.SprintScale(scale)
+		return CurrentLocale.ScaleName(scale)
 	}
 	return "", ErrLocaleNotSet
 }

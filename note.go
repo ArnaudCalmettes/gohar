@@ -174,18 +174,16 @@ func NoteWithPitch(name byte, pitch Pitch) Note {
 	return note
 }
 
-type FindOption uint
-
 var (
-	FindOptionPreferSharps FindOption = 0x01
+	FindOptionPreferSharps uint = 0x01
 )
 
-func FindClosestNote(pitch Pitch, options ...FindOption) Note {
-	var opt FindOption
-	for _, o := range options {
+func FindClosestNote(pitch Pitch, findOptions ...uint) Note {
+	var opt uint
+	for _, o := range findOptions {
 		opt |= o
 	}
-	withOpt := func(o FindOption) bool {
+	withOpt := func(o uint) bool {
 		return opt&o == o
 	}
 	oct := int8(pitch) / 12
