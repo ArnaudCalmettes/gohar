@@ -155,9 +155,12 @@ func altToString(alt Pitch) string {
 	}
 }
 
-func NoteWithPitch(name byte, pitch Pitch) Note {
+// NoteWithPitch builds a note with given base and any
+// octaves and alterations needed so that the note has
+// given pitch.
+func NoteWithPitch(base byte, pitch Pitch) Note {
 	note := Note{
-		Base: name,
+		Base: base,
 		Oct:  int8(pitch) / 12,
 	}
 	if pitch < 0 {
@@ -189,6 +192,9 @@ var closestNote = [12]Note{
 	NoteB,
 }
 
+// FindClosestNote returns the closest note with given pitch.
+// When a pitch corresponds to an altered note ("black key"),
+// it is always assumed to be the flattened note above it.
 func FindClosestNote(pitch Pitch) Note {
 	oct := int8(pitch) / 12
 	if pitch < 0 {

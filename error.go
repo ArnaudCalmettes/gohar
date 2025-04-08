@@ -1,5 +1,7 @@
 package gohar
 
+//go:generate gen-errfuncs $GOFILE
+
 import (
 	"errors"
 	"fmt"
@@ -11,6 +13,7 @@ var (
 	ErrInvalidBaseNote        = errors.New("invalid base note")
 	ErrNonPrintableAlteration = errors.New("non-printable alteration")
 	ErrUnknownScalePattern    = errors.New("unknown scale pattern")
+	ErrInvalidDegree          = errors.New("invalid degree")
 )
 
 func CheckOutputBuffer[T any](buffer []T, capacity int) error {

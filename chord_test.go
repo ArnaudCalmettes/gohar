@@ -212,7 +212,7 @@ func TestChordPrintUnpackAsIntervalSlice(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		Expect(t, Equalf(tc.Want, tc.Chord.Unpack().AsIntervalSlice(), "case %q", tc.Name))
+		Expect(t, Equalf(tc.Want, tc.Chord.Unpack().AsIntervals(), "case %q", tc.Name))
 	}
 }
 
@@ -222,7 +222,7 @@ func BenchmarkChordPrintAsIntervalSlice(b *testing.B) {
 			Add(PitchDiffMajorSixth).
 			Add(PitchDiffMajorNinth).
 			Add(PitchDiffAugmentedFourth).
-			AsIntervalSlice()
+			AsIntervals()
 		if out == nil {
 			b.Fatal(out)
 		}
@@ -230,12 +230,12 @@ func BenchmarkChordPrintAsIntervalSlice(b *testing.B) {
 }
 
 func TestChordPrintAsIntervalSlice(t *testing.T) {
-	_, err := ChordPatternMajor.AsIntervalSliceInto(nil)
+	_, err := ChordPatternMajor.IntoIntervals(nil)
 	Expect(t,
 		IsError(ErrNilBuffer, err),
 	)
 
-	_, err = ChordPatternMajor.AsIntervalSliceInto(make([]Interval, 0))
+	_, err = ChordPatternMajor.IntoIntervals(make([]Interval, 0))
 	Expect(t,
 		IsError(ErrBufferOverflow, err),
 	)
@@ -249,7 +249,7 @@ func BenchmarkChordPrintAsIntervalSliceInto(b *testing.B) {
 			Add(PitchDiffMajorSixth).
 			Add(PitchDiffMajorNinth).
 			Add(PitchDiffAugmentedFourth).
-			AsIntervalSliceInto(out)
+			IntoIntervals(out)
 		if err != nil {
 			b.Fatal(err)
 		}

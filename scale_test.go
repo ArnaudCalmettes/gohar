@@ -1,7 +1,6 @@
 package gohar
 
 import (
-	"fmt"
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
@@ -24,45 +23,51 @@ func TestScaleStringer(t *testing.T) {
 }
 
 func TestScaleAsNotes(t *testing.T) {
+	isNotes := func(want ...Note) CheckFunc[[]Note] {
+		return func(have []Note, err error) error {
+			if err != nil {
+				return err
+			}
+			return Equal(want, have)
+		}
+	}
 	testCases := []struct {
 		Root    Note
 		Pattern ScalePattern
-		Want    []Note
+		Check   CheckFunc[[]Note]
 	}{
 		{
 			NoteC, ScalePatternMajor,
-			[]Note{NoteC, NoteD, NoteE, NoteF, NoteG, NoteA, NoteB},
+			isNotes(NoteC, NoteD, NoteE, NoteF, NoteG, NoteA, NoteB),
 		},
 		{
 			NoteD, ScalePatternMajor,
-			[]Note{NoteD, NoteE, NoteF.Sharp(), NoteG, NoteA, NoteB, NoteC.Sharp().Octave(1)},
+			isNotes(NoteD, NoteE, NoteF.Sharp(), NoteG, NoteA, NoteB, NoteC.Sharp().Octave(1)),
 		},
 		{
 			NoteE, ScalePatternMelodicMinor,
-			[]Note{NoteE, NoteF.Sharp(), NoteG, NoteA, NoteB, NoteC.Sharp().Octave(1), NoteD.Sharp().Octave(1)},
+			isNotes(NoteE, NoteF.Sharp(), NoteG, NoteA, NoteB, NoteC.Sharp().Octave(1), NoteD.Sharp().Octave(1)),
 		},
 		{
 			NoteF, ScalePatternHarmonicMinor,
-			[]Note{NoteF, NoteG, NoteA.Flat(), NoteB.Flat(), NoteC.Octave(1), NoteD.Flat().Octave(1), NoteE.Octave(1)},
+			isNotes(NoteF, NoteG, NoteA.Flat(), NoteB.Flat(), NoteC.Octave(1), NoteD.Flat().Octave(1), NoteE.Octave(1)),
 		},
 		{
 			NoteC.Sharp(), ScalePatternHarmonicMajor,
-			[]Note{NoteC.Sharp(), NoteD.Sharp(), NoteE.Sharp(), NoteF.Sharp(), NoteG.Sharp(), NoteA, NoteB.Sharp()},
+			isNotes(NoteC.Sharp(), NoteD.Sharp(), NoteE.Sharp(), NoteF.Sharp(), NoteG.Sharp(), NoteA, NoteB.Sharp()),
 		},
 		{
 			NoteA.Octave(-1), ScalePatternDoubleHarmonicMajor,
-			[]Note{NoteA.Octave(-1), NoteB.Flat().Octave(-1), NoteC.Sharp(), NoteD, NoteE, NoteF, NoteG.Sharp()},
+			isNotes(NoteA.Octave(-1), NoteB.Flat().Octave(-1), NoteC.Sharp(), NoteD, NoteE, NoteF, NoteG.Sharp()),
 		},
 	}
 
 	for _, tc := range testCases {
 		scale := Scale{tc.Root, tc.Pattern}
-		have, _ := scale.AsNotes(nil)
-		Expect(t, Equalf(
-			fmt.Sprint(tc.Want),
-			fmt.Sprint(have),
-			"%s", scale,
-		))
+		have, err := scale.AsNotes(nil)
+		Expect(t,
+			tc.Check(have, err),
+		)
 	}
 }
 

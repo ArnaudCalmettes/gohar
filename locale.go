@@ -5,6 +5,8 @@ import (
 	"fmt"
 )
 
+// A Locale is responsible for producing string representations
+// that suit the user's language and culture.
 type Locale struct {
 	NoteNames  []string
 	ScaleNames map[ScalePattern]string
@@ -36,6 +38,7 @@ var (
 	CurrentLocale = &LocaleEnglish
 )
 
+// NoteName returns the Note's name in the current locale.
 func (loc *Locale) NoteName(note Note) (string, error) {
 	if err := CheckNoteIsPrintable(note); err != nil {
 		return "", err
@@ -47,6 +50,7 @@ func (loc *Locale) NoteName(note Note) (string, error) {
 	return s, nil
 }
 
+// ScalePatternName returns the ScalePattern's name in the current locale.
 func (loc *Locale) ScalePatternName(pattern ScalePattern) (string, error) {
 	if name, ok := loc.ScaleNames[pattern]; ok {
 		return name, nil
@@ -54,6 +58,7 @@ func (loc *Locale) ScalePatternName(pattern ScalePattern) (string, error) {
 	return "", ErrUnknownScalePattern
 }
 
+// ScaleName returns the Scale's name in the current locale.
 func (loc *Locale) ScaleName(scale Scale) (string, error) {
 	note, noteErr := loc.NoteName(scale.Root)
 	name, nameErr := loc.ScalePatternName(scale.Pattern)
@@ -70,6 +75,9 @@ func (loc *Locale) basename(b byte) string {
 
 var ErrLocaleNotSet = errors.New("gohar.CurrentLocale is not set")
 
+// NoteName returns the Note's name in the current locale.
+//
+// ErrLocaleNotSet is returned if the package's locale isn't set.
 func NoteName(note Note) (string, error) {
 	if CurrentLocale != nil {
 		return CurrentLocale.NoteName(note)
@@ -77,6 +85,9 @@ func NoteName(note Note) (string, error) {
 	return "", ErrLocaleNotSet
 }
 
+// ScalePatternName returns the ScalePattern's name in the current locale.
+//
+// ErrLocaleNotSet is returned if the package's locale isn't set.
 func ScalePatternName(pattern ScalePattern) (string, error) {
 	if CurrentLocale != nil {
 		return CurrentLocale.ScalePatternName(pattern)
@@ -84,6 +95,9 @@ func ScalePatternName(pattern ScalePattern) (string, error) {
 	return "", ErrLocaleNotSet
 }
 
+// ScaleName returns the Scale's name in the current locale.
+//
+// ErrLocaleNotSet is returned if the package's locale isn't set.
 func ScaleName(scale Scale) (string, error) {
 	if CurrentLocale != nil {
 		return CurrentLocale.ScaleName(scale)

@@ -102,8 +102,8 @@ func (c ChordPattern) HasAllDegrees(pitches ...Pitch) bool {
 	return true
 }
 
-func (c ChordPattern) AsIntervalSlice() []Interval {
-	chord, _ := c.AsIntervalSliceInto(make([]Interval, 0, c.CountNotes()))
+func (c ChordPattern) AsIntervals() []Interval {
+	chord, _ := c.IntoIntervals(make([]Interval, 0, c.CountNotes()))
 	return chord
 }
 
@@ -131,7 +131,7 @@ var (
 	}
 )
 
-func (c ChordPattern) AsIntervalSliceInto(out []Interval) ([]Interval, error) {
+func (c ChordPattern) IntoIntervals(out []Interval) ([]Interval, error) {
 	if err := CheckOutputBuffer(out, c.CountNotes()); err != nil {
 		return nil, err
 	}

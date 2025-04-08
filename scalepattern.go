@@ -1,6 +1,8 @@
 package gohar
 
-import "math/bits"
+import (
+	"math/bits"
+)
 
 // A Scale pattern is represented bitwise as a 12-bit number that maps an octave.
 // Each bit corresponds to a pitch relative to the root of the scale.
@@ -104,6 +106,9 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 	if degrees == nil {
 		degrees = range12[:s.CountNotes()]
 	}
+	if len(degrees) != s.CountNotes() {
+		return nil, InvalidDegreef("expected []int8 with length %d: got %d", s.CountNotes(), len(degrees))
+	}
 	target = target[:0]
 	pitches, err := s.IntoPitches(make([]Pitch, 0, 12), 0)
 	for i, pitch := range pitches {
@@ -137,26 +142,18 @@ func (s ScalePattern) IntoNotes(target []Note, root Note, degrees []int8) ([]Not
 }
 
 // Mode computes the n-th mode of the ScalePattern.
-// n is expected to be between 1 and s.CountNotes() included, otherwise ScalePattern(0) is returned.
-func (s ScalePattern) Mode(n int) ScalePattern {
+// ErrInvalidDegree is returned if degree is not in the range [1;s.CountNotes()].
+func (s ScalePattern) Mode(degree int) (ScalePattern, error) {
 	const mask = 0b0000111111111111 // 12 lowest bits
 	var offset int
-	if n < 1 || n > s.CountNotes() {
-		return 0
+	if degree < 1 || degree > s.CountNotes() {
+		return 0, InvalidDegreef("%d", degree)
 	}
-	for d := n; d > 1; d-- {
-		offset = wrap(offset+1, 12)
+	for d := degree; d > 1; d-- {
+		offset = (offset + 1) % 12
 		for s&(1<<offset) == 0 {
-			offset = wrap(offset+1, 12)
+			offset = (offset + 1) % 12
 		}
 	}
-	return s>>offset | (s<<(12-offset))&mask
-}
-
-func wrap(n, mod int) int {
-	n = n % mod
-	if n < 0 {
-		n += mod
-	}
-	return n
+	return s>>offset | (s<<(12-offset))&mask, nil
 }

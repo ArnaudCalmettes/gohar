@@ -1,6 +1,7 @@
 package gohar
 
 import (
+	"fmt"
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
@@ -112,6 +113,10 @@ func TestScalePatternIntoIntervals(t *testing.T) {
 	Expect(t,
 		IsError(ErrBufferOverflow, err),
 	)
+	_, err = ScalePatternMajor.IntoIntervals(make([]Interval, 0, 12), []int8{1, 2, 3, 5, 6})
+	Expect(t,
+		IsError(ErrInvalidDegree, err),
+	)
 }
 
 func BenchmarkScalePatternIntoIntervals(b *testing.B) {
@@ -125,36 +130,46 @@ func BenchmarkScalePatternIntoIntervals(b *testing.B) {
 }
 
 func TestScalePatternMode(t *testing.T) {
+	isScalePattern := AsCheckFunc(func(want, have ScalePattern) error {
+		return Equal(want, have)
+	})
+	isError := HasError[ScalePattern]
 	testCases := []struct {
 		Scale ScalePattern
 		Mode  int
-		Want  ScalePattern
+		Check CheckFunc[ScalePattern]
 	}{
 		{
 			Scale: ScalePatternMajor,
 			Mode:  1,
-			Want:  ScalePatternMajor,
+			Check: isScalePattern(ScalePatternMajor),
 		},
 		{
 			Scale: ScalePatternMajor,
 			Mode:  4,
-			Want:  0b101011010101, // lydian
+			Check: isScalePattern(0b101011010101), // lydian
 		},
 		{
 			Scale: ScalePatternMajor,
 			Mode:  7,
-			Want:  0b010101101011, // locrian
+			Check: isScalePattern(0b010101101011), // locrian
 		},
 		{
 			Scale: ScalePatternMajor,
 			Mode:  0,
-			Want:  0, // error
+			Check: isError(ErrInvalidDegree),
+		},
+		{
+			Scale: ScalePatternMajor,
+			Mode:  8,
+			Check: isError(ErrInvalidDegree),
 		},
 	}
 
 	for _, tc := range testCases {
-		Expect(t,
-			Equalf(tc.Want, tc.Scale.Mode(tc.Mode), "mode %d of %012b (expected %012b)", tc.Mode, tc.Scale, tc.Want),
-		)
+		t.Run(fmt.Sprintf("%v %d", tc.Scale, tc.Mode), func(t *testing.T) {
+			got, err := tc.Scale.Mode(tc.Mode)
+			Expect(t, tc.Check(got, err))
+		})
 	}
 }
