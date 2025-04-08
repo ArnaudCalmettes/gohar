@@ -5,6 +5,7 @@ import (
 	"math/bits"
 )
 
+// A chord is represented bitwise as a 24-bit number.
 type ChordPrint uint32
 
 const (

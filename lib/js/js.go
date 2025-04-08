@@ -1,3 +1,5 @@
+// package js implements Javascript bindings.
+
 //go:build js && wasm
 
 package js
@@ -10,12 +12,14 @@ import (
 	"github.com/ArnaudCalmettes/gohar/lib/js/convert"
 )
 
+// ImportGoharBindings imports bindings to the current javascript environment
+// under the "gohar" namespace. This function is supposed to be run at
+// initialization from within a wasm binary.
 func ImportGoharBindings() {
 	js.Global().Set("gohar", js.ValueOf(map[string]any{
 		"isLoaded":            js.ValueOf(true),
 		"setLocale":           js.FuncOf(SetLocale),
 		"noteName":            js.FuncOf(NoteName),
-		"scaleName":           js.FuncOf(ScaleName),
 		"scalePatternName":    js.FuncOf(ScalePatternName),
 		"scalePatternPitches": js.FuncOf(ScalePatternPitches),
 		"scalePatterns": js.ValueOf([]any{
@@ -28,6 +32,12 @@ func ImportGoharBindings() {
 	}))
 }
 
+// SetLocale sets gohar's locale.
+// Supported locales: "en", "fr".
+//
+// TypeScript signature:
+//
+//	function setLocale(locale: string)
 func SetLocale(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("setLocale: expected 1 arg, got %d", len(args)))
@@ -41,6 +51,11 @@ func SetLocale(_ js.Value, args []js.Value) any {
 	return js.Null()
 }
 
+// NoteName returns a note's name in the current locale.
+//
+// Typescript signature:
+//
+//	function noteName(note: number) => string
 func NoteName(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
@@ -53,19 +68,11 @@ func NoteName(_ js.Value, args []js.Value) any {
 	return js.ValueOf(result)
 }
 
-func ScaleName(_ js.Value, args []js.Value) any {
-	if len(args) != 2 {
-		panic(fmt.Errorf("scaleName: expected 2 args, got %d", len(args)))
-	}
-	note := convert.NoteFromJS(args[0])
-	pattern := convert.ScalePatternFromJS(args[1])
-	result, err := gohar.ScaleName(gohar.Scale{Root: note, Pattern: pattern})
-	if err != nil {
-		panic(fmt.Errorf("scaleName: %w", err))
-	}
-	return js.ValueOf(result)
-}
-
+// ScalePatternName returns the name of a ScalePattern in the current locale.
+//
+// Typescript signature:
+//
+//	function scalePatternName(pattern: number) => string
 func ScalePatternName(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("scalePatternName: expected 1 arg, got %d", len(args)))
@@ -78,6 +85,12 @@ func ScalePatternName(_ js.Value, args []js.Value) any {
 	return js.ValueOf(result)
 }
 
+// ScalePatternPitches instanciates a scale pattern and returns the corresponding pitches.
+// If rootPitch is provided, start the scale on this pitch instead of the default C (0).
+//
+// Typescript signature:
+//
+//	function scalePatternPitches(pattern: number, rootPitch?: number)
 func ScalePatternPitches(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		panic(fmt.Errorf("scalePatternPitches: expected at least 1 arg, got %d", len(args)))

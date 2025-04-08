@@ -3,25 +3,14 @@
 package convert
 
 import (
-	"fmt"
 	"syscall/js"
 
 	. "github.com/ArnaudCalmettes/gohar"
 )
 
 func ScaleToJS(scale Scale) any {
-	pitches, err := scale.IntoPitches(make([]Pitch, 0, 12))
-	if err != nil {
-		panic(fmt.Errorf("cannot convert Scale to JS: %w", err))
-	}
-	notes, err := scale.IntoNotes(make([]Note, 0, 12))
-	if err != nil {
-		panic(fmt.Errorf("cannot convert Scale to JS: %w", err))
-	}
 	return js.ValueOf(map[string]any{
 		"root":    NoteToJS(scale.Root),
-		"notes":   NoteSliceToJS(notes),
-		"pitches": PitchSliceToJS(pitches),
 		"pattern": ScalePatternToJS(scale.Pattern),
 	})
 }

@@ -82,6 +82,17 @@ func TestScalePatternAsIntervals(t *testing.T) {
 			),
 		)
 	})
+	t.Run("major pentatonic", func(t *testing.T) {
+		Expect(t,
+			Equal(
+				[]Interval{
+					IntUnisson, IntMajorSecond, IntMajorThird,
+					IntPerfectFifth, IntMajorSixth,
+				},
+				ScalePattern(0b1010010101).AsIntervals([]int8{1, 2, 3, 5, 6}),
+			),
+		)
+	})
 }
 
 func BenchmarkScalePatternAsIntervals(b *testing.B) {

@@ -10,6 +10,7 @@ var (
 	ErrNilBuffer              = errors.New("nil buffer")
 	ErrInvalidBaseNote        = errors.New("invalid base note")
 	ErrNonPrintableAlteration = errors.New("non-printable alteration")
+	ErrUnknownScalePattern    = errors.New("unknown scale pattern")
 )
 
 func CheckOutputBuffer[T any](buffer []T, capacity int) error {

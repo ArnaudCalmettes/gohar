@@ -93,7 +93,7 @@ func (n Note) IsHigherThan(note Note) bool {
 	return n.Pitch() > note.Pitch()
 }
 
-// Print the note's name regardless of the octave.
+// Name returns the note's name regardless of the octave.
 func (n Note) Name() string {
 	var zero Note
 	if n == zero {
@@ -102,7 +102,7 @@ func (n Note) Name() string {
 	return fmt.Sprintf("%c%s", n.Base, altToString(n.Alt))
 }
 
-// Print the full note as a string.
+// String returns the full note as a string.
 func (n Note) String() string {
 	var zero Note
 	if n == zero {

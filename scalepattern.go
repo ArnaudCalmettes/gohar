@@ -2,18 +2,46 @@ package gohar
 
 import "math/bits"
 
-// A Scale pattern is a bitwise representation of an octave.
-// Each bit maps to a pitch relative to the root of the scale.
+// A Scale pattern is represented bitwise as a 12-bit number that maps an octave.
+// Each bit corresponds to a pitch relative to the root of the scale.
 //
-// For example the major scale (e.g. C D E F G A B) corresponds to the
-// corresponding pattern:
+// For example the major scale (e.g. C D E F G A B) has the following pattern:
 //
 //	pattern:  101010110101
 //	notes:    B A G FE D C
+//
+// This representation allows for very efficient set operations such as testing
+// if a note or pitch belongs to a scale, because most of these operations can be
+// carried out as a single native bitwise instruction on most target architectures.
 type ScalePattern uint16
+
+const (
+	// C D E F G A B
+	ScalePatternMajor ScalePattern = 0b101010110101
+
+	// C D Eb F G A B
+	ScalePatternMelodicMinor ScalePattern = 0b101010101101
+
+	// C D Eb F G Ab B
+	ScalePatternHarmonicMinor ScalePattern = 0b100110101101
+
+	// C D E F G Ab B
+	ScalePatternHarmonicMajor ScalePattern = 0b100110110101
+
+	// C Db E F G Ab B
+	ScalePatternDoubleHarmonicMajor ScalePattern = 0b100110110011
+)
+
+// CountNotes returns the number of notes within the ScalePattern.
+func (s ScalePattern) CountNotes() int {
+	return bits.OnesCount16(uint16(s))
+}
 
 // AsPitches returns the scale pattern as a new slice of pitches relative
 // to given root.
+//
+// This method dynamically allocates a new slice of pitches. See IntoPitches for
+// one that doesn't.
 func (s ScalePattern) AsPitches(root Pitch) []Pitch {
 	ps, _ := s.IntoPitches(
 		make([]Pitch, 0, s.CountNotes()),
@@ -24,6 +52,7 @@ func (s ScalePattern) AsPitches(root Pitch) []Pitch {
 
 // IntoPitches converts the scale pattern into pitches relative to given root
 // and writes them into the target slice.
+//
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
 func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
@@ -45,21 +74,28 @@ func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 //
 // Eg. for a major pentatonic scale (degrees are the same for minor):
 //
-//	notes:          C        D          E          G            A
-//	intervals:      unisson, major 2nd, major 3rd, perfect 5th, major 6th
-//	degrees: []int8{0,       1,         2,         4,           5}
+//	// notes:          C        D    E    G    A
+//	// intervals:      unisson, 2nd, 3rd, 5th, 6th
+//	// degrees: []int8{1,       2,   3,   5,   6}
+//
+//	majorPentatonic := ScalePattern(0b1010010101)
+//	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
+//
+// This method dynamically allocates a new slice of intervals. See IntoIntervals
+// for one that doesn't.
 func (s ScalePattern) AsIntervals(degrees []int8) []Interval {
 	is, _ := s.IntoIntervals(
 		make([]Interval, 0, s.CountNotes()),
-		nil,
+		degrees,
 	)
 	return is
 }
 
-var range12 = []int8{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 
 // IntoIntervals converts the scale pattern into intervals relative to the tonic
 // and writes them into the target slice.
+//
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
 func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interval, error) {
 	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
@@ -69,19 +105,35 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 		degrees = range12[:s.CountNotes()]
 	}
 	target = target[:0]
-	var d int8
-	for i := 0; i < 12; i++ {
-		if s&(1<<i) != 0 {
-			target = append(target, Interval{degrees[d], Pitch(i)})
-			d++
-		}
+	pitches, err := s.IntoPitches(make([]Pitch, 0, 12), 0)
+	for i, pitch := range pitches {
+		target = append(target, Interval{degrees[i] - 1, pitch})
 	}
-	return target, nil
+	return target, err
 }
 
-// CountNotes returns the number of notes within the ScalePattern.
-func (s ScalePattern) CountNotes() int {
-	return bits.OnesCount16(uint16(s))
+// AsNotes applies the scale pattern to given root note.
+// degrees can be nil and has the same meaning as in AsIntervals().
+//
+// This method dynamically allocates a slice of notes. For one that doesn't, see IntoNotes.
+func (s ScalePattern) AsNotes(root Note, degrees []int8) ([]Note, error) {
+	return s.IntoNotes(make([]Note, s.CountNotes()), root, degrees)
+}
+
+// IntoNotes applies the scale pattern to given root note and writes the results in the
+// target Note slice.
+//
+// ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
+func (s ScalePattern) IntoNotes(target []Note, root Note, degrees []int8) ([]Note, error) {
+	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
+		return nil, err
+	}
+	target = target[:0]
+	intervals, err := s.IntoIntervals(make([]Interval, 0, 12), degrees)
+	for _, inter := range intervals {
+		target = append(target, root.Transpose(inter))
+	}
+	return target, err
 }
 
 // Mode computes the n-th mode of the ScalePattern.
