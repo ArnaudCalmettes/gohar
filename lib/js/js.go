@@ -1,6 +1,6 @@
 //go:build js && wasm
 
-package wasm
+package js
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/lib/js/convert"
 )
 
-func ExportJSFuncs() {
+func ImportGoharBindings() {
 	js.Global().Set("gohar", js.ValueOf(map[string]any{
 		"isLoaded":            js.ValueOf(true),
 		"setLocale":           js.FuncOf(SetLocale),
