@@ -18,20 +18,11 @@ import (
 type ScalePattern uint16
 
 const (
-	// C D E F G A B
-	ScalePatternMajor ScalePattern = 0b101010110101
-
-	// C D Eb F G A B
-	ScalePatternMelodicMinor ScalePattern = 0b101010101101
-
-	// C D Eb F G Ab B
-	ScalePatternHarmonicMinor ScalePattern = 0b100110101101
-
-	// C D E F G Ab B
-	ScalePatternHarmonicMajor ScalePattern = 0b100110110101
-
-	// C Db E F G Ab B
-	ScalePatternDoubleHarmonicMajor ScalePattern = 0b100110110011
+	ScalePatternMajor               ScalePattern = 0b101010110101 // C D E F G A B
+	ScalePatternMelodicMinor        ScalePattern = 0b101010101101 // C D Eb F G A B
+	ScalePatternHarmonicMinor       ScalePattern = 0b100110101101 // C D Eb F G Ab B
+	ScalePatternHarmonicMajor       ScalePattern = 0b100110110101 // C D E F G Ab B
+	ScalePatternDoubleHarmonicMajor ScalePattern = 0b100110110011 // C Db E F G Ab B
 )
 
 // CountNotes returns the number of notes within the ScalePattern.
@@ -42,8 +33,8 @@ func (s ScalePattern) CountNotes() int {
 // AsPitches returns the scale pattern as a new slice of pitches relative
 // to given root.
 //
-// This method dynamically allocates a new slice of pitches. See IntoPitches for
-// one that doesn't.
+// This method dynamically allocates a new slice of pitches.
+// See [ScalePattern.IntoPitches] for one that doesn't.
 func (s ScalePattern) AsPitches(root Pitch) []Pitch {
 	ps, _ := s.IntoPitches(
 		make([]Pitch, 0, s.CountNotes()),
@@ -83,8 +74,8 @@ func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 //	majorPentatonic := ScalePattern(0b1010010101)
 //	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
 //
-// This method dynamically allocates a new slice of intervals. See IntoIntervals
-// for one that doesn't.
+// This method dynamically allocates a new slice of intervals.
+// See [ScalePattern.IntoIntervals] if you need control over memory allocation.
 func (s ScalePattern) AsIntervals(degrees []int8) []Interval {
 	is, _ := s.IntoIntervals(
 		make([]Interval, 0, s.CountNotes()),
@@ -118,9 +109,10 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 }
 
 // AsNotes applies the scale pattern to given root note.
-// degrees can be nil and has the same meaning as in AsIntervals().
+// degrees can be nil and has the same meaning as in [ScalePattern.AsIntervals].
 //
-// This method dynamically allocates a slice of notes. For one that doesn't, see IntoNotes.
+// This method dynamically allocates a slice of notes.
+// See [ScalePattern.IntoNotes] if you need control over memory allocation.
 func (s ScalePattern) AsNotes(root Note, degrees []int8) ([]Note, error) {
 	return s.IntoNotes(make([]Note, 0, s.CountNotes()), root, degrees)
 }
@@ -142,6 +134,7 @@ func (s ScalePattern) IntoNotes(target []Note, root Note, degrees []int8) ([]Not
 }
 
 // Mode computes the n-th mode of the ScalePattern.
+//
 // ErrInvalidDegree is returned if degree is not in the range [1;s.CountNotes()].
 func (s ScalePattern) Mode(degree int) (ScalePattern, error) {
 	const mask = 0b0000111111111111 // 12 lowest bits
