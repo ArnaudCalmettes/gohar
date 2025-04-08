@@ -5,77 +5,106 @@ import (
 	"math/bits"
 )
 
-// A chord is represented bitwise as a 24-bit number.
-type ChordPrint uint32
+// A chord pattern is represented bitwise as a 24-bit number.
+// Each bit corresponds to a discrete pitch, within two 12-pitch octaves.
+// When unpacked, a chord is preferably laid out using the first octave for the
+// base chord (triad or tetrad) and the second octave for extensions (9th and above).
+//
+// This representation keeps the chord in a format that is efficiently computable,
+// especially for set operations such as testing whether a chord contains certain
+// degrees or extensions, whilst remaining close to most consistent naming conventions.
+type ChordPattern uint32
 
 const (
-	ChordPrintMajor       = ChordPrint(0b000010010001)
-	ChordPrintMinor       = ChordPrint(0b000010001001)
-	ChordPrintDiminished  = ChordPrint(0b000001001001)
-	ChordPrintAugmented   = ChordPrint(0b000100010001)
-	ChordPrintSus4        = ChordPrint(0b000010100001)
-	ChordPrintMajor7      = ChordPrint(0b100010010001)
-	ChordPrintMajor7No5   = ChordPrint(0b100000010001)
-	ChordPrint7           = ChordPrint(0b010010010001)
-	ChordPrint7No5        = ChordPrint(0b010000010001)
-	ChordPrintMinor7      = ChordPrint(0b010010001001)
-	ChordPrintMinor7No5   = ChordPrint(0b010000001001)
-	ChordPrintDiminished7 = ChordPrint(0b001001001001)
+	// Major triad (C: C E G)
+	ChordPatternMajor = ChordPattern(0b000010010001)
+	// Minor triad (Cm: C Eb G)
+	ChordPatternMinor = ChordPattern(0b000010001001)
+	// Diminished triad (C dim: C Eb Gb)
+	ChordPatternDiminished = ChordPattern(0b000001001001)
+	// Augmented triad (C aug: C E G#)
+	ChordPatternAugmented = ChordPattern(0b000100010001)
+	// sus4 chord (Csus4: C F G)
+	ChordPatternSus4 = ChordPattern(0b000010100001)
+	// Major 7 chord (CMaj7: C E G B)
+	ChordPatternMajor7 = ChordPattern(0b100010010001)
+	// Major 7 (omit 5) chord (CMaj7 No5: C E B)
+	ChordPatternMajor7No5 = ChordPattern(0b100000010001)
+	// Dominant 7 chord (C7: C E G Bb)
+	ChordPattern7 = ChordPattern(0b010010010001)
+	// Dominant 7 (omit5) chord (C7 No5: C E Bb)
+	ChordPattern7No5 = ChordPattern(0b010000010001)
+	// Minor 7 chord (Cm7: C Eb G Bb)
+	ChordPatternMinor7 = ChordPattern(0b010010001001)
+	// Minor 7 No5 chord (Cm7 No5: C Eb Bb)
+	ChordPatternMinor7No5 = ChordPattern(0b010000001001)
+	// Minor 7 b5 chord (Cm7 b5: C Eb Gb Bb)
+	ChordPatternMinor7Flat5 = ChordPattern(0b010001001001)
+	// Diminished 7 chord (Cdim7: C Eb Gb Bbb)
+	ChordPatternDiminished7 = ChordPattern(0b001001001001)
 )
 
-func (c ChordPrint) String() string {
+// String returns a string representation of the chord.
+func (c ChordPattern) String() string {
 	return fmt.Sprintf("ChordPrint(%b)", c)
 }
 
-func (c ChordPrint) CountNotes() int {
+// CountNotes counts the notes in the chord.
+func (c ChordPattern) CountNotes() int {
 	return bits.OnesCount32(uint32(c))
 }
 
-func (c ChordPrint) Add(pitchDiff Pitch) ChordPrint {
-	return c | 1<<int(pitchDiff)
+// Add adds a pitch to the chord. This has no effect if
+// the pitch is already present.
+func (c ChordPattern) Add(p Pitch) ChordPattern {
+	return c | 1<<int(p)
 }
 
-func (c ChordPrint) Omit(pitchDiff Pitch) ChordPrint {
-	if !c.HasDegree(pitchDiff) {
+// Omit removes a pitch from the chord. This has no effect
+// if the pitch is already absent.
+func (c ChordPattern) Omit(p Pitch) ChordPattern {
+	if !c.HasDegree(p) {
 		return c
 	}
-	return c ^ 1<<int(pitchDiff)
+	return c ^ 1<<int(p)
 }
 
-func (c ChordPrint) Contains(other ChordPrint) bool {
-	return c&other == other
+// Contains return if other is a subset of the current chord pattern.
+func (c ChordPattern) Contains(o ChordPattern) bool {
+	return c&o == o
 }
 
-func (c ChordPrint) HasDegree(pitchDiff Pitch) bool {
-	return c&(1<<int(pitchDiff)) != 0
+// HasDegree returns true if the chord contains given degree as a pitch.
+func (c ChordPattern) HasDegree(p Pitch) bool {
+	return c&(1<<int(p)) != 0
 }
 
-func (c ChordPrint) HasAnyDegree(pitchDiffs ...Pitch) bool {
-	for _, d := range pitchDiffs {
-		if c.HasDegree(d) {
+// HasAnyDegree returns true if the chord contains any of the pitches.
+func (c ChordPattern) HasAnyDegree(pitches ...Pitch) bool {
+	for _, p := range pitches {
+		if c.HasDegree(p) {
 			return true
 		}
 	}
 	return false
 }
 
-func (c ChordPrint) HasAllDegrees(pitchDiffs ...Pitch) bool {
-	if len(pitchDiffs) == 0 {
+// HasAllDegree returns true if the chord contains all of the pitches.
+func (c ChordPattern) HasAllDegrees(pitches ...Pitch) bool {
+	if len(pitches) == 0 {
 		return false
 	}
-	for _, d := range pitchDiffs {
-		if !c.HasDegree(d) {
+	for _, p := range pitches {
+		if !c.HasDegree(p) {
 			return false
 		}
 	}
 	return true
 }
 
-func (c ChordPrint) AsIntervalSlice() (chord []Interval) {
-	chord, _ = c.AsIntervalSliceInto(
-		make([]Interval, 0, c.CountNotes()),
-	)
-	return
+func (c ChordPattern) AsIntervalSlice() []Interval {
+	chord, _ := c.AsIntervalSliceInto(make([]Interval, 0, c.CountNotes()))
+	return chord
 }
 
 var (
@@ -102,7 +131,7 @@ var (
 	}
 )
 
-func (c ChordPrint) AsIntervalSliceInto(out []Interval) ([]Interval, error) {
+func (c ChordPattern) AsIntervalSliceInto(out []Interval) ([]Interval, error) {
 	if err := CheckOutputBuffer(out, c.CountNotes()); err != nil {
 		return nil, err
 	}
@@ -115,19 +144,19 @@ func (c ChordPrint) AsIntervalSliceInto(out []Interval) ([]Interval, error) {
 	}
 
 	// Irregular cases
-	if c.Contains(ChordPrintDiminished7) {
+	if c.Contains(ChordPatternDiminished7) {
 		// Not a major 6th
 		chord[3] = IntDiminishedSeventh
 	}
 
 	// Altered chord: #9 -> b10
-	if c.Contains(ChordPrint7No5) && c.HasAllDegrees(PitchDiffAugmentedNinth, PitchDiffMinorThirteenth) {
+	if c.Contains(ChordPattern7No5) && c.HasAllDegrees(PitchDiffAugmentedNinth, PitchDiffMinorThirteenth) {
 		chord[3] = IntMinorTenth
 	}
 	return chord, nil
 }
 
-func (c ChordPrint) Unpack() ChordPrint {
+func (c ChordPattern) Unpack() ChordPattern {
 	// b2 always becomes b9
 	c = c.moveUp(PitchDiffMinorSecond)
 	// the third is present -> 2 and 4 become 9 and 11
@@ -148,7 +177,7 @@ func (c ChordPrint) Unpack() ChordPrint {
 		c = c.moveUp(PitchDiffAugmentedFourth)
 	}
 	// If we have a diminished tetrad, major 7th becomes a major 14th
-	if c.Contains(ChordPrintDiminished7) {
+	if c.Contains(ChordPatternDiminished7) {
 		c = c.moveUp(PitchDiffMajorSeventh)
 	}
 	// Otherwise, when a 7th is present, 6 and b6 become 13 and b13
@@ -160,14 +189,14 @@ func (c ChordPrint) Unpack() ChordPrint {
 		}
 	}
 	// Altered chord: #5 -> b13
-	if c.Contains(ChordPrint7No5) && c.HasDegree(PitchDiffAugmentedNinth) {
+	if c.Contains(ChordPattern7No5) && c.HasDegree(PitchDiffAugmentedNinth) {
 		c = c.moveUp(PitchDiffAugmentedFifth)
 	}
 	return c
 }
 
 // move a degree up an octave (make it an extension)
-func (c ChordPrint) moveUp(degree Pitch) ChordPrint {
+func (c ChordPattern) moveUp(degree Pitch) ChordPattern {
 	if c.HasDegree(degree) {
 		return c.swap(degree, degree+PitchDiffOctave)
 	}
@@ -175,10 +204,10 @@ func (c ChordPrint) moveUp(degree Pitch) ChordPrint {
 }
 
 // swap two degrees in the ChordPrint
-func (c ChordPrint) swap(a, b Pitch) ChordPrint {
-	mask := ChordPrint(1<<int(a) | 1<<int(b))
+func (c ChordPattern) swap(a, b Pitch) ChordPattern {
+	mask := ChordPattern(1<<int(a) | 1<<int(b))
 	if bits.OnesCount32(uint32(c&mask)) != 1 {
 		return c
 	}
-	return c ^ ChordPrint(mask)
+	return c ^ ChordPattern(mask)
 }
