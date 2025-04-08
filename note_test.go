@@ -2,8 +2,6 @@ package gohar
 
 import (
 	"fmt"
-	"sort"
-	"strings"
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
@@ -127,30 +125,16 @@ func TestFindClosestNote(t *testing.T) {
 		noteEqual(NoteC, FindClosestNote(0)),
 		noteEqual(NoteD.Flat(), FindClosestNote(1)),
 		noteEqual(NoteD, FindClosestNote(2)),
-		noteEqual(NoteD.Sharp(), FindClosestNote(3, FindOptionPreferSharps)),
 		noteEqual(NoteE.Flat(), FindClosestNote(3)),
 		noteEqual(NoteE, FindClosestNote(4)),
 		noteEqual(NoteF, FindClosestNote(5)),
 		noteEqual(NoteG.Flat(), FindClosestNote(6)),
 		noteEqual(NoteG, FindClosestNote(7)),
-		noteEqual(NoteG.Sharp(), FindClosestNote(8, FindOptionPreferSharps)),
 		noteEqual(NoteA.Flat(), FindClosestNote(8)),
 		noteEqual(NoteA, FindClosestNote(9)),
-		noteEqual(NoteA.Sharp(), FindClosestNote(10, FindOptionPreferSharps)),
 		noteEqual(NoteB.Flat(), FindClosestNote(10)),
 		noteEqual(NoteB, FindClosestNote(11)),
-		noteEqual(NoteF.Sharp().Octave(1), FindClosestNote(18, FindOptionPreferSharps)),
-		noteEqual(NoteC.Sharp().Octave(-1), FindClosestNote(-11, FindOptionPreferSharps)),
+		noteEqual(NoteG.Flat().Octave(1), FindClosestNote(18)),
+		noteEqual(NoteD.Flat().Octave(-1), FindClosestNote(-11)),
 	)
-}
-
-func TestSorting(t *testing.T) {
-	notes := []Note{NoteB, NoteF, NoteE, NoteC, NoteA, NoteG, NoteD}
-	sort.Sort(ByPitch(notes))
-
-	var buf strings.Builder
-	for _, n := range notes {
-		fmt.Fprint(&buf, n.Name())
-	}
-	Expect(t, Equal("CDEFGAB", buf.String()))
 }

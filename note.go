@@ -174,85 +174,25 @@ func NoteWithPitch(name byte, pitch Pitch) Note {
 	return note
 }
 
-var (
-	FindOptionPreferSharps uint = 0x01
-)
+var closestNote = [12]Note{
+	NoteC,
+	NoteD.Flat(),
+	NoteD,
+	NoteE.Flat(),
+	NoteE,
+	NoteF,
+	NoteG.Flat(),
+	NoteG,
+	NoteA.Flat(),
+	NoteA,
+	NoteB.Flat(),
+	NoteB,
+}
 
-func FindClosestNote(pitch Pitch, findOptions ...uint) Note {
-	var opt uint
-	for _, o := range findOptions {
-		opt |= o
-	}
-	withOpt := func(o uint) bool {
-		return opt&o == o
-	}
+func FindClosestNote(pitch Pitch) Note {
 	oct := int8(pitch) / 12
 	if pitch < 0 {
 		oct--
 	}
-
-	var note Note
-	switch pitch.Normalize() {
-	case 0:
-		note = NoteC
-	case 1:
-		if withOpt(FindOptionPreferSharps) {
-			note = NoteC.Sharp()
-		} else {
-			note = NoteD.Flat()
-		}
-	case 2:
-		note = NoteD
-	case 3:
-		if withOpt(FindOptionPreferSharps) {
-			note = NoteD.Sharp()
-		} else {
-			note = NoteE.Flat()
-		}
-	case 4:
-		note = NoteE
-	case 5:
-		note = NoteF
-	case 6:
-		if withOpt(FindOptionPreferSharps) {
-			note = NoteF.Sharp()
-		} else {
-			note = NoteG.Flat()
-		}
-	case 7:
-		note = NoteG
-	case 8:
-		if withOpt(FindOptionPreferSharps) {
-			note = NoteG.Sharp()
-		} else {
-			note = NoteA.Flat()
-		}
-
-	case 9:
-		note = NoteA
-	case 10:
-		if withOpt(FindOptionPreferSharps) {
-			note = NoteA.Sharp()
-		} else {
-			note = NoteB.Flat()
-		}
-	case 11:
-		note = NoteB
-	}
-	return note.Octave(oct)
-}
-
-// Sorting order
-type ByPitch []Note
-
-func (b ByPitch) Len() int {
-	return len(b)
-}
-
-func (b ByPitch) Less(i, j int) bool {
-	return b[j].IsHigherThan(b[i])
-}
-
-func (b ByPitch) Swap(i, j int) {
-	b[i], b[j] = b[j], b[i]
+	return closestNote[int(pitch.Normalize())].Octave((oct))
 }
