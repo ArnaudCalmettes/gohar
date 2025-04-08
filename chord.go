@@ -119,7 +119,7 @@ var (
 )
 
 func (c ChordPattern) IntoIntervals(out []Interval) ([]Interval, error) {
-	if err := CheckOutputBuffer(out, c.CountNotes()); err != nil {
+	if err := checkOutputBuffer(out, c.CountNotes()); err != nil {
 		return nil, err
 	}
 	chord := out[:0]

@@ -40,7 +40,7 @@ var (
 
 // NoteName returns the Note's name in the current locale.
 func (loc *Locale) NoteName(note Note) (string, error) {
-	if err := CheckNoteIsPrintable(note); err != nil {
+	if err := checkNoteIsPrintable(note); err != nil {
 		return "", err
 	}
 	s := loc.basename(note.Base) + altToString(note.Alt)

@@ -16,7 +16,7 @@ var (
 	ErrInvalidDegree          = errors.New("invalid degree")
 )
 
-func CheckOutputBuffer[T any](buffer []T, capacity int) error {
+func checkOutputBuffer[T any](buffer []T, capacity int) error {
 	if buffer == nil {
 		return ErrNilBuffer
 	}
@@ -29,7 +29,7 @@ func CheckOutputBuffer[T any](buffer []T, capacity int) error {
 	return nil
 }
 
-func CheckNoteIsPrintable(note Note) error {
+func checkNoteIsPrintable(note Note) error {
 	var err error
 	if note.Base < 'A' || note.Base > 'G' {
 		err = errors.Join(err,
@@ -42,4 +42,8 @@ func CheckNoteIsPrintable(note Note) error {
 		)
 	}
 	return err
+}
+
+func invalidDegreef(msg string, args ...any) error {
+	return fmt.Errorf("%w: %s", ErrInvalidDegree, fmt.Sprintf(msg, args...))
 }

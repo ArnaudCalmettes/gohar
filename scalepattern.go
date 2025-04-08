@@ -48,7 +48,7 @@ func (s ScalePattern) AsPitches(root Pitch) []Pitch {
 //
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
 func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
-	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
+	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
 		return nil, err
 	}
 	target = target[:0]
@@ -91,14 +91,14 @@ var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 //
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
 func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interval, error) {
-	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
+	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
 		return nil, err
 	}
 	if degrees == nil {
 		degrees = range12[:s.CountNotes()]
 	}
 	if len(degrees) != s.CountNotes() {
-		return nil, InvalidDegreef("expected []int8 with length %d: got %d", s.CountNotes(), len(degrees))
+		return nil, invalidDegreef("expected []int8 with length %d: got %d", s.CountNotes(), len(degrees))
 	}
 	target = target[:0]
 	pitches, err := s.IntoPitches(make([]Pitch, 0, 12), 0)
@@ -122,7 +122,7 @@ func (s ScalePattern) AsNotes(root Note, degrees []int8) ([]Note, error) {
 //
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
 func (s ScalePattern) IntoNotes(target []Note, root Note, degrees []int8) ([]Note, error) {
-	if err := CheckOutputBuffer(target, s.CountNotes()); err != nil {
+	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
 		return nil, err
 	}
 	target = target[:0]
@@ -140,7 +140,7 @@ func (s ScalePattern) Mode(degree int) (ScalePattern, error) {
 	const mask = 0b0000111111111111 // 12 lowest bits
 	var offset int
 	if degree < 1 || degree > s.CountNotes() {
-		return 0, InvalidDegreef("%d", degree)
+		return 0, invalidDegreef("%d", degree)
 	}
 	for d := degree; d > 1; d-- {
 		offset = (offset + 1) % 12
