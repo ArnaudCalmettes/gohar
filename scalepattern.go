@@ -117,7 +117,7 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 //
 // This method dynamically allocates a slice of notes. For one that doesn't, see IntoNotes.
 func (s ScalePattern) AsNotes(root Note, degrees []int8) ([]Note, error) {
-	return s.IntoNotes(make([]Note, s.CountNotes()), root, degrees)
+	return s.IntoNotes(make([]Note, 0, s.CountNotes()), root, degrees)
 }
 
 // IntoNotes applies the scale pattern to given root note and writes the results in the

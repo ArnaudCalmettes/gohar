@@ -57,9 +57,10 @@ func TestScaleAsNotes(t *testing.T) {
 
 	for _, tc := range testCases {
 		scale := Scale{tc.Root, tc.Pattern}
+		have, _ := scale.AsNotes(nil)
 		Expect(t, Equalf(
 			fmt.Sprint(tc.Want),
-			fmt.Sprint(scale.AsNotes(nil)),
+			fmt.Sprint(have),
 			"%s", scale,
 		))
 	}
