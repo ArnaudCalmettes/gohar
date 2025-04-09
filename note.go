@@ -134,7 +134,6 @@ var basePitches = [7]Pitch{PitchA, PitchB, PitchC, PitchD, PitchE, PitchF, Pitch
 
 func basePitch(b byte) Pitch {
 	if b < 'A' || 'G' < b {
-		// This line is never supposed to be reached.
 		panic(wrapErrorf(ErrInvalidBaseNote, "%c", b))
 	}
 	return basePitches[int(b-'A')]

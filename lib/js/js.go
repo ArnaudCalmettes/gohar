@@ -13,8 +13,8 @@ import (
 )
 
 // ImportGoharBindings imports bindings to the current javascript environment
-// under the "gohar" namespace. This function is supposed to be run at
-// initialization from within a wasm binary.
+// under the "gohar" namespace. This function is intended to be run at
+// initialization time from within a wasm binary.
 func ImportGoharBindings() {
 	js.Global().Set("gohar", js.ValueOf(map[string]any{
 		"isLoaded":            js.ValueOf(true),
@@ -37,7 +37,7 @@ func ImportGoharBindings() {
 //
 // TypeScript signature:
 //
-//	function setLocale(locale: string)
+//	function setLocale(locale: string) => void
 func SetLocale(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("setLocale: expected 1 arg, got %d", len(args)))
@@ -90,7 +90,7 @@ func ScalePatternName(_ js.Value, args []js.Value) any {
 //
 // Typescript signature:
 //
-//	function scalePatternPitches(pattern: number, rootPitch?: number)
+//	function scalePatternPitches(pattern: number, rootPitch?: number) => number[]
 func ScalePatternPitches(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		panic(fmt.Errorf("scalePatternPitches: expected at least 1 arg, got %d", len(args)))
