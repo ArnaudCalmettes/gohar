@@ -2,7 +2,6 @@ package gohar
 
 import (
 	"errors"
-	"fmt"
 )
 
 // A Locale is responsible for producing string representations
@@ -44,9 +43,6 @@ func (loc *Locale) NoteName(note Note) (string, error) {
 		return "", err
 	}
 	s := loc.basename(note.Base) + altToString(note.Alt)
-	if note.Oct != 0 {
-		s += fmt.Sprintf("%d", note.Oct)
-	}
 	return s, nil
 }
 
