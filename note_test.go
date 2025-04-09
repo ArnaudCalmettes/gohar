@@ -50,6 +50,10 @@ func TestNoteStringer(t *testing.T) {
 }
 
 func TestNotePitch(t *testing.T) {
+	Expect(t, ShouldPanic(func() {
+		Note{Base: 'H'}.Pitch()
+	}))
+
 	isPitch := AsCheckFunc(pitchEqual)
 	testCases := []struct {
 		Note
@@ -62,7 +66,6 @@ func TestNotePitch(t *testing.T) {
 		{NoteG.Octave(-1), isPitch(-5)},
 		{NoteA.Sharp().Octave(1), isPitch(22)},
 		{NoteB.Flat().Octave(-1), isPitch(-2)},
-		{Note{Base: 'H'}, isPitch(0)},
 	}
 
 	for _, tc := range testCases {
@@ -113,11 +116,23 @@ func TestNoteIsEnharmonic(t *testing.T) {
 }
 
 func TestNoteWithPitch(t *testing.T) {
-	Expect(t,
-		noteEqual(NoteC, NoteWithPitch('C', 0)),
-		noteEqual(NoteB.Sharp().Octave(0), NoteWithPitch('B', 0)),
-		noteEqual(NoteC.Flat().Octave(-1), NoteWithPitch('C', -1)),
-	)
+	isNote := AsCheckFunc(noteEqual)
+	isError := HasError[Note]
+	testCases := []struct {
+		Base byte
+		Pitch
+		Check CheckFunc[Note]
+	}{
+		{'C', 0, isNote(NoteC)},
+		{'B', 0, isNote(NoteB.Sharp().Octave(0))},
+		{'C', -1, isNote(NoteC.Flat().Octave(-1))},
+		{'H', 13, isError(ErrInvalidBaseNote)},
+	}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("%c @ %d", tc.Base, tc.Pitch), func(t *testing.T) {
+			Expect(t, tc.Check(NoteWithPitch(tc.Base, tc.Pitch)))
+		})
+	}
 }
 
 func TestFindClosestNote(t *testing.T) {

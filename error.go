@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	ErrBufferOverflow         = errors.New("buffer overflow")
-	ErrNilBuffer              = errors.New("nil buffer")
-	ErrInvalidBaseNote        = errors.New("invalid base note")
-	ErrNonPrintableAlteration = errors.New("non-printable alteration")
-	ErrUnknownScalePattern    = errors.New("unknown scale pattern")
-	ErrInvalidDegree          = errors.New("invalid degree")
+	ErrBufferOverflow      = errors.New("buffer overflow")
+	ErrNilBuffer           = errors.New("nil buffer")
+	ErrInvalidBaseNote     = errors.New("invalid base note")
+	ErrInvalidAlteration   = errors.New("invalid alteration")
+	ErrUnknownScalePattern = errors.New("unknown scale pattern")
+	ErrInvalidDegree       = errors.New("invalid degree")
 )
 
 func checkOutputBuffer[T any](buffer []T, capacity int) error {
@@ -29,16 +29,16 @@ func checkOutputBuffer[T any](buffer []T, capacity int) error {
 	return nil
 }
 
-func checkNoteIsPrintable(note Note) error {
+func checkValidNote(note Note) error {
 	var err error
 	if note.Base < 'A' || note.Base > 'G' {
 		err = errors.Join(err,
-			fmt.Errorf("%w: '%c'", ErrInvalidBaseNote, note.Base),
+			wrapErrorf(ErrInvalidBaseNote, "'%c'", note.Base),
 		)
 	}
 	if note.Alt < -2 || note.Alt > 2 {
 		err = errors.Join(err,
-			fmt.Errorf("%w: %d", ErrNonPrintableAlteration, note.Alt),
+			wrapErrorf(ErrInvalidAlteration, "%d", note.Alt),
 		)
 	}
 	return err

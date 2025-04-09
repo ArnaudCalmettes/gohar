@@ -77,10 +77,11 @@ func (n Note) Octave(oct int8) Note {
 
 // Transpose returns the note transposed by given interval
 func (n Note) Transpose(i Interval) Note {
-	return NoteWithPitch(
+	n, _ = NoteWithPitch(
 		moveBaseNote(n.Base, int(i.ScaleDiff)),
 		n.Pitch()+i.PitchDiff,
 	)
+	return n
 }
 
 // IsEnharmonic returns true if both notes have the same pitch.
@@ -113,7 +114,7 @@ func (n Note) String() string {
 
 // Get the note's pitch.
 //
-// This method never fails: an invalid basename is treated as a C
+// This method panics if the note is malformed.
 func (n Note) Pitch() Pitch {
 	return basePitch(n.Base).
 		Add(n.Alt).
@@ -133,7 +134,8 @@ var basePitches = [7]Pitch{PitchA, PitchB, PitchC, PitchD, PitchE, PitchF, Pitch
 
 func basePitch(b byte) Pitch {
 	if b < 'A' || 'G' < b {
-		return 0
+		// This line is never supposed to be reached.
+		panic(wrapErrorf(ErrInvalidBaseNote, "%c", b))
 	}
 	return basePitches[int(b-'A')]
 }
@@ -158,7 +160,10 @@ func altToString(alt Pitch) string {
 // NoteWithPitch builds a note with given base and any
 // octaves and alterations needed so that the note has
 // given pitch.
-func NoteWithPitch(base byte, pitch Pitch) Note {
+func NoteWithPitch(base byte, pitch Pitch) (Note, error) {
+	if base < 'A' || 'G' < base {
+		return Note{}, wrapErrorf(ErrInvalidBaseNote, "%c", base)
+	}
 	note := Note{
 		Base: base,
 		Oct:  int8(pitch) / 12,
@@ -174,7 +179,7 @@ func NoteWithPitch(base byte, pitch Pitch) Note {
 		diff -= 12
 	}
 	note.Alt = diff
-	return note
+	return note, nil
 }
 
 var closestNote = [12]Note{
