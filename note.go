@@ -165,11 +165,13 @@ func NoteWithPitch(base byte, pitch Pitch) (Note, error) {
 	}
 	note := Note{
 		Base: base,
-		Oct:  int8(pitch) / 12,
 	}
-	if pitch < 0 {
-		note.Oct--
+	if pitch >= 0 {
+		note.Oct = int8(pitch) / 12
+	} else {
+		note.Oct = int8(pitch+1)/12 - 1
 	}
+
 	diff := (pitch - note.Pitch()) % 12
 	if diff < -6 {
 		diff += 12
@@ -200,9 +202,11 @@ var closestNote = [12]Note{
 // When a pitch corresponds to an altered note ("black key"),
 // it is always assumed to be the flattened note above it.
 func FindClosestNote(pitch Pitch) Note {
-	oct := int8(pitch) / 12
-	if pitch < 0 {
-		oct--
+	var oct int8
+	if pitch >= 0 {
+		oct = int8(pitch) / 12
+	} else {
+		oct = int8(pitch+1)/12 - 1
 	}
 	return closestNote[int(pitch.Normalize())].Octave((oct))
 }

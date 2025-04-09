@@ -20,7 +20,7 @@ func TestLocaleSprintNote(t *testing.T) {
 		{&LocaleFrench, NoteC.DoubleSharp().Sharp(), isError(ErrInvalidAlteration)},
 		{&LocaleFrench, NoteC.Sharp(), isString("do" + AltSharp)},
 		{&LocaleFrench, NoteA.Flat(), isString("la" + AltFlat)},
-		{&LocaleFrench, NoteB.DoubleFlat().Octave(-2), isString("si" + AltDoubleFlat + "-2")},
+		{&LocaleFrench, NoteB.DoubleFlat().Octave(-2), isString("si" + AltDoubleFlat)},
 	}
 
 	for _, tc := range testCases {

@@ -104,6 +104,8 @@ func TestNoteTranspose(t *testing.T) {
 		noteEqual(NoteE.Flat(), NoteC.Transpose(IntMinorThird)),
 		noteEqual(NoteB.Flat().Octave(1), NoteD.Transpose(IntMinorThirteenth)),
 		noteEqual(NoteF.Octave(-1), NoteC.Transpose(IntPerfectFifth.Down())),
+		noteEqual(NoteC.Octave(1), NoteE.Flat().Transpose(IntMajorSixth)),
+		noteEqual(NoteC.Octave(-2), NoteC.Octave(-2).Transpose(IntUnisson)),
 	)
 }
 
@@ -126,6 +128,11 @@ func TestNoteWithPitch(t *testing.T) {
 		{'C', 0, isNote(NoteC)},
 		{'B', 0, isNote(NoteB.Sharp().Octave(0))},
 		{'C', -1, isNote(NoteC.Flat().Octave(-1))},
+		{'E', 3, isNote(NoteE.Flat().Octave(0))},
+		{'C', -12, isNote(NoteC.Octave(-1))},
+		{'D', -10, isNote(NoteD.Octave(-1))},
+		{'C', -24, isNote(NoteC.Octave(-2))},
+		{'D', -22, isNote(NoteD.Octave(-2))},
 		{'H', 13, isError(ErrInvalidBaseNote)},
 	}
 	for _, tc := range testCases {
@@ -151,5 +158,6 @@ func TestFindClosestNote(t *testing.T) {
 		noteEqual(NoteB, FindClosestNote(11)),
 		noteEqual(NoteG.Flat().Octave(1), FindClosestNote(18)),
 		noteEqual(NoteD.Flat().Octave(-1), FindClosestNote(-11)),
+		noteEqual(NoteC.Octave(-1), FindClosestNote(-12)),
 	)
 }

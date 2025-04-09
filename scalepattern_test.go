@@ -129,6 +129,82 @@ func BenchmarkScalePatternIntoIntervals(b *testing.B) {
 	}
 }
 
+func TestScalePatternAsNotes(t *testing.T) {
+	isNotes := func(want ...Note) CheckFunc[[]Note] {
+		return func(have []Note, err error) error {
+			if err := NoError(err); err != nil {
+				return err
+			}
+			return Equal(want, have)
+		}
+	}
+	testCases := []struct {
+		ScalePattern
+		Root    Note
+		Degrees []int8
+		Check   CheckFunc[[]Note]
+	}{
+		{
+			ScalePatternMajor, NoteC, nil,
+			isNotes(NoteC, NoteD, NoteE, NoteF, NoteG, NoteA, NoteB),
+		},
+		{
+			ScalePatternMajor, NoteE.Flat(), nil,
+			isNotes(
+				NoteE.Flat(),
+				NoteF,
+				NoteG,
+				NoteA.Flat(),
+				NoteB.Flat(),
+				NoteC.Octave(1),
+				NoteD.Octave(1),
+			),
+		},
+		{
+			ScalePatternMajor, NoteC.Octave(-1), nil,
+			isNotes(
+				NoteC.Octave(-1),
+				NoteD.Octave(-1),
+				NoteE.Octave(-1),
+				NoteF.Octave(-1),
+				NoteG.Octave(-1),
+				NoteA.Octave(-1),
+				NoteB.Octave(-1),
+			),
+		},
+		{
+			ScalePatternMajor, NoteC.Octave(-2), nil,
+			isNotes(
+				NoteC.Octave(-2),
+				NoteD.Octave(-2),
+				NoteE.Octave(-2),
+				NoteF.Octave(-2),
+				NoteG.Octave(-2),
+				NoteA.Octave(-2),
+				NoteB.Octave(-2),
+			),
+		},
+	}
+
+	for _, tc := range testCases {
+		have, err := tc.ScalePattern.AsNotes(tc.Root, tc.Degrees)
+		Expect(t, tc.Check(have, err))
+	}
+}
+
+func TestScalePatternIntoNotes(t *testing.T) {
+	result, err := ScalePatternMajor.IntoNotes(nil, NoteC, nil)
+	Expect(t,
+		IsEmptySlice(result),
+		IsError(ErrNilBuffer, err),
+	)
+	result, err = ScalePatternMajor.IntoNotes(make([]Note, 0), NoteC, nil)
+	Expect(t,
+		IsEmptySlice(result),
+		IsError(ErrBufferOverflow, err),
+	)
+}
+
 func TestScalePatternMode(t *testing.T) {
 	isScalePattern := AsCheckFunc(func(want, have ScalePattern) error {
 		return Equal(want, have)

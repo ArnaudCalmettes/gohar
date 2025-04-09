@@ -32,16 +32,18 @@ func PitchSliceToJS(pitches []Pitch) any {
 }
 
 func NoteToJS(note Note) any {
-	repr := int(note.Base) | int(note.Alt)<<8 | int(note.Oct)<<16
-	return js.ValueOf(repr)
+	repr := uint(note.Base)
+	repr |= uint(note.Alt+64) << 8
+	repr |= uint(note.Oct+64) << 16
+	return js.ValueOf(int(repr))
 }
 
 func NoteFromJS(value js.Value) Note {
-	repr := value.Int()
+	repr := uint(value.Int())
 	return Note{
 		Base: byte(repr & 0xff),
-		Alt:  Pitch((repr >> 8) & 0xff),
-		Oct:  int8(repr >> 16 & 0xff),
+		Alt:  Pitch((repr&0xff00)>>8) - 64,
+		Oct:  int8((repr&0xff0000)>>16) - 64,
 	}
 }
 
