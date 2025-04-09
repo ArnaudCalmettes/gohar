@@ -98,7 +98,9 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 		degrees = range12[:s.CountNotes()]
 	}
 	if len(degrees) != s.CountNotes() {
-		return nil, invalidDegreef("expected []int8 with length %d: got %d", s.CountNotes(), len(degrees))
+		return nil, wrapErrorf(ErrInvalidDegree,
+			"expected []int8 with length %d: got %d", s.CountNotes(), len(degrees),
+		)
 	}
 	target = target[:0]
 	pitches, err := s.IntoPitches(make([]Pitch, 0, 12), 0)
@@ -140,7 +142,7 @@ func (s ScalePattern) Mode(degree int) (ScalePattern, error) {
 	const mask = 0b0000111111111111 // 12 lowest bits
 	var offset int
 	if degree < 1 || degree > s.CountNotes() {
-		return 0, invalidDegreef("%d", degree)
+		return 0, wrapErrorf(ErrInvalidDegree, "%d", degree)
 	}
 	for d := degree; d > 1; d-- {
 		offset = (offset + 1) % 12

@@ -44,6 +44,6 @@ func checkNoteIsPrintable(note Note) error {
 	return err
 }
 
-func invalidDegreef(msg string, args ...any) error {
-	return fmt.Errorf("%w: %s", ErrInvalidDegree, fmt.Sprintf(msg, args...))
+func wrapErrorf(err error, msg string, args ...any) error {
+	return fmt.Errorf("%w: %s", err, fmt.Sprintf(msg, args...))
 }
