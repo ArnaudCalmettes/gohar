@@ -20,8 +20,10 @@ func ImportGoharBindings() {
 		"isLoaded":            js.ValueOf(true),
 		"setLocale":           js.FuncOf(SetLocale),
 		"noteName":            js.FuncOf(NoteName),
+		"notePitch":           js.FuncOf(NotePitch),
 		"scalePatternName":    js.FuncOf(ScalePatternName),
 		"scalePatternPitches": js.FuncOf(ScalePatternPitches),
+		"scaleNotesFromPitch": js.FuncOf(ScaleNotesFromPitch),
 		"scalePatterns": js.ValueOf([]any{
 			int(gohar.ScalePatternMajor),
 			int(gohar.ScalePatternMelodicMinor),
@@ -68,6 +70,19 @@ func NoteName(_ js.Value, args []js.Value) any {
 	return js.ValueOf(result)
 }
 
+// NotePitch returns a note's pitch.
+//
+// Typescript signature:
+//
+//	function notePitch(note: number) => number
+func NotePitch(_ js.Value, args []js.Value) any {
+	if len(args) != 1 {
+		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
+	}
+	note := convert.NoteFromJS(args[0])
+	return js.ValueOf(note.Pitch())
+}
+
 // ScalePatternName returns the name of a ScalePattern in the current locale.
 //
 // Typescript signature:
@@ -105,4 +120,22 @@ func ScalePatternPitches(_ js.Value, args []js.Value) any {
 		panic(fmt.Errorf("scalePatternPitches: %w", err))
 	}
 	return convert.PitchSliceToJS(pitches)
+}
+
+// ScaleNotesFromPitch returns notes of the scale.
+//
+// Typescript signature:
+//
+// function scaleNotesFromPitch(pitch: number, pattern: number) => number[]
+func ScaleNotesFromPitch(_ js.Value, args []js.Value) any {
+	if len(args) != 2 {
+		panic(fmt.Errorf("scaleNotesFromPitch: expected 2 args, got %d", len(args)))
+	}
+	pitch := gohar.Pitch(args[0].Int())
+	pattern := convert.ScalePatternFromJS(args[1])
+	notes, err := pattern.AsNotes(gohar.FindClosestNote(pitch), nil)
+	if err != nil {
+		panic(err)
+	}
+	return convert.NoteSliceToJS(notes)
 }
