@@ -80,7 +80,7 @@ func NotePitch(_ js.Value, args []js.Value) any {
 		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
 	}
 	note := convert.NoteFromJS(args[0])
-	return js.ValueOf(note.Pitch())
+	return js.ValueOf(int(note.Pitch()))
 }
 
 // ScalePatternName returns the name of a ScalePattern in the current locale.
@@ -133,7 +133,7 @@ func ScaleNotesFromPitch(_ js.Value, args []js.Value) any {
 	}
 	pitch := gohar.Pitch(args[0].Int())
 	pattern := convert.ScalePatternFromJS(args[1])
-	notes, err := pattern.AsNotes(gohar.FindClosestNote(pitch), nil)
+	notes, err := pattern.IntoNotes(make([]gohar.Note, 0, 12), gohar.FindClosestNote(pitch), nil)
 	if err != nil {
 		panic(err)
 	}
