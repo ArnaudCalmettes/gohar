@@ -39,10 +39,10 @@ var (
 
 // NoteName returns the Note's name in the current locale.
 func (loc *Locale) NoteName(note Note) (string, error) {
-	if err := checkValidNote(note); err != nil {
-		return "", err
+	if !note.IsValid() {
+		return "", ErrInvalidPitchClass
 	}
-	s := loc.basename(note.Base) + altToString(note.Alt)
+	s := loc.basename(note.Base()) + altToString(note.Alt())
 	return s, nil
 }
 

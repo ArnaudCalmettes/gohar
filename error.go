@@ -29,21 +29,6 @@ func checkOutputBuffer[T any](buffer []T, capacity int) error {
 	return nil
 }
 
-func checkValidNote(note Note) error {
-	var err error
-	if note.Base < 'A' || note.Base > 'G' {
-		err = errors.Join(err,
-			wrapErrorf(ErrInvalidPitchClass, "'%c'", note.Base),
-		)
-	}
-	if note.Alt < -2 || note.Alt > 2 {
-		err = errors.Join(err,
-			wrapErrorf(ErrInvalidAlteration, "%d", note.Alt),
-		)
-	}
-	return err
-}
-
 func wrapErrorf(err error, msg string, args ...any) error {
 	return fmt.Errorf("%w: %s", err, fmt.Sprintf(msg, args...))
 }

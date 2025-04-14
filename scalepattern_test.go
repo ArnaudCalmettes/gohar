@@ -185,7 +185,7 @@ func TestScalePatternAsNotes(t *testing.T) {
 			if err := NoError(err); err != nil {
 				return err
 			}
-			return Equal(want, have)
+			return Equal(want, have, cmpopts.EquateComparable(PitchClass{}))
 		}
 	}
 	testCases := []struct {

@@ -19,7 +19,7 @@ func TestNoteName(t *testing.T) {
 		Note
 		Want string
 	}{
-		{Note{}, ""},
+		{Note{}, "<invalid>"},
 		{NoteC, "C"},
 		{NoteC.Flat().Octave(-2), "C" + AltFlat},
 	}
@@ -34,14 +34,14 @@ func TestNoteStringer(t *testing.T) {
 		Note
 		Want string
 	}{
-		{Note{}, "Note{}"},
-		{NoteC.Natural(), "C0"},
+		{Note{}, "<invalid>0"},
+		{NoteC, "C0"},
 		{NoteF.Sharp(), "F" + AltSharp + "0"},
 		{NoteB.Flat(), "B" + AltFlat + "0"},
 		{NoteC.Octave(3), "C3"},
 		{NoteD.DoubleFlat().Octave(-1), "D" + AltDoubleFlat + "-1"},
 		{NoteC.DoubleSharp().Octave(3), "C" + AltDoubleSharp + "3"},
-		{NoteG.Sharp().Sharp().Sharp().Octave(-5), "G(+3)-5"},
+		{NoteG.Sharp().Sharp().Sharp().Octave(-5), "<invalid>-5"},
 	}
 
 	for _, tc := range testCases {
@@ -51,7 +51,7 @@ func TestNoteStringer(t *testing.T) {
 
 func TestNotePitch(t *testing.T) {
 	Expect(t, ShouldPanic(func() {
-		Note{Base: 'H'}.Pitch()
+		Note{PitchClass: PitchClass{base: 'H'}}.Pitch()
 	}))
 
 	isPitch := AsCheckFunc(pitchEqual)
@@ -78,22 +78,22 @@ func TestNotePitch(t *testing.T) {
 
 func TestNoteAlterations(t *testing.T) {
 	Expect(t,
-		Equal(0, NoteC.Alt),
-		Equal(-1, NoteD.Flat().Alt),
-		Equal(-2, NoteB.DoubleFlat().Alt),
-		Equal(1, NoteF.Sharp().Alt),
-		Equal(2, NoteG.DoubleSharp().Alt),
+		Equal(0, NoteC.Alt()),
+		Equal(-1, NoteD.Flat().Alt()),
+		Equal(-2, NoteB.DoubleFlat().Alt()),
+		Equal(1, NoteF.Sharp().Alt()),
+		Equal(2, NoteG.DoubleSharp().Alt()),
 	)
 
 	Expect(t,
-		noteEqual(NoteC.Flat(), Note{'C', -1, -1}),
-		noteEqual(NoteD.Flat(), Note{'D', -1, 0}),
-		noteEqual(NoteC.DoubleFlat(), Note{'C', -2, -1}),
-		noteEqual(NoteD.DoubleFlat(), Note{'D', -2, 0}),
-		noteEqual(NoteB.Sharp(), Note{'B', 1, 1}),
-		noteEqual(NoteF.Sharp(), Note{'F', 1, 0}),
-		noteEqual(NoteB.DoubleSharp(), Note{'B', 2, 1}),
-		noteEqual(NoteF.DoubleSharp(), Note{'F', 2, 0}),
+		noteEqual(NoteC.Flat(), Note{PitchClass{'C', -1}, -1}),
+		noteEqual(NoteD.Flat(), Note{PitchClass{'D', -1}, 0}),
+		noteEqual(NoteC.DoubleFlat(), Note{PitchClass{'C', -2}, -1}),
+		noteEqual(NoteD.DoubleFlat(), Note{PitchClass{'D', -2}, 0}),
+		noteEqual(NoteB.Sharp(), Note{PitchClass{'B', 1}, 1}),
+		noteEqual(NoteF.Sharp(), Note{PitchClass{'F', 1}, 0}),
+		noteEqual(NoteB.DoubleSharp(), Note{PitchClass{'B', 2}, 1}),
+		noteEqual(NoteF.DoubleSharp(), Note{PitchClass{'F', 2}, 0}),
 	)
 }
 

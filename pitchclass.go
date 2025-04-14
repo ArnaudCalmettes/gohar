@@ -176,5 +176,22 @@ func (p PitchClass) Transpose(i Interval) PitchClass {
 func pitchClassWithPitch(b byte, target Pitch) PitchClass {
 	pc := PitchClass{b, 0}
 	pc.alt = target.Normalize() - pc.Pitch(0)
+	if pc.alt < -6 {
+		pc.alt += 12
+	}
+	if pc.alt > 6 {
+		pc.alt -= 12
+	}
 	return pc
+}
+
+func (p PitchClass) Serialize() uint16 {
+	return uint16(p.base) | uint16(p.alt+64)<<8
+}
+
+func DeserializePitchClass(repr uint16) PitchClass {
+	return PitchClass{
+		base: byte(repr & 0xff),
+		alt:  Pitch((repr & 0xff00) >> 8),
+	}
 }

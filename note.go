@@ -9,64 +9,56 @@ import (
 // Multiple notes can correspond to the same pitch (e.g.: E# and F). Notes that have the same pitch but different
 // names are called "enharmonic".
 type Note struct {
-	// Base is the base pitch class of the note, represented as a byte between 'A' and 'G'.
-	Base byte
-	// Alt is the note's alteration, represented as a pitch offset between -2 (double flat) and +2 (double sharp).
-	Alt Pitch
+	// PitchClass is the pitch class of the note
+	PitchClass
 	// Oct transposes the note up (when Oct > 0) or down (when Oct < 0) relative to the default octave (0).
 	Oct int8
 }
 
 var (
-	NoteA = Note{Base: 'A'}
-	NoteB = Note{Base: 'B'}
-	NoteC = Note{Base: 'C'}
-	NoteD = Note{Base: 'D'}
-	NoteE = Note{Base: 'E'}
-	NoteF = Note{Base: 'F'}
-	NoteG = Note{Base: 'G'}
+	NoteA = Note{PitchClassA, 0}
+	NoteB = Note{PitchClassB, 0}
+	NoteC = Note{PitchClassC, 0}
+	NoteD = Note{PitchClassD, 0}
+	NoteE = Note{PitchClassE, 0}
+	NoteF = Note{PitchClassF, 0}
+	NoteG = Note{PitchClassG, 0}
 )
 
 // Sharp returns the note with an added sharp.
 func (n Note) Sharp() Note {
-	if n.Base == 'B' && n.Alt == 0 {
-		n.Oct++
+	oct := n.Oct
+	if n.PitchClass.Pitch(0) == PitchB {
+		oct++
 	}
-	n.Alt++
-	return n
+	return Note{n.PitchClass.Sharp(), oct}
 }
 
 // Flat returns the note with an added flat.
 func (n Note) Flat() Note {
-	if n.Base == 'C' && n.Alt == 0 {
-		n.Oct--
+	oct := n.Oct
+	if n.PitchClass.Pitch(0) == PitchC {
+		oct--
 	}
-	n.Alt--
-	return n
+	return Note{n.PitchClass.Flat(), oct}
 }
 
 // DoubleSharp makes the note "double sharp".
 func (n Note) DoubleSharp() Note {
-	if n.Base == 'B' && n.Alt == 0 {
-		n.Oct++
+	oct := n.Oct
+	if n.PitchClass.Pitch(0) >= PitchBFlat {
+		oct++
 	}
-	n.Alt = 2
-	return n
+	return Note{n.PitchClass.DoubleSharp(), oct}
 }
 
 // DoubleFlat makes the note "double flat".
 func (n Note) DoubleFlat() Note {
-	if n.Base == 'C' && n.Alt == 0 {
-		n.Oct--
+	oct := n.Oct
+	if n.PitchClass.Pitch(0) <= PitchCSharp {
+		oct--
 	}
-	n.Alt = -2
-	return n
-}
-
-// Natural resets any alterations on the note.
-func (n Note) Natural() Note {
-	n.Alt = 0
-	return n
+	return Note{n.PitchClass.DoubleFlat(), oct}
 }
 
 // Octave transposes the note to desired octave.
@@ -78,7 +70,7 @@ func (n Note) Octave(oct int8) Note {
 // Transpose returns the note transposed by given interval
 func (n Note) Transpose(i Interval) Note {
 	n, _ = NoteWithPitch(
-		moveBaseNote(n.Base, int(i.ScaleDiff)),
+		moveBaseNote(n.Base(), int(i.ScaleDiff)),
 		n.Pitch()+i.PitchDiff,
 	)
 	return n
@@ -96,30 +88,19 @@ func (n Note) IsHigherThan(note Note) bool {
 
 // Name returns the note's name regardless of the octave.
 func (n Note) Name() string {
-	var zero Note
-	if n == zero {
-		return ""
-	}
-	return fmt.Sprintf("%c%s", n.Base, altToString(n.Alt))
+	return n.PitchClass.String()
 }
 
 // String returns the full note as a string.
 func (n Note) String() string {
-	var zero Note
-	if n == zero {
-		return "Note{}"
-	}
-	return fmt.Sprintf("%c%s%d", n.Base, altToString(n.Alt), n.Oct)
+	return fmt.Sprintf("%s%d", n.PitchClass, n.Oct)
 }
 
 // Get the note's pitch.
 //
 // This method panics if the note is malformed.
 func (n Note) Pitch() Pitch {
-	return basePitch(n.Base).
-		Add(n.Alt).
-		Normalize().
-		Add(Pitch(n.Oct) * PitchDiffOctave)
+	return n.PitchClass.Pitch(n.Oct)
 }
 
 func moveBaseNote(base byte, diff int) byte {
@@ -130,15 +111,6 @@ func moveBaseNote(base byte, diff int) byte {
 	return byte(idx) + 'A'
 }
 
-var basePitches = [7]Pitch{PitchA, PitchB, PitchC, PitchD, PitchE, PitchF, PitchG}
-
-func basePitch(b byte) Pitch {
-	if b < 'A' || 'G' < b {
-		panic(wrapErrorf(ErrInvalidPitchClass, "%c", b))
-	}
-	return basePitches[int(b-'A')]
-}
-
 // NoteWithPitch builds a note with given base and any
 // octaves and alterations needed so that the note has
 // given pitch.
@@ -146,24 +118,10 @@ func NoteWithPitch(base byte, pitch Pitch) (Note, error) {
 	if base < 'A' || 'G' < base {
 		return Note{}, wrapErrorf(ErrInvalidPitchClass, "%c", base)
 	}
-	note := Note{
-		Base: base,
-	}
-	if pitch >= 0 {
-		note.Oct = int8(pitch) / 12
-	} else {
-		note.Oct = int8(pitch+1)/12 - 1
-	}
-
-	diff := (pitch - note.Pitch()) % 12
-	if diff < -6 {
-		diff += 12
-	}
-	if diff > 6 {
-		diff -= 12
-	}
-	note.Alt = diff
-	return note, nil
+	return Note{
+		pitchClassWithPitch(base, pitch),
+		pitch.GetOctave(),
+	}, nil
 }
 
 var closestNote = [12]Note{

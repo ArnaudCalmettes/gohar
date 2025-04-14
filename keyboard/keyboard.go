@@ -1,6 +1,7 @@
 package keyboard
 
 import (
+	//lint:ignore ST1001 core types
 	. "github.com/ArnaudCalmettes/gohar"
 )
 

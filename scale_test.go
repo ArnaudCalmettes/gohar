@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestScaleStringer(t *testing.T) {
@@ -28,7 +29,7 @@ func TestScaleAsNotes(t *testing.T) {
 			if err != nil {
 				return err
 			}
-			return Equal(want, have)
+			return Equal(want, have, cmpopts.EquateComparable(PitchClass{}))
 		}
 	}
 	testCases := []struct {

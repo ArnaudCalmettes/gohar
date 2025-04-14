@@ -37,8 +37,8 @@ func ParseNote(input string) (Note, error) {
 	if len(match) == 0 {
 		return n, fmt.Errorf("%w: %q", ErrCannotParseNote, input)
 	}
-	n.Base = strings.ToUpper(match[1])[0]
-	n.Alt, _ = ParseAlteration(match[2])
+	n.base = strings.ToUpper(match[1])[0]
+	n.alt, _ = ParseAlteration(match[2])
 	oct, _ := strconv.Atoi(match[3])
 	n.Oct = int8(oct)
 	return n, nil

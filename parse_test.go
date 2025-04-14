@@ -9,7 +9,7 @@ import (
 func TestParseNote(t *testing.T) {
 	isError := HasError[Note]
 	isNote := func(base byte, alt Pitch, oct int8) CheckFunc[Note] {
-		return AsCheckFunc(noteEqual)(Note{base, alt, oct})
+		return AsCheckFunc(noteEqual)(Note{PitchClass{base, alt}, oct})
 	}
 
 	testCases := []struct {
