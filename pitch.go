@@ -24,6 +24,20 @@ func (p Pitch) Normalize() Pitch {
 	return p
 }
 
+// GetOctave returns the pitch's octave.
+func (p Pitch) GetOctave() int8 {
+	if p >= 0 {
+		return int8(p) / 12
+	} else {
+		return int8(p+1)/12 - 1
+	}
+}
+
+// AtOctave transposes the pitch to given octave.
+func (p Pitch) AtOctave(oct int8) Pitch {
+	return p.Normalize() + Pitch(12*oct)
+}
+
 const (
 	PitchC            Pitch = 0
 	PitchBSharp       Pitch = 0

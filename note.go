@@ -134,26 +134,9 @@ var basePitches = [7]Pitch{PitchA, PitchB, PitchC, PitchD, PitchE, PitchF, Pitch
 
 func basePitch(b byte) Pitch {
 	if b < 'A' || 'G' < b {
-		panic(wrapErrorf(ErrInvalidBaseNote, "%c", b))
+		panic(wrapErrorf(ErrInvalidPitchClass, "%c", b))
 	}
 	return basePitches[int(b-'A')]
-}
-
-func altToString(alt Pitch) string {
-	switch alt {
-	case -2:
-		return AltDoubleFlat
-	case -1:
-		return AltFlat
-	case 0:
-		return ""
-	case 1:
-		return AltSharp
-	case 2:
-		return AltDoubleSharp
-	default:
-		return fmt.Sprintf("(%+d)", alt)
-	}
 }
 
 // NoteWithPitch builds a note with given base and any
@@ -161,7 +144,7 @@ func altToString(alt Pitch) string {
 // given pitch.
 func NoteWithPitch(base byte, pitch Pitch) (Note, error) {
 	if base < 'A' || 'G' < base {
-		return Note{}, wrapErrorf(ErrInvalidBaseNote, "%c", base)
+		return Note{}, wrapErrorf(ErrInvalidPitchClass, "%c", base)
 	}
 	note := Note{
 		Base: base,

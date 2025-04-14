@@ -16,7 +16,7 @@ func TestLocaleSprintNote(t *testing.T) {
 		Note  Note
 		Check CheckFunc[string]
 	}{
-		{&LocaleFrench, Note{}, isError(ErrInvalidBaseNote)},
+		{&LocaleFrench, Note{}, isError(ErrInvalidPitchClass)},
 		{&LocaleFrench, NoteC.DoubleSharp().Sharp(), isError(ErrInvalidAlteration)},
 		{&LocaleFrench, NoteC.Sharp(), isString("do" + AltSharp)},
 		{&LocaleFrench, NoteA.Flat(), isString("la" + AltFlat)},

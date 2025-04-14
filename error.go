@@ -10,7 +10,7 @@ import (
 var (
 	ErrBufferOverflow      = errors.New("buffer overflow")
 	ErrNilBuffer           = errors.New("nil buffer")
-	ErrInvalidBaseNote     = errors.New("invalid base note")
+	ErrInvalidPitchClass   = errors.New("invalid pitch class")
 	ErrInvalidAlteration   = errors.New("invalid alteration")
 	ErrUnknownScalePattern = errors.New("unknown scale pattern")
 	ErrInvalidDegree       = errors.New("invalid degree")
@@ -33,7 +33,7 @@ func checkValidNote(note Note) error {
 	var err error
 	if note.Base < 'A' || note.Base > 'G' {
 		err = errors.Join(err,
-			wrapErrorf(ErrInvalidBaseNote, "'%c'", note.Base),
+			wrapErrorf(ErrInvalidPitchClass, "'%c'", note.Base),
 		)
 	}
 	if note.Alt < -2 || note.Alt > 2 {

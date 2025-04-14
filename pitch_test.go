@@ -55,7 +55,35 @@ func TestPitchAdd(t *testing.T) {
 	for _, tc := range testCases {
 		label := fmt.Sprintf("%d(%+d)", tc.Input, tc.Interval)
 		t.Run(label, func(t *testing.T) {
-			Expect(t, Equalf(tc.Want, tc.Input.Add(tc.Interval), "%s", label))
+			Expect(t,
+				Equalf(tc.Want, tc.Input.Add(tc.Interval), "%s", label),
+			)
+		})
+	}
+}
+
+func TestPitchGetOctave(t *testing.T) {
+	testCases := []struct {
+		Pitch
+		Want int8
+	}{
+		{0, 0},
+		{11, 0},
+		{12, 1},
+		{13, 1},
+		{-1, -1},
+		{-12, -1},
+		{-13, -2},
+		{-24, -2},
+		{-25, -3},
+		{-36, -3},
+	}
+
+	for _, tc := range testCases {
+		t.Run(fmt.Sprint(tc.Pitch), func(t *testing.T) {
+			Expect(t,
+				Equal(tc.Want, tc.Pitch.GetOctave()),
+			)
 		})
 	}
 }

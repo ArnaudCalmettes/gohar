@@ -133,7 +133,7 @@ func TestNoteWithPitch(t *testing.T) {
 		{'D', -10, isNote(NoteD.Octave(-1))},
 		{'C', -24, isNote(NoteC.Octave(-2))},
 		{'D', -22, isNote(NoteD.Octave(-2))},
-		{'H', 13, isError(ErrInvalidBaseNote)},
+		{'H', 13, isError(ErrInvalidPitchClass)},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("%c @ %d", tc.Base, tc.Pitch), func(t *testing.T) {
