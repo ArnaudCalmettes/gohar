@@ -38,7 +38,7 @@ var (
 )
 
 // NoteName returns the Note's name in the current locale.
-func (loc *Locale) NoteName(note Note) (string, error) {
+func (loc *Locale) NoteName(note PitchClass) (string, error) {
 	if !note.IsValid() {
 		return "", ErrInvalidPitchClass
 	}
@@ -56,7 +56,7 @@ func (loc *Locale) ScalePatternName(pattern ScalePattern) (string, error) {
 
 // ScaleName returns the Scale's name in the current locale.
 func (loc *Locale) ScaleName(scale Scale) (string, error) {
-	note, noteErr := loc.NoteName(scale.Root)
+	note, noteErr := loc.NoteName(scale.Root.PitchClass)
 	name, nameErr := loc.ScalePatternName(scale.Pattern)
 	return note + " " + name, errors.Join(noteErr, nameErr)
 }
@@ -74,7 +74,7 @@ var ErrLocaleNotSet = errors.New("gohar.CurrentLocale is not set")
 // NoteName returns the Note's name in the current locale.
 //
 // ErrLocaleNotSet is returned if the package's locale isn't set.
-func NoteName(note Note) (string, error) {
+func NoteName(note PitchClass) (string, error) {
 	if CurrentLocale != nil {
 		return CurrentLocale.NoteName(note)
 	}

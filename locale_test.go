@@ -24,7 +24,7 @@ func TestLocaleSprintNote(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		have, err := tc.Loc.NoteName(tc.Note)
+		have, err := tc.Loc.NoteName(tc.Note.PitchClass)
 		Expect(t, tc.Check(have, err))
 	}
 }

@@ -62,7 +62,7 @@ func NoteName(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
 	}
-	note := convert.NoteFromJS(args[0])
+	note := convert.PitchClassFromJS(args[0])
 	result, err := gohar.NoteName(note)
 	if err != nil {
 		panic(fmt.Errorf("noteName: %w", err))
