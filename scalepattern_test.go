@@ -2,9 +2,11 @@ package gohar
 
 import (
 	"fmt"
+	"slices"
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestScalePatternAsPitches(t *testing.T) {
@@ -127,6 +129,54 @@ func BenchmarkScalePatternIntoIntervals(b *testing.B) {
 			b.Fatal(err)
 		}
 	}
+}
+
+func TestScalePatternPitchClasses(t *testing.T) {
+	testCases := []struct {
+		ScalePattern
+		Root    PitchClass
+		Degrees []int8
+		Want    []PitchClass
+	}{
+		{
+			ScalePatternMajor, PitchClassC, nil,
+			[]PitchClass{
+				PitchClassC,
+				PitchClassD,
+				PitchClassE,
+				PitchClassF,
+				PitchClassG,
+				PitchClassA,
+				PitchClassB,
+			},
+		},
+		{
+			ScalePatternMelodicMinor, PitchClassG, nil,
+			[]PitchClass{
+				PitchClassG,
+				PitchClassA,
+				PitchClassB.Flat(),
+				PitchClassC,
+				PitchClassD,
+				PitchClassE,
+				PitchClassF.Sharp(),
+			},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run("", func(t *testing.T) {
+			Expect(t,
+				Equal(
+					tc.Want,
+					slices.Collect(
+						tc.ScalePattern.PitchClasses(tc.Root, tc.Degrees),
+					),
+					cmpopts.EquateComparable(PitchClass{}),
+				),
+			)
+		})
+	}
+
 }
 
 func TestScalePatternAsNotes(t *testing.T) {

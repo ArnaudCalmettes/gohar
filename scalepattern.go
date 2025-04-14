@@ -1,7 +1,9 @@
 package gohar
 
 import (
+	"iter"
 	"math/bits"
+	"slices"
 )
 
 // A Scale pattern is represented bitwise as a 12-bit number that maps an octave.
@@ -30,32 +32,96 @@ func (s ScalePattern) CountNotes() int {
 	return bits.OnesCount16(uint16(s))
 }
 
+// Pitches iterates over the pitches of the scale pattern relative to given root.
+func (s ScalePattern) Pitches(root Pitch) iter.Seq[Pitch] {
+	return func(yield func(Pitch) bool) {
+		for i := range 12 {
+			if (s & (1 << i)) != 0 {
+				if !yield(Pitch(i) + root) {
+					return
+				}
+			}
+		}
+	}
+}
+
+// Intervals converts the scale pattern into intervals relative to the tonic.
+// If degrees == nil, the scale is assumed to have stepwise motion, which is suitable
+// for most common scales in western music (heptatonic scales).
+// Otherwise, degrees describe the absolute pitch class intervals to use.
+//
+// Eg. for a major pentatonic scale (degrees are the same for minor):
+//
+//	// notes:          C        D    E    G    A
+//	// intervals:      unisson, 2nd, 3rd, 5th, 6th
+//	// degrees: []int8{1,       2,   3,   5,   6}
+//
+//	majorPentatonic := ScalePattern(0b1010010101)
+//	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
+func (s ScalePattern) Intervals(degrees []int8) iter.Seq[Interval] {
+	if degrees == nil {
+		degrees = range12[:s.CountNotes()]
+	}
+	if len(degrees) != s.CountNotes() {
+		return nil
+	}
+	return func(yield func(Interval) bool) {
+		for i, p := range enumerate(s.Pitches(0)) {
+			if !yield(Interval{degrees[i] - 1, p}) {
+				return
+			}
+		}
+	}
+}
+
+func enumerate[T any](s iter.Seq[T]) iter.Seq2[int, T] {
+	return func(yield func(int, T) bool) {
+		i := 0
+		for item := range s {
+			if !yield(i, item) {
+				return
+			}
+			i++
+		}
+	}
+}
+
+// PitchClasses converts the scale pattern into PitchClasses starting with given root.
+// degrees have the same meaning as in [ScalePattern.AsIntervals].
+func (s ScalePattern) PitchClasses(root PitchClass, degrees []int8) iter.Seq[PitchClass] {
+	return func(yield func(PitchClass) bool) {
+		for i := range s.Intervals(degrees) {
+			if !yield(root.Transpose(i)) {
+				return
+			}
+		}
+	}
+}
+
+var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
 // AsPitches returns the scale pattern as a new slice of pitches relative
 // to given root.
 //
 // This method dynamically allocates a new slice of pitches.
-// See [ScalePattern.IntoPitches] for one that doesn't.
+// See [ScalePattern.Pitches] for one that doesn't.
 func (s ScalePattern) AsPitches(root Pitch) []Pitch {
-	ps, _ := s.IntoPitches(
-		make([]Pitch, 0, s.CountNotes()),
-		root,
-	)
-	return ps
+	return slices.Collect(s.Pitches(root))
 }
 
 // IntoPitches converts the scale pattern into pitches relative to given root
 // and writes them into the target slice.
 //
 // ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
+//
+// Deprecated. Iterate over [ScalePatern.Pitches] instead.
 func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
 		return nil, err
 	}
 	target = target[:0]
-	for i := range 12 {
-		if s&(1<<i) != 0 {
-			target = append(target, Pitch(i)+root)
-		}
+	for p := range s.Pitches(root) {
+		target = append(target, p)
 	}
 	return target, nil
 }
@@ -77,14 +143,8 @@ func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
 // This method dynamically allocates a new slice of intervals.
 // See [ScalePattern.IntoIntervals] if you need control over memory allocation.
 func (s ScalePattern) AsIntervals(degrees []int8) []Interval {
-	is, _ := s.IntoIntervals(
-		make([]Interval, 0, s.CountNotes()),
-		degrees,
-	)
-	return is
+	return slices.Collect(s.Intervals(degrees))
 }
-
-var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 
 // IntoIntervals converts the scale pattern into intervals relative to the tonic
 // and writes them into the target slice.
@@ -103,11 +163,10 @@ func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interv
 		)
 	}
 	target = target[:0]
-	pitches, err := s.IntoPitches(make([]Pitch, 0, 12), 0)
-	for i, pitch := range pitches {
-		target = append(target, Interval{degrees[i] - 1, pitch})
+	for interval := range s.Intervals(degrees) {
+		target = append(target, interval)
 	}
-	return target, err
+	return target, nil
 }
 
 // AsNotes applies the scale pattern to given root note.
