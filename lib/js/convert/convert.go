@@ -31,20 +31,26 @@ func PitchSliceToJS(pitches []Pitch) any {
 	return js.ValueOf(slice)
 }
 
+func PitchClassToJS(p PitchClass) any {
+	return js.ValueOf(p.Serialize())
+}
+
+func PitchClassFromJS(value js.Value) PitchClass {
+	return DeserializePitchClass(uint16(value.Int()))
+}
+
 func NoteToJS(note Note) any {
-	repr := uint(note.Base())
-	repr |= uint(note.Alt()+64) << 8
+	repr := uint(note.PitchClass.Serialize())
 	repr |= uint(note.Oct+64) << 16
 	return js.ValueOf(int(repr))
 }
 
 func NoteFromJS(value js.Value) Note {
 	repr := uint(value.Int())
-	pc, err := NewPitchClass(byte(repr&0xff), Pitch(repr&0xff00>>8)-64)
-	if err != nil {
-		panic(err)
+	return Note{
+		PitchClass: DeserializePitchClass(uint16(value.Int())),
+		Oct:        int8(repr&0xff0000>>16) - 64,
 	}
-	return Note{PitchClass: pc, Oct: int8((repr&0xff0000)>>16) - 64}
 }
 
 func NoteSliceToJS(notes []Note) any {
