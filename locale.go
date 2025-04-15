@@ -42,7 +42,7 @@ func (loc *Locale) NoteName(note PitchClass) (string, error) {
 	if !note.IsValid() {
 		return "", ErrInvalidPitchClass
 	}
-	s := loc.basename(note.Base()) + altToString(note.Alt())
+	s := loc.NoteNames[note.Base()] + altToString(note.Alt())
 	return s, nil
 }
 
@@ -59,14 +59,6 @@ func (loc *Locale) ScaleName(scale Scale) (string, error) {
 	note, noteErr := loc.NoteName(scale.Root.PitchClass)
 	name, nameErr := loc.ScalePatternName(scale.Pattern)
 	return note + " " + name, errors.Join(noteErr, nameErr)
-}
-
-func (loc *Locale) basename(b byte) string {
-	idx := int(b) - int('C')
-	if idx < 0 {
-		idx += 7
-	}
-	return loc.NoteNames[idx]
 }
 
 var ErrLocaleNotSet = errors.New("gohar.CurrentLocale is not set")

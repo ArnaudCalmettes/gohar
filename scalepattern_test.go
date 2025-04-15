@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
-	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func TestScalePatternAsPitches(t *testing.T) {
@@ -171,7 +170,6 @@ func TestScalePatternPitchClasses(t *testing.T) {
 					slices.Collect(
 						tc.ScalePattern.PitchClasses(tc.Root, tc.Degrees),
 					),
-					cmpopts.EquateComparable(PitchClass{}),
 				),
 			)
 		})
@@ -185,7 +183,7 @@ func TestScalePatternAsNotes(t *testing.T) {
 			if err := NoError(err); err != nil {
 				return err
 			}
-			return Equal(want, have, cmpopts.EquateComparable(PitchClass{}))
+			return Equal(want, have)
 		}
 	}
 	testCases := []struct {

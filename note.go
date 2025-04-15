@@ -69,11 +69,11 @@ func (n Note) Octave(oct int8) Note {
 
 // Transpose returns the note transposed by given interval
 func (n Note) Transpose(i Interval) Note {
-	n, _ = NoteWithPitch(
-		moveBaseNote(n.Base(), int(i.ScaleDiff)),
-		n.Pitch()+i.PitchDiff,
-	)
-	return n
+	pitch := n.Pitch() + i.PitchDiff
+	return Note{
+		n.PitchClass.Transpose(i),
+		pitch.GetOctave(),
+	}
 }
 
 // IsEnharmonic returns true if both notes have the same pitch.
@@ -103,25 +103,11 @@ func (n Note) Pitch() Pitch {
 	return n.PitchClass.Pitch(n.Oct)
 }
 
-func moveBaseNote(base byte, diff int) byte {
-	idx := (int(base) - int('A') + diff) % 7
-	if idx < 0 {
-		idx += 7
-	}
-	return byte(idx) + 'A'
-}
-
 // NoteWithPitch builds a note with given base and any
 // octaves and alterations needed so that the note has
 // given pitch.
-func NoteWithPitch(base byte, pitch Pitch) (Note, error) {
-	if base < 'A' || 'G' < base {
-		return Note{}, wrapErrorf(ErrInvalidPitchClass, "%c", base)
-	}
-	return Note{
-		pitchClassWithPitch(base, pitch),
-		pitch.GetOctave(),
-	}, nil
+func NoteWithPitch(pc PitchClass, pitch Pitch) Note {
+	return Note{pitchClassWithPitch(pc, pitch), pitch.GetOctave()}
 }
 
 var closestNote = [12]Note{

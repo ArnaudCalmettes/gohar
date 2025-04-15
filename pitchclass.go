@@ -11,41 +11,51 @@ import (
 // note belongs to a chord or scale: we know E belongs to the C major scale, regardless
 // of the octave.
 //
-// This type is maps to a 16-bit structure that can be efficiently passed around by
-// immutable copies.
-type PitchClass struct {
-	// base is the base pitch class, represented as a byte between 'A' and 'G'.
-	base byte
-	// Alt is the alteration that is applied to the Base class.
-	// Its value should be kept between -2 (double flat) and +2 (double sharp).
-	alt Pitch
-}
+// This type is encoded as a single byte.
+//
+//	bit number : 76543210
+//	values:      AAAAXBBB
+//	A: Alterations (4 bits)
+//	B: Base Pitch Class (3 bits)
+//	X: unused
+type PitchClass uint8
 
-var (
-	PitchClassA = PitchClass{'A', 0}
-	PitchClassB = PitchClass{'B', 0}
-	PitchClassC = PitchClass{'C', 0}
-	PitchClassD = PitchClass{'D', 0}
-	PitchClassE = PitchClass{'E', 0}
-	PitchClassF = PitchClass{'F', 0}
-	PitchClassG = PitchClass{'G', 0}
+const (
+	PitchClassC PitchClass = 0 | PitchClassNatural
+	PitchClassD PitchClass = 1 | PitchClassNatural
+	PitchClassE PitchClass = 2 | PitchClassNatural
+	PitchClassF PitchClass = 3 | PitchClassNatural
+	PitchClassG PitchClass = 4 | PitchClassNatural
+	PitchClassA PitchClass = 5 | PitchClassNatural
+	PitchClassB PitchClass = 6 | PitchClassNatural
+
+	PitchClassNatural     PitchClass = (8 + 0) << 4
+	PitchClassSharp       PitchClass = (8 + 1) << 4
+	PitchClassFlat        PitchClass = (8 - 1) << 4
+	PitchClassDoubleSharp PitchClass = (8 + 2) << 4
+	PitchClassDoubleFlat  PitchClass = (8 - 2) << 4
 )
 
-// NewPitchClass creates a new PitchClass.
+// NewPitchClassFromChar creates a new PitchClass.
 // ErrInvalidPitchClass is returned if b isn't in the range [A-G].
 // ErrInvalidAlteration is returned if alt isn't in the range [-2,2].
-func NewPitchClass(b byte, alt Pitch) (PitchClass, error) {
-	if b < 'A' || b > 'G' {
-		return PitchClass{}, wrapErrorf(ErrInvalidPitchClass,
-			"expected range 'A' <= b <= 'G', got %c", b,
+func NewPitchClassFromChar(char byte, alt Pitch) (PitchClass, error) {
+	if char < 'A' || char > 'G' {
+		return 0, wrapErrorf(ErrInvalidPitchClass,
+			"expected range 'A' <= b <= 'G', got %c", char,
 		)
 	}
 	if alt < -2 || alt > 2 {
-		return PitchClass{}, wrapErrorf(ErrInvalidAlteration,
+		return 0, wrapErrorf(ErrInvalidAlteration,
 			"expected range -2 <= alt <= +2, got %d", alt,
 		)
 	}
-	return PitchClass{b, alt}, nil
+	if char < 'C' {
+		char += 7
+	}
+	pc := PitchClass(char - 'C')
+	pc |= PitchClass(alt+8) << 4
+	return pc, nil
 }
 
 // DefaultPitchClass returns the default PitchClass associated with
@@ -76,7 +86,7 @@ func (p PitchClass) String() string {
 	if !p.IsValid() {
 		return "<invalid>"
 	}
-	return fmt.Sprintf("%c%s", p.base, altToString(p.alt))
+	return fmt.Sprintf("%c%s", p.BaseName(), altToString(p.Alt()))
 }
 
 func altToString(alt Pitch) string {
@@ -96,21 +106,26 @@ func altToString(alt Pitch) string {
 	}
 }
 
-// Base returns the base pitch class.
-func (p PitchClass) Base() byte {
-	return p.base
+// BaseName returns the base pitch class.
+func (p PitchClass) BaseName() byte {
+	return "CDEFGAB"[int(p&0x0f)]
+}
+
+func (p PitchClass) Base() int8 {
+	return int8(p & 0xf)
 }
 
 // Alt returns the alteration of this PitchClass.
 func (p PitchClass) Alt() Pitch {
-	return p.alt
+	return Pitch((p&0xf0)>>4) - 8
 }
 
 // IsValid returns true if this pitch class has:
 // - a base in the range [A-G],
 // - an alt in the range [-2;+2].
 func (p PitchClass) IsValid() bool {
-	return p.base >= 'A' && p.base <= 'G' && p.alt >= -2 && p.alt <= 2
+	alt := p.Alt()
+	return p.Base() < 7 && -2 <= alt && alt <= 2
 }
 
 // IsEnharmonic returns true if both PitchClasses map to the same
@@ -121,30 +136,35 @@ func (p PitchClass) IsEnharmonic(o PitchClass) bool {
 
 // Sharp adds one sharp to the PitchClass.
 func (p PitchClass) Sharp() PitchClass {
-	return PitchClass{p.base, p.alt + 1}
+	return p.WithAlt(PitchClassSharp)
 }
 
 // Flat adds one flat to the PitchClass.
 func (p PitchClass) Flat() PitchClass {
-	return PitchClass{p.base, p.alt - 1}
+	return p.WithAlt(PitchClassFlat)
 }
 
 // DoubleSharp adds a double sharp to the PitchClass.
 func (p PitchClass) DoubleSharp() PitchClass {
-	return PitchClass{p.base, p.alt + 2}
+	return p.WithAlt(PitchClassDoubleSharp)
 }
 
 // DoubleFlat adds a double flat to the PitchClass.
 func (p PitchClass) DoubleFlat() PitchClass {
-	return PitchClass{p.base, p.alt - 2}
+	return p.WithAlt(PitchClassDoubleFlat)
+}
+
+// WithAlt applies given alteration to the PitchClass.
+func (p PitchClass) WithAlt(alt PitchClass) PitchClass {
+	return p&0x0f | alt&0xf0
 }
 
 // Pitch returns the pitch of the PitchClass at given octave.
 func (p PitchClass) Pitch(oct int8) Pitch {
-	return (asPitch[int(p.base-'A')] + p.alt).AtOctave(oct)
+	return (asPitch[p.Base()] + p.Alt()).AtOctave(oct)
 }
 
-var asPitch = [7]Pitch{9, 11, 0, 2, 4, 5, 7}
+var asPitch = [7]Pitch{0, 2, 4, 5, 7, 9, 11}
 
 // Pitches iterates over all pitches of the PitchClass within the
 // specified (inclusive) Pitch range.
@@ -157,7 +177,7 @@ func (p PitchClass) Pitches(from, to Pitch) iter.Seq[Pitch] {
 		start += PitchDiffOctave
 	}
 	return func(yield func(Pitch) bool) {
-		for pitch := start; pitch <= to; pitch += 12 {
+		for pitch := start; pitch <= to; pitch += PitchDiffOctave {
 			if !yield(pitch) {
 				return
 			}
@@ -168,30 +188,25 @@ func (p PitchClass) Pitches(from, to Pitch) iter.Seq[Pitch] {
 // Transpose transposes a pitch class by given interval.
 func (p PitchClass) Transpose(i Interval) PitchClass {
 	return pitchClassWithPitch(
-		moveBaseNote(p.base, int(i.ScaleDiff)),
+		wrapBasePitchClass(int8(p.Base())+i.ScaleDiff, 7),
 		p.Pitch(0)+i.PitchDiff,
 	)
 }
-
-func pitchClassWithPitch(b byte, target Pitch) PitchClass {
-	pc := PitchClass{b, 0}
-	pc.alt = target.Normalize() - pc.Pitch(0)
-	if pc.alt < -6 {
-		pc.alt += 12
+func wrapBasePitchClass(value, max int8) PitchClass {
+	value %= max
+	for value < 0 {
+		value += max
 	}
-	if pc.alt > 6 {
-		pc.alt -= 12
-	}
-	return pc
+	return PitchClass(value) | PitchClassNatural
 }
 
-func (p PitchClass) Serialize() uint16 {
-	return uint16(p.base) | uint16(p.alt+64)<<8
-}
-
-func DeserializePitchClass(repr uint16) PitchClass {
-	return PitchClass{
-		base: byte(repr & 0xff),
-		alt:  Pitch((repr & 0xff00) >> 8),
+func pitchClassWithPitch(base PitchClass, target Pitch) PitchClass {
+	alt := target.Normalize() - base.Pitch(0)
+	for alt < -6 {
+		alt += 12
 	}
+	for alt > 6 {
+		alt -= 12
+	}
+	return base.WithAlt(PitchClass(8+alt) << 4)
 }

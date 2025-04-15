@@ -8,8 +8,8 @@ import (
 
 func TestParseNote(t *testing.T) {
 	isError := HasError[Note]
-	isNote := func(base byte, alt Pitch, oct int8) CheckFunc[Note] {
-		return AsCheckFunc(noteEqual)(Note{PitchClass{base, alt}, oct})
+	isNote := func(pc PitchClass, oct int8) CheckFunc[Note] {
+		return AsCheckFunc(noteEqual)(Note{pc, oct})
 	}
 
 	testCases := []struct {
@@ -17,15 +17,15 @@ func TestParseNote(t *testing.T) {
 		Check CheckFunc[Note]
 	}{
 		{"", isError(ErrCannotParseNote)},
-		{"A", isNote('A', 0, 0)},
-		{"B3", isNote('B', 0, 3)},
-		{"G-2", isNote('G', 0, -2)},
-		{"F#", isNote('F', 1, 0)},
-		{"F#4", isNote('F', 1, 4)},
-		{"Fb-1", isNote('F', -1, -1)},
-		{"G𝄫-2", isNote('G', -2, -2)},
-		{"A##+3", isNote('A', 2, 3)},
-		{"ebb", isNote('E', -2, 0)},
+		{"A", isNote(PitchClassA, 0)},
+		{"B3", isNote(PitchClassB, 3)},
+		{"G-2", isNote(PitchClassG, -2)},
+		{"F#", isNote(PitchClassF.Sharp(), 0)},
+		{"F#4", isNote(PitchClassF.Sharp(), 4)},
+		{"Fb-1", isNote(PitchClassF.Flat(), -1)},
+		{"G𝄫-2", isNote(PitchClassG.DoubleFlat(), -2)},
+		{"A##+3", isNote(PitchClassA.DoubleSharp(), 3)},
+		{"ebb", isNote(PitchClassE.DoubleFlat(), 0)},
 	}
 
 	for _, tc := range testCases {

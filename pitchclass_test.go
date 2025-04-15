@@ -46,9 +46,8 @@ func TestNewPitchClass(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		label := PitchClass{tc.Base, tc.Alt}.String()
-		t.Run(label, func(t *testing.T) {
-			have, err := NewPitchClass(tc.Base, tc.Alt)
+		t.Run("", func(t *testing.T) {
+			have, err := NewPitchClassFromChar(tc.Base, tc.Alt)
 			Expect(t, tc.Check(have, err))
 		})
 	}
@@ -92,10 +91,10 @@ func TestPitchClassNaming(t *testing.T) {
 		Expr PitchClass
 		Want PitchClass
 	}{
-		{PitchClassA.Sharp(), PitchClass{'A', 1}},
-		{PitchClassB.Flat(), PitchClass{'B', -1}},
-		{PitchClassC.DoubleSharp(), PitchClass{'C', 2}},
-		{PitchClassD.DoubleFlat(), PitchClass{'D', -2}},
+		{PitchClassA.Sharp(), 5 | PitchClassSharp},
+		{PitchClassB.Flat(), 6 | PitchClassFlat},
+		{PitchClassC.DoubleSharp(), 0 | PitchClassDoubleSharp},
+		{PitchClassD.DoubleFlat(), 1 | PitchClassDoubleFlat},
 	}
 	for _, tc := range testCases {
 		Expect(t,
@@ -106,8 +105,10 @@ func TestPitchClassNaming(t *testing.T) {
 
 func TestPitchClassProperties(t *testing.T) {
 	Expect(t,
-		Equal('D', PitchClassD.Base()),
+		Equal('D', PitchClassD.BaseName()),
+		Equal(1, PitchClassD.Base()),
 		Equal(-1, PitchClassE.Flat().Alt()),
+		Equal(-2, PitchClassB.DoubleFlat().Alt()),
 	)
 }
 
@@ -171,7 +172,8 @@ func TestPitchClassTranspose(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		t.Run("", func(t *testing.T) {
+		label := fmt.Sprintf("%s + (%d,%d)", tc.PitchClass, tc.Interval.ScaleDiff, tc.Interval.PitchDiff)
+		t.Run(label, func(t *testing.T) {
 			Expect(t,
 				pitchClassEqual(
 					tc.Want,
@@ -215,9 +217,31 @@ func TestPitchClassPitches(t *testing.T) {
 	}
 }
 
+func TestPitchClassString(t *testing.T) {
+	testCases := []struct {
+		PitchClass
+		Want string
+	}{
+		{0, "<invalid>"},
+		{PitchClassC, "C"},
+		{PitchClassD.Sharp(), "D" + AltSharp},
+		{PitchClassE.Flat(), "E" + AltFlat},
+		{PitchClassF.DoubleSharp(), "F" + AltDoubleSharp},
+		{PitchClassB.DoubleFlat(), "B" + AltDoubleFlat},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.PitchClass.String(), func(t *testing.T) {
+			Expect(t,
+				Equal(tc.Want, tc.PitchClass.String()),
+			)
+		})
+	}
+}
+
 func pitchClassEqual(want, have PitchClass) error {
 	if want != have {
-		return fmt.Errorf("want %v, have %v", want, have)
+		return fmt.Errorf("want %0x, have %0x", uint8(want), uint8(have))
 	}
 	return nil
 }

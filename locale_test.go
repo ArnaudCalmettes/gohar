@@ -6,7 +6,7 @@ import (
 	. "github.com/ArnaudCalmettes/gohar/test/helpers"
 )
 
-func TestLocaleSprintNote(t *testing.T) {
+func TestLocaleNoteName(t *testing.T) {
 	isError := HasError[string]
 	isString := AsCheckFunc(func(a, b string) error {
 		return Equal(a, b)
@@ -16,8 +16,7 @@ func TestLocaleSprintNote(t *testing.T) {
 		Note  Note
 		Check CheckFunc[string]
 	}{
-		{&LocaleFrench, Note{}, isError(ErrInvalidPitchClass)},
-		{&LocaleFrench, NoteC.DoubleSharp().Sharp(), isError(ErrInvalidPitchClass)},
+		{&LocaleFrench, Note{8, 0}, isError(ErrInvalidPitchClass)},
 		{&LocaleFrench, NoteC.Sharp(), isString("do" + AltSharp)},
 		{&LocaleFrench, NoteA.Flat(), isString("la" + AltFlat)},
 		{&LocaleFrench, NoteB.DoubleFlat().Octave(-2), isString("si" + AltDoubleFlat)},

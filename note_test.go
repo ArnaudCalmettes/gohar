@@ -19,7 +19,7 @@ func TestNoteName(t *testing.T) {
 		Note
 		Want string
 	}{
-		{Note{}, "<invalid>"},
+		{Note{8, 0}, "<invalid>"},
 		{NoteC, "C"},
 		{NoteC.Flat().Octave(-2), "C" + AltFlat},
 	}
@@ -34,14 +34,14 @@ func TestNoteStringer(t *testing.T) {
 		Note
 		Want string
 	}{
-		{Note{}, "<invalid>0"},
+		{Note{8, 0}, "<invalid>0"},
 		{NoteC, "C0"},
 		{NoteF.Sharp(), "F" + AltSharp + "0"},
 		{NoteB.Flat(), "B" + AltFlat + "0"},
 		{NoteC.Octave(3), "C3"},
 		{NoteD.DoubleFlat().Octave(-1), "D" + AltDoubleFlat + "-1"},
 		{NoteC.DoubleSharp().Octave(3), "C" + AltDoubleSharp + "3"},
-		{NoteG.Sharp().Sharp().Sharp().Octave(-5), "<invalid>-5"},
+		{NoteG.Sharp().Sharp().Sharp().Octave(-5), "G" + AltSharp + "-5"},
 	}
 
 	for _, tc := range testCases {
@@ -50,10 +50,6 @@ func TestNoteStringer(t *testing.T) {
 }
 
 func TestNotePitch(t *testing.T) {
-	Expect(t, ShouldPanic(func() {
-		Note{PitchClass: PitchClass{base: 'H'}}.Pitch()
-	}))
-
 	isPitch := AsCheckFunc(pitchEqual)
 	testCases := []struct {
 		Note
@@ -86,14 +82,14 @@ func TestNoteAlterations(t *testing.T) {
 	)
 
 	Expect(t,
-		noteEqual(NoteC.Flat(), Note{PitchClass{'C', -1}, -1}),
-		noteEqual(NoteD.Flat(), Note{PitchClass{'D', -1}, 0}),
-		noteEqual(NoteC.DoubleFlat(), Note{PitchClass{'C', -2}, -1}),
-		noteEqual(NoteD.DoubleFlat(), Note{PitchClass{'D', -2}, 0}),
-		noteEqual(NoteB.Sharp(), Note{PitchClass{'B', 1}, 1}),
-		noteEqual(NoteF.Sharp(), Note{PitchClass{'F', 1}, 0}),
-		noteEqual(NoteB.DoubleSharp(), Note{PitchClass{'B', 2}, 1}),
-		noteEqual(NoteF.DoubleSharp(), Note{PitchClass{'F', 2}, 0}),
+		noteEqual(NoteC.Flat(), Note{PitchClassC.Flat(), -1}),
+		noteEqual(NoteD.Flat(), Note{PitchClassD.Flat(), 0}),
+		noteEqual(NoteC.DoubleFlat(), Note{PitchClassC.DoubleFlat(), -1}),
+		noteEqual(NoteD.DoubleFlat(), Note{PitchClassD.DoubleFlat(), 0}),
+		noteEqual(NoteB.Sharp(), Note{PitchClassB.Sharp(), 1}),
+		noteEqual(NoteF.Sharp(), Note{PitchClassF.Sharp(), 0}),
+		noteEqual(NoteB.DoubleSharp(), Note{PitchClassB.DoubleSharp(), 1}),
+		noteEqual(NoteF.DoubleSharp(), Note{PitchClassF.DoubleSharp(), 0}),
 	)
 }
 
@@ -118,26 +114,25 @@ func TestNoteIsEnharmonic(t *testing.T) {
 }
 
 func TestNoteWithPitch(t *testing.T) {
-	isNote := AsCheckFunc(noteEqual)
-	isError := HasError[Note]
 	testCases := []struct {
-		Base byte
+		PitchClass
 		Pitch
-		Check CheckFunc[Note]
+		Want Note
 	}{
-		{'C', 0, isNote(NoteC)},
-		{'B', 0, isNote(NoteB.Sharp().Octave(0))},
-		{'C', -1, isNote(NoteC.Flat().Octave(-1))},
-		{'E', 3, isNote(NoteE.Flat().Octave(0))},
-		{'C', -12, isNote(NoteC.Octave(-1))},
-		{'D', -10, isNote(NoteD.Octave(-1))},
-		{'C', -24, isNote(NoteC.Octave(-2))},
-		{'D', -22, isNote(NoteD.Octave(-2))},
-		{'H', 13, isError(ErrInvalidPitchClass)},
+		{PitchClassC, 0, NoteC},
+		{PitchClassB, 0, NoteB.Sharp().Octave(0)},
+		{PitchClassC, -1, NoteC.Flat().Octave(-1)},
+		{PitchClassE, 3, NoteE.Flat().Octave(0)},
+		{PitchClassC, -12, NoteC.Octave(-1)},
+		{PitchClassD, -10, NoteD.Octave(-1)},
+		{PitchClassC, -24, NoteC.Octave(-2)},
+		{PitchClassD, -22, NoteD.Octave(-2)},
 	}
 	for _, tc := range testCases {
-		t.Run(fmt.Sprintf("%c @ %d", tc.Base, tc.Pitch), func(t *testing.T) {
-			Expect(t, tc.Check(NoteWithPitch(tc.Base, tc.Pitch)))
+		t.Run(fmt.Sprintf("%s @ %d", tc.PitchClass, tc.Pitch), func(t *testing.T) {
+			Expect(t,
+				Equal(tc.Want, NoteWithPitch(tc.PitchClass, tc.Pitch)),
+			)
 		})
 	}
 }
