@@ -43,7 +43,7 @@ func TestScalePatternPitches(t *testing.T) {
 }
 
 func BenchmarkScalePatternPitches(b *testing.B) {
-	for b.Loop() {
+	for i := 0; i < b.N; i++ {
 		for p := range ScalePatternMajor.Pitches(0) {
 			if p < 0 {
 				b.Fail()

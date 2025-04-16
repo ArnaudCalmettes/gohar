@@ -322,7 +322,7 @@ func BenchmarkPitchesWithClasses(b *testing.B) {
 	}
 	for _, bc := range benchCases {
 		b.Run(bc.Name, func(b *testing.B) {
-			for b.Loop() {
+			for i := 0; i < b.N; i++ {
 				for _, pc := range PitchesWithClasses(-100, 100, bc.PitchClasses) {
 					if !pc.IsValid() {
 						b.Fatal(pc)
