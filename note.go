@@ -107,7 +107,7 @@ func (n Note) Pitch() Pitch {
 // octaves and alterations needed so that the note has
 // given pitch.
 func NoteWithPitch(pc PitchClass, pitch Pitch) Note {
-	return Note{pitchClassWithPitch(pc, pitch), pitch.GetOctave()}
+	return Note{pc.ClipToPitch(pitch), pitch.GetOctave()}
 }
 
 var closestNote = [12]Note{

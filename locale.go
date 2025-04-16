@@ -56,7 +56,7 @@ func (loc *Locale) ScalePatternName(pattern ScalePattern) (string, error) {
 
 // ScaleName returns the Scale's name in the current locale.
 func (loc *Locale) ScaleName(scale Scale) (string, error) {
-	note, noteErr := loc.NoteName(scale.Root.PitchClass)
+	note, noteErr := loc.NoteName(scale.Root)
 	name, nameErr := loc.ScalePatternName(scale.Pattern)
 	return note + " " + name, errors.Join(noteErr, nameErr)
 }

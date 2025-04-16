@@ -3,7 +3,6 @@ package gohar
 import (
 	"iter"
 	"math/bits"
-	"slices"
 )
 
 // A Scale pattern is represented bitwise as a 12-bit number that maps an octave.
@@ -35,7 +34,7 @@ func (s ScalePattern) CountNotes() int {
 // Pitches iterates over the pitches of the scale pattern relative to given root.
 func (s ScalePattern) Pitches(root Pitch) iter.Seq[Pitch] {
 	return func(yield func(Pitch) bool) {
-		for i := range 12 {
+		for i := 0; i < 12; i++ {
 			if (s & (1 << i)) != 0 {
 				if !yield(Pitch(i) + root) {
 					return
@@ -99,100 +98,6 @@ func (s ScalePattern) PitchClasses(root PitchClass, degrees []int8) iter.Seq[Pit
 }
 
 var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-
-// AsPitches returns the scale pattern as a new slice of pitches relative
-// to given root.
-//
-// This method dynamically allocates a new slice of pitches.
-// See [ScalePattern.Pitches] for one that doesn't.
-func (s ScalePattern) AsPitches(root Pitch) []Pitch {
-	return slices.Collect(s.Pitches(root))
-}
-
-// IntoPitches converts the scale pattern into pitches relative to given root
-// and writes them into the target slice.
-//
-// ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
-//
-// Deprecated. Iterate over [ScalePatern.Pitches] instead.
-func (s ScalePattern) IntoPitches(target []Pitch, root Pitch) ([]Pitch, error) {
-	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
-		return nil, err
-	}
-	target = target[:0]
-	for p := range s.Pitches(root) {
-		target = append(target, p)
-	}
-	return target, nil
-}
-
-// AsIntervals converts the scale pattern into intervals relative to the tonic.
-// If degrees == nil, the scale is assumed to have stepwise motion, which is suitable
-// for most common scales in western music (heptatonic scales).
-// Otherwise, degrees describe the absolute pitch class intervals to use.
-//
-// Eg. for a major pentatonic scale (degrees are the same for minor):
-//
-//	// notes:          C        D    E    G    A
-//	// intervals:      unisson, 2nd, 3rd, 5th, 6th
-//	// degrees: []int8{1,       2,   3,   5,   6}
-//
-//	majorPentatonic := ScalePattern(0b1010010101)
-//	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
-//
-// This method dynamically allocates a new slice of intervals.
-// See [ScalePattern.IntoIntervals] if you need control over memory allocation.
-func (s ScalePattern) AsIntervals(degrees []int8) []Interval {
-	return slices.Collect(s.Intervals(degrees))
-}
-
-// IntoIntervals converts the scale pattern into intervals relative to the tonic
-// and writes them into the target slice.
-//
-// ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
-func (s ScalePattern) IntoIntervals(target []Interval, degrees []int8) ([]Interval, error) {
-	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
-		return nil, err
-	}
-	if degrees == nil {
-		degrees = range12[:s.CountNotes()]
-	}
-	if len(degrees) != s.CountNotes() {
-		return nil, wrapErrorf(ErrInvalidDegree,
-			"expected []int8 with length %d: got %d", s.CountNotes(), len(degrees),
-		)
-	}
-	target = target[:0]
-	for interval := range s.Intervals(degrees) {
-		target = append(target, interval)
-	}
-	return target, nil
-}
-
-// AsNotes applies the scale pattern to given root note.
-// degrees can be nil and has the same meaning as in [ScalePattern.AsIntervals].
-//
-// This method dynamically allocates a slice of notes.
-// See [ScalePattern.IntoNotes] if you need control over memory allocation.
-func (s ScalePattern) AsNotes(root Note, degrees []int8) ([]Note, error) {
-	return s.IntoNotes(make([]Note, 0, s.CountNotes()), root, degrees)
-}
-
-// IntoNotes applies the scale pattern to given root note and writes the results in the
-// target Note slice.
-//
-// ErrBufferOverflow is returned if the target slice doesn't have enough capacity.
-func (s ScalePattern) IntoNotes(target []Note, root Note, degrees []int8) ([]Note, error) {
-	if err := checkOutputBuffer(target, s.CountNotes()); err != nil {
-		return nil, err
-	}
-	target = target[:0]
-	intervals, err := s.IntoIntervals(make([]Interval, 0, 12), degrees)
-	for _, inter := range intervals {
-		target = append(target, root.Transpose(inter))
-	}
-	return target, err
-}
 
 // Mode computes the n-th mode of the ScalePattern.
 //

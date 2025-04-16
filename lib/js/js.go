@@ -6,6 +6,7 @@ package js
 
 import (
 	"fmt"
+	"slices"
 	"syscall/js"
 
 	"github.com/ArnaudCalmettes/gohar"
@@ -23,7 +24,6 @@ func ImportGoharBindings() {
 		"notePitch":           js.FuncOf(NotePitch),
 		"scalePatternName":    js.FuncOf(ScalePatternName),
 		"scalePatternPitches": js.FuncOf(ScalePatternPitches),
-		"scaleNotesFromPitch": js.FuncOf(ScaleNotesFromPitch),
 		"scalePatterns": js.ValueOf([]any{
 			int(gohar.ScalePatternMajor),
 			int(gohar.ScalePatternMelodicMinor),
@@ -115,27 +115,6 @@ func ScalePatternPitches(_ js.Value, args []js.Value) any {
 	if len(args) >= 2 {
 		root = gohar.Pitch(args[1].Int())
 	}
-	pitches, err := pattern.IntoPitches(make([]gohar.Pitch, 0, 12), root)
-	if err != nil {
-		panic(fmt.Errorf("scalePatternPitches: %w", err))
-	}
+	pitches := slices.Collect(pattern.Pitches(root))
 	return convert.PitchSliceToJS(pitches)
-}
-
-// ScaleNotesFromPitch returns notes of the scale.
-//
-// Typescript signature:
-//
-// function scaleNotesFromPitch(pitch: number, pattern: number) => number[]
-func ScaleNotesFromPitch(_ js.Value, args []js.Value) any {
-	if len(args) != 2 {
-		panic(fmt.Errorf("scaleNotesFromPitch: expected 2 args, got %d", len(args)))
-	}
-	pitch := gohar.Pitch(args[0].Int())
-	pattern := convert.ScalePatternFromJS(args[1])
-	notes, err := pattern.IntoNotes(make([]gohar.Note, 0, 12), gohar.FindClosestNote(pitch), nil)
-	if err != nil {
-		panic(err)
-	}
-	return convert.NoteSliceToJS(notes)
 }

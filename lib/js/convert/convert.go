@@ -10,7 +10,7 @@ import (
 
 func ScaleToJS(scale Scale) any {
 	return js.ValueOf(map[string]any{
-		"root":    NoteToJS(scale.Root),
+		"root":    PitchClassToJS(scale.Root),
 		"pattern": ScalePatternToJS(scale.Pattern),
 	})
 }

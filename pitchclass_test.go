@@ -222,9 +222,113 @@ func TestPitchClassString(t *testing.T) {
 	}
 }
 
+func TestPitchesWithClasses(t *testing.T) {
+	type pair struct {
+		Pitch
+		PitchClass
+	}
+	testCases := []struct {
+		From Pitch
+		To   Pitch
+		PCS  []PitchClass
+		Want []pair
+	}{
+		{
+			0, 12, nil,
+			[]pair{},
+		},
+		{
+			0, 12, []PitchClass{PitchClassC},
+			[]pair{
+				{0, PitchClassC},
+				{12, PitchClassC},
+			},
+		},
+		{
+			0, 24, []PitchClass{PitchClassE.Flat(), PitchClassA},
+			[]pair{
+				{3, PitchClassE.Flat()},
+				{9, PitchClassA},
+				{15, PitchClassE.Flat()},
+				{21, PitchClassA},
+			},
+		},
+	}
+	for _, tc := range testCases {
+		t.Run("", func(t *testing.T) {
+			result := make([]pair, 0, 64)
+			for p, pc := range PitchesWithClasses(tc.From, tc.To, tc.PCS) {
+				result = append(result, pair{p, pc})
+			}
+			Expect(t,
+				Equal(tc.Want, result),
+			)
+		})
+	}
+}
+
+func BenchmarkPitchClassPitches(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		count := 0
+		for range PitchClassC.Pitches(-120, 120) {
+			count++
+		}
+		if count == 0 {
+			b.Fatal()
+		}
+	}
+}
+
 func pitchClassEqual(want, have PitchClass) error {
 	if want != have {
 		return fmt.Errorf("want %0x, have %0x", uint8(want), uint8(have))
 	}
 	return nil
+}
+
+func BenchmarkPitchesWithClasses(b *testing.B) {
+	benchCases := []*struct {
+		Name         string
+		PitchClasses []PitchClass
+	}{
+		{"default", nil},
+		{"chromatic", defaultPitchClasses[:12]},
+		{
+			"heptatonic",
+			[]PitchClass{
+				PitchClassC,
+				PitchClassD,
+				PitchClassE,
+				PitchClassF,
+				PitchClassG,
+				PitchClassA,
+				PitchClassB,
+			},
+		},
+		{
+			"pentatonic",
+			[]PitchClass{
+				PitchClassC,
+				PitchClassD,
+				PitchClassE,
+				PitchClassG,
+				PitchClassA,
+			},
+		},
+		{"tetrad", []PitchClass{PitchClassC, PitchClassE, PitchClassG, PitchClassB}},
+		{"triad", []PitchClass{PitchClassC, PitchClassE, PitchClassG}},
+		{"interval", []PitchClass{PitchClassC, PitchClassF.Sharp()}},
+		{"note", []PitchClass{PitchClassC}},
+	}
+	for _, bc := range benchCases {
+		b.Run(bc.Name, func(b *testing.B) {
+			for b.Loop() {
+				for _, pc := range PitchesWithClasses(-100, 100, bc.PitchClasses) {
+					if !pc.IsValid() {
+						b.Fatal(pc)
+					}
+				}
+			}
+		})
+	}
 }

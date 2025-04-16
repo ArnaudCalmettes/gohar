@@ -73,10 +73,10 @@ func NewPitchClassFromChar(char byte, alt Pitch) (PitchClass, error) {
 // given pitch. On pitches that do not map to a base pitch class ("black keys"),
 // it picks the base pitch class immediately above and flattens it.
 func DefaultPitchClass(p Pitch) PitchClass {
-	return defaultPitchClass[p.Normalize()]
+	return defaultPitchClasses[p.Normalize()]
 }
 
-var defaultPitchClass = [12]PitchClass{
+var defaultPitchClasses = [12]PitchClass{
 	PitchClassC,
 	PitchClassD.Flat(),
 	PitchClassD,
@@ -181,14 +181,14 @@ var asPitch = [7]Pitch{0, 2, 4, 5, 7, 9, 11}
 // Pitches iterates over all pitches of this class in ascending order
 // within the specified range.
 func (p PitchClass) Pitches(from, to Pitch) iter.Seq[Pitch] {
-	if from > to {
-		return func(func(Pitch) bool) {}
-	}
-	start := p.Pitch(from.GetOctave())
-	for start < from {
-		start += PitchDiffOctave
-	}
 	return func(yield func(Pitch) bool) {
+		if from > to {
+			return
+		}
+		start := p.Pitch(from.GetOctave())
+		for start < from {
+			start += PitchDiffOctave
+		}
 		for pitch := start; pitch <= to; pitch += PitchDiffOctave {
 			if !yield(pitch) {
 				return
@@ -224,13 +224,28 @@ func (p PitchClass) ClipToPitch(target Pitch) PitchClass {
 	return p.WithAlt(alt)
 }
 
-func pitchClassWithPitch(base PitchClass, target Pitch) PitchClass {
-	alt := target.Normalize() - base.Pitch(0)
-	for alt < -6 {
-		alt += 12
+func PitchesWithClasses(from, to Pitch, pcs []PitchClass) iter.Seq2[Pitch, PitchClass] {
+	if len(pcs) == 0 {
+		return func(yield func(Pitch, PitchClass) bool) {}
 	}
-	for alt > 6 {
-		alt -= 12
+	return func(yield func(Pitch, PitchClass) bool) {
+		pitch := from - 1
+		oct := pitch.GetOctave()
+		for pitch < to {
+			for _, pc := range pcs {
+				p := pc.Pitch(oct)
+				for p <= pitch {
+					oct++
+					p += 12
+				}
+				if p > to {
+					return
+				}
+				if !yield(p, pc) {
+					return
+				}
+				pitch = p
+			}
+		}
 	}
-	return base.WithAlt(alt)
 }
