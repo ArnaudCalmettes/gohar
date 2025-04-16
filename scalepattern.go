@@ -45,6 +45,20 @@ func (s ScalePattern) Pitches(root Pitch) iter.Seq[Pitch] {
 }
 
 // Intervals converts the scale pattern into intervals relative to the tonic.
+// This method assumes that the scale is stepwise.
+func (s ScalePattern) Intervals() iter.Seq[Interval] {
+	return func(yield func(Interval) bool) {
+		d := 0
+		for p := range s.Pitches(0) {
+			if !yield(Interval{int8(d), p}) {
+				return
+			}
+			d++
+		}
+	}
+}
+
+// IntervalsWithDegrees converts the scale pattern into intervals relative to the tonic.
 // If degrees == nil, the scale is assumed to have stepwise motion, which is suitable
 // for most common scales in western music (heptatonic scales).
 // Otherwise, degrees describe the absolute pitch class intervals to use.
@@ -57,27 +71,14 @@ func (s ScalePattern) Pitches(root Pitch) iter.Seq[Pitch] {
 //
 //	majorPentatonic := ScalePattern(0b1010010101)
 //	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
-func (s ScalePattern) Intervals(degrees []int8) iter.Seq[Interval] {
-	if degrees == nil {
-		degrees = range12[:s.CountNotes()]
-	}
-	if len(degrees) != s.CountNotes() {
-		return nil
-	}
+func (s ScalePattern) IntervalsWithDegrees(degrees []int8) iter.Seq[Interval] {
 	return func(yield func(Interval) bool) {
-		for i, p := range enumerate(s.Pitches(0)) {
-			if !yield(Interval{degrees[i] - 1, p}) {
-				return
-			}
+		if len(degrees) != s.CountNotes() {
+			return
 		}
-	}
-}
-
-func enumerate[T any](s iter.Seq[T]) iter.Seq2[int, T] {
-	return func(yield func(int, T) bool) {
 		i := 0
-		for item := range s {
-			if !yield(i, item) {
+		for p := range s.Pitches(0) {
+			if !yield(Interval{degrees[i] - 1, p}) {
 				return
 			}
 			i++
@@ -86,10 +87,10 @@ func enumerate[T any](s iter.Seq[T]) iter.Seq2[int, T] {
 }
 
 // PitchClasses converts the scale pattern into PitchClasses starting with given root.
-// degrees have the same meaning as in [ScalePattern.AsIntervals].
-func (s ScalePattern) PitchClasses(root PitchClass, degrees []int8) iter.Seq[PitchClass] {
+// This method assumes that the scale is stepwise.
+func (s ScalePattern) PitchClasses(root PitchClass) iter.Seq[PitchClass] {
 	return func(yield func(PitchClass) bool) {
-		for i := range s.Intervals(degrees) {
+		for i := range s.Intervals() {
 			if !yield(root.Transpose(i)) {
 				return
 			}
@@ -97,7 +98,17 @@ func (s ScalePattern) PitchClasses(root PitchClass, degrees []int8) iter.Seq[Pit
 	}
 }
 
-var range12 = []int8{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+// PitchClassesWithDegrees converts the scale pattern into PitchClasses starting with given root.
+// degrees have the same meaning as in [ScalePattern.AsIntervals].
+func (s ScalePattern) PitchClassesWithDegrees(root PitchClass, degrees []int8) iter.Seq[PitchClass] {
+	return func(yield func(PitchClass) bool) {
+		for i := range s.IntervalsWithDegrees(degrees) {
+			if !yield(root.Transpose(i)) {
+				return
+			}
+		}
+	}
+}
 
 // Mode computes the n-th mode of the ScalePattern.
 //

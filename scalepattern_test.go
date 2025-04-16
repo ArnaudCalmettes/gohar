@@ -60,7 +60,7 @@ func TestScalePatternIntervals(t *testing.T) {
 					IntUnisson, IntMajorSecond, IntMajorThird, IntPerfectFourth,
 					IntPerfectFifth, IntMajorSixth, IntMajorSeventh,
 				},
-				slices.Collect(ScalePatternMajor.Intervals(nil)),
+				slices.Collect(ScalePatternMajor.Intervals()),
 			),
 		)
 	})
@@ -71,21 +71,41 @@ func TestScalePatternIntervals(t *testing.T) {
 					IntUnisson, IntMajorSecond, IntMajorThird,
 					IntPerfectFifth, IntMajorSixth,
 				},
-				slices.Collect(ScalePattern(0b1010010101).Intervals([]int8{1, 2, 3, 5, 6})),
+				slices.Collect(ScalePattern(0b1010010101).IntervalsWithDegrees([]int8{1, 2, 3, 5, 6})),
 			),
 		)
 	})
 }
 
+func BenchmarkScalePatternIntervals(b *testing.B) {
+	for b.Loop() {
+		for interval := range ScalePatternMajor.Intervals() {
+			if interval.ScaleDiff < 0 {
+				b.Fatal()
+			}
+		}
+	}
+}
+
+func BenchmarkScalePatternIntervalsWithDegrees(b *testing.B) {
+	for b.Loop() {
+		for interval := range ScalePatternMajor.IntervalsWithDegrees([]int8{1, 2, 3, 4, 5, 6, 7}) {
+			if interval.ScaleDiff < 0 {
+				b.Fatal()
+			}
+		}
+	}
+
+}
+
 func TestScalePatternPitchClasses(t *testing.T) {
 	testCases := []struct {
 		ScalePattern
-		Root    PitchClass
-		Degrees []int8
-		Want    []PitchClass
+		Root PitchClass
+		Want []PitchClass
 	}{
 		{
-			ScalePatternMajor, PitchClassC, nil,
+			ScalePatternMajor, PitchClassC,
 			[]PitchClass{
 				PitchClassC,
 				PitchClassD,
@@ -97,7 +117,7 @@ func TestScalePatternPitchClasses(t *testing.T) {
 			},
 		},
 		{
-			ScalePatternMelodicMinor, PitchClassG, nil,
+			ScalePatternMelodicMinor, PitchClassG,
 			[]PitchClass{
 				PitchClassG,
 				PitchClassA,
@@ -115,13 +135,22 @@ func TestScalePatternPitchClasses(t *testing.T) {
 				Equal(
 					tc.Want,
 					slices.Collect(
-						tc.ScalePattern.PitchClasses(tc.Root, tc.Degrees),
+						tc.ScalePattern.PitchClasses(tc.Root),
 					),
 				),
 			)
 		})
 	}
+}
 
+func BenchmarkScalePatternPitchClasses(b *testing.B) {
+	for b.Loop() {
+		for pc := range ScalePatternMajor.PitchClasses(PitchClassC) {
+			if !pc.IsValid() {
+				b.Fatal()
+			}
+		}
+	}
 }
 
 func TestScalePatternMode(t *testing.T) {

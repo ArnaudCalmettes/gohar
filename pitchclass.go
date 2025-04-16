@@ -225,10 +225,10 @@ func (p PitchClass) ClipToPitch(target Pitch) PitchClass {
 }
 
 func PitchesWithClasses(from, to Pitch, pcs []PitchClass) iter.Seq2[Pitch, PitchClass] {
-	if len(pcs) == 0 {
-		return func(yield func(Pitch, PitchClass) bool) {}
-	}
 	return func(yield func(Pitch, PitchClass) bool) {
+		if len(pcs) == 0 {
+			return
+		}
 		pitch := from - 1
 		oct := pitch.GetOctave()
 		for pitch < to {

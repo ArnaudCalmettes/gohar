@@ -266,11 +266,10 @@ func TestPitchesWithClasses(t *testing.T) {
 		})
 	}
 }
-
 func BenchmarkPitchClassPitches(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		count := 0
-		for range PitchClassC.Pitches(-120, 120) {
+		for range PitchClassC.Pitches(-100, 100) {
 			count++
 		}
 		if count == 0 {
