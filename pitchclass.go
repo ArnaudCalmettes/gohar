@@ -224,6 +224,8 @@ func (p PitchClass) ClipToPitch(target Pitch) PitchClass {
 	return p.WithAlt(alt)
 }
 
+// PitchesWithClasses iterates over all pitches in the range [from, to] that belong to
+// given pitchclasses, in ascending order.
 func PitchesWithClasses(from, to Pitch, pcs []PitchClass) iter.Seq2[Pitch, PitchClass] {
 	return func(yield func(Pitch, PitchClass) bool) {
 		if len(pcs) == 0 {
