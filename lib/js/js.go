@@ -10,6 +10,7 @@ import (
 	"syscall/js"
 
 	"github.com/ArnaudCalmettes/gohar"
+	"github.com/ArnaudCalmettes/gohar/lib/abc"
 	"github.com/ArnaudCalmettes/gohar/lib/js/convert"
 )
 
@@ -24,6 +25,7 @@ func ImportGoharBindings() {
 		"notePitch":           js.FuncOf(NotePitch),
 		"scalePatternName":    js.FuncOf(ScalePatternName),
 		"scalePatternPitches": js.FuncOf(ScalePatternPitches),
+		"scaleToABC":          js.FuncOf(ScaleToABC),
 		"scalePatterns": js.ValueOf([]any{
 			int(gohar.ScalePatternMajor),
 			int(gohar.ScalePatternMelodicMinor),
@@ -117,4 +119,14 @@ func ScalePatternPitches(_ js.Value, args []js.Value) any {
 	}
 	pitches := slices.Collect(pattern.Pitches(root))
 	return convert.PitchSliceToJS(pitches)
+}
+
+// ScaleToABC creates an ABC representation of a scale.
+func ScaleToABC(_ js.Value, args []js.Value) any {
+	if len(args) != 2 {
+		panic(fmt.Errorf("scaleToABC, expected root and pattern, got %d", len(args)))
+	}
+	root := gohar.DefaultPitchClass(gohar.Pitch(args[0].Int()))
+	pattern := convert.ScalePatternFromJS(args[1])
+	return js.ValueOf(abc.ScaleToABC(root, pattern))
 }
