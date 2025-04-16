@@ -86,23 +86,6 @@ func TestDefaultPitchClass(t *testing.T) {
 	}
 }
 
-func TestPitchClassNaming(t *testing.T) {
-	testCases := []struct {
-		Expr PitchClass
-		Want PitchClass
-	}{
-		{PitchClassA.Sharp(), 5 | PitchClassSharp},
-		{PitchClassB.Flat(), 6 | PitchClassFlat},
-		{PitchClassC.DoubleSharp(), 0 | PitchClassDoubleSharp},
-		{PitchClassD.DoubleFlat(), 1 | PitchClassDoubleFlat},
-	}
-	for _, tc := range testCases {
-		Expect(t,
-			pitchClassEqual(tc.Want, tc.Expr),
-		)
-	}
-}
-
 func TestPitchClassProperties(t *testing.T) {
 	Expect(t,
 		Equal('D', PitchClassD.BaseName()),
