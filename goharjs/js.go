@@ -2,7 +2,7 @@
 
 //go:build js && wasm
 
-package js
+package goharjs
 
 import (
 	"fmt"
@@ -10,14 +10,13 @@ import (
 	"syscall/js"
 
 	"github.com/ArnaudCalmettes/gohar"
-	"github.com/ArnaudCalmettes/gohar/lib/abc"
-	"github.com/ArnaudCalmettes/gohar/lib/js/convert"
+	"github.com/ArnaudCalmettes/gohar/abc"
 )
 
-// ImportGoharBindings imports bindings to the current javascript environment
+// ImportBindings imports bindings to the current javascript environment
 // under the "gohar" namespace. This function is intended to be run at
 // initialization time from within a wasm binary.
-func ImportGoharBindings() {
+func ImportBindings() {
 	js.Global().Set("gohar", js.ValueOf(map[string]any{
 		"isLoaded":            js.ValueOf(true),
 		"setLocale":           js.FuncOf(SetLocale),
@@ -36,8 +35,8 @@ func ImportGoharBindings() {
 	}))
 }
 
-// SetLocale sets gohar's locale.
-// Supported locales: "en", "fr".
+// SetLocale sets the locale/language for music notation and terminology.
+// Supported values: "en", "fr".
 //
 // TypeScript signature:
 //
@@ -64,7 +63,7 @@ func NoteName(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
 	}
-	note := convert.PitchClassFromJS(args[0])
+	note := PitchClassFromJS(args[0])
 	result, err := gohar.NoteName(note)
 	if err != nil {
 		panic(fmt.Errorf("noteName: %w", err))
@@ -81,7 +80,7 @@ func NotePitch(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("noteName: expected 1 arg, got %d", len(args)))
 	}
-	note := convert.NoteFromJS(args[0])
+	note := NoteFromJS(args[0])
 	return js.ValueOf(int(note.Pitch()))
 }
 
@@ -94,7 +93,7 @@ func ScalePatternName(_ js.Value, args []js.Value) any {
 	if len(args) != 1 {
 		panic(fmt.Errorf("scalePatternName: expected 1 arg, got %d", len(args)))
 	}
-	pattern := convert.ScalePatternFromJS(args[0])
+	pattern := ScalePatternFromJS(args[0])
 	result, err := gohar.ScalePatternName(pattern)
 	if err != nil {
 		panic(fmt.Errorf("scalePatternName: %w", err))
@@ -112,13 +111,13 @@ func ScalePatternPitches(_ js.Value, args []js.Value) any {
 	if len(args) < 1 {
 		panic(fmt.Errorf("scalePatternPitches: expected at least 1 arg, got %d", len(args)))
 	}
-	pattern := convert.ScalePatternFromJS(args[0])
+	pattern := ScalePatternFromJS(args[0])
 	var root gohar.Pitch
 	if len(args) >= 2 {
 		root = gohar.Pitch(args[1].Int())
 	}
 	pitches := slices.Collect(pattern.Pitches(root))
-	return convert.PitchSliceToJS(pitches)
+	return PitchSliceToJS(pitches)
 }
 
 // ScaleToABC creates an ABC representation of a scale.
@@ -127,6 +126,6 @@ func ScaleToABC(_ js.Value, args []js.Value) any {
 		panic(fmt.Errorf("scaleToABC, expected root and pattern, got %d", len(args)))
 	}
 	root := gohar.DefaultPitchClass(gohar.Pitch(args[0].Int()))
-	pattern := convert.ScalePatternFromJS(args[1])
+	pattern := ScalePatternFromJS(args[1])
 	return js.ValueOf(abc.ScaleToABC(root, pattern))
 }
