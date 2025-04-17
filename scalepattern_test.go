@@ -9,6 +9,15 @@ import (
 )
 
 func TestScalePatternPitches(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		for pitch := range ScalePatternMajor.Pitches(0) {
+			if pitch != 0 {
+				break
+			}
+		}
+		// nothing blew up: success! \o/
+	})
+
 	testCases := []struct {
 		Name string
 		ScalePattern
@@ -53,6 +62,15 @@ func BenchmarkScalePatternPitches(b *testing.B) {
 }
 
 func TestScalePatternIntervals(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		for i := range ScalePatternDoubleHarmonicMajor.Intervals() {
+			if i != IntUnisson {
+				break
+			}
+		}
+		// nothing blew up...
+	})
+
 	t.Run("major scale", func(t *testing.T) {
 		Expect(t,
 			Equal(
@@ -87,6 +105,43 @@ func BenchmarkScalePatternIntervals(b *testing.B) {
 	}
 }
 
+func TestScalePatternIntervalsWithDegrees(t *testing.T) {
+	pentatonic := ScalePattern(0b001010010101)
+	t.Run("nil", func(t *testing.T) {
+		for range pentatonic.IntervalsWithDegrees(nil) {
+			t.Fatal("this line shouldn't be reached")
+		}
+	})
+
+	t.Run("invalid degrees", func(t *testing.T) {
+		for range pentatonic.IntervalsWithDegrees([]int8{1, 2, 3, 4, 5, 6, 7}) {
+			t.Fatal("this line shouldn't be reached")
+		}
+	})
+
+	t.Run("nominal", func(t *testing.T) {
+		have := slices.Collect(pentatonic.IntervalsWithDegrees([]int8{1, 2, 3, 5, 6}))
+		Expect(t,
+			Equal(
+				[]Interval{
+					IntUnisson, IntMajorSecond, IntMajorThird,
+					IntPerfectFifth, IntMajorSixth,
+				},
+				have,
+			),
+		)
+	})
+
+	t.Run("break", func(t *testing.T) {
+		for i := range pentatonic.IntervalsWithDegrees([]int8{1, 2, 3, 5, 6}) {
+			if i != IntUnisson {
+				break
+			}
+		}
+		// ... and nothings's broken. That's good news!
+	})
+}
+
 func BenchmarkScalePatternIntervalsWithDegrees(b *testing.B) {
 	for b.Loop() {
 		for interval := range ScalePatternMajor.IntervalsWithDegrees([]int8{1, 2, 3, 4, 5, 6, 7}) {
@@ -99,33 +154,44 @@ func BenchmarkScalePatternIntervalsWithDegrees(b *testing.B) {
 }
 
 func TestScalePatternPitchClasses(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for pc := range ScalePatternMajor.PitchClasses(PitchClassF) {
+			if pc != PitchClassF {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
+
 	testCases := []struct {
 		ScalePattern
-		Root PitchClass
-		Want []PitchClass
+		Root Note
+		Want []Note
 	}{
 		{
-			ScalePatternMajor, PitchClassC,
-			[]PitchClass{
-				PitchClassC,
-				PitchClassD,
-				PitchClassE,
-				PitchClassF,
-				PitchClassG,
-				PitchClassA,
-				PitchClassB,
+			ScalePatternMajor, NoteC,
+			[]Note{
+				NoteC,
+				NoteD,
+				NoteE,
+				NoteF,
+				NoteG,
+				NoteA,
+				NoteB,
 			},
 		},
 		{
-			ScalePatternMelodicMinor, PitchClassG,
-			[]PitchClass{
-				PitchClassG,
-				PitchClassA,
-				PitchClassB.Flat(),
-				PitchClassC,
-				PitchClassD,
-				PitchClassE,
-				PitchClassF.Sharp(),
+			ScalePatternMelodicMinor, NoteG,
+			[]Note{
+				NoteG,
+				NoteA,
+				NoteB.Flat(),
+				NoteC.Octave(1),
+				NoteD.Octave(1),
+				NoteE.Octave(1),
+				NoteF.Sharp().Octave(1),
 			},
 		},
 	}
@@ -135,7 +201,7 @@ func TestScalePatternPitchClasses(t *testing.T) {
 				Equal(
 					tc.Want,
 					slices.Collect(
-						tc.ScalePattern.PitchClasses(tc.Root),
+						tc.ScalePattern.Notes(tc.Root),
 					),
 				),
 			)
@@ -151,6 +217,56 @@ func BenchmarkScalePatternPitchClasses(b *testing.B) {
 			}
 		}
 	}
+}
+
+func TestScalePatternPitchClassesWithDegrees(t *testing.T) {
+	pentatonic := ScalePattern(0b001010010101)
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for pc := range pentatonic.PitchClassesWithDegrees(PitchClassC, []int8{1, 2, 3, 5, 6}) {
+			if pc != PitchClassC {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
+}
+
+func TestScalePatternNotes(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for pc := range ScalePatternMajor.Notes(NoteF) {
+			if pc != NoteF {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
+}
+func BenchmarkScalePatternNotes(b *testing.B) {
+	for b.Loop() {
+		for pc := range ScalePatternMajor.Notes(NoteC) {
+			if !pc.IsValid() {
+				b.Fatal()
+			}
+		}
+	}
+}
+
+func TestScalePatternNotesWithDegrees(t *testing.T) {
+	pentatonic := ScalePattern(0b001010010101)
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for pc := range pentatonic.NotesWithDegrees(NoteC, []int8{1, 2, 3, 5, 6}) {
+			if pc != NoteC {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
 }
 
 func TestScalePatternMode(t *testing.T) {

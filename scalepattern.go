@@ -70,7 +70,7 @@ func (s ScalePattern) Intervals() iter.Seq[Interval] {
 //	// degrees: []int8{1,       2,   3,   5,   6}
 //
 //	majorPentatonic := ScalePattern(0b1010010101)
-//	majorPentatonic.AsIntervals([]int8{1,2,3,5,6})
+//	majorPentatonic.IntervalsWithDegrees([]int8{1,2,3,5,6})
 func (s ScalePattern) IntervalsWithDegrees(degrees []int8) iter.Seq[Interval] {
 	return func(yield func(Interval) bool) {
 		if len(degrees) != s.CountNotes() {
@@ -99,9 +99,32 @@ func (s ScalePattern) PitchClasses(root PitchClass) iter.Seq[PitchClass] {
 }
 
 // PitchClassesWithDegrees converts the scale pattern into PitchClasses starting with given root.
-// degrees have the same meaning as in [ScalePattern.AsIntervals].
+// degrees have the same meaning as in [ScalePattern.IntervalsWithDegrees].
 func (s ScalePattern) PitchClassesWithDegrees(root PitchClass, degrees []int8) iter.Seq[PitchClass] {
 	return func(yield func(PitchClass) bool) {
+		for i := range s.IntervalsWithDegrees(degrees) {
+			if !yield(root.Transpose(i)) {
+				return
+			}
+		}
+	}
+}
+
+// Notes converts the scale pattern into notes starting on given root.
+func (s ScalePattern) Notes(root Note) iter.Seq[Note] {
+	return func(yield func(Note) bool) {
+		for i := range s.Intervals() {
+			if !yield(root.Transpose(i)) {
+				return
+			}
+		}
+	}
+}
+
+// NotesWithDegrees converts the scale pattern into notes starting on given root.
+// degrees have the same meaning as in [ScalePattern.IntervalsWithDegrees].
+func (s ScalePattern) NotesWithDegrees(root Note, degrees []int8) iter.Seq[Note] {
+	return func(yield func(Note) bool) {
 		for i := range s.IntervalsWithDegrees(degrees) {
 			if !yield(root.Transpose(i)) {
 				return
