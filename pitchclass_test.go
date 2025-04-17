@@ -168,6 +168,16 @@ func TestPitchClassTranspose(t *testing.T) {
 }
 
 func TestPitchClassPitches(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for p := range PitchClassC.Pitches(-12, 12) {
+			if p != -12 {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
 	testCases := []struct {
 		PitchClass
 		From Pitch
@@ -223,6 +233,17 @@ func TestPitchClassString(t *testing.T) {
 }
 
 func TestPitchesWithClasses(t *testing.T) {
+	t.Run("break", func(t *testing.T) {
+		count := 0
+		for p := range PitchesWithClasses(-12, 12, []PitchClass{PitchClassC}) {
+			if p != -12 {
+				break
+			}
+			count++
+		}
+		Expect(t, Equal(1, count))
+	})
+
 	type pair struct {
 		Pitch
 		PitchClass
