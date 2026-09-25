@@ -80,24 +80,9 @@ func TestNotionTextIsStable(t *testing.T) {
 	})
 }
 
-// The dex body is not written yet: New, Apply, Look, Tonics and Visible
-// are still TODO, and so are the decisions they rest on (what a wrong
-// answer refreshes, whether a choice also counts as a production, when
-// a slot really left the colour open).
-//
-// The tests below are the specification of that body. They are kept
-// compiling and skipped rather than deleted, because rewriting them
-// from memory later would quietly lose the rules they encode.
-func skipUntilBody(t *testing.T) {
-	t.Helper()
-	t.Skip("dex body not implemented yet")
-}
-
 // Nothing ever removes a mark. What passes is time, and that is a
 // different thing from a mistake.
 func TestMarksAreNeverUndone(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	lydianDominant := dex.ModeOf(harmony.MelodicMinor, 4)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -142,8 +127,6 @@ func TestMarksAreNeverUndone(t *testing.T) {
 // The hand has twelve topographies, so production is kept per tonic.
 // The summary is derived from the detail, never the other way round.
 func TestProductionIsKeptPerTonic(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	twoFiveOne := dex.ProgressionOf(1)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -199,8 +182,6 @@ func TestProductionIsKeptPerTonic(t *testing.T) {
 // without naming it by ear is a real path, and the most common one for
 // someone who explores at the keyboard.
 func TestMarksAreIndependent(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	phrygianDominant := dex.ModeOf(harmony.HarmonicMinor, 5)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -221,8 +202,6 @@ func TestMarksAreIndependent(t *testing.T) {
 
 // The freshness fact exists because notions are not independent.
 func TestSoundedRefreshesWithoutMarking(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	minorSeventh := dex.TetradOf(harmony.ChordMinorSeventh)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -264,8 +243,6 @@ func TestSoundedRefreshesWithoutMarking(t *testing.T) {
 
 // A discovery is the moment worth showing.
 func TestDiscoveryIsReported(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	lydianDominant := dex.ModeOf(harmony.MelodicMinor, 4)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -291,8 +268,6 @@ func TestDiscoveryIsReported(t *testing.T) {
 
 // Where a mark was first earned is what makes a collection tellable.
 func TestMarksRememberWhereTheyWereEarned(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	n := dex.ModeOf(harmony.MelodicMinor, 4)
 	at := time.Date(2026, 9, 22, 21, 0, 0, 0, time.UTC)
@@ -314,9 +289,101 @@ func TestMarksRememberWhereTheyWereEarned(t *testing.T) {
 
 // A notion never crossed does not show.
 func TestNeverMetIsNotVisible(t *testing.T) {
-	skipUntilBody(t)
-
 	d := dex.New()
 	assert.Empty(t, d.Visible(),
 		"a beginner facing thirty five empty slots reads everything they do not know")
+}
+
+// The decisions the body rests on, each in its own case so that
+// changing one breaks one test.
+func TestMarkingRules(t *testing.T) {
+	lydianDominant := dex.ModeOf(harmony.MelodicMinor, 4)
+	at := time.Date(2026, 9, 25, 21, 0, 0, 0, time.UTC)
+
+	t.Run("a wrong answer does not refresh the date", func(t *testing.T) {
+		d := dex.New()
+		d.Apply(dex.Report{Game: "eartrainer", At: at,
+			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: true}}})
+		d.Apply(dex.Report{Game: "eartrainer", At: at.Add(time.Hour),
+			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: false}}})
+
+		e, _ := d.Look(lydianDominant)
+		assert.Equal(t, at, e.Recognized.Last, "the player demonstrated nothing")
+		assert.Equal(t, 1, e.Recognized.Count)
+	})
+
+	t.Run("a wrong answer alone opens no entry", func(t *testing.T) {
+		d := dex.New()
+		changes := d.Apply(dex.Report{Game: "eartrainer", At: at,
+			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: false}}})
+		assert.Empty(t, changes)
+		_, ok := d.Look(lydianDominant)
+		assert.False(t, ok)
+	})
+
+	t.Run("sounded moves the date, never the count", func(t *testing.T) {
+		d := dex.New()
+		d.Apply(dex.Report{Game: "shmup", At: at,
+			Facts: []dex.Fact{{Kind: dex.FactProduced, Notion: lydianDominant, Tonic: 7}}})
+		changes := d.Apply(dex.Report{Game: "shmup", At: at.Add(time.Hour),
+			Facts: []dex.Fact{{Kind: dex.FactSounded, Notion: lydianDominant}}})
+
+		e, _ := d.Look(lydianDominant)
+		assert.Equal(t, 1, e.Produced[7].Count)
+		assert.Equal(t, at.Add(time.Hour), e.Produced[7].Last)
+		assert.Empty(t, changes, "a refresh is not something to celebrate")
+	})
+
+	t.Run("who chose, played", func(t *testing.T) {
+		d := dex.New()
+		changes := d.Apply(dex.Report{Game: "shmup", At: at,
+			Facts: []dex.Fact{{Kind: dex.FactChosen, Notion: lydianDominant, Tonic: 7}}})
+
+		e, _ := d.Look(lydianDominant)
+		assert.True(t, e.Used.Held())
+		assert.True(t, e.Produced[7].Held(),
+			"a mode only ever improvised still enters the grid of twelve tonics")
+		require.Len(t, changes, 1)
+		assert.True(t, changes[0].Discovery)
+		assert.True(t, changes[0].NewTonic)
+		assert.Equal(t, dex.FactChosen, changes[0].Marked)
+	})
+}
+
+// Playing something because it sounds classy, long before knowing its
+// name, is how many musicians meet a mode. That is where a silhouette
+// comes from, and the naming that follows is the discovery.
+func TestOverheardShowsAsSilhouette(t *testing.T) {
+	d := dex.New()
+	phrygianNatural6 := dex.ModeOf(harmony.MelodicMinor, 2)
+	at := time.Date(2026, 9, 25, 21, 0, 0, 0, time.UTC)
+
+	sounded := dex.Report{Game: "shmup", At: at,
+		Facts: []dex.Fact{{Kind: dex.FactSounded, Notion: phrygianNatural6}}}
+
+	t.Run("the first time it rings, a silhouette appears", func(t *testing.T) {
+		changes := d.Apply(sounded)
+		require.Len(t, changes, 1)
+		assert.Equal(t, dex.FactSounded, changes[0].Marked)
+		assert.False(t, changes[0].Discovery, "overheard is not met")
+		assert.Contains(t, d.Visible(), phrygianNatural6)
+	})
+
+	t.Run("it counts, and stays out of the collection", func(t *testing.T) {
+		assert.Empty(t, d.Apply(sounded), "the silhouette appears once")
+
+		e, ok := d.Look(phrygianNatural6)
+		require.True(t, ok)
+		assert.Equal(t, 2, e.Overheard.Count)
+		for e := range d.Collection() {
+			assert.NotEqual(t, phrygianNatural6, e.Notion)
+		}
+	})
+
+	t.Run("naming it is the discovery", func(t *testing.T) {
+		changes := d.Apply(dex.Report{Game: "shmup", At: at.Add(time.Minute),
+			Facts: []dex.Fact{{Kind: dex.FactHeard, Notion: phrygianNatural6}}})
+		require.Len(t, changes, 1)
+		assert.True(t, changes[0].Discovery)
+	})
 }
