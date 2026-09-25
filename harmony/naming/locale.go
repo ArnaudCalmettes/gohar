@@ -7,6 +7,38 @@ import (
 	"github.com/ArnaudCalmettes/gohar/harmony"
 )
 
+// A Notation says how accidentals are written: as signs or as words.
+//
+// A separate choice from the language. Both languages can write si♭ or
+// si bémol, B♭ or B flat, and the choice is one of presentation:
+// signs are what a musician reads, words are what a speech synthesiser
+// can say. A game may well hold both, one for the screen and one for a
+// screen reader, which is why it lives on the [Namer] and not in the
+// [Locale].
+type Notation uint8
+
+const (
+	// Signs writes ♭ ♮ ♯ against the letter or the degree. The default.
+	Signs Notation = iota
+
+	// Words writes them out in the locale's language, apart from the
+	// letter: si bémol, phrygien bécarre 6.
+	Words
+)
+
+// accidentalSigns and degreeSigns are the same five signs in every
+// language, from double flat to double sharp.
+//
+// Two tables because the natural is silent in a note name and spoken in
+// a mode name: phrygian natural 6 is named for the very degree that is
+// not altered relative to the major scale. Dropping it would render
+// bare phrygian 6, which names a different thing, or plain phrygian,
+// which names another mode outright.
+var (
+	accidentalSigns = [5]string{"\u266d\u266d", "\u266d", "", "\u266f", "\u266f\u266f"}
+	degreeSigns     = [5]string{"\u266d\u266d", "\u266d", "\u266e", "\u266f", "\u266f\u266f"}
+)
+
 // A Locale holds the words one language uses for letters, accidentals
 // and modes.
 //
@@ -21,32 +53,25 @@ type Locale struct {
 	// Letters names the seven letters, indexed by [Letter].
 	Letters [LetterCount]string
 
-	// Accidentals names the five signs as they appear in a note name,
-	// from double flat to double sharp. Whether they are words, ASCII
-	// or Unicode symbols is the locale's business.
+	// AccidentalWords names the five accidentals as words, from double
+	// flat to double sharp, for the [Words] notation. The signs are the
+	// same in every language and are not the locale's business.
 	//
-	// The natural entry is empty here. A natural note is named by its
-	// letter alone: one says F, not F natural.
-	Accidentals [5]string
+	// The natural entry is empty: a natural note is named by its letter
+	// alone, one says F, not F natural.
+	AccidentalWords [5]string
 
-	// DegreeSigns names the same five signs as they appear in a mode
-	// name, indexed the same way. Used by [SignDegrees].
-	//
-	// A separate table from Accidentals, because the natural entry is
-	// not empty here. In a note name a natural is silent; in a mode
-	// name it is the whole point, phrygian natural 6 being named for
-	// the very degree that is not altered relative to the major scale.
-	// Reusing Accidentals would render it as bare phrygian 6, which
-	// names a different thing, or as plain phrygian, which names
-	// another mode outright.
-	DegreeSigns [5]string
+	// DegreeWords names the same five in a mode name, where the natural
+	// is not empty: phrygien bécarre 6.
+	DegreeWords [5]string
 
 	// Intervals names the seven interval sizes, indexed by degree
-	// minus one. Used by [IntervalDegrees].
+	// minus one. Used by [IntervalDegrees] and the spoken register of
+	// [Locale.SpokenModeName]; empty in a locale that has none.
 	Intervals [7]string
 
 	// PerfectQualities names the qualities a perfect interval takes,
-	// indexed like DegreeSigns. Degrees 1, 4 and 5.
+	// indexed like DegreeWords. Degrees 1, 4 and 5.
 	//
 	// The outer two are one word rather than a doubling: French says
 	// sous-diminuée and suraugmentée, not doublement diminuée.
@@ -61,18 +86,6 @@ type Locale struct {
 	// sous-diminuée, and the imperfect family reaches no further down.
 	ImperfectQualities [5]string
 
-	// Degree renders one altered degree of a mode name.
-	//
-	// A function rather than a table, because the two languages differ
-	// in strategy and not merely in vocabulary. English jazz usage
-	// writes a sign and a number, lydian sharp 2. French names the
-	// interval outright, phrygien sixte majeure, which is a
-	// computation over the degree and its quality rather than a
-	// lookup.
-	//
-	// Build one with [SignDegrees] or [IntervalDegrees].
-	Degree DegreeRenderer
-
 	// NaturalModes names the seven modes of the natural system,
 	// indexed by [NaturalMode]. Altered mode names are built from
 	// these plus their alterations.
@@ -84,9 +97,10 @@ type Locale struct {
 	Functions [4]string
 
 	// ModeQualities names what a single altered third or fifth makes of
-	// a mode, in this order: major, minor, augmented. The phrygian
-	// natural 3 is said phrygien majeur, the lydian sharp 5 lydien
-	// augmenté. Empty in a locale that writes signs instead.
+	// a mode in the spoken register, in this order: major, minor,
+	// augmented. The phrygian natural 3 is said phrygien majeur, the
+	// lydian sharp 5 lydien augmenté. Empty in a locale that has no
+	// spoken register.
 	ModeQualities [3]string
 
 	// Aliases holds the other names a mode goes by, keyed by its mother
@@ -103,24 +117,11 @@ type Locale struct {
 	// the order of [namedTetrachords]. Only those five: any other
 	// tetrachord is designated by its steps in every language.
 	Tetrachords [5]string
-
-	// Spell renders a note from its parts. A locale that writes the
-	// sign after the letter and one that writes it before need
-	// different code, not a different table.
-	Spell func(letter, accidental string) string
 }
 
 // A DegreeRenderer turns one altered degree into the words a mode name
 // uses for it.
 type DegreeRenderer func(harmony.Degree, Quality) string
-
-// SignDegrees renders a degree as a sign followed by its number, as in
-// sharp 2. This is the English jazz register.
-func SignDegrees(l Locale) DegreeRenderer {
-	return func(d harmony.Degree, q Quality) string {
-		return l.DegreeSigns[q+2] + strconv.Itoa(int(d))
-	}
-}
 
 // IntervalDegrees renders a degree as the interval it names, as in
 // sixte majeure. This is the French register.
@@ -149,17 +150,17 @@ func IntervalDegrees(l Locale) DegreeRenderer {
 	}
 }
 
-// French names notes with the solfège syllables, and modes the way
-// they are said aloud: see [Locale.ModeName].
+// French names notes with the solfège syllables. It also has a spoken
+// register for modes, the way they are said aloud: see
+// [Locale.SpokenModeName].
 var French = Locale{
-	Letters:      [LetterCount]string{"do", "ré", "mi", "fa", "sol", "la", "si"},
-	Accidentals:  [5]string{"double bémol", "bémol", "", "dièse", "double dièse"},
-	NaturalModes: [7]string{"ionien", "dorien", "phrygien", "lydien", "mixolydien", "éolien", "locrien"},
-	Spell:        spellApart,
-	Functions:    [4]string{"", "tonique", "sous-dominante", "dominante"},
-	Tetrachords:  [5]string{"majeur", "mineur", "phrygien", "lydien", "harmonique"},
+	Letters:         [LetterCount]string{"do", "ré", "mi", "fa", "sol", "la", "si"},
+	AccidentalWords: [5]string{"double bémol", "bémol", "", "dièse", "double dièse"},
+	DegreeWords:     [5]string{"double bémol", "bémol", "bécarre", "dièse", "double dièse"},
+	NaturalModes:    [7]string{"ionien", "dorien", "phrygien", "lydien", "mixolydien", "éolien", "locrien"},
+	Functions:       [4]string{"", "tonique", "sous-dominante", "dominante"},
+	Tetrachords:     [5]string{"majeur", "mineur", "phrygien", "lydien", "harmonique"},
 
-	DegreeSigns:   [5]string{"♭♭", "♭", "♮", "♯", "♯♯"},
 	ModeQualities: [3]string{"majeur", "mineur", "augmenté"},
 	Aliases: map[ModeKey][]string{
 		{harmony.MelodicMinor, 7}:  {"altéré"},
@@ -179,63 +180,101 @@ var French = Locale{
 	},
 }
 
-// English names notes with letters and Unicode signs.
+// English names notes with letters. It has no spoken register: its
+// usage says the sign and the number, which is the systematic name.
 var English = Locale{
-	Letters:      [LetterCount]string{"C", "D", "E", "F", "G", "A", "B"},
-	Accidentals:  [5]string{"\u266d\u266d", "\u266d", "", "\u266f", "\u266f\u266f"},
-	DegreeSigns:  [5]string{"\u266d\u266d", "\u266d", "\u266e", "\u266f", "\u266f\u266f"},
-	NaturalModes: [7]string{"ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"},
-	Spell:        spellTogether,
+	Letters:         [LetterCount]string{"C", "D", "E", "F", "G", "A", "B"},
+	AccidentalWords: [5]string{"double flat", "flat", "", "sharp", "double sharp"},
+	DegreeWords:     [5]string{"double flat", "flat", "natural", "sharp", "double sharp"},
+	NaturalModes:    [7]string{"ionian", "dorian", "phrygian", "lydian", "mixolydian", "aeolian", "locrian"},
 
 	Aliases: map[ModeKey][]string{
 		{harmony.MelodicMinor, 7}:  {"altered"},
 		{harmony.MelodicMinor, 4}:  {"lydian dominant"},
 		{harmony.HarmonicMinor, 5}: {"phrygian dominant"},
 	},
-	Functions:    [4]string{"", "tonic", "subdominant", "dominant"},
-	Tetrachords:  [5]string{"major", "minor", "phrygian", "lydian", "harmonic"},
+	Functions:   [4]string{"", "tonic", "subdominant", "dominant"},
+	Tetrachords: [5]string{"major", "minor", "phrygian", "lydian", "harmonic"},
 }
 
-// Name returns the words for a spelled note in this locale.
-func (l Locale) Name(n SpelledNote) string {
-	letter := l.Letters[int(n.Letter)%LetterCount]
-	accidental := l.Accidentals[n.Accidental+2]
-	if l.Spell != nil {
-		return l.Spell(letter, accidental)
-	}
-	return letter + accidental
-}
-
-// ModeName returns the words for a mode in this locale: the base
-// natural mode followed by its altered degrees, each written with its
-// sign from [Locale.DegreeSigns] and its degree number.
+// Name returns a spelled note in this locale and notation: fa♯ or fa
+// dièse, F♯ or F sharp.
 //
-// The seven natural modes render as their bare name, having no altered
-// degree to append.
+// Signs go against the letter and words apart from it, whatever the
+// language: that follows from the notation, not from the locale.
+func (l Locale) Name(n SpelledNote, notation Notation) string {
+	letter := l.Letters[int(n.Letter)%LetterCount]
+	i := int(n.Accidental) + 2
+	if n.Accidental == NaturalSign {
+		return letter
+	}
+	if notation == Words {
+		return letter + " " + l.AccidentalWords[i]
+	}
+	return letter + accidentalSigns[i]
+}
+
+// ModeName returns the systematic name of a mode: the base natural
+// mode followed by each altered degree, its sign or word then its
+// number. Phrygien ♮6, lydian ♯2 ♯5; in words, phrygien bécarre 6.
+//
+// The name every mode has in every locale, and the default. Nothing is
+// special cased, which is what makes it predictable to read and to
+// say. The refined names, spoken register and aliases alike, are
+// alternatives: see [Locale.ModeAlternatives].
 //
 // The altered degrees come out in the order the catalogue holds them,
 // which is the order they are named in. That order is data, not a
 // sort: lydian sharp 2 sharp 5 is named that way and would read wrong
 // the other way round.
-func (l Locale) ModeName(m Mode) string {
+func (l Locale) ModeName(m Mode, notation Notation) string {
 	name := l.NaturalModes[int(m.Base)%7]
-	if len(m.Altered) == 0 {
-		return name
-	}
-	if l.Degree == nil && l.Intervals[0] != "" {
-		return name + " " + l.spokenAlterations(m.Altered)
-	}
-	render := l.degreeRenderer()
 	for _, a := range m.Altered {
-		name += " " + render(a.Degree, a.Quality)
+		name += " " + l.degree(a, notation)
 	}
 	return name
+}
+
+// degree writes one alteration with its sign or word, then its number.
+func (l Locale) degree(a Alteration, notation Notation) string {
+	i := int(a.Quality) + 2
+	if notation == Words {
+		return l.DegreeWords[i] + " " + strconv.Itoa(int(a.Degree))
+	}
+	return degreeSigns[i] + strconv.Itoa(int(a.Degree))
 }
 
 // ModeAliases returns the other names this locale gives a mode, or nil
 // when it has none.
 func (l Locale) ModeAliases(m Mode) []string {
 	return l.Aliases[m.Key()]
+}
+
+// ModeAlternatives returns every other name of a mode: its spoken name
+// when it differs from the systematic one, then its aliases. Nil when
+// the systematic name is the only one.
+//
+// What they are for is rigour and refinement, and recognition: a player
+// who knows the phrygian dominant under that name should find it.
+func (l Locale) ModeAlternatives(m Mode, notation Notation) []string {
+	var out []string
+	if spoken, ok := l.SpokenModeName(m, notation); ok && spoken != l.ModeName(m, notation) {
+		out = append(out, spoken)
+	}
+	return append(out, l.ModeAliases(m)...)
+}
+
+// SpokenModeName returns the name of a mode as it is said aloud in
+// this locale's refined register, and false when the locale has none
+// or the mode has no alteration to say.
+//
+// French has one: phrygien sixte majeure, lydien augmenté. It is an
+// alternative, never the default name.
+func (l Locale) SpokenModeName(m Mode, notation Notation) (string, bool) {
+	if len(m.Altered) == 0 || l.Intervals[0] == "" {
+		return "", false
+	}
+	return l.NaturalModes[int(m.Base)%7] + " " + l.spokenAlterations(m.Altered, notation), true
 }
 
 // spokenAlterations renders the alterations of a mode the way they are
@@ -254,15 +293,17 @@ func (l Locale) ModeAliases(m Mode) []string {
 //  4. Any other single alteration: its interval name, lydien seconde
 //     augmentée, mixolydien sixte mineure.
 //
+// Signs or words in rules 1 and 3 follow the notation.
+//
 // Rules 1 and 3 exist for the same reason. The word diminuée stands for
 // a different sign depending on the degree, a double flat on a third or
 // a seventh and a single flat on a fourth or a fifth, so saying the
 // sign removes an ambiguity the word creates.
-func (l Locale) spokenAlterations(altered []Alteration) string {
+func (l Locale) spokenAlterations(altered []Alteration, notation Notation) string {
 	if len(altered) >= 2 {
 		parts := make([]string, len(altered))
 		for i, a := range altered {
-			parts[i] = l.spelledDegree(a)
+			parts[i] = l.degree(a, notation)
 		}
 		return strings.Join(parts, " ")
 	}
@@ -276,15 +317,9 @@ func (l Locale) spokenAlterations(altered []Alteration) string {
 	case a.Degree == 5 && a.Quality == Sharp && l.ModeQualities[2] != "":
 		return l.ModeQualities[2]
 	case isDiminished(a):
-		return l.spelledDegree(a)
+		return l.degree(a, notation)
 	}
 	return IntervalDegrees(l)(a.Degree, a.Quality)
-}
-
-// spelledDegree writes an alteration as its sign followed by its degree,
-// as in ♯2.
-func (l Locale) spelledDegree(a Alteration) string {
-	return l.DegreeSigns[a.Quality+2] + strconv.Itoa(int(a.Degree))
 }
 
 // isDiminished reports whether an alteration makes its interval
@@ -310,39 +345,6 @@ func (l Locale) FunctionName(f harmony.Function) string {
 		return l.Functions[0]
 	}
 	return strings.Join(parts, ", ")
-}
-
-// degreeRenderer resolves which register this locale writes mode names
-// in.
-//
-// Resolved on demand rather than assigned in an init function, so that
-// the declared locales stay immutable values. A locale that fills its
-// interval tables gets the interval register; one that does not falls
-// back to signs.
-func (l Locale) degreeRenderer() DegreeRenderer {
-	switch {
-	case l.Degree != nil:
-		return l.Degree
-	case l.Intervals[0] != "":
-		return IntervalDegrees(l)
-	default:
-		return SignDegrees(l)
-	}
-}
-
-// spellApart writes the accidental as a separate word, which is what
-// French does: fa dièse, not fa#.
-func spellApart(letter, accidental string) string {
-	if accidental == "" {
-		return letter
-	}
-	return letter + " " + accidental
-}
-
-// spellTogether writes the accidental against the letter, which is what
-// a symbol wants.
-func spellTogether(letter, accidental string) string {
-	return letter + accidental
 }
 
 // namedTetrachords lists the tetrachords that practice gives a name to,

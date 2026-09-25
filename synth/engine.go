@@ -94,6 +94,7 @@ type Engine struct {
 	nCommands int
 	last      time.Duration
 	worst     time.Duration
+	histogram Histogram
 
 	voices [maxVoices]voice
 }
@@ -135,6 +136,18 @@ func (e *Engine) Delays() (last, worst time.Duration) {
 	return
 }
 
+// Histogram returns how the delays between a key event and the samples
+// were spread since the engine started.
+//
+// A copy, taken under the lock the audio goroutine holds a few
+// microseconds per buffer: cheap enough to read every frame.
+func (e *Engine) Histogram() Histogram {
+	e.mu.Lock()
+	h := e.histogram
+	e.mu.Unlock()
+	return h
+}
+
 func (e *Engine) Read(buf []byte) (int, error) {
 	now := time.Now()
 
@@ -145,6 +158,7 @@ func (e *Engine) Read(buf []byte) (int, error) {
 		if d > e.worst {
 			e.worst = d
 		}
+		e.histogram.add(d)
 		e.apply(e.commands[i])
 	}
 	e.nCommands = 0

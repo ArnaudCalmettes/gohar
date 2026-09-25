@@ -176,18 +176,37 @@ func TestEnharmonic(t *testing.T) {
 }
 
 func TestLocaleRendersInItsOwnWords(t *testing.T) {
-	t.Run("the English locale writes letters and Unicode signs", func(t *testing.T) {
-		assert.Equal(t, "F\u266f", naming.English.Name(sharp(naming.LetterF)))
+	t.Run("signs go against the letter in both languages", func(t *testing.T) {
+		assert.Equal(t, "F\u266f", naming.English.Name(sharp(naming.LetterF), naming.Signs))
+		assert.Equal(t, "fa\u266f", naming.French.Name(sharp(naming.LetterF), naming.Signs))
 	})
 
-	t.Run("the French locale writes solfège syllables", func(t *testing.T) {
-		assert.Equal(t, "fa dièse", naming.French.Name(sharp(naming.LetterF)))
+	t.Run("words go apart from it, in the locale's language", func(t *testing.T) {
+		assert.Equal(t, "F sharp", naming.English.Name(sharp(naming.LetterF), naming.Words))
+		assert.Equal(t, "fa dièse", naming.French.Name(sharp(naming.LetterF), naming.Words))
+		assert.Equal(t, "si double bémol",
+			naming.French.Name(naming.SpelledNote{Letter: naming.LetterB, Accidental: naming.DoubleFlatSign}, naming.Words))
 	})
 
 	t.Run("a natural carries no sign in either locale", func(t *testing.T) {
-		assert.Equal(t, "C", naming.English.Name(natural(naming.LetterC)))
-		assert.Equal(t, "do", naming.French.Name(natural(naming.LetterC)))
+		assert.Equal(t, "C", naming.English.Name(natural(naming.LetterC), naming.Signs))
+		assert.Equal(t, "do", naming.French.Name(natural(naming.LetterC), naming.Words))
 	})
+}
+
+// The notation is the namer's, and it survives a change of context.
+func TestNamerNotation(t *testing.T) {
+	n, err := naming.NewNamer(naming.French)
+	require.NoError(t, err)
+	assert.Equal(t, naming.Signs, n.Notation(), "signs by default")
+
+	words := n.WithNotation(naming.Words)
+	assert.Equal(t, "fa dièse", words.Name(6))
+	assert.Equal(t, "fa\u266f", n.Name(6), "the original namer is left as it was")
+
+	tonality, err := harmony.NewTonality(7, harmony.ScaleMajor)
+	require.NoError(t, err)
+	assert.Equal(t, naming.Words, words.WithTonality(tonality).Notation())
 }
 
 func mustLookupPattern(t *testing.T, s harmony.System, d harmony.Degree) harmony.ScalePattern {

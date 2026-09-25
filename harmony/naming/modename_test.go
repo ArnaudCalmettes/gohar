@@ -16,65 +16,52 @@ func modeAt(t *testing.T, s harmony.System, d harmony.Degree) naming.Mode {
 	return m
 }
 
-func TestModeNameRendersInItsLocale(t *testing.T) {
+// The systematic name is the default in both languages: the base mode
+// and each altered degree with its sign, nothing special cased. The
+// refined names are alternatives, tested with the spoken register.
+func TestModeNameIsSystematic(t *testing.T) {
 	tests := []struct {
 		what    string
 		system  harmony.System
 		degree  harmony.Degree
 		english string
 		french  string
+		words   string // French, in the Words notation
 	}{
 		{
 			what:   "a natural mode renders as its bare name",
 			system: harmony.NaturalMajor, degree: 4,
-			english: "lydian", french: "lydien",
+			english: "lydian", french: "lydien", words: "lydien",
 		},
 		{
-			what:   "a raised second is augmented, not minor third",
+			what:   "a raised second",
 			system: harmony.HarmonicMinor, degree: 6,
-			english: "lydian \u266f2", french: "lydien seconde augmentée",
+			english: "lydian \u266f2", french: "lydien \u266f2", words: "lydien dièse 2",
 		},
 		{
-			what:   "a single lowered third says what it makes of the mode",
+			what:   "a lowered third, not what it makes of the mode",
 			system: harmony.MelodicMinor, degree: 1,
-			english: "ionian \u266d3", french: "ionien mineur",
+			english: "ionian \u266d3", french: "ionien \u266d3", words: "ionien bémol 3",
 		},
 		{
-			what:   "a natural sixth is a major sixth",
+			what:   "a natural sixth keeps its sign",
 			system: harmony.MelodicMinor, degree: 2,
-			english: "phrygian \u266e6", french: "phrygien sixte majeure",
+			english: "phrygian \u266e6", french: "phrygien \u266e6", words: "phrygien bécarre 6",
 		},
 		{
-			what:   "a diminished fourth is spelled, not named",
-			system: harmony.HarmonicMajor, degree: 3,
-			english: "phrygian \u266d4", french: "phrygien ♭4",
-		},
-		{
-			what:   "a single raised fifth makes the mode augmented",
+			what:   "a raised fifth, not augmented",
 			system: harmony.MelodicMinor, degree: 3,
-			english: "lydian \u266f5", french: "lydien augmenté",
+			english: "lydian \u266f5", french: "lydien \u266f5", words: "lydien dièse 5",
 		},
 		{
-			what:   "a diminished fifth is spelled, not named",
-			system: harmony.HarmonicMajor, degree: 2,
-			english: "dorian \u266d5", french: "dorien ♭5",
-		},
-		{
-			what:   "a diminished seventh is spelled, since diminished means another sign on a fourth",
+			what:   "a double flat",
 			system: harmony.HarmonicMajor, degree: 7,
-			english: "locrian \u266d\u266d7", french: "locrien ♭♭7",
+			english: "locrian \u266d\u266d7", french: "locrien \u266d\u266d7", words: "locrien double bémol 7",
 		},
 		{
-			what:   "two alterations are both spelled, in the order the catalogue holds",
+			what:   "two alterations, in the order the catalogue holds",
 			system: harmony.HarmonicMajor, degree: 6,
-			english: "lydian \u266f2 \u266f5",
-			french:  "lydien ♯2 ♯5",
-		},
-		{
-			what:   "two double flats are both spelled",
-			system: harmony.DoubleHarmonicMajor, degree: 7,
-			english: "locrian \u266d\u266d3 \u266d\u266d7",
-			french:  "locrien ♭♭3 ♭♭7",
+			english: "lydian \u266f2 \u266f5", french: "lydien \u266f2 \u266f5", words: "lydien dièse 2 dièse 5",
 		},
 	}
 
@@ -82,13 +69,22 @@ func TestModeNameRendersInItsLocale(t *testing.T) {
 		m := modeAt(t, tc.system, tc.degree)
 
 		t.Run(tc.what+", in English", func(t *testing.T) {
-			assert.Equal(t, tc.english, naming.English.ModeName(m))
+			assert.Equal(t, tc.english, naming.English.ModeName(m, naming.Signs))
 		})
 
 		t.Run(tc.what+", in French", func(t *testing.T) {
-			assert.Equal(t, tc.french, naming.French.ModeName(m))
+			assert.Equal(t, tc.french, naming.French.ModeName(m, naming.Signs))
+		})
+
+		t.Run(tc.what+", in French words", func(t *testing.T) {
+			assert.Equal(t, tc.words, naming.French.ModeName(m, naming.Words))
 		})
 	}
+
+	t.Run("English words", func(t *testing.T) {
+		m := modeAt(t, harmony.HarmonicMajor, 6)
+		assert.Equal(t, "lydian sharp 2 sharp 5", naming.English.ModeName(m, naming.Words))
+	})
 }
 
 // The perfect and imperfect split is the whole difficulty of the French
@@ -143,15 +139,18 @@ func TestPerfectAndImperfectQualitiesDoNotMix(t *testing.T) {
 // bare phrygian, which is a different mode entirely.
 func TestNaturalSignIsSilentInNotesAndSpokenInModes(t *testing.T) {
 	t.Run("a natural note is named by its letter alone", func(t *testing.T) {
-		assert.Equal(t, "F", naming.English.Name(natural(naming.LetterF)))
-		assert.Equal(t, "fa", naming.French.Name(natural(naming.LetterF)))
+		for _, n := range []naming.Notation{naming.Signs, naming.Words} {
+			assert.Equal(t, "F", naming.English.Name(natural(naming.LetterF), n))
+			assert.Equal(t, "fa", naming.French.Name(natural(naming.LetterF), n))
+		}
 	})
 
 	t.Run("a natural degree is spoken in a mode name", func(t *testing.T) {
 		m := modeAt(t, harmony.MelodicMinor, 2)
-		assert.Equal(t, "phrygian \u266e6", naming.English.ModeName(m))
-		assert.Equal(t, "phrygien sixte majeure", naming.French.ModeName(m),
-			"the two registers say the same thing in different forms")
+		assert.Equal(t, "phrygian \u266e6", naming.English.ModeName(m, naming.Signs))
+		assert.Equal(t, "phrygien bécarre 6", naming.French.ModeName(m, naming.Words))
+		assert.Contains(t, naming.French.ModeAlternatives(m, naming.Signs), "phrygien sixte majeure",
+			"the spoken register says the same thing in another form")
 	})
 
 	t.Run("dropping the sign would name a different mode", func(t *testing.T) {
@@ -160,8 +159,8 @@ func TestNaturalSignIsSilentInNotesAndSpokenInModes(t *testing.T) {
 
 		require.NotEqual(t, altered.Pattern(), bare.Pattern())
 		assert.NotEqual(t,
-			naming.English.ModeName(bare),
-			naming.English.ModeName(altered),
+			naming.English.ModeName(bare, naming.Signs),
+			naming.English.ModeName(altered, naming.Signs),
 			"phrygian and phrygian natural 6 are two modes and must read as two names",
 		)
 	})
@@ -175,19 +174,21 @@ func TestModeNamesAreUnique(t *testing.T) {
 		"English": naming.English,
 		"French":  naming.French,
 	} {
-		seen := make(map[string]naming.Mode, 35)
+		for _, notation := range []naming.Notation{naming.Signs, naming.Words} {
+			seen := make(map[string]naming.Mode, 35)
 
-		for _, m := range naming.Modes() {
-			name := locale.ModeName(m)
-			previous, clash := seen[name]
-			assert.False(t, clash,
-				"name %q claimed by system %d degree %d and by system %d degree %d",
-				name, previous.System, previous.Degree, m.System, m.Degree,
-			)
-			seen[name] = m
+			for _, m := range naming.Modes() {
+				name := locale.ModeName(m, notation)
+				previous, clash := seen[name]
+				assert.False(t, clash,
+					"name %q claimed by system %d degree %d and by system %d degree %d",
+					name, previous.System, previous.Degree, m.System, m.Degree,
+				)
+				seen[name] = m
+			}
+
+			assert.Len(t, seen, 35)
 		}
-
-		assert.Len(t, seen, 35)
 	}
 }
 

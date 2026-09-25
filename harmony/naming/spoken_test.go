@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// The twenty eight altered modes as they are said aloud in French.
+// The twenty eight altered modes as they are said aloud in French, the
+// refined register offered as an alternative to the systematic name.
 //
 // This table was read and approved line by line before being written
 // down, so it is the reference and the procedure is what has to match
@@ -54,9 +55,49 @@ func TestFrenchSpokenModeNames(t *testing.T) {
 		t.Run(tc.want, func(t *testing.T) {
 			m, ok := naming.Lookup(tc.system, tc.degree)
 			require.True(t, ok)
-			assert.Equal(t, tc.want, naming.French.ModeName(m))
+			got, ok := naming.French.SpokenModeName(m, naming.Signs)
+			require.True(t, ok)
+			assert.Equal(t, tc.want, got)
 		})
 	}
+
+	t.Run("its signs follow the notation", func(t *testing.T) {
+		m, ok := naming.Lookup(harmony.HarmonicMinor, 7)
+		require.True(t, ok)
+		got, _ := naming.French.SpokenModeName(m, naming.Words)
+		assert.Equal(t, "locrien bémol 4 double bémol 7", got)
+	})
+
+	t.Run("English has no spoken register", func(t *testing.T) {
+		m, ok := naming.Lookup(harmony.MelodicMinor, 2)
+		require.True(t, ok)
+		_, ok = naming.English.SpokenModeName(m, naming.Signs)
+		assert.False(t, ok)
+	})
+}
+
+// The alternatives are the spoken name, when it differs, then the
+// aliases: the phrygian dominant is found under all three.
+func TestModeAlternatives(t *testing.T) {
+	m, ok := naming.Lookup(harmony.HarmonicMinor, 5)
+	require.True(t, ok)
+	assert.Equal(t, "phrygien \u266e3", naming.French.ModeName(m, naming.Signs))
+	assert.Equal(t,
+		[]string{"phrygien majeur", "phrygien dominante"},
+		naming.French.ModeAlternatives(m, naming.Signs))
+
+	t.Run("a spoken name equal to the systematic one is not repeated", func(t *testing.T) {
+		m, ok := naming.Lookup(harmony.HarmonicMajor, 6)
+		require.True(t, ok)
+		assert.Empty(t, naming.French.ModeAlternatives(m, naming.Signs),
+			"lydien ♯2 ♯5 is said the way it is written")
+	})
+
+	t.Run("a natural mode has none", func(t *testing.T) {
+		m, ok := naming.Lookup(harmony.NaturalMajor, 2)
+		require.True(t, ok)
+		assert.Empty(t, naming.French.ModeAlternatives(m, naming.Signs))
+	})
 }
 
 // Aliases are written out, not derived, and they belong to a language.

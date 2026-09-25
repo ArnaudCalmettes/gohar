@@ -23,6 +23,7 @@ import (
 // engine revises what key it thinks it hears.
 type Namer struct {
 	locale   Locale
+	notation Notation
 	tonic    SpelledNote
 	tonality harmony.Tonality
 
@@ -89,6 +90,27 @@ func (n *Namer) WithSpelledTonality(t harmony.Tonality, tonic SpelledNote) *Name
 	return &out
 }
 
+// WithNotation returns a namer writing accidentals as signs or as
+// words. Signs, the zero value, is the default.
+//
+// Two namers side by side are the intended use when both are needed:
+// signs on the screen, words for a screen reader.
+func (n *Namer) WithNotation(notation Notation) *Namer {
+	out := *n
+	out.notation = notation
+	return &out
+}
+
+// Notation returns how n writes accidentals.
+func (n *Namer) Notation() Notation {
+	return n.notation
+}
+
+// Locale returns the language n speaks.
+func (n *Namer) Locale() Locale {
+	return n.locale
+}
+
 // Tonality returns the context n spells in, or the zero value when it
 // has none.
 //
@@ -116,9 +138,9 @@ func (n *Namer) Note(c harmony.PitchClass) SpelledNote {
 	return defaultSpelling(c)
 }
 
-// Name spells a pitch class and renders it in the locale.
+// Name spells a pitch class and renders it in the locale and notation.
 func (n *Namer) Name(c harmony.PitchClass) string {
-	return n.locale.Name(n.Note(c))
+	return n.locale.Name(n.Note(c), n.notation)
 }
 
 // Scale spells every degree of the current context, in degree order.
@@ -146,11 +168,24 @@ func (n *Namer) Mode(t harmony.Tonality) (Mode, bool) {
 	return m, ok
 }
 
-// ModeName identifies a mode and renders its name in the locale.
+// ModeName identifies a mode and renders its systematic name in the
+// locale and notation.
 func (n *Namer) ModeName(t harmony.Tonality) (string, bool) {
 	m, ok := n.Mode(t)
 	if !ok {
 		return "", false
 	}
-	return n.locale.ModeName(m), true
+	return n.locale.ModeName(m, n.notation), true
+}
+
+// ModeNameOf renders the systematic name of a catalogue entry, for a
+// caller that already holds the mode rather than a tonality.
+func (n *Namer) ModeNameOf(m Mode) string {
+	return n.locale.ModeName(m, n.notation)
+}
+
+// ModeAlternatives renders the other names of a catalogue entry: see
+// [Locale.ModeAlternatives].
+func (n *Namer) ModeAlternatives(m Mode) []string {
+	return n.locale.ModeAlternatives(m, n.notation)
 }

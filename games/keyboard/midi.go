@@ -37,7 +37,10 @@ func Shutdown() {
 // OpenMIDI opens a MIDI input.
 //
 // spec is a number as Ports lists them, or a fragment of a name, or
-// empty for the first input. A number is tried first, because that is
+// empty for the first real input: a Through port, the loopback ALSA
+// creates on every Linux machine and lists first, is skipped then,
+// since it never sends anything unless something writes to it. A
+// number is tried first, because that is
 // what a listing shows and therefore what anyone will type: matching
 // "1" against the names instead quietly picks whichever port happens to
 // contain that digit, which on Linux is usually Midi Through, which
@@ -51,6 +54,14 @@ func OpenMIDI(spec string) (Source, error) {
 	in := ins[0]
 	switch {
 	case spec == "":
+		// Falls back on the first port if they are all Through ports:
+		// opening something that stays silent beats refusing to start.
+		for _, p := range ins {
+			if !strings.Contains(strings.ToLower(p.String()), "through") {
+				in = p
+				break
+			}
+		}
 	case isNumber(spec):
 		n, _ := strconv.Atoi(spec)
 		if n < 0 || n >= len(ins) {
