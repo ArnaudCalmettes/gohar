@@ -156,8 +156,43 @@ les deux s'entend ou ne s'entend pas.
 ### Ce qui reste non mesuré
 
 Sous charge. La sonde ne fait rien d'autre qu'attendre, alors qu'un jeu
-dessine soixante fois par seconde et se fait interrompre par le
-ramasse-miettes. C'est là qu'on saura si 5 ms tient.
+dessine soixante fois par seconde et alloue. C'est là qu'on saura si
+5 ms tient.
+
+Le sujet est instruit, pas traité, et il n'est pas urgent : avant de
+corriger un craquement toutes les trente secondes, il faut un jeu qui
+mérite qu'on y joue trente secondes. Ce qu'on sait déjà, pour ne pas
+refaire le raisonnement :
+
+**Le mark assist est le vrai risque, pas les pauses.** Les pauses
+stop-the-world de Go tiennent en quelques dizaines à quelques centaines
+de microsecondes et passent sous un buffer de 5 ms. En revanche, une
+goroutine qui alloue pendant une collecte se voit facturer du travail de
+marquage sur place. Une goroutine qui n'alloue rien ne l'est jamais.
+C'est la raison d'être de l'absence d'allocation dans `Engine.Read`, qui
+est une protection et pas un réflexe de performance.
+
+**Le coût du marquage suit le nombre de pointeurs, pas la mémoire.** Un
+ECS par archétypes range les composants en tableaux contigus de
+structures sans pointeurs, ce qui raccourcit chaque phase de marquage en
+plus de réduire les allocations. Deux bénéfices distincts.
+
+**Le levier suivant n'est pas `GOGC`.** C'est `debug.SetMemoryLimit` sur
+une valeur confortable avec `GOGC=off` : le ramasse-miettes cesse alors
+de suivre le taux d'allocation et ne se déclenche qu'en approchant de la
+limite. Deux lignes dans un `main`, pour une empreinte bornée et connue.
+
+**Un plafond qu'aucun réglage ne lève.** La goroutine audio est une
+goroutine ordinaire, pas un thread en priorité temps réel comme celui
+d'un DAW. C'est le meilleur argument pour garder quelques millisecondes
+de marge plutôt que de viser le minimum : 5 ms est un compromis, pas un
+score à battre.
+
+**Comment trancher le jour venu.** Lire le pire cas après plusieurs
+minutes de jeu soutenu, jamais la moyenne, qui cache exactement le
+défaut qu'un musicien entend. Puis corréler avec `GODEBUG=gctrace=1` :
+un pic qui tombe sur une ligne de trace désigne le ramasse-miettes, un
+pic sans corrélation désigne l'ordonnanceur ou l'USB.
 
 L'autre moitié du trajet. Du doigt vers le programme, c'est-à-dire le
 clavier maître, l'USB MIDI et la bibliothèque qui le lit. Probablement
