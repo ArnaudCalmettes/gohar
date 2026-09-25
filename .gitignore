@@ -1,0 +1,9 @@
+# binaires produits par go build dans un dossier de commande
+/games/keys/keys
+/games/latency/latency
+/games/otolatency/otolatency
+
+# profils et couverture
+*.test
+*.out
+*.prof
