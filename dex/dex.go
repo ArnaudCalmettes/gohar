@@ -175,6 +175,11 @@ const (
 	FactHeard FactKind = iota + 1
 
 	// FactNamed: the player identified a notion they were made to hear.
+	//
+	// Sent on an identification only. A wrong answer is sent as
+	// nothing at all: it gets corrected, it does not get learnt. What
+	// is learnt is the correction the player produces afterwards, and
+	// that one arrives as a FactNamed like any other.
 	FactNamed
 
 	// FactProduced: the player played a notion.
@@ -221,13 +226,6 @@ type Fact struct {
 	// Essential to FactProduced and FactChosen, since the hand has
 	// twelve topographies; recorded for the others and unused.
 	Tonic harmony.PitchClass
-
-	// Correct says whether an identification was right. FactNamed only.
-	//
-	// A wrong answer marks nothing and refreshes nothing: the player
-	// demonstrated nothing, and FactSounded already says the notion was
-	// in the air.
-	Correct bool
 }
 
 // A Report is what a game sends once an activity is over.
@@ -290,10 +288,6 @@ func (d *Dex) Apply(r Report) []Change {
 	var changes []Change
 	for _, f := range r.Facts {
 		if f.Notion.IsZero() {
-			continue
-		}
-
-		if f.Kind == FactNamed && !f.Correct {
 			continue
 		}
 

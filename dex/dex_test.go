@@ -89,30 +89,18 @@ func TestMarksAreNeverUndone(t *testing.T) {
 
 	d.Apply(dex.Report{
 		Game: "eartrainer", At: at,
-		Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: true}},
+		Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant}},
 	})
 
 	before, ok := d.Look(lydianDominant)
 	require.True(t, ok)
 	require.True(t, before.Recognized.Held())
 
-	t.Run("a later report cannot take the mark back", func(t *testing.T) {
-		d.Apply(dex.Report{
-			Game: "eartrainer", At: at.Add(time.Hour),
-			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: false}},
-		})
-
-		after, ok := d.Look(lydianDominant)
-		require.True(t, ok)
-		assert.True(t, after.Recognized.Held(),
-			"a wrong answer is not a fact that undoes anything")
-	})
-
-	t.Run("a correct answer refreshes instead", func(t *testing.T) {
+	t.Run("a new identification refreshes", func(t *testing.T) {
 		later := at.Add(48 * time.Hour)
 		d.Apply(dex.Report{
 			Game: "eartrainer", At: later,
-			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: true}},
+			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant}},
 		})
 
 		after, ok := d.Look(lydianDominant)
@@ -167,7 +155,7 @@ func TestProductionIsKeptPerTonic(t *testing.T) {
 		d.Apply(dex.Report{
 			Game: "eartrainer", At: at,
 			Facts: []dex.Fact{{
-				Kind: dex.FactNamed, Notion: twoFiveOne, Tonic: 3, Correct: true,
+				Kind: dex.FactNamed, Notion: twoFiveOne, Tonic: 3,
 			}},
 		})
 
@@ -274,7 +262,7 @@ func TestMarksRememberWhereTheyWereEarned(t *testing.T) {
 
 	d.Apply(dex.Report{
 		Game: "eartrainer", At: at,
-		Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: n, Correct: true}},
+		Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: n}},
 	})
 	d.Apply(dex.Report{
 		Game: "shmup", At: at.Add(time.Hour),
@@ -299,27 +287,6 @@ func TestNeverMetIsNotVisible(t *testing.T) {
 func TestMarkingRules(t *testing.T) {
 	lydianDominant := dex.ModeOf(harmony.MelodicMinor, 4)
 	at := time.Date(2026, 9, 25, 21, 0, 0, 0, time.UTC)
-
-	t.Run("a wrong answer does not refresh the date", func(t *testing.T) {
-		d := dex.New()
-		d.Apply(dex.Report{Game: "eartrainer", At: at,
-			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: true}}})
-		d.Apply(dex.Report{Game: "eartrainer", At: at.Add(time.Hour),
-			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: false}}})
-
-		e, _ := d.Look(lydianDominant)
-		assert.Equal(t, at, e.Recognized.Last, "the player demonstrated nothing")
-		assert.Equal(t, 1, e.Recognized.Count)
-	})
-
-	t.Run("a wrong answer alone opens no entry", func(t *testing.T) {
-		d := dex.New()
-		changes := d.Apply(dex.Report{Game: "eartrainer", At: at,
-			Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: lydianDominant, Correct: false}}})
-		assert.Empty(t, changes)
-		_, ok := d.Look(lydianDominant)
-		assert.False(t, ok)
-	})
 
 	t.Run("sounded moves the date, never the count", func(t *testing.T) {
 		d := dex.New()

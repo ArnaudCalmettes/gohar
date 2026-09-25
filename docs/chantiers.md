@@ -59,9 +59,14 @@ plus aucune cible. `Target` vit déjà dans `harmony`, avec un
 `Target.Resolve` qui rend des faits et pas un verdict : c'est là que
 le jeu trouve de quoi juger.
 
-**Ce qui ouvre une entrée.** `FactHeard` (sonner et nommer), `FactNamed`
-correct, `FactProduced`, `FactChosen`. Pas une réponse fausse : un jeu
-qui corrige révèle la réponse et envoie `FactHeard`. `FactSounded` sur
+**Une erreur compte pour du beurre.** Elle se corrige, elle ne
+s'apprend pas : ce qui s'apprend, c'est la correction produite par le
+joueur. Aucun fait ne dit qu'une tentative a échoué, donc
+`Fact.Correct` disparaît et `FactNamed` n'est envoyé que sur une
+identification.
+
+**Ce qui ouvre une entrée.** `FactHeard` (sonner et nommer),
+`FactNamed`, `FactProduced`, `FactChosen`. `FactSounded` sur
 une notion jamais rencontrée marque `Overheard` et fait apparaître une
 silhouette, pas une découverte : c'est le musicien qui joue une couleur
 parce qu'elle sonne classe, bien avant d'en connaître le nom. Le jeu
@@ -137,6 +142,7 @@ chose, maintenir la règle des deux surfaces : oto n'est importé que par
 ## Les jeux
 
 - [ ] la première activité d'oreille, simple, celle qui ramène au sujet.
+      Règles et découpage dans `OREILLE.md`.
 - [ ] le shoot'em up bullet hell qui est un jeu d'harmonie déguisé, sur
       rail, sans esquive.
 - [ ] les quatre pistes du billet sur la game loop de l'improvisateur,
