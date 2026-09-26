@@ -20,7 +20,7 @@ theory library never pulls in a graphics or audio stack.
 | `harmony/naming` | Words for the numbers: note spelling, mode names in French and English, as signs (`phrygien ♮6`) or words (`phrygien bécarre 6`). |
 | `harmony/analysis` | Deterministic chord recognition, without scoring. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
-| `synth`   | A small polyphonic synthesiser and the audio output, tuned for low latency. |
+| `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
 | `games`   | The playable programs, Ebitengine and MIDI included. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
@@ -61,6 +61,8 @@ go run ./ear                  # French, signs
 go run ./ear -lang en         # English
 go run ./ear -notation words  # si bémol rather than si♭
 go run ./ear -port 1          # pick a MIDI input, see keys -list
+go run ./ear -timbre square   # an 8-bit voice: pulse12, pulse25, square, triangle
+go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 ```
 
 | Key | Action |

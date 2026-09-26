@@ -115,13 +115,16 @@ Fait :
    11 ms, le ramasse-miettes sans effet sur le son. Détail dans
    `architecture.md`.
 
+7. **Timbres 8 bits** : impulsions à 12,5 et 25 %, carré, triangle,
+   bruit, enveloppe ADSR. Rendu adouci par défaut, `-authentic` pour
+   le grain brut des consoles. `-timbre` choisit le son.
+
 Reste :
 
-7. **Soundfont** : étudier un lecteur SF2 en pur Go (allocations sur
-   la goroutine audio, paquet à part puisque `synth` promet de ne
-   dépendre que de la bibliothèque standard, licence et poids de la
-   soundfont pour WASM), puis l'intégrer et refaire la mesure 6.
-8. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
+8. **Soundfont** : go-meltysynth dans `synth/soundfont`, derrière la
+   même interface `Instrument`, puis refaire la mesure 6. Le lecteur
+   est étudié (voir `chantiers.md`) ; il manque un piano SF2 réduit.
+9. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
 
 ## La feuille de route
 

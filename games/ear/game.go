@@ -79,7 +79,7 @@ func (k *keysDown) snapshot(dst *[128]bool) {
 type game struct {
 	lang    language
 	other   language // the one L switches to
-	engine  *synth.Engine
+	engine  synth.Instrument
 	dex     *dex.Dex
 	dexPath string
 	rng     *rand.Rand
@@ -101,7 +101,7 @@ type game struct {
 	debug   bool
 }
 
-func newGame(lang, other language, engine *synth.Engine, d *dex.Dex, dexPath string, rng *rand.Rand, midi string) (*game, error) {
+func newGame(lang, other language, engine synth.Instrument, d *dex.Dex, dexPath string, rng *rand.Rand, midi string) (*game, error) {
 	face, err := newFont(16)
 	if err != nil {
 		return nil, err

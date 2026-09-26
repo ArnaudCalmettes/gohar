@@ -3,7 +3,6 @@ package synth
 import (
 	"encoding/binary"
 	"math"
-	"sync"
 	"time"
 )
 
@@ -33,45 +32,60 @@ const (
 	maxCommands = 64
 )
 
-// attack and release are short ramps, not an expressive envelope.
+const headroom = 1.0 / 6
+
+// An Envelope shapes a note over time: it rises to full level in
+// Attack, falls to Sustain in Decay, holds there while the key is down,
+// and dies away in Release once it is up.
 //
-// They exist to avoid the click a square edge makes, which on a short
-// note is louder than the note. Anything musical, a real envelope or a
-// velocity curve, comes later and belongs above this.
-const (
-	attack  = 3 * time.Millisecond
-	release = 40 * time.Millisecond
-)
+// The zero Envelope is the default: a rise short enough to be heard as
+// immediate and long enough not to click, a full sustain, and a short
+// release. It is what the sine has always had.
+type Envelope struct {
+	Attack  time.Duration
+	Decay   time.Duration
+	Sustain float64 // between 0 and 1
+	Release time.Duration
+}
+
+// DefaultEnvelope is what the zero Envelope stands for.
+var DefaultEnvelope = Envelope{
+	Attack:  3 * time.Millisecond,
+	Sustain: 1,
+	Release: 40 * time.Millisecond,
+}
+
+// ChipEnvelope suits the pulse timbres: a quick attack, a fall to a
+// held level, a short tail, the shape the old sound chips were driven
+// with.
+var ChipEnvelope = Envelope{
+	Attack:  2 * time.Millisecond,
+	Decay:   150 * time.Millisecond,
+	Sustain: 0.6,
+	Release: 80 * time.Millisecond,
+}
 
 type voiceState uint8
 
 const (
 	voiceOff voiceState = iota
 	voiceAttack
+	voiceDecay
 	voiceSustain
 	voiceRelease
 )
 
-const headroom = 1.0 / 6
-
 type voice struct {
 	key   int
-	phase float64
-	step  float64
-	gain  float64
-	env   float64
+	osc   oscillator
+	gain  float64 // the velocity, times headroom
+	env   float64 // the envelope's level, between 0 and 1
+	fall  float64 // how much env loses per frame once released
 	state voiceState
 }
 
-type command struct {
-	on       bool
-	key      int
-	velocity float64
-	at       time.Time
-}
-
-// An Engine turns key presses into samples. It is the whole instrument
-// for now: one sine per key, no filter, no effect.
+// An Engine turns key presses into samples, one voice per key, in one
+// of a handful of timbres.
 //
 // # Two goroutines, one handover
 //
@@ -80,95 +94,77 @@ type command struct {
 // its own goroutine and must never wait, never allocate and never
 // block on anything.
 //
-// So the two sides share a queue of commands and nothing else. The
-// mutex is held only while that queue is drained at the top of Read,
-// never while samples are computed, and the voices are touched by the
-// audio goroutine alone.
+// So the two sides share a queue of commands and nothing else, and the
+// voices are touched by the audio goroutine alone.
 //
-// The zero Engine is usable and plays at 440.
+// # Settings
+//
+// Tuning, Timbre, Smooth and Envelope are read by the audio goroutine:
+// set them before handing the engine to Open. Changing them while it
+// plays is a data race.
+//
+// The zero Engine is usable: a sine at 440 with the default envelope.
 type Engine struct {
+	queue
+
 	Tuning Tuning
+	Timbre Timbre
 
-	mu        sync.Mutex
-	commands  [maxCommands]command
-	nCommands int
-	last      time.Duration
-	worst     time.Duration
-	histogram Histogram
+	// Smooth rounds the jumps of the pulse timbres and draws the
+	// triangle as a line; left false, they keep the aliasing and the
+	// steps of the consoles. See oscillator.next.
+	Smooth bool
 
-	voices [maxVoices]voice
+	Envelope Envelope
+
+	voices  [maxVoices]voice
+	pending [maxCommands]command
 }
 
-// NoteOn starts a key, or restarts it if it was already sounding.
-//
-// `at` is when the press happened, which the caller knows better than we
-// do: a MIDI driver hands over an event that already waited. It is
-// recorded so that Delays can say how long the press took to reach the
-// samples.
-func (e *Engine) NoteOn(key int, velocity float64, at time.Time) {
-	e.push(command{on: true, key: key, velocity: velocity, at: at})
-}
+var _ Instrument = (*Engine)(nil)
 
-// NoteOff releases a key. A key not sounding is not an error.
-func (e *Engine) NoteOff(key int, at time.Time) {
-	e.push(command{key: key, at: at})
-}
-
-func (e *Engine) push(c command) {
-	e.mu.Lock()
-	if e.nCommands < len(e.commands) {
-		e.commands[e.nCommands] = c
-		e.nCommands++
+// NewEngine builds an engine for a timbre given by name, with the
+// envelope that suits it: the default one for the sine, the chip one
+// for the others.
+func NewEngine(timbre string, smooth bool) (*Engine, error) {
+	t, err := ParseTimbre(timbre)
+	if err != nil {
+		return nil, err
 	}
-	e.mu.Unlock()
+	e := &Engine{Timbre: t, Smooth: smooth}
+	if t != Sine {
+		e.Envelope = ChipEnvelope
+	}
+	return e, nil
 }
 
-// Delays returns the last and the worst delay between a key event and
-// the moment it reached the samples.
-//
-// This is the part of the latency that belongs to us. What the driver,
-// the bus and the card add afterwards is not visible from here, and the
-// only honest measurement of the whole remains the ear.
-func (e *Engine) Delays() (last, worst time.Duration) {
-	e.mu.Lock()
-	last, worst = e.last, e.worst
-	e.mu.Unlock()
-	return
+func (e *Engine) envelope() Envelope {
+	if e.Envelope == (Envelope{}) {
+		return DefaultEnvelope
+	}
+	return e.Envelope
 }
 
-// Histogram returns how the delays between a key event and the samples
-// were spread since the engine started.
-//
-// A copy, taken under the lock the audio goroutine holds a few
-// microseconds per buffer: cheap enough to read every frame.
-func (e *Engine) Histogram() Histogram {
-	e.mu.Lock()
-	h := e.histogram
-	e.mu.Unlock()
-	return h
+// frames converts a duration into a count of frames, never below one so
+// that a zero duration is an immediate step rather than a division by
+// zero.
+func frames(d time.Duration) float64 {
+	return max(1, float64(SampleRate)*d.Seconds())
 }
 
 func (e *Engine) Read(buf []byte) (int, error) {
-	now := time.Now()
-
-	e.mu.Lock()
-	for i := range e.nCommands {
-		d := now.Sub(e.commands[i].at)
-		e.last = d
-		if d > e.worst {
-			e.worst = d
-		}
-		e.histogram.add(d)
-		e.apply(e.commands[i])
+	n := e.take(time.Now(), &e.pending)
+	for i := range n {
+		e.apply(e.pending[i])
 	}
-	e.nCommands = 0
-	e.mu.Unlock()
 
-	frames := len(buf) / BytesPerFrame
-	attackFrames := float64(SampleRate) * attack.Seconds()
-	releaseFrames := float64(SampleRate) * release.Seconds()
+	env := e.envelope()
+	rise := 1 / frames(env.Attack)
+	decay := (1 - env.Sustain) / frames(env.Decay)
+	releaseFrames := frames(env.Release)
 
-	for f := range frames {
+	count := len(buf) / BytesPerFrame
+	for f := range count {
 		var sample float64
 		for v := range e.voices {
 			vo := &e.voices[v]
@@ -178,30 +174,38 @@ func (e *Engine) Read(buf []byte) (int, error) {
 
 			switch vo.state {
 			case voiceAttack:
-				vo.env += vo.gain / attackFrames
-				if vo.env >= vo.gain {
-					vo.env = vo.gain
+				vo.env += rise
+				if vo.env >= 1 {
+					vo.env = 1
+					vo.state = voiceDecay
+				}
+			case voiceDecay:
+				vo.env -= decay
+				if vo.env <= env.Sustain {
+					vo.env = env.Sustain
 					vo.state = voiceSustain
 				}
 			case voiceRelease:
-				vo.env -= vo.gain / releaseFrames
+				if vo.fall == 0 {
+					// Released on this frame: fall from wherever the
+					// envelope stood, so that a key let go during its
+					// attack does not jump.
+					vo.fall = max(vo.env, 1e-9) / releaseFrames
+				}
+				vo.env -= vo.fall
 				if vo.env <= 0 {
 					*vo = voice{}
 					continue
 				}
 			}
 
-			sample += vo.env * math.Sin(vo.phase)
-			vo.phase += vo.step
-			if vo.phase > 2*math.Pi {
-				vo.phase -= 2 * math.Pi
-			}
+			sample += vo.gain * vo.env * vo.osc.next(e.Timbre, e.Smooth)
 		}
 
 		writeFrame(buf[f*BytesPerFrame:], float32(clamp(sample)))
 	}
 
-	return frames * BytesPerFrame, nil
+	return count * BytesPerFrame, nil
 }
 
 func (e *Engine) apply(c command) {
@@ -209,20 +213,22 @@ func (e *Engine) apply(c command) {
 		for i := range e.voices {
 			if e.voices[i].state != voiceOff && e.voices[i].key == c.key {
 				e.voices[i].state = voiceRelease
+				e.voices[i].fall = 0
 			}
 		}
 		return
 	}
 
-	step := 2 * math.Pi * e.Tuning.Frequency(c.key) / SampleRate
+	inc := e.Tuning.Frequency(c.key) / SampleRate
 
 	// Retrigger the same key rather than stacking a second voice on it,
 	// so that a repeated note does not grow louder than a single one.
 	for i := range e.voices {
 		if e.voices[i].state != voiceOff && e.voices[i].key == c.key {
-			e.voices[i].step = step
+			e.voices[i].osc.inc = inc
 			e.voices[i].gain = c.velocity * headroom
 			e.voices[i].state = voiceAttack
+			e.voices[i].fall = 0
 			return
 		}
 	}
@@ -239,7 +245,7 @@ func (e *Engine) apply(c command) {
 		// release and therefore the least missed.
 		slot = 0
 		for i := range e.voices {
-			if e.voices[i].env < e.voices[slot].env {
+			if e.voices[i].env*e.voices[i].gain < e.voices[slot].env*e.voices[slot].gain {
 				slot = i
 			}
 		}
@@ -247,14 +253,14 @@ func (e *Engine) apply(c command) {
 
 	e.voices[slot] = voice{
 		key:   c.key,
-		step:  step,
+		osc:   oscillator{inc: inc, lfsr: 1},
 		gain:  c.velocity * headroom,
 		state: voiceAttack,
 	}
 }
 
 // clamp keeps a dense chord from wrapping around into noise. Summing
-// twenty four sines can exceed one, and a float32 that overflows the
+// twenty four voices can exceed one, and a float32 that overflows the
 // converter's range does not saturate, it screams.
 func clamp(v float64) float64 {
 	switch {

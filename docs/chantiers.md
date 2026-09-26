@@ -120,8 +120,9 @@ connaît.
       `reveal()` refait ses namers à chaque frame, par exemple.
 - [ ] calibration chez le joueur. Promise dès le premier jour, et les
       chiffres mesurés ici sont ceux d'une machine, pas une promesse.
-- [ ] timbre : quelques partiels, le jour où le frottement des sinus
-      purs cessera d'être beau.
+- [ ] les timbres 8 bits dans les préférences du joueur, avec le rendu
+      authentique ou adouci : pour l'instant `-timbre` et `-authentic`,
+      le rendu adouci étant le défaut.
 - [ ] niveau de sortie bas, conséquence de la marge prise sur le gain.
       Réglage, pas conception.
 
@@ -137,8 +138,11 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
 
 - [ ] un rendu plus joli d'une touche enfoncée : l'enfoncement de 2 px
       passe pour un MVP mais a l'air bon marché.
-- [ ] la soundfont : lecteur SF2 en pur Go, allocations, licence et
-      poids, puis nouvelle mesure sous charge.
+- [ ] la soundfont, dans `synth/soundfont` : go-meltysynth (MIT, rien
+      d'autre que la bibliothèque standard, n'alloue pas en rendu, SF2
+      seulement) enveloppé dans la `queue` commune. Il faut un piano
+      réduit à quelques Mo, sous licence claire (Salamander, CC-BY),
+      préparé avec Polyphone. Puis nouvelle mesure sous charge.
 - [ ] la feuille de route de `oreille.md` : l'abstraction `Activity`,
       les réglages, puis degrés, tétracordes et modes.
 - [ ] WASM : `midi.go` derrière un build tag, `webmididrv` plus tard,

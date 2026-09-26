@@ -37,6 +37,8 @@ func main() {
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
 	player := flag.Duration("player", 0, "player buffer, zero means the same")
 	a4 := flag.Float64("a4", 440, "diapason in hertz")
+	timbre := flag.String("timbre", "sine", "sine, pulse12, pulse25, square, triangle or noise")
+	authentic := flag.Bool("authentic", false, "keep the consoles' aliasing and stepped triangle instead of smoothing them")
 	verbose := flag.Bool("v", false, "print every key event received")
 	flag.Parse()
 
@@ -62,7 +64,12 @@ func main() {
 	}
 	defer keys.Close()
 
-	engine := &synth.Engine{Tuning: synth.Tuning{A4: *a4}}
+	engine, err := synth.NewEngine(*timbre, !*authentic)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	engine.Tuning = synth.Tuning{A4: *a4}
 
 	out, err := synth.Open(engine, synth.Options{Device: *device, Player: *player})
 	if err != nil {

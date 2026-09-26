@@ -13,6 +13,9 @@
 //	l              switch between French and English
 //	n              switch between signs and words, si♭ or si bémol
 //	q, escape      quit
+//
+// -timbre picks the sound. The console timbres are smoothed unless
+// -authentic asks for their raw aliasing.
 package main
 
 import (
@@ -38,6 +41,8 @@ func main() {
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
 	player := flag.Duration("player", 0, "player buffer, zero means the same")
 	a4 := flag.Float64("a4", 440, "diapason in hertz")
+	timbre := flag.String("timbre", "sine", "sine, pulse12, pulse25, square, triangle or noise")
+	authentic := flag.Bool("authentic", false, "keep the consoles' aliasing and stepped triangle instead of smoothing them")
 	dexPath := flag.String("dex", defaultDexPath(), "where the collection is kept")
 	seed := flag.Uint64("seed", 0, "random seed, zero for a new one each run")
 	flag.Parse()
@@ -67,7 +72,11 @@ func main() {
 		log.Fatalf("reading %s: %v", *dexPath, err)
 	}
 
-	engine := &synth.Engine{Tuning: synth.Tuning{A4: *a4}}
+	engine, err := synth.NewEngine(*timbre, !*authentic)
+	if err != nil {
+		log.Fatal(err)
+	}
+	engine.Tuning = synth.Tuning{A4: *a4}
 	out, err := synth.Open(engine, synth.Options{Device: *device, Player: *player})
 	if err != nil {
 		log.Fatal(err)
