@@ -51,11 +51,18 @@ func (q Question) Right() dex.Notion {
 // the right shape on the tonic, and the one chosen by mistake if any.
 // Patterns rather than sets, so that the notes can be spelled in the
 // shape they belong to.
+//
+// A shape of fewer than seven notes has no key of its own: `key` is the
+// scale to spell the right one in, the major scale of a degree for
+// instance, and `chosenKey` the one for the chosen shape when it
+// differs. Zero when the shapes are scales and spell themselves.
 type display struct {
-	tonic   harmony.PitchClass
-	right   harmony.ScalePattern
-	chosen  harmony.ScalePattern
-	mistake bool
+	tonic     harmony.PitchClass
+	right     harmony.ScalePattern
+	chosen    harmony.ScalePattern
+	key       harmony.ScalePattern
+	chosenKey harmony.ScalePattern
+	mistake   bool
 }
 
 // An Activity is what differs from one exercise to the next: what to
@@ -85,8 +92,10 @@ type Activity interface {
 	// Sound is what the player hears when the question is asked.
 	Sound(q Question) []keyboard.Note
 
-	// Correction is what the player hears after choosing `chosen` by
-	// mistake: the right answer, then the wrong one, to compare.
+	// Correction is what the player hears once `chosen` is out. After a
+	// mistake, the right answer then the wrong one, to compare. After a
+	// right answer, nothing for most activities, and the question keeps
+	// sounding; a degree walks to its tonic either way.
 	Correction(q Question, chosen int) []keyboard.Note
 
 	// Show is what the keyboard shows once the answer is out.

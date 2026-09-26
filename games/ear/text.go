@@ -12,35 +12,53 @@ import (
 // from naming; these are only the game's own sentences, too few to
 // deserve a package.
 type words struct {
-	menu       string
-	activities map[string]string // activity ID → its name in the menu
-	question   string            // question number, total
-	retry      string
-	which      string // tonic name
-	whichShape string // tonic name
-	tetrachord string // qualifier from naming: majeur, phrygien
-	replay     string
-	answerKeys string
-	right      string
-	wrong      string // right mode name
-	next       string
-	end        string
-	discovered string // mode name
-	recognized string // mode name
-	nothingNew string
-	again      string
-	noMIDI     string
-	keys       string
+	menu        string
+	activities  map[string]string // activity ID → its name in the menu
+	question    string            // question number, total
+	retry       string
+	which       string // tonic name
+	whichShape  string // tonic name
+	tetrachord  string // qualifier from naming: majeur, phrygien
+	whichDegree string // tonic name; the major scale only, until naming names scales
+	intervals   map[harmony.Interval]string
+	replay      string
+	answerKeys  string
+	right       string
+	wrong       string // right mode name
+	next        string
+	end         string
+	discovered  string // mode name
+	recognized  string // mode name
+	nothingNew  string
+	again       string
+	noMIDI      string
+	keys        string
 }
 
 var french = words{
-	menu:       "Choisir une activité : chiffre ou clic",
-	activities: map[string]string{"tetrachords": "Tétracordes", "modes": "Modes", "modes-all": "Les sept modes"},
-	question:   "Question %d / %d",
-	retry:      "(reprise)",
-	which:      "Quel est ce mode ? Tonique : %s",
-	whichShape: "Quel est ce tétracorde ? Tonique : %s",
-	tetrachord: "le tétracorde %s",
+	menu:        "Choisir une activité : chiffre ou clic",
+	activities:  map[string]string{"degrees": "Degrés", "tetrachords": "Tétracordes", "modes": "Modes", "modes-all": "Les sept modes"},
+	question:    "Question %d / %d",
+	retry:       "(reprise)",
+	which:       "Quel est ce mode ? Tonique : %s",
+	whichShape:  "Quel est ce tétracorde ? Tonique : %s",
+	tetrachord:  "le tétracorde %s",
+	whichDegree: "Quel est ce degré ? Gamme : %s majeur",
+	intervals: map[harmony.Interval]string{
+		harmony.IntUnison:          "l'unisson",
+		harmony.IntMinorSecond:     "la seconde mineure",
+		harmony.IntMajorSecond:     "la seconde majeure",
+		harmony.IntMinorThird:      "la tierce mineure",
+		harmony.IntMajorThird:      "la tierce majeure",
+		harmony.IntPerfectFourth:   "la quarte juste",
+		harmony.IntAugmentedFourth: "la quarte augmentée",
+		harmony.IntDiminishedFifth: "la quinte diminuée",
+		harmony.IntPerfectFifth:    "la quinte juste",
+		harmony.IntMinorSixth:      "la sixte mineure",
+		harmony.IntMajorSixth:      "la sixte majeure",
+		harmony.IntMinorSeventh:    "la septième mineure",
+		harmony.IntMajorSeventh:    "la septième majeure",
+	},
 	replay:     "R : réécouter",
 	answerKeys: "Chiffre ou clic pour répondre",
 	right:      "Oui !",
@@ -52,17 +70,33 @@ var french = words{
 	nothingNew: "Rien de nouveau cette fois, mais tout est rafraîchi.",
 	again:      "Espace : une autre série   Entrée : menu",
 	noMIDI:     "sans clavier MIDI",
-	keys:       "L : English   N : signes ou mots",
+	keys:       "L : English   N : signes ou mots   P : piano",
 }
 
 var english = words{
-	menu:       "Pick an activity: digit or click",
-	activities: map[string]string{"tetrachords": "Tetrachords", "modes": "Modes", "modes-all": "All seven modes"},
-	question:   "Question %d / %d",
-	retry:      "(retry)",
-	which:      "Which mode is this? Tonic: %s",
-	whichShape: "Which tetrachord is this? Tonic: %s",
-	tetrachord: "the %s tetrachord",
+	menu:        "Pick an activity: digit or click",
+	activities:  map[string]string{"degrees": "Degrees", "tetrachords": "Tetrachords", "modes": "Modes", "modes-all": "All seven modes"},
+	question:    "Question %d / %d",
+	retry:       "(retry)",
+	which:       "Which mode is this? Tonic: %s",
+	whichShape:  "Which tetrachord is this? Tonic: %s",
+	tetrachord:  "the %s tetrachord",
+	whichDegree: "Which degree is this? Scale: %s major",
+	intervals: map[harmony.Interval]string{
+		harmony.IntUnison:          "the unison",
+		harmony.IntMinorSecond:     "the minor second",
+		harmony.IntMajorSecond:     "the major second",
+		harmony.IntMinorThird:      "the minor third",
+		harmony.IntMajorThird:      "the major third",
+		harmony.IntPerfectFourth:   "the perfect fourth",
+		harmony.IntAugmentedFourth: "the augmented fourth",
+		harmony.IntDiminishedFifth: "the diminished fifth",
+		harmony.IntPerfectFifth:    "the perfect fifth",
+		harmony.IntMinorSixth:      "the minor sixth",
+		harmony.IntMajorSixth:      "the major sixth",
+		harmony.IntMinorSeventh:    "the minor seventh",
+		harmony.IntMajorSeventh:    "the major seventh",
+	},
 	replay:     "R: listen again",
 	answerKeys: "Digit or click to answer",
 	right:      "Yes!",
@@ -74,7 +108,7 @@ var english = words{
 	nothingNew: "Nothing new this time, but everything is refreshed.",
 	again:      "Space: another series   Enter: menu",
 	noMIDI:     "no MIDI keyboard",
-	keys:       "L: Français   N: signs or words",
+	keys:       "L: Français   N: signs or words   P: piano",
 }
 
 // language bundles what the game needs to speak one language.
@@ -116,6 +150,12 @@ func (l language) notion(n dex.Notion) string {
 		}
 	case dex.KindTetrachord:
 		return fmt.Sprintf(l.words.tetrachord, l.locale.TetrachordName(n.Tetrachord))
+	case dex.KindInterval:
+		// The words of the intervals belong in naming, like those of the
+		// modes and tetrachords. Here until naming has them.
+		if name, ok := l.words.intervals[n.Interval]; ok {
+			return name
+		}
 	}
 	return n.String()
 }
@@ -123,9 +163,15 @@ func (l language) notion(n dex.Notion) string {
 // label names a choice on its button, where the question already says
 // what kind of thing it is: « phrygien » rather than « le tétracorde
 // phrygien », which would not fit four abreast.
+//
+// An interval gets no name at all: its button is the degree it reaches
+// from the tonic, and the number already says it.
 func (l language) label(n dex.Notion) string {
-	if n.Kind == dex.KindTetrachord {
+	switch n.Kind {
+	case dex.KindTetrachord:
 		return l.locale.TetrachordName(n.Tetrachord)
+	case dex.KindInterval:
+		return ""
 	}
 	return l.notion(n)
 }

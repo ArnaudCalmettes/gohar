@@ -1,6 +1,7 @@
 // Command ear trains the ear: something sounds over its tonic, the
-// player names it. A menu offers the activities, all open: the four
-// tetrachords, then the seven modes of the natural system.
+// player names it. A menu offers the activities, all open: the degrees
+// of the major scale, the four tetrachords, then the seven modes of the
+// natural system.
 //
 // The tracer bullet of the project. It crosses every layer, synth,
 // keyboard, harmony, naming in two languages and the dex, with as
@@ -11,6 +12,7 @@
 //	r              listen again
 //	space          next, then the same activity again
 //	enter          back to the menu, at the end of a series
+//	p              hide the piano during questions, to work by ear alone
 //	h              delay figures, for the test under load
 //	l              switch between French and English
 //	n              switch between signs and words, si♭ or si bémol

@@ -63,9 +63,13 @@ Le dex est donc une collection d'**objets sonores**, pas de savoirs.
 C'est une limite réelle, et il ne faut pas la forcer : une partie de la
 théorie n'y logera jamais.
 
-Une gamme n'est pas une entrée de plus : c'est un mode. La mineure
-harmonique, c'est l'éolien ♮7, premier mode de son système, et le
-mineur naturel, c'est l'éolien.
+Une gamme est une entrée à part entière, distincte de ses modes : la
+gamme majeure n'est pas l'entrée de l'ionien, ni la gamme mineure
+naturelle celle de l'éolien. Dans un contexte tonal, la mineure
+naturelle est une gamme de référence au même titre que la majeure,
+même si c'est aussi le mode du sixième degré de celle-ci : c'est ainsi
+que la tradition européenne construit les tonalités mineures. Leur
+place dans le modèle est le chantier `KindSystem`.
 
 ### Les notions élémentaires
 

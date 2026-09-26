@@ -119,6 +119,9 @@ func (a modes) Sound(q Question) []keyboard.Note {
 }
 
 func (a modes) Correction(q Question, chosen int) []keyboard.Note {
+	if chosen == q.Answer {
+		return nil
+	}
 	right, end := scaleNotes(q.Tonic, a.pattern(q.Right()), 0)
 	wrong, _ := scaleNotes(q.Tonic, a.pattern(q.Choices[chosen]), end+gap)
 	return append(right, wrong...)

@@ -170,17 +170,31 @@ l'ambitus et le tempo en premier.
 
 **Une progression par compétences d'oreille** :
 
-- **Degrés** (functional ear training) : une tonique posée, puis une
-  note de la gamme, et le joueur répond son degré (1 à 7) plutôt que son
-  nom. Quelques degrés d'abord, puis toute la gamme, puis d'autres
+- **Degrés, faits** (functional ear training) : une pédale de tonique
+  dans le même registre que la note (la tonique à la basse est un
+  palier au-dessus), une note de la gamme majeure dans l'octave
+  au-dessus de la tonique, et le joueur répond son degré. C'est
+  l'exercice du débutant au clavier : la main gauche tient la tonique,
+  l'index droit tombe au hasard, et on chante la gamme jusqu'à la note
+  pour trouver son numéro. Pas d'accords : la
+  pédale suffit à poser la tonique, et les cadences viendront avec le
+  volet harmonie. Les sept degrés sont toujours proposés, à leur place.
+  La tonique est fixe pendant la série, tirée au hasard ; la tonique
+  mobile est le palier suivant. Après la réponse, bonne ou non, la
+  gamme rentre à la tonique la plus proche : de la tonique jusqu'à la
+  note pour le tétracorde inférieur, de la note jusqu'à l'octave pour
+  le supérieur, la pédale redescendant à la basse pour éviter l'unisson
+  au départ de la tonique. Après une erreur, le chemin du degré choisi
+  suit.
+  Les degrés interrogés sont un paramètre de l'activité : le premier
+  niveau (1 3 5, ou 1 à 5) reste à trancher d'après les méthodes
+  existantes, et le menu propose les sept en attendant. Puis d'autres
   gammes, et au plus difficile l'échelle chromatique, de l'unisson à
-  l'octave. Poser la tonique demande une cadence, donc des accords, et
-  la tonique reste fixe pendant une série. Le degré n'est pas une
-  notion du dex : il sert à entraîner des **intervalles** depuis la
-  tonique, qui en sont (élémentaires, voir `dex.md`). Et une série
-  jouée qui trouve tous les degrés d'une gamme crédite la **production
-  de cette gamme** sur sa tonique : la mineure harmonique, c'est
-  l'éolien ♮7.
+  l'octave. Le degré n'est pas une notion du dex : ce sont les
+  **intervalles** depuis la tonique qui en sont (élémentaires, voir
+  `dex.md`). Une série jouée qui trouve tous les degrés d'une gamme
+  créditera la **production de cette gamme** sur sa tonique, avec la
+  réponse jouée.
 - **Tétracordes, faits** pour le système naturel : l'étape avant les
   modes. Les quatre formes (majeur, mineur, phrygien, lydien) sont
   proposées à chaque question, toujours à la même place : quatre

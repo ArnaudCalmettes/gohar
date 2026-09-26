@@ -38,10 +38,11 @@ notes datées sur sa propre goroutine avec la gigue d'un doigt.
 `games/keys` fait sonner un clavier MIDI, environ 12,5 ms de plancher
 mesuré, aucun flam audible.
 
-`games/ear` est sorti du tracer bullet : un menu ouvre les quatre
-tétracordes et les modes du système naturel (trois choix, ou les sept
-à la place de leur degré), en français ou en anglais, en signes ou en
-mots, avec le dex persisté dans `~/.config/gohar/dex.json`.
+`games/ear` est sorti du tracer bullet : un menu ouvre les degrés de la
+gamme majeure, les quatre tétracordes et les modes du système naturel
+(trois choix, ou les sept à la place de leur degré), en français ou en
+anglais, en signes ou en mots, avec le dex persisté dans
+`~/.config/gohar/dex.json`.
 
 ## Les décisions du dex
 
@@ -75,11 +76,14 @@ connaît.
       formule recopiée d'un logiciel de fiches.
 - [ ] `Discoverable` : demande un recensement de toutes les notions, qui
       n'existe nulle part.
-- [ ] `KindSystem` : un système est une entrée à part entière, avec ses
-      propres marques. Acté, pas écrit.
-- [ ] distinguer le système comme gamme mère des modes et le système
-      comme référence de l'harmonie tonale. Le mineur naturel n'est pas
-      un citoyen de seconde zone.
+- [ ] `KindSystem` : une gamme est une entrée à part entière, avec ses
+      propres marques, distincte des entrées de ses modes (l'ionien,
+      l'éolien). Acté, pas écrit.
+- [ ] distinguer le système comme gamme mère des modes et la gamme
+      comme référence de l'harmonie tonale. La gamme mineure naturelle
+      n'est pas un citoyen de seconde zone : dans un contexte tonal,
+      c'est une gamme de référence au même titre que la majeure, même
+      si c'est aussi le mode du sixième degré de celle-ci.
 
 ## L'harmonie
 
@@ -140,9 +144,13 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
       seulement) enveloppé dans la `queue` commune. Il faut un piano
       réduit à quelques Mo, sous licence claire (Salamander, CC-BY),
       préparé avec Polyphone. Puis nouvelle mesure sous charge.
-- [ ] la feuille de route de `oreille.md` : l'abstraction, le menu et
-      les tétracordes sont faits ; restent les degrés et leur réponse
-      jouée, les réglages et les niveaux paramétrables.
+- [ ] la feuille de route de `oreille.md` : l'abstraction, le menu, les
+      degrés aux boutons et les tétracordes sont faits ; restent la
+      réponse jouée, les réglages et les niveaux paramétrables.
+- [ ] le premier niveau des degrés (1 3 5, ou 1 à 5) : Arnaud se
+      renseigne sur les méthodes existantes avant de trancher.
+- [ ] les noms des intervalles vivent dans `games/ear/text.go` faute
+      d'exister dans `naming`, où ils doivent aller.
 - [ ] WASM : `midi.go` derrière un build tag, `webmididrv` plus tard,
       le dex dans `localStorage`, et l'écran « cliquer pour commencer »
       qui existe déjà. La police des signes est embarquée, rien à faire

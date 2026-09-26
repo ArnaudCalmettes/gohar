@@ -48,6 +48,19 @@ func tetrachordPattern(t harmony.Tetrachord) harmony.ScalePattern {
 	return p
 }
 
+// tetrachordKey is the natural mode a tetrachord opens, to spell it
+// in: ionian for the major one, dorian for the minor one, and so on.
+// Zero for a shape no natural mode opens.
+func tetrachordKey(t harmony.Tetrachord) harmony.ScalePattern {
+	for d := harmony.Degree(1); d <= 7; d++ {
+		p, _ := harmony.NaturalMajor.Mode(d)
+		if split, ok := p.Tetrachords(); ok && split.Lower == t {
+			return p
+		}
+	}
+	return 0
+}
+
 // Plan makes every shape come once before any comes twice.
 func (a tetrachords) Plan(rng *rand.Rand, n int) []Question {
 	var order []int
@@ -84,6 +97,9 @@ func (a tetrachords) Sound(q Question) []keyboard.Note {
 }
 
 func (a tetrachords) Correction(q Question, chosen int) []keyboard.Note {
+	if chosen == q.Answer {
+		return nil
+	}
 	right, end := scaleNotes(q.Tonic, tetrachordPattern(q.Right().Tetrachord), 0)
 	wrong, _ := scaleNotes(q.Tonic, tetrachordPattern(q.Choices[chosen].Tetrachord), end+gap)
 	return append(right, wrong...)
@@ -91,10 +107,12 @@ func (a tetrachords) Correction(q Question, chosen int) []keyboard.Note {
 
 func (a tetrachords) Show(q Question, chosen int) display {
 	return display{
-		tonic:   q.Tonic,
-		right:   tetrachordPattern(q.Right().Tetrachord),
-		chosen:  tetrachordPattern(q.Choices[chosen].Tetrachord),
-		mistake: chosen != q.Answer,
+		tonic:     q.Tonic,
+		right:     tetrachordPattern(q.Right().Tetrachord),
+		chosen:    tetrachordPattern(q.Choices[chosen].Tetrachord),
+		key:       tetrachordKey(q.Right().Tetrachord),
+		chosenKey: tetrachordKey(q.Choices[chosen].Tetrachord),
+		mistake:   chosen != q.Answer,
 	}
 }
 
