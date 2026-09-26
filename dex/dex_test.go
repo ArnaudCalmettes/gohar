@@ -55,6 +55,8 @@ func TestNotionTextIsStable(t *testing.T) {
 		dex.TetradOf(harmony.ChordDominantSeventh),
 		dex.TetrachordOf(harmony.TetrachordHarmonic),
 		dex.ProgressionOf(1),
+		dex.IntervalOf(harmony.IntAugmentedFourth),
+		dex.IntervalOf(harmony.IntDiminishedFifth),
 	}
 
 	for _, n := range notions {
@@ -352,5 +354,52 @@ func TestOverheardShowsAsSilhouette(t *testing.T) {
 			Facts: []dex.Fact{{Kind: dex.FactHeard, Notion: phrygianNatural6}}})
 		require.Len(t, changes, 1)
 		assert.True(t, changes[0].Discovery)
+	})
+}
+
+// An elementary notion is marked only by an activity that asks for it:
+// the intervals a progression sounds in passing do not count.
+func TestElementaryNotionsIgnoreSounded(t *testing.T) {
+	d := dex.New()
+	third := dex.IntervalOf(harmony.IntMinorThird)
+	at := time.Date(2026, 9, 26, 21, 0, 0, 0, time.UTC)
+
+	changes := d.Apply(dex.Report{Game: "shmup", At: at,
+		Facts: []dex.Fact{{Kind: dex.FactSounded, Notion: third}}})
+	assert.Empty(t, changes)
+	_, ok := d.Look(third)
+	assert.False(t, ok, "not even a silhouette")
+
+	d.Apply(dex.Report{Game: "ear", At: at,
+		Facts: []dex.Fact{{Kind: dex.FactNamed, Notion: third}}})
+	e, ok := d.Look(third)
+	require.True(t, ok)
+	assert.True(t, e.Recognized.Held(), "an activity asking for it marks it as usual")
+}
+
+// A mode is made of its two tetrachords, learnt before it.
+func TestModeComponents(t *testing.T) {
+	tests := []struct {
+		what   string
+		degree harmony.Degree
+		want   []dex.Notion
+	}{
+		{"ionian: two major tetrachords, one component", 1,
+			[]dex.Notion{dex.TetrachordOf(harmony.TetrachordMajor)}},
+		{"dorian: two minor", 2,
+			[]dex.Notion{dex.TetrachordOf(harmony.TetrachordMinor)}},
+		{"lydian: lydian under major", 4,
+			[]dex.Notion{dex.TetrachordOf(harmony.TetrachordLydian), dex.TetrachordOf(harmony.TetrachordMajor)}},
+		{"mixolydian: major under minor", 5,
+			[]dex.Notion{dex.TetrachordOf(harmony.TetrachordMajor), dex.TetrachordOf(harmony.TetrachordMinor)}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.what, func(t *testing.T) {
+			assert.Equal(t, tc.want, dex.ModeOf(harmony.NaturalMajor, tc.degree).Components())
+		})
+	}
+
+	t.Run("a tetrachord has none", func(t *testing.T) {
+		assert.Nil(t, dex.TetrachordOf(harmony.TetrachordMajor).Components())
 	})
 }

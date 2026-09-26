@@ -42,6 +42,11 @@ const (
 
 	// KindProgression is an entry of the progression catalogue.
 	KindProgression
+
+	// KindInterval is the gap between two notes, from the unison to
+	// the octave and beyond. An elementary notion: see
+	// [Notion.Elementary].
+	KindInterval
 )
 
 // A ProgressionID designates one entry of the progression catalogue.
@@ -87,6 +92,10 @@ type Notion struct {
 
 	// Progression designates a catalogue entry.
 	Progression ProgressionID
+
+	// Interval designates a gap, degree span and semitones both, so
+	// that an augmented fourth and a diminished fifth stay two notions.
+	Interval harmony.Interval
 }
 
 // ModeOf designates a mode by its mother scale and degree.
@@ -107,6 +116,24 @@ func TetrachordOf(t harmony.Tetrachord) Notion {
 // ProgressionOf designates a catalogue entry.
 func ProgressionOf(id ProgressionID) Notion {
 	return Notion{Kind: KindProgression, Progression: id}
+}
+
+// IntervalOf designates an interval.
+func IntervalOf(i harmony.Interval) Notion {
+	return Notion{Kind: KindInterval, Interval: i}
+}
+
+// Elementary reports whether `n` is one of the small steps a beginner
+// is rewarded for and a musician stops counting: an interval.
+//
+// An elementary notion never receives FactSounded. A turnaround of
+// altered dominants sounds dozens of intervals, and saying the player
+// heard a minor third there would mean nothing. It is marked only by
+// an activity that asks for it, so its marks stop growing, quietly,
+// once the player has moved on to what it builds. Nor does it show as
+// cooling: a third mastered needs no review, the scales it makes up do.
+func (n Notion) Elementary() bool {
+	return n.Kind == KindInterval
 }
 
 // IsZero reports whether `n` designates nothing.
@@ -130,6 +157,8 @@ func (n Notion) String() string {
 		return fmt.Sprintf("tetrachord:%03x", uint16(n.Tetrachord))
 	case KindProgression:
 		return fmt.Sprintf("progression:%d", n.Progression)
+	case KindInterval:
+		return fmt.Sprintf("interval:%d/%d", n.Interval.Degrees, n.Interval.Semitones)
 	}
 	return "none"
 }
@@ -198,6 +227,23 @@ func ParseNotion(s string) (Notion, error) {
 			return Notion{}, fmt.Errorf("dex: %q has no entry: %w", s, err)
 		}
 		return ProgressionOf(ProgressionID(v)), nil
+
+	case "interval":
+		left, right, ok := strings.Cut(rest, "/")
+		if !ok {
+			return Notion{}, fmt.Errorf("dex: %q has no semitones", s)
+		}
+		degrees, err := strconv.ParseUint(left, 10, 8)
+		if err != nil || degrees > 14 {
+			return Notion{}, fmt.Errorf("dex: %q has no degree span", s)
+		}
+		semitones, err := strconv.ParseUint(right, 10, 8)
+		if err != nil || semitones > 24 {
+			return Notion{}, fmt.Errorf("dex: %q has no semitones", s)
+		}
+		return IntervalOf(harmony.Interval{
+			Degrees: harmony.Degrees(degrees), Semitones: harmony.Semitones(semitones),
+		}), nil
 	}
 
 	return Notion{}, fmt.Errorf("dex: %q is of no known kind", s)
@@ -210,10 +256,29 @@ func ParseNotion(s string) (Notion, error) {
 // the player owns the minor seventh flat five, the dominant and the
 // minor major seventh. Before that it does not exist for them.
 //
-// # Undecided
+// # What a mode is made of
 //
-// What a mode is made of. Its mother scale is the obvious answer, and
-// it would make a whole system surface the moment one of its modes is
-// met, which may be too generous. Left empty until that is settled,
-// which makes modes always visible once met and never in silhouette.
-func (n Notion) Components() []Notion { panic("TODO") }
+// Its two tetrachords, the lower from the tonic to the fourth note and
+// the upper from the fifth to the octave: that is the order they are
+// learnt in, the tetrachords of a system before its modes. One
+// component when both are the same shape, the dorian being two minor
+// tetrachords.
+//
+// Every other kind has none yet: nil, which reveals nothing.
+func (n Notion) Components() []Notion {
+	if n.Kind != KindMode {
+		return nil
+	}
+	p, ok := n.System.Mode(n.Degree)
+	if !ok {
+		return nil
+	}
+	split, ok := p.Tetrachords()
+	if !ok {
+		return nil
+	}
+	if split.Lower == split.Upper {
+		return []Notion{TetrachordOf(split.Lower)}
+	}
+	return []Notion{TetrachordOf(split.Lower), TetrachordOf(split.Upper)}
+}

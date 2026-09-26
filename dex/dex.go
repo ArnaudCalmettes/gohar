@@ -298,6 +298,11 @@ func (d *Dex) Apply(r Report) []Change {
 		}
 
 		if f.Kind == FactSounded {
+			if f.Notion.Elementary() {
+				// See Notion.Elementary: only an activity that asks for
+				// an elementary notion marks it.
+				continue
+			}
 			d.entries[f.Notion] = e
 			e.refresh(r.At)
 			first := e.Overheard.earn(r.At, r.Game)
@@ -427,7 +432,8 @@ func (d *Dex) Discoverable() []Notion { panic("TODO") }
 // everything they do not know.
 //
 // What was crossed, and as silhouettes what was only overheard. The
-// other source of silhouettes, [Notion.Components], is undecided.
+// other source of silhouettes, a notion whose [Notion.Components] are
+// all known, waits for the census Discoverable needs.
 func (d *Dex) Visible() []Notion {
 	return d.notions()
 }

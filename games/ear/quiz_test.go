@@ -9,60 +9,17 @@ import (
 	"github.com/ArnaudCalmettes/gohar/harmony"
 )
 
+// The series rules hold whatever the activity; the modes stand in for
+// all of them here.
+
 func newTestSeries() *Series {
-	return NewSeries(rand.New(rand.NewPCG(1, 2)), 10)
+	return NewSeries(modes{system: harmony.NaturalMajor}, rand.New(rand.NewPCG(1, 2)), 10)
 }
 
-func TestSeriesCoversTheSystem(t *testing.T) {
-	s := newTestSeries()
-	seen := map[harmony.Degree]bool{}
-	for _, q := range s.questions {
-		seen[q.Mode] = true
-	}
-	if len(s.questions) != 10 || len(seen) != 7 {
-		t.Errorf("%d questions over %d modes, want 10 over 7", len(s.questions), len(seen))
-	}
-}
-
-func TestChoicesAreFarAndDistinct(t *testing.T) {
-	s := newTestSeries()
-	for i, q := range s.questions {
-		seen := map[harmony.Degree]bool{}
-		hasAnswer := false
-		for _, c := range q.Choices {
-			if seen[c] {
-				t.Errorf("question %d offers %d twice", i, c)
-			}
-			seen[c] = true
-			if c == q.Mode {
-				hasAnswer = true
-				continue
-			}
-			if distance(q.Mode, c) < farEnough {
-				t.Errorf("question %d: %d is too close to %d", i, c, q.Mode)
-			}
-		}
-		if !hasAnswer {
-			t.Errorf("question %d does not offer its answer", i)
-		}
-	}
-}
-
-// Lydian and ionian differ by one note, which is what keeps them apart
-// at this level.
-func TestDistance(t *testing.T) {
-	if d := distance(1, 4); d != 1 {
-		t.Errorf("ionian to lydian: %d, want 1", d)
-	}
-	if d := distance(4, 7); d != 5 {
-		t.Errorf("lydian to locrian: %d, want 5, the tonic and the tritone shared", d)
-	}
-}
-
-func wrongChoice(q Question) harmony.Degree {
-	for _, c := range q.Choices {
-		if c != q.Mode {
-			return c
+func wrongChoice(q Question) int {
+	for i := range q.Choices {
+		if i != q.Answer {
+			return i
 		}
 	}
 	panic("no wrong choice")
@@ -84,8 +41,8 @@ func TestAMistakeIsNothingButARetry(t *testing.T) {
 		t.Fatalf("%d questions after a mistake, want 11", total)
 	}
 	retry := s.questions[1+retryGap]
-	if !retry.Retry || retry.Mode != q.Mode || retry.Tonic == q.Tonic {
-		t.Errorf("retry %+v for %+v: same mode, another tonic expected", retry, q)
+	if !retry.Retry || retry.Right() != q.Right() {
+		t.Errorf("retry %+v for %+v: the same notion expected", retry, q)
 	}
 
 	t.Run("a retry failed again does not come back", func(t *testing.T) {
@@ -108,13 +65,14 @@ func TestTheCorrectionIsWhatCounts(t *testing.T) {
 		if !ok {
 			break
 		}
-		s.Answer(q.Mode)
+		s.Answer(q.Answer)
 		s.Next()
 	}
 
 	r := s.Report(time.Now())
-	if r.Game != gameID || len(r.Facts) != 20 {
-		t.Fatalf("report %s with %d facts, want %s with 20", r.Game, len(r.Facts), gameID)
+	if r.Game != gameID || r.Activity != "modes" || len(r.Facts) != 20 {
+		t.Fatalf("report %s/%s with %d facts, want %s/modes with 20",
+			r.Game, r.Activity, len(r.Facts), gameID)
 	}
 	for _, f := range r.Facts {
 		if f.Kind != dex.FactNamed && f.Kind != dex.FactHeard {

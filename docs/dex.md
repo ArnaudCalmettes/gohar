@@ -63,6 +63,27 @@ Le dex est donc une collection d'**objets sonores**, pas de savoirs.
 C'est une limite réelle, et il ne faut pas la forcer : une partie de la
 théorie n'y logera jamais.
 
+Une gamme n'est pas une entrée de plus : c'est un mode. La mineure
+harmonique, c'est l'éolien ♮7, premier mode de son système, et le
+mineur naturel, c'est l'éolien.
+
+### Les notions élémentaires
+
+L'**intervalle** est une entrée, mais élémentaire : un petit pas qu'on
+récompense chez le grand débutant et qu'un musicien cesse de compter.
+Un II-V-I altéré fait sonner des dizaines d'intervalles, et dire que le
+joueur y a entendu une tierce mineure n'aurait aucun sens. D'où la
+règle :
+
+**Une notion élémentaire ne reçoit jamais `Sonné`.** Elle n'est marquée
+que par une activité qui la demande. Ses marques cessent de croître
+d'elles-mêmes quand le joueur passe à ce qu'elle construit, et elle
+n'apparaît pas dans l'état des lieux : une tierce acquise ne se révise
+pas, les gammes qu'elle compose, si.
+
+Un degré, lui, n'est pas une notion : c'est un exercice qui entraîne
+des intervalles dans le contexte d'une gamme.
+
 Chaque forme est une entrée de plein droit. Le ii-V-I majeur, le
 ii-V-I mineur et le ii-V suspendu sont trois entrées, pas une avec des
 variantes. Ça remplit plus de pages et ça évite un modèle à deux

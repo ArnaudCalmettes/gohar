@@ -24,8 +24,8 @@ alternatives : le registre parlé français et les alias.
 
 `analysis` identifie les accords de façon déterministe, sans pondération.
 
-`dex` a son corps et sa persistance JSON. Restent `Cooling`,
-`Discoverable` et `Components`.
+`dex` a son corps, sa persistance JSON et `Components`. Restent
+`Cooling` et `Discoverable`.
 
 `synth` joue : conversion en fréquence, moteur polyphonique sans
 allocation, discipline des buffers audio, et un histogramme des délais
@@ -38,10 +38,10 @@ notes datées sur sa propre goroutine avec la gigue d'un doigt.
 `games/keys` fait sonner un clavier MIDI, environ 12,5 ms de plancher
 mesuré, aucun flam audible.
 
-`games/ear` est le tracer bullet : les sept modes du système naturel à
-reconnaître, en français ou en anglais, en signes ou en mots, avec le
-dex persisté dans `~/.config/gohar/dex.json`. Il traverse toutes les
-couches et il tient au premier playtest.
+`games/ear` est sorti du tracer bullet : un menu ouvre les quatre
+tétracordes et les modes du système naturel (trois choix, ou les sept
+à la place de leur degré), en français ou en anglais, en signes ou en
+mots, avec le dex persisté dans `~/.config/gohar/dex.json`.
 
 ## Les décisions du dex
 
@@ -75,9 +75,6 @@ connaît.
       formule recopiée d'un logiciel de fiches.
 - [ ] `Discoverable` : demande un recensement de toutes les notions, qui
       n'existe nulle part.
-- [ ] `Notion.Components` : les composants d'un mode sont ses deux
-      tétracordes, puisqu'on les apprend avant lui. À écrire avec
-      l'activité des tétracordes.
 - [ ] `KindSystem` : un système est une entrée à part entière, avec ses
       propres marques. Acté, pas écrit.
 - [ ] distinguer le système comme gamme mère des modes et le système
@@ -143,21 +140,25 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
       seulement) enveloppé dans la `queue` commune. Il faut un piano
       réduit à quelques Mo, sous licence claire (Salamander, CC-BY),
       préparé avec Polyphone. Puis nouvelle mesure sous charge.
-- [ ] la feuille de route de `oreille.md` : l'abstraction `Activity`,
-      les réglages, puis degrés, tétracordes et modes.
+- [ ] la feuille de route de `oreille.md` : l'abstraction, le menu et
+      les tétracordes sont faits ; restent les degrés et leur réponse
+      jouée, les réglages et les niveaux paramétrables.
 - [ ] WASM : `midi.go` derrière un build tag, `webmididrv` plus tard,
       le dex dans `localStorage`, et l'écran « cliquer pour commencer »
       qui existe déjà. La police des signes est embarquée, rien à faire
       de ce côté.
 - [ ] juger à l'oreille le tempo (350 ms par note) et le registre (la
       gamme entre la3 et sol♯4, la pédale deux octaves dessous).
-- [ ] les paliers suivants : distracteurs proches (lydien contre
-      ionien), puis les autres systèmes.
+- [ ] les paliers suivants : les autres systèmes. Les distracteurs
+      proches sont couverts par le palier des sept modes.
 - [ ] afficher les alternatives d'un mode (alias, registre parlé) le
       jour où l'activité quitte le système naturel, qui n'en a pas.
 
 Les autres jeux :
 
+- [ ] les doigtés, le jour où l'on travaillera les mains : des règles
+      simples pour le cas général, et les exceptions en données
+      d'expert.
 - [ ] le shoot'em up bullet hell qui est un jeu d'harmonie déguisé, sur
       rail, sans esquive.
 - [ ] les quatre pistes du billet sur la game loop de l'improvisateur,

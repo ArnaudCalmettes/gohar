@@ -31,41 +31,38 @@ func scaleStart(tonic harmony.PitchClass) int {
 	return 57 + (int(tonic)+3)%12
 }
 
-// modeNotes lays one mode out from `start`, and returns where it ends.
+// scaleNotes lays a shape out on `tonic` from `start`, over a pedal on
+// the tonic, and returns where it ends.
 //
-// Eight notes, the octave included: a scale that stops on its seventh
-// leaves the ear hanging on the most characteristic note of some modes.
-func modeNotes(tonic harmony.PitchClass, mode harmony.Degree, start time.Duration) ([]keyboard.Note, time.Duration) {
-	pattern, _ := system.Mode(mode)
+// A scale closes on its octave: one that stops on its seventh leaves
+// the ear hanging on the most characteristic note of some modes. A
+// smaller shape, a tetrachord, stops where it stops. The last note is
+// held.
+func scaleNotes(tonic harmony.PitchClass, pattern harmony.ScalePattern, start time.Duration) ([]keyboard.Note, time.Duration) {
+	var offsets []int
+	for _, o := range pattern.Offsets() {
+		offsets = append(offsets, int(o))
+	}
+	if pattern.IsHeptatonic() {
+		offsets = append(offsets, 12)
+	}
+
 	first := scaleStart(tonic)
-	end := start + lead + 7*step + lastHold
+	end := start + lead + time.Duration(len(offsets)-1)*step + lastHold
 
 	notes := []keyboard.Note{{
 		Key: first - 24, Velocity: pedalVelocity, Start: start, Length: end - start,
 	}}
 	at := start + lead
-	for _, offset := range pattern.Offsets() {
+	for i, offset := range offsets {
+		length := step
+		if i == len(offsets)-1 {
+			length = lastHold
+		}
 		notes = append(notes, keyboard.Note{
-			Key: first + int(offset), Velocity: scaleVelocity, Start: at, Length: step,
+			Key: first + offset, Velocity: scaleVelocity, Start: at, Length: length,
 		})
 		at += step
 	}
-	notes = append(notes, keyboard.Note{
-		Key: first + 12, Velocity: scaleVelocity, Start: at, Length: lastHold,
-	})
 	return notes, end
-}
-
-// questionNotes is what the player hears when a question is asked.
-func questionNotes(q Question) []keyboard.Note {
-	notes, _ := modeNotes(q.Tonic, q.Mode, 0)
-	return notes
-}
-
-// comparisonNotes plays the right mode, then the one chosen by
-// mistake, on the same tonic. It is the correction being shown.
-func comparisonNotes(q Question, chosen harmony.Degree) []keyboard.Note {
-	right, end := modeNotes(q.Tonic, q.Mode, 0)
-	wrong, _ := modeNotes(q.Tonic, chosen, end+gap)
-	return append(right, wrong...)
 }

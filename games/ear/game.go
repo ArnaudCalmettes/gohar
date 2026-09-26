@@ -36,7 +36,7 @@ const (
 type state uint8
 
 const (
-	stateStart state = iota
+	stateMenu state = iota
 	stateAsking
 	stateRevealed
 	stateEnd
@@ -50,6 +50,15 @@ var (
 	rightColor = color.RGBA{0x3d, 0x7a, 0x4f, 0xff}
 	wrongColor = color.RGBA{0x8a, 0x3b, 0x3b, 0xff}
 )
+
+// activities are what the menu offers, in the order of oreille.md: the
+// tetrachords before the modes they build. All open from the start, for
+// now; levels come with the settings.
+var activities = []Activity{
+	tetrachords{shapes: naturalTetrachords},
+	modes{system: harmony.NaturalMajor},
+	modes{system: harmony.NaturalMajor, all: true},
+}
 
 // keysDown is what is sounding right now, from any source. Written on
 // the sources' goroutines, copied once per tick by Update.
@@ -92,13 +101,14 @@ type game struct {
 	down  [128]bool // this tick's copy of keys
 	piano piano
 
-	state   state
-	series  *Series
-	seq     *keyboard.Sequence
-	chosen  harmony.Degree
-	correct bool
-	changes []dex.Change // what the end screen says, in any language
-	debug   bool
+	state    state
+	activity Activity
+	series   *Series
+	seq      *keyboard.Sequence
+	chosen   int // the index of the choice made
+	correct  bool
+	changes  []dex.Change // what the end screen says, in any language
+	debug    bool
 }
 
 func newGame(lang, other language, engine synth.Instrument, d *dex.Dex, dexPath string, rng *rand.Rand, midi string) (*game, error) {
@@ -156,23 +166,23 @@ func (g *game) stop() {
 }
 
 func (g *game) startSeries() {
-	g.series = NewSeries(g.rng, seriesLength)
+	g.series = NewSeries(g.activity, g.rng, seriesLength)
 	g.ask()
 }
 
 func (g *game) ask() {
 	q, _ := g.series.Current()
 	g.state = stateAsking
-	g.play(questionNotes(q))
+	g.play(g.activity.Sound(q))
 }
 
 func (g *game) answer(i int) {
 	q, _ := g.series.Current()
-	g.chosen = q.Choices[i]
-	g.correct = g.series.Answer(g.chosen)
+	g.chosen = i
+	g.correct = g.series.Answer(i)
 	g.state = stateRevealed
 	if !g.correct {
-		g.play(comparisonNotes(q, g.chosen))
+		g.play(g.activity.Correction(q, i))
 	}
 }
 
@@ -194,20 +204,23 @@ func (g *game) finish() {
 	g.state = stateEnd
 }
 
-// buttonRect places answer `i`.
-func buttonRect(i int) (x, y, w, h float32) {
-	return 40 + float32(i)*190, 180, 180, 48
+// buttonRect places answer `i` of `n`, side by side across the width:
+// three names of modes, four of tetrachords, seven degrees.
+func buttonRect(i, n int) (x, y, w, h float32) {
+	const left, width, gutter = 40, 560, 10
+	w = (width - float32(n-1)*gutter) / float32(n)
+	return left + float32(i)*(w+gutter), 180, w, 48
 }
 
-// clickedButton returns the answer clicked this frame, or -1.
-func (g *game) clickedButton() int {
+// clickedButton returns the answer among `n` clicked this frame, or -1.
+func (g *game) clickedButton(n int) int {
 	if !inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		return -1
 	}
 	px, py := ebiten.CursorPosition()
 	cx, cy := float32(float64(px)/g.scale), float32(float64(py)/g.scale)
-	for i := range 3 {
-		x, y, w, h := buttonRect(i)
+	for i := range n {
+		x, y, w, h := buttonRect(i, n)
 		if cx >= x && cx < x+w && cy >= y && cy < y+h {
 			return i
 		}
@@ -215,8 +228,16 @@ func (g *game) clickedButton() int {
 	return -1
 }
 
-func pressedAnswerKey() int {
-	for i, k := range []ebiten.Key{ebiten.Key1, ebiten.Key2, ebiten.Key3} {
+// answerKeys are the digits, one per choice: seven at most, the degrees
+// of a scale.
+var answerKeys = []ebiten.Key{
+	ebiten.Key1, ebiten.Key2, ebiten.Key3, ebiten.Key4,
+	ebiten.Key5, ebiten.Key6, ebiten.Key7,
+}
+
+// pressedAnswerKey returns the answer among `n` typed this frame, or -1.
+func pressedAnswerKey(n int) int {
+	for i, k := range answerKeys[:min(n, len(answerKeys))] {
 		if inpututil.IsKeyJustPressed(k) {
 			return i
 		}
@@ -225,7 +246,9 @@ func pressedAnswerKey() int {
 }
 
 func (g *game) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyQ) {
+	// Escape alone: Ebiten names keys by their place on a US keyboard,
+	// and the place of Q is A on an AZERTY one.
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		g.stop()
 		return ebiten.Termination
 	}
@@ -246,19 +269,32 @@ func (g *game) Update() error {
 		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
 
 	switch g.state {
-	case stateStart, stateEnd:
-		if proceed {
+	case stateMenu:
+		i := g.clickedButton(len(activities))
+		if i < 0 {
+			i = pressedAnswerKey(len(activities))
+		}
+		if i >= 0 {
+			g.activity = activities[i]
+			g.startSeries()
+		}
+
+	case stateEnd:
+		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
+			g.state = stateMenu
+		} else if proceed {
 			g.startSeries()
 		}
 
 	case stateAsking:
 		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 			q, _ := g.series.Current()
-			g.play(questionNotes(q))
+			g.play(g.activity.Sound(q))
 		}
-		i := g.clickedButton()
+		q, _ := g.series.Current()
+		i := g.clickedButton(len(q.Choices))
 		if i < 0 {
-			i = pressedAnswerKey()
+			i = pressedAnswerKey(len(q.Choices))
 		}
 		if i >= 0 {
 			g.answer(i)
@@ -268,15 +304,16 @@ func (g *game) Update() error {
 		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 			q, _ := g.series.Current()
 			if g.correct {
-				g.play(questionNotes(q))
+				g.play(g.activity.Sound(q))
 			} else {
-				g.play(comparisonNotes(q, g.chosen))
+				g.play(g.activity.Correction(q, g.chosen))
 			}
 		}
 		// A click on the buttons is the answer just given, not a
 		// request to move on.
+		q, _ := g.series.Current()
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
-			(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && g.clickedButton() < 0) {
+			(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && g.clickedButton(len(q.Choices)) < 0) {
 			g.next()
 		}
 	}
@@ -300,9 +337,14 @@ func (g *game) Draw(screen *ebiten.Image) {
 	w := g.lang.words
 
 	switch g.state {
-	case stateStart:
-		g.print(screen, w.start, 40, 160, foreground)
-		g.print(screen, w.keys, 40, 200, dim)
+	case stateMenu:
+		g.print(screen, w.menu, 40, 90, foreground)
+		for i, a := range activities {
+			x, y, bw, bh := buttonRect(i, len(activities))
+			g.canvas(screen).rect(x, y, bw, bh, button)
+			g.print(screen, fmt.Sprintf("%d  %s", i+1, g.lang.activity(a)), float64(x)+12, float64(y)+14, foreground)
+		}
+		g.print(screen, w.keys, 40, 236, dim)
 
 	case stateAsking, stateRevealed:
 		q, _ := g.series.Current()
@@ -312,21 +354,21 @@ func (g *game) Draw(screen *ebiten.Image) {
 			head += " " + w.retry
 		}
 		g.print(screen, head, 40, 40, dim)
-		g.print(screen, fmt.Sprintf(w.which, g.lang.note(q.Tonic)), 40, 90, foreground)
+		g.print(screen, g.activity.Prompt(g.lang, q), 40, 90, foreground)
 
-		for i, d := range q.Choices {
-			x, y, bw, bh := buttonRect(i)
+		for i, choice := range q.Choices {
+			x, y, bw, bh := buttonRect(i, len(q.Choices))
 			fill := button
 			if g.state == stateRevealed {
-				switch {
-				case d == q.Mode:
+				switch i {
+				case q.Answer:
 					fill = rightColor
-				case d == g.chosen:
+				case g.chosen:
 					fill = wrongColor
 				}
 			}
 			g.canvas(screen).rect(x, y, bw, bh, fill)
-			g.print(screen, fmt.Sprintf("%d  %s", i+1, g.lang.mode(d)), float64(x)+12, float64(y)+14, foreground)
+			g.buttonText(screen, i+1, g.lang.label(choice), x, y, bw)
 		}
 
 		if g.state == stateAsking {
@@ -334,7 +376,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 		} else {
 			verdict := w.right
 			if !g.correct {
-				verdict = fmt.Sprintf(w.wrong, g.lang.mode(q.Mode))
+				verdict = fmt.Sprintf(w.wrong, g.lang.notion(q.Right()))
 			}
 			g.print(screen, verdict, 40, 130, foreground)
 			g.print(screen, w.next+"   "+w.replay, 40, 236, dim)
@@ -361,6 +403,22 @@ func (g *game) Draw(screen *ebiten.Image) {
 	g.drawFooter(screen)
 }
 
+// buttonText writes a choice on its button. When the number and the
+// name do not fit side by side, the number goes on top and the name
+// below it in the small face: seven modes on one line leave about
+// seventy units a button, and « 7  mixolydien » needs more.
+func (g *game) buttonText(screen *ebiten.Image, number int, name string, x, y, w float32) {
+	const pad = 12
+	c := g.canvas(screen)
+	line := fmt.Sprintf("%d  %s", number, name)
+	if tw, _ := c.measure(line, g.face); tw <= float64(w)-2*pad {
+		c.text(line, g.face, float64(x)+pad, float64(y)+14, foreground)
+		return
+	}
+	c.text(fmt.Sprint(number), g.face, float64(x)+pad/2, float64(y)+4, foreground)
+	c.text(name, g.small, float64(x)+pad/2, float64(y)+28, foreground)
+}
+
 // drawFooter shows the keyboard, and on H the delay figures of the
 // test under load.
 func (g *game) drawFooter(screen *ebiten.Image) {
@@ -383,37 +441,36 @@ func (g *game) reveal() reveal {
 		return reveal{}
 	}
 	q, _ := g.series.Current()
-	right, _ := system.Mode(q.Mode)
-	chosen, _ := system.Mode(g.chosen)
+	d := g.activity.Show(q, g.chosen)
 	r := reveal{
 		on:      true,
-		tonic:   q.Tonic,
-		right:   right.At(q.Tonic),
-		chosen:  chosen.At(q.Tonic),
-		mistake: !g.correct,
+		tonic:   d.tonic,
+		right:   d.right.At(d.tonic),
+		chosen:  d.chosen.At(d.tonic),
+		mistake: d.mistake,
 	}
 
 	// Signs on the keys whatever the notation: « si bémol » does not fit
 	// on a key, and what the keys show is read, not spoken.
 	signs := g.lang.namer.WithNotation(naming.Signs)
 	if r.mistake {
-		g.label(&r, signs, q.Tonic, chosen)
+		g.label(&r, signs, d.tonic, d.chosen)
 	}
-	// The right mode is spelled last, so that it names the shared
-	// classes: that is the scale the player is asked to learn.
-	g.label(&r, signs, q.Tonic, right)
+	// The right shape is spelled last, so that it names the shared
+	// classes: that is the one the player is asked to learn.
+	g.label(&r, signs, d.tonic, d.right)
 	return r
 }
 
-// label spells the classes of one mode on its tonic into r.
+// label spells the classes of one shape on its tonic into r: in its own
+// tonality when it has seven notes, by the default convention when it
+// has fewer, a tetrachord having no key to be spelled in.
 func (g *game) label(r *reveal, n *naming.Namer, tonic harmony.PitchClass, p harmony.ScalePattern) {
-	t, err := harmony.NewTonality(tonic, p)
-	if err != nil {
-		return
+	if t, err := harmony.NewTonality(tonic, p); err == nil {
+		n = n.WithTonality(t)
 	}
-	spelled := n.WithTonality(t)
 	for c := range p.At(tonic).Classes() {
-		r.labels[c] = spelled.Name(c)
+		r.labels[c] = n.Name(c)
 	}
 }
 

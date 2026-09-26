@@ -1,18 +1,20 @@
-// Command ear is the first ear activity: a mode sounds over its tonic,
-// the player names it.
+// Command ear trains the ear: something sounds over its tonic, the
+// player names it. A menu offers the activities, all open: the four
+// tetrachords, then the seven modes of the natural system.
 //
 // The tracer bullet of the project. It crosses every layer, synth,
 // keyboard, harmony, naming in two languages and the dex, with as
 // little game as will do. What it is for is the list of what does not
 // hold; the rules are in docs/OREILLE.md.
 //
-//	1 2 3, click   answer
+//	1 to 7, click  pick an activity, answer
 //	r              listen again
-//	space          next
+//	space          next, then the same activity again
+//	enter          back to the menu, at the end of a series
 //	h              delay figures, for the test under load
 //	l              switch between French and English
 //	n              switch between signs and words, si♭ or si bémol
-//	q, escape      quit
+//	escape         quit
 //
 // -timbre picks the sound. The console timbres are smoothed unless
 // -authentic asks for their raw aliasing.
