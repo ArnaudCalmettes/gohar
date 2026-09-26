@@ -56,7 +56,7 @@ func TestModeNameIsSystematic(t *testing.T) {
 		{
 			what:   "a double flat",
 			system: harmony.HarmonicMajor, degree: 7,
-			english: "locrian \u266d\u266d7", french: "locrien \u266d\u266d7", words: "locrien double bémol 7",
+			english: "locrian \U0001D12B7", french: "locrien \U0001D12B7", words: "locrien double bémol 7",
 		},
 		{
 			what:   "two alterations, in the order the catalogue holds",

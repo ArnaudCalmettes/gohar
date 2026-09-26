@@ -75,9 +75,9 @@ connaît.
       formule recopiée d'un logiciel de fiches.
 - [ ] `Discoverable` : demande un recensement de toutes les notions, qui
       n'existe nulle part.
-- [ ] `Notion.Components` : un mode rend-il visible toute sa gamme mère ?
-      Laissé vide en attendant. Les silhouettes ne viennent pour
-      l'instant que de ce qui a été entendu sans être nommé.
+- [ ] `Notion.Components` : les composants d'un mode sont ses deux
+      tétracordes, puisqu'on les apprend avant lui. À écrire avec
+      l'activité des tétracordes.
 - [ ] `KindSystem` : un système est une entrée à part entière, avec ses
       propres marques. Acté, pas écrit.
 - [ ] distinguer le système comme gamme mère des modes et le système
@@ -114,12 +114,10 @@ connaît.
 
 ## L'audio
 
-- [ ] comportement sous charge, Ebitengine et ramasse-miettes. Le
-      raisonnement est écrit dans `architecture.md`. L'outil est prêt :
-      la touche `H` de `ear` affiche n, p50, p99 et le maximum de
-      l'histogramme. Reste à le lire après plusieurs minutes avec le
-      clavier vectoriel animé, jamais la moyenne, et à corréler avec
-      `GODEBUG=gctrace=1`.
+- [ ] les allocations de la boucle de jeu : une collecte toutes les une à
+      deux secondes (voir `architecture.md`, tranché le 26/09). Sans
+      risque pour le son, à réduire quand on touche au rendu :
+      `reveal()` refait ses namers à chaque frame, par exemple.
 - [ ] calibration chez le joueur. Promise dès le premier jour, et les
       chiffres mesurés ici sont ceux d'une machine, pas une promesse.
 - [ ] timbre : quelques partiels, le jour où le frottement des sinus
@@ -137,10 +135,12 @@ chose, maintenir la règle des deux surfaces : oto n'est importé que par
 
 La suite de `ear`, dans l'ordre de `oreille.md` :
 
-- [ ] le clavier vectoriel : deux octaves, la note qui sonne animée
-      pendant la question, le mode entier surligné seulement à la
-      révélation, sinon le clavier donne la réponse.
-- [ ] le test sous charge, une fois le clavier animé (voir l'audio).
+- [ ] un rendu plus joli d'une touche enfoncée : l'enfoncement de 2 px
+      passe pour un MVP mais a l'air bon marché.
+- [ ] la soundfont : lecteur SF2 en pur Go, allocations, licence et
+      poids, puis nouvelle mesure sous charge.
+- [ ] la feuille de route de `oreille.md` : l'abstraction `Activity`,
+      les réglages, puis degrés, tétracordes et modes.
 - [ ] WASM : `midi.go` derrière un build tag, `webmididrv` plus tard,
       le dex dans `localStorage`, et l'écran « cliquer pour commencer »
       qui existe déjà. La police des signes est embarquée, rien à faire

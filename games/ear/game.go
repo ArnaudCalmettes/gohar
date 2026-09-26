@@ -1,22 +1,17 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
 	"fmt"
 	"image/color"
 	"log"
 	"math/rand/v2"
-	"slices"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
-	"golang.org/x/image/font/gofont/goregular"
 
 	"github.com/ArnaudCalmettes/gohar/dex"
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
@@ -25,9 +20,9 @@ import (
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
-// signsTTF holds the glyphs Go Regular lacks: ♭ ♮ ♯ and the ellipsis.
-// A four kilobyte cut of DejaVu Sans, embedded rather than read from
-// the system so that the browser build has it too. See fonts/README.md.
+// signsTTF holds the glyphs Go Regular lacks: ♭ ♮ ♯ 𝄫 𝄪. A two
+// kilobyte cut of Noto Music, embedded rather than read from the system
+// so that the browser build has it too. See fonts/README.md.
 //
 //go:embed fonts/signs.ttf
 var signsTTF []byte
@@ -57,31 +52,28 @@ var (
 )
 
 // keysDown is what is sounding right now, from any source. Written on
-// the sources' goroutines, read in Draw.
+// the sources' goroutines, copied once per tick by Update.
+//
+// A fixed array rather than a map: the copy is then a plain assignment,
+// and nothing allocates on the path of a key press.
 type keysDown struct {
 	mu   sync.Mutex
-	down map[int]bool
+	down [128]bool
 }
 
 func (k *keysDown) set(e keyboard.Event) {
-	k.mu.Lock()
-	if e.Down {
-		k.down[e.Key] = true
-	} else {
-		delete(k.down, e.Key)
+	if e.Key < 0 || e.Key >= len(k.down) {
+		return
 	}
+	k.mu.Lock()
+	k.down[e.Key] = e.Down
 	k.mu.Unlock()
 }
 
-func (k *keysDown) sorted() []int {
+func (k *keysDown) snapshot(dst *[128]bool) {
 	k.mu.Lock()
-	defer k.mu.Unlock()
-	keys := make([]int, 0, len(k.down))
-	for key := range k.down {
-		keys = append(keys, key)
-	}
-	slices.Sort(keys)
-	return keys
+	*dst = k.down
+	k.mu.Unlock()
 }
 
 type game struct {
@@ -93,9 +85,12 @@ type game struct {
 	rng     *rand.Rand
 	midi    string // the MIDI input's name, empty without one
 
-	face  text.Face
-	small text.Face
+	face  *font
+	small *font
+	scale float64 // physical pixels per logical unit, set by Layout
 	keys  keysDown
+	down  [128]bool // this tick's copy of keys
+	piano piano
 
 	state   state
 	series  *Series
@@ -107,36 +102,18 @@ type game struct {
 }
 
 func newGame(lang, other language, engine *synth.Engine, d *dex.Dex, dexPath string, rng *rand.Rand, midi string) (*game, error) {
-	face, err := newFace(16)
+	face, err := newFont(16)
 	if err != nil {
 		return nil, err
 	}
-	small, err := newFace(10)
+	small, err := newFont(10)
 	if err != nil {
 		return nil, err
 	}
 	return &game{
 		lang: lang, other: other, engine: engine, dex: d, dexPath: dexPath, rng: rng, midi: midi,
-		face: face, small: small,
-		keys: keysDown{down: map[int]bool{}},
+		face: face, small: small, scale: 1,
 	}, nil
-}
-
-// newFace is Go Regular, falling back on the signs font for what it
-// lacks. A multi face picks the first face holding each glyph.
-func newFace(size float64) (text.Face, error) {
-	regular, err := text.NewGoTextFaceSource(bytes.NewReader(goregular.TTF))
-	if err != nil {
-		return nil, err
-	}
-	signs, err := text.NewGoTextFaceSource(bytes.NewReader(signsTTF))
-	if err != nil {
-		return nil, err
-	}
-	return text.NewMultiFace(
-		&text.GoTextFace{Source: regular, Size: size},
-		&text.GoTextFace{Source: signs, Size: size},
-	)
 }
 
 // toggleNotation switches both languages between signs and words, so
@@ -223,14 +200,15 @@ func buttonRect(i int) (x, y, w, h float32) {
 }
 
 // clickedButton returns the answer clicked this frame, or -1.
-func clickedButton() int {
+func (g *game) clickedButton() int {
 	if !inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 		return -1
 	}
-	cx, cy := ebiten.CursorPosition()
+	px, py := ebiten.CursorPosition()
+	cx, cy := float32(float64(px)/g.scale), float32(float64(py)/g.scale)
 	for i := range 3 {
 		x, y, w, h := buttonRect(i)
-		if float32(cx) >= x && float32(cx) < x+w && float32(cy) >= y && float32(cy) < y+h {
+		if cx >= x && cx < x+w && cy >= y && cy < y+h {
 			return i
 		}
 	}
@@ -251,6 +229,9 @@ func (g *game) Update() error {
 		g.stop()
 		return ebiten.Termination
 	}
+	g.keys.snapshot(&g.down)
+	g.piano.update(&g.down)
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyH) {
 		g.debug = !g.debug
 	}
@@ -275,7 +256,7 @@ func (g *game) Update() error {
 			q, _ := g.series.Current()
 			g.play(questionNotes(q))
 		}
-		i := clickedButton()
+		i := g.clickedButton()
 		if i < 0 {
 			i = pressedAnswerKey()
 		}
@@ -295,22 +276,23 @@ func (g *game) Update() error {
 		// A click on the buttons is the answer just given, not a
 		// request to move on.
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) ||
-			(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && clickedButton() < 0) {
+			(inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) && g.clickedButton() < 0) {
 			g.next()
 		}
 	}
 	return nil
 }
 
-func (g *game) print(screen *ebiten.Image, s string, x, y float64, c color.Color) {
-	g.printWith(screen, g.face, s, x, y, c)
+func (g *game) canvas(screen *ebiten.Image) canvas {
+	return canvas{dst: screen, scale: g.scale}
 }
 
-func (g *game) printWith(screen *ebiten.Image, face text.Face, s string, x, y float64, c color.Color) {
-	op := &text.DrawOptions{}
-	op.GeoM.Translate(x, y)
-	op.ColorScale.ScaleWithColor(c)
-	text.Draw(screen, s, face, op)
+func (g *game) print(screen *ebiten.Image, s string, x, y float64, c color.Color) {
+	g.canvas(screen).text(s, g.face, x, y, c)
+}
+
+func (g *game) printWith(screen *ebiten.Image, f *font, s string, x, y float64, c color.Color) {
+	g.canvas(screen).text(s, f, x, y, c)
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
@@ -343,19 +325,19 @@ func (g *game) Draw(screen *ebiten.Image) {
 					fill = wrongColor
 				}
 			}
-			vector.DrawFilledRect(screen, x, y, bw, bh, fill, false)
+			g.canvas(screen).rect(x, y, bw, bh, fill)
 			g.print(screen, fmt.Sprintf("%d  %s", i+1, g.lang.mode(d)), float64(x)+12, float64(y)+14, foreground)
 		}
 
 		if g.state == stateAsking {
-			g.print(screen, w.answerKeys+"   "+w.replay, 40, 260, dim)
+			g.print(screen, w.answerKeys+"   "+w.replay, 40, 236, dim)
 		} else {
 			verdict := w.right
 			if !g.correct {
 				verdict = fmt.Sprintf(w.wrong, g.lang.mode(q.Mode))
 			}
 			g.print(screen, verdict, 40, 130, foreground)
-			g.print(screen, w.next+"   "+w.replay, 40, 260, dim)
+			g.print(screen, w.next+"   "+w.replay, 40, 236, dim)
 		}
 
 	case stateEnd:
@@ -369,30 +351,69 @@ func (g *game) Draw(screen *ebiten.Image) {
 		if len(lines) == 0 {
 			lines = append(lines, w.nothingNew)
 		}
+		// Seven discoveries at most fit above the keyboard.
 		for i, line := range lines {
-			g.print(screen, line, 40, 90+float64(i)*26, foreground)
+			g.print(screen, line, 40, 80+float64(i)*22, foreground)
 		}
-		g.print(screen, w.again, 40, 300, dim)
+		g.print(screen, w.again, 40, 236, dim)
 	}
 
 	g.drawFooter(screen)
 }
 
-// drawFooter shows what is sounding, and on H the delay figures of the
+// drawFooter shows the keyboard, and on H the delay figures of the
 // test under load.
 func (g *game) drawFooter(screen *ebiten.Image) {
-	var names []string
-	for _, key := range g.keys.sorted() {
-		names = append(names, g.lang.note(harmony.PitchClass(key%12)))
-	}
-	g.print(screen, strings.Join(names, " "), 40, 316, dim)
+	g.piano.draw(g.canvas(screen), g.reveal(), g.small)
 	g.corner(screen)
 
 	if g.debug {
 		h := g.engine.Histogram()
 		g.printWith(screen, g.small, fmt.Sprintf("n %d  p50 %v  p99 %v  max %v  fps %.0f",
 			h.Total(), h.Quantile(0.5), h.Quantile(0.99), h.Quantile(1), ebiten.ActualFPS()),
-			40, 340, dim)
+			40, 342, dim)
+	}
+}
+
+// reveal says what the keyboard may show. Nothing but what sounds
+// until the answer is out: marking the mode during the question would
+// be showing the answer.
+func (g *game) reveal() reveal {
+	if g.state != stateRevealed {
+		return reveal{}
+	}
+	q, _ := g.series.Current()
+	right, _ := system.Mode(q.Mode)
+	chosen, _ := system.Mode(g.chosen)
+	r := reveal{
+		on:      true,
+		tonic:   q.Tonic,
+		right:   right.At(q.Tonic),
+		chosen:  chosen.At(q.Tonic),
+		mistake: !g.correct,
+	}
+
+	// Signs on the keys whatever the notation: « si bémol » does not fit
+	// on a key, and what the keys show is read, not spoken.
+	signs := g.lang.namer.WithNotation(naming.Signs)
+	if r.mistake {
+		g.label(&r, signs, q.Tonic, chosen)
+	}
+	// The right mode is spelled last, so that it names the shared
+	// classes: that is the scale the player is asked to learn.
+	g.label(&r, signs, q.Tonic, right)
+	return r
+}
+
+// label spells the classes of one mode on its tonic into r.
+func (g *game) label(r *reveal, n *naming.Namer, tonic harmony.PitchClass, p harmony.ScalePattern) {
+	t, err := harmony.NewTonality(tonic, p)
+	if err != nil {
+		return
+	}
+	spelled := n.WithTonality(t)
+	for c := range p.At(tonic).Classes() {
+		r.labels[c] = spelled.Name(c)
 	}
 }
 
@@ -407,18 +428,26 @@ func (g *game) corner(screen *ebiten.Image) {
 		label, _, _ = strings.Cut(g.midi, ":")
 	}
 	const room = 240
-	if w, _ := text.Measure(label, g.small, 0); w > room {
+	c := g.canvas(screen)
+	if w, _ := c.measure(label, g.small); w > room {
 		r := []rune(label)
 		for len(r) > 0 {
 			r = r[:len(r)-1]
-			if w, _ := text.Measure(string(r)+"…", g.small, 0); w <= room {
+			if w, _ := c.measure(string(r)+"…", g.small); w <= room {
 				break
 			}
 		}
 		label = string(r) + "…"
 	}
-	w, _ := text.Measure(label, g.small, 0)
-	g.printWith(screen, g.small, label, screenWidth-12-w, 10, dim)
+	w, _ := c.measure(label, g.small)
+	c.text(label, g.small, screenWidth-12-w, 10, dim)
 }
 
-func (g *game) Layout(int, int) (int, int) { return screenWidth, screenHeight }
+// Layout renders at the window's physical resolution, keeping the
+// logical grid's proportions: see canvas.
+func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	s := ebiten.Monitor().DeviceScaleFactor()
+	w, h := float64(outsideWidth)*s, float64(outsideHeight)*s
+	g.scale = min(w/screenWidth, h/screenHeight)
+	return int(screenWidth * g.scale), int(screenHeight * g.scale)
+}

@@ -181,6 +181,13 @@ func TestLocaleRendersInItsOwnWords(t *testing.T) {
 		assert.Equal(t, "fa\u266f", naming.French.Name(sharp(naming.LetterF), naming.Signs))
 	})
 
+	t.Run("a double is one sign, not two", func(t *testing.T) {
+		assert.Equal(t, "fa\U0001D12A",
+			naming.French.Name(naming.SpelledNote{Letter: naming.LetterF, Accidental: naming.DoubleSharpSign}, naming.Signs))
+		assert.Equal(t, "B\U0001D12B",
+			naming.English.Name(naming.SpelledNote{Letter: naming.LetterB, Accidental: naming.DoubleFlatSign}, naming.Signs))
+	})
+
 	t.Run("words go apart from it, in the locale's language", func(t *testing.T) {
 		assert.Equal(t, "F sharp", naming.English.Name(sharp(naming.LetterF), naming.Words))
 		assert.Equal(t, "fa dièse", naming.French.Name(sharp(naming.LetterF), naming.Words))

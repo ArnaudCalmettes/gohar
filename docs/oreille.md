@@ -31,8 +31,17 @@ doit rendre, c'est la liste de ce qui coince.
 - **Langue** : français ou anglais, par `-lang` ou la touche `L`.
 - **Notation** : signes par défaut (si♭, phrygien ♮6), mots en option
   (si bémol, phrygien bécarre 6), par `-notation` ou la touche `N`.
-- **Affichage** : pour l'instant du texte et trois boutons. Le clavier
-  vectoriel qui anime la note qui sonne reste à faire.
+- **Affichage** : trois boutons et un clavier vectoriel de do3 à do6,
+  qui s'allume sous ce qui sonne, de n'importe quelle source, et
+  s'éteint en un quart de seconde. Ce qui sort de la plage (la pédale,
+  un clavier MIDI réglé sur une autre octave) est ramené dedans et
+  affiché atténué. À la révélation, les touches du mode se colorent en
+  entier (clair sur les blanches, foncé sur les noires), la tonique en
+  bleu, avec le nom de chaque note orthographié dans le mode (mi♭ et
+  fa♯ en sol mineur harmonique) et toujours en signes, faute de place.
+  Après une erreur, les notes du seul bon mode sont en vert, celles du
+  seul mode choisi en rouge, les communes en gris : ce qui les sépare
+  saute aux yeux. Repris de la démo gohareact de l'ancien gohar.
 
 ## Les faits émis
 
@@ -51,8 +60,7 @@ doit rendre, c'est la liste de ce qui coince.
 - **Le clavier ne doit pas donner la réponse.** Surligner les touches
   du mode avant la réponse revient à l'afficher. Pendant la question on
   n'anime que la note qui sonne et les touches enfoncées ; le mode
-  entier se surligne à la révélation. À tenir pour le clavier
-  vectoriel.
+  entier se surligne à la révélation.
 - **Jouer une séquence à l'heure.** `Engine.NoteOn` n'ordonnance rien :
   `at` sert à mesurer, pas à différer, et piloter la gamme depuis
   `Update` donnerait une gigue d'une frame (16,7 ms). Résolu par
@@ -67,8 +75,13 @@ doit rendre, c'est la liste de ce qui coince.
 
 - Sous Linux, le port « Midi Through » arrive en tête de liste et ne
   joue rien. `OpenMIDI` le saute quand aucun port n'est demandé.
-- Go Regular n'a pas ♭ ♮ ♯. Une coupe de DejaVu Sans de 4 Ko, embarquée
-  (`games/ear/fonts`), sert de police de secours.
+- Go Regular n'a pas ♭ ♮ ♯, ni le double dièse 𝄪 et le double bémol 𝄫,
+  qui sont des signes à part entière. Une coupe de Noto Music de 2 Ko,
+  embarquée (`games/ear/fonts`), sert de police de secours, et `naming`
+  écrit les doubles avec leur propre signe.
+- Un layout de 640 × 360 agrandi par Ebitengine pixellise tout. Le jeu
+  dessine maintenant à la résolution réelle de la fenêtre, en gardant
+  ses coordonnées logiques (`canvas.go`).
 - Le français écrivait les notes en mots et l'anglais en signes. La
   notation est devenue un choix du `Namer`, indépendant de la langue,
   pour les deux langues à la fois : c'est aussi ce qui ouvre la porte à
@@ -96,12 +109,52 @@ Fait :
 4. **Le jeu en texte** : `games/ear`, la boucle complète, dex compris,
    texte en `text/v2` avec la police de secours. La touche `H` affiche
    déjà l'histogramme.
+5. **Le clavier vectoriel** : `piano.go`, trois octaves, animation et
+   révélation.
+6. **Charge** : dix minutes de jeu, 2 208 événements, p99 et maximum à
+   11 ms, le ramasse-miettes sans effet sur le son. Détail dans
+   `architecture.md`.
 
 Reste :
 
-5. **Le clavier vectoriel** : `ebiten/v2/vector`, deux octaves,
-   animation de la note qui sonne, révélation du mode. Moyen.
-6. **Charge** : lire l'histogramme après plusieurs minutes pendant que
-   le clavier s'anime. Faible, une fois 5 fait.
-7. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
-   Plus tard.
+7. **Soundfont** : étudier un lecteur SF2 en pur Go (allocations sur
+   la goroutine audio, paquet à part puisque `synth` promet de ne
+   dépendre que de la bibliothèque standard, licence et poids de la
+   soundfont pour WASM), puis l'intégrer et refaire la mesure 6.
+8. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
+
+## La feuille de route
+
+Une fois le tracer bullet bouclé, `ear` devient le jeu d'oreille à
+part entière.
+
+**Une abstraction d'abord.** Les activités prévues ont toutes la même
+forme : faire sonner quelque chose, proposer des réponses, émettre des
+faits. Seuls changent ce qui sonne, les réponses et les notions. Une
+interface `Activity`, extraite de `Series`, avant la deuxième
+activité, pour ne pas écrire trois jeux copiés-collés.
+
+**Des réglages pour le joueur**, dans un fichier à part du dex :
+l'ambitus et le tempo en premier.
+
+**Une progression par compétences d'oreille** :
+
+- **Degrés** (functional ear training) : une tonique posée, puis une
+  note de la gamme, et le joueur répond son degré (1 à 7) plutôt que son
+  nom. Quelques degrés d'abord, puis toute la gamme, puis d'autres
+  gammes. Poser la tonique demande une cadence, donc des accords.
+  Question ouverte : un degré relatif est-il une notion du dex ?
+- **Tétracordes**, ceux du système naturel d'abord : l'étape avant les
+  modes.
+- **Modes**, en continuant sur le système naturel. Les autres systèmes
+  viendront par leurs tétracordes avant leurs modes.
+- **À la fin**, tout mélanger, ou mieux, laisser le joueur composer ses
+  propres défis.
+
+Cette progression répond à `Notion.Components` : les composants d'un
+mode sont ses deux tétracordes. Un mode apparaîtrait en silhouette
+quand ses tétracordes sont connus, et la progression sortirait du
+dévoilement du dex plutôt que d'une liste de niveaux.
+
+**Ensuite, le volet harmonie** : triades, tétrades, tétrades avec
+extensions, renversements, cadences et progressions.

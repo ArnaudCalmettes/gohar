@@ -194,6 +194,20 @@ défaut qu'un musicien entend. Puis corréler avec `GODEBUG=gctrace=1` :
 un pic qui tombe sur une ligne de trace désigne le ramasse-miettes, un
 pic sans corrélation désigne l'ordonnanceur ou l'USB.
 
+**Tranché le 26/09/2026.** Dix minutes de `ear` avec le clavier animé,
+à 120 fps, en jouant des accords au MIDI par-dessus les séquences :
+2 208 événements, p50 à 5 ms, p99 et maximum à 11 ms. Le maximum n'a
+pas bougé entre 324 et 2 208 événements : c'est un plafond structurel,
+à peu près deux périodes de lecture d'oto, et non un accident. La trace
+compte 572 collectes, avec des pauses stop-the-world de 0,46 ms au plus,
+et aucun pic ne s'y corrèle. Le ramasse-miettes ne se fait pas sentir.
+
+Le jeu alloue pourtant beaucoup : une collecte toutes les une à deux
+secondes en fin de session, le tas oscillant entre 14 et 28 Mo. La
+goroutine audio n'en paie rien, puisqu'elle n'alloue pas. C'est du
+gaspillage côté boucle de jeu, à réduire par opportunisme, pas un
+risque pour le son.
+
 L'autre moitié du trajet. Du doigt vers le programme, c'est-à-dire le
 clavier maître, l'USB MIDI et la bibliothèque qui le lit. Probablement
 petit, mais non mesuré, et c'est la somme des deux que le joueur sent.

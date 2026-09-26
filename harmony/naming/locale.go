@@ -34,9 +34,12 @@ const (
 // not altered relative to the major scale. Dropping it would render
 // bare phrygian 6, which names a different thing, or plain phrygian,
 // which names another mode outright.
+//
+// The doubles are signs of their own, 𝄫 and 𝄪, and not two simple signs
+// side by side: that is how they are engraved and read.
 var (
-	accidentalSigns = [5]string{"\u266d\u266d", "\u266d", "", "\u266f", "\u266f\u266f"}
-	degreeSigns     = [5]string{"\u266d\u266d", "\u266d", "\u266e", "\u266f", "\u266f\u266f"}
+	accidentalSigns = [5]string{"\U0001D12B", "\u266d", "", "\u266f", "\U0001D12A"}
+	degreeSigns     = [5]string{"\U0001D12B", "\u266d", "\u266e", "\u266f", "\U0001D12A"}
 )
 
 // A Locale holds the words one language uses for letters, accidentals
@@ -289,7 +292,7 @@ func (l Locale) SpokenModeName(m Mode, notation Notation) (string, bool) {
 //  2. A single altered third: the quality it gives the mode, majeur or
 //     mineur. A single raised fifth: augmenté.
 //  3. A single alteration whose interval would be diminished: spelled
-//     with its sign, ♭5, ♭4, ♭♭7.
+//     with its sign, ♭5, ♭4, 𝄫7.
 //  4. Any other single alteration: its interval name, lydien seconde
 //     augmentée, mixolydien sixte mineure.
 //
