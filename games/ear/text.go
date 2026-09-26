@@ -19,12 +19,12 @@ type words struct {
 	which       string // tonic name
 	whichShape  string // tonic name
 	tetrachord  string // qualifier from naming: majeur, phrygien
-	whichDegree string // tonic name; the major scale only, until naming names scales
-	intervals   map[harmony.Interval]string
+	whichDegree string // scale name
 	replay      string
 	answerKeys  string
 	right       string
-	wrong       string // right mode name
+	wrong       string // the right answer, named as notion() does
+	nowPlaying  string // the shape the correction is playing
 	next        string
 	end         string
 	discovered  string // mode name
@@ -43,34 +43,20 @@ var french = words{
 	which:       "Quel est ce mode ? Tonique : %s",
 	whichShape:  "Quel est ce tétracorde ? Tonique : %s",
 	tetrachord:  "le tétracorde %s",
-	whichDegree: "Quel est ce degré ? Gamme : %s majeur",
-	intervals: map[harmony.Interval]string{
-		harmony.IntUnison:          "l'unisson",
-		harmony.IntMinorSecond:     "la seconde mineure",
-		harmony.IntMajorSecond:     "la seconde majeure",
-		harmony.IntMinorThird:      "la tierce mineure",
-		harmony.IntMajorThird:      "la tierce majeure",
-		harmony.IntPerfectFourth:   "la quarte juste",
-		harmony.IntAugmentedFourth: "la quarte augmentée",
-		harmony.IntDiminishedFifth: "la quinte diminuée",
-		harmony.IntPerfectFifth:    "la quinte juste",
-		harmony.IntMinorSixth:      "la sixte mineure",
-		harmony.IntMajorSixth:      "la sixte majeure",
-		harmony.IntMinorSeventh:    "la septième mineure",
-		harmony.IntMajorSeventh:    "la septième majeure",
-	},
-	replay:     "R : réécouter",
-	answerKeys: "Chiffre ou clic pour répondre",
-	right:      "Oui !",
-	wrong:      "C'était %s. Écoute les deux.",
-	next:       "Espace : suivant",
-	end:        "Fin de la série",
-	discovered: "Découverte : %s",
-	recognized: "Reconnu pour la première fois : %s",
-	nothingNew: "Rien de nouveau cette fois, mais tout est rafraîchi.",
-	again:      "Espace : une autre série   Entrée : menu",
-	noMIDI:     "sans clavier MIDI",
-	keys:       "L : English   N : signes ou mots   P : piano",
+	whichDegree: "Quel est ce degré ? Gamme : %s",
+	replay:      "R : réécouter",
+	answerKeys:  "Chiffre ou clic pour répondre",
+	right:       "Oui !",
+	wrong:       "Réponse : %s. Écoute les deux.",
+	nowPlaying:  "On entend : %s",
+	next:        "Espace : suivant",
+	end:         "Fin de la série",
+	discovered:  "Découverte : %s",
+	recognized:  "Reconnu pour la première fois : %s",
+	nothingNew:  "Rien de nouveau cette fois, mais tout est rafraîchi.",
+	again:       "Espace : une autre série   Entrée : menu",
+	noMIDI:      "sans clavier MIDI",
+	keys:        "L : English   N : signes ou mots   P : piano",
 }
 
 var english = words{
@@ -81,34 +67,20 @@ var english = words{
 	which:       "Which mode is this? Tonic: %s",
 	whichShape:  "Which tetrachord is this? Tonic: %s",
 	tetrachord:  "the %s tetrachord",
-	whichDegree: "Which degree is this? Scale: %s major",
-	intervals: map[harmony.Interval]string{
-		harmony.IntUnison:          "the unison",
-		harmony.IntMinorSecond:     "the minor second",
-		harmony.IntMajorSecond:     "the major second",
-		harmony.IntMinorThird:      "the minor third",
-		harmony.IntMajorThird:      "the major third",
-		harmony.IntPerfectFourth:   "the perfect fourth",
-		harmony.IntAugmentedFourth: "the augmented fourth",
-		harmony.IntDiminishedFifth: "the diminished fifth",
-		harmony.IntPerfectFifth:    "the perfect fifth",
-		harmony.IntMinorSixth:      "the minor sixth",
-		harmony.IntMajorSixth:      "the major sixth",
-		harmony.IntMinorSeventh:    "the minor seventh",
-		harmony.IntMajorSeventh:    "the major seventh",
-	},
-	replay:     "R: listen again",
-	answerKeys: "Digit or click to answer",
-	right:      "Yes!",
-	wrong:      "It was %s. Listen to both.",
-	next:       "Space: next",
-	end:        "End of the series",
-	discovered: "Discovered: %s",
-	recognized: "Recognised for the first time: %s",
-	nothingNew: "Nothing new this time, but everything is refreshed.",
-	again:      "Space: another series   Enter: menu",
-	noMIDI:     "no MIDI keyboard",
-	keys:       "L: Français   N: signs or words   P: piano",
+	whichDegree: "Which degree is this? Scale: %s",
+	replay:      "R: listen again",
+	answerKeys:  "Digit or click to answer",
+	right:       "Yes!",
+	wrong:       "Answer: %s. Listen to both.",
+	nowPlaying:  "Now playing: %s",
+	next:        "Space: next",
+	end:         "End of the series",
+	discovered:  "Discovered: %s",
+	recognized:  "Recognised for the first time: %s",
+	nothingNew:  "Nothing new this time, but everything is refreshed.",
+	again:       "Space: another series   Enter: menu",
+	noMIDI:      "no MIDI keyboard",
+	keys:        "L: Français   N: signs or words   P: piano",
 }
 
 // language bundles what the game needs to speak one language.
@@ -151,9 +123,7 @@ func (l language) notion(n dex.Notion) string {
 	case dex.KindTetrachord:
 		return fmt.Sprintf(l.words.tetrachord, l.locale.TetrachordName(n.Tetrachord))
 	case dex.KindInterval:
-		// The words of the intervals belong in naming, like those of the
-		// modes and tetrachords. Here until naming has them.
-		if name, ok := l.words.intervals[n.Interval]; ok {
+		if name, ok := l.locale.IntervalName(n.Interval); ok {
 			return name
 		}
 	}

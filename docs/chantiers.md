@@ -19,7 +19,9 @@ accords, fonctions, systèmes, tétracordes, et les 35 modes. Testé,
 benché, vert.
 
 `naming` sépare la langue (français, anglais) et la notation (signes
-par défaut, mots en option). Chaque mode a un nom systématique et des
+par défaut, mots en option). Il nomme les intervalles jusqu'à la
+septième et les gammes nommées (majeure, mineure naturelle, mineure
+harmonique, mineure mélodique, majeure harmonique) sur leur tonique. Chaque mode a un nom systématique et des
 alternatives : le registre parlé français et les alias.
 
 `analysis` identifie les accords de façon déterministe, sans pondération.
@@ -78,7 +80,11 @@ connaît.
       n'existe nulle part.
 - [ ] `KindSystem` : une gamme est une entrée à part entière, avec ses
       propres marques, distincte des entrées de ses modes (l'ionien,
-      l'éolien). Acté, pas écrit.
+      l'éolien). Acté, pas écrit. Question ouverte : dans `harmony`,
+      la gamme majeure et la mineure naturelle relèvent du même
+      `System` (`NaturalMajor`), et le couple (système, degré) désigne
+      des modes. Il faut une autre désignation pour une gamme ;
+      `naming` s'appuie déjà sur le `ScalePattern`.
 - [ ] distinguer le système comme gamme mère des modes et la gamme
       comme référence de l'harmonie tonale. La gamme mineure naturelle
       n'est pas un citoyen de seconde zone : dans un contexte tonal,
@@ -147,18 +153,22 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
 - [ ] la feuille de route de `oreille.md` : l'abstraction, le menu, les
       degrés aux boutons et les tétracordes sont faits ; restent la
       réponse jouée, les réglages et les niveaux paramétrables.
-- [ ] le premier niveau des degrés (1 3 5, ou 1 à 5) : Arnaud se
-      renseigne sur les méthodes existantes avant de trancher.
-- [ ] les noms des intervalles vivent dans `games/ear/text.go` faute
-      d'exister dans `naming`, où ils doivent aller.
+- [ ] la réponse jouée devra régler ce que le piano montre : les touches
+      qui s'allument sous la note de la question donnent la réponse. Ce
+      que joue la séquence ne s'allume pas pendant la question, ce que
+      joue le joueur, si.
 - [ ] WASM : `midi.go` derrière un build tag, `webmididrv` plus tard,
-      le dex dans `localStorage`, et l'écran « cliquer pour commencer »
-      qui existe déjà. La police des signes est embarquée, rien à faire
-      de ce côté.
+      le dex dans `localStorage`. Le geste qui démarre l'audio est le
+      clic dans le menu. La police des signes est embarquée, rien à
+      faire de ce côté.
 - [ ] juger à l'oreille le tempo (350 ms par note) et le registre (la
-      gamme entre la3 et sol♯4, la pédale deux octaves dessous).
-- [ ] les paliers suivants : les autres systèmes. Les distracteurs
-      proches sont couverts par le palier des sept modes.
+      gamme entre la3 et sol♯4 ; la pédale deux octaves dessous, sauf
+      pendant la question d'un degré où elle est dans la même octave).
+- [ ] les paliers suivants des modes : les autres systèmes. Les
+      distracteurs proches sont couverts par le palier des sept modes.
+- [ ] les paliers suivants des degrés : la tonique mobile, la tonique à
+      la basse, d'autres gammes, et au plus difficile l'échelle
+      chromatique.
 - [ ] afficher les alternatives d'un mode (alias, registre parlé) le
       jour où l'activité quitte le système naturel, qui n'en a pas.
 

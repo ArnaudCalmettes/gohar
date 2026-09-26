@@ -118,13 +118,13 @@ func (a modes) Sound(q Question) []keyboard.Note {
 	return notes
 }
 
-func (a modes) Correction(q Question, chosen int) []keyboard.Note {
+func (a modes) Correction(q Question, chosen int) ([]keyboard.Note, []cue) {
 	if chosen == q.Answer {
-		return nil
+		return nil, nil
 	}
 	right, end := scaleNotes(q.Tonic, a.pattern(q.Right()), 0)
 	wrong, _ := scaleNotes(q.Tonic, a.pattern(q.Choices[chosen]), end+gap)
-	return append(right, wrong...)
+	return append(right, wrong...), []cue{{0, q.Answer}, {end + gap, chosen}}
 }
 
 func (a modes) Show(q Question, chosen int) display {

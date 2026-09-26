@@ -36,7 +36,8 @@ gohar/
     progression.go           Step, Progression, Match
     phrase.go                Phrase, Direction
 
-    naming/                  orthographe, locales, les 35 modes
+    naming/                  orthographe, locales, noms des 35 modes,
+                             des intervalles et des gammes nommées
     analysis/                identification déterministe, moteur
 
   dex/         go.mod        collection du joueur, dépend de harmony
@@ -50,6 +51,7 @@ gohar/
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
+    ear/                     ear trainer : menu, degrés, tétracordes, modes
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio

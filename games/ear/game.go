@@ -111,6 +111,12 @@ type game struct {
 	changes  []dex.Change // what the end screen says, in any language
 	debug    bool
 	earOnly  bool // the piano hidden during questions, P toggles it
+
+	// What the correction playing now is made of, to name the shape
+	// that sounds: its cues, when it started, and when it ends.
+	cues     []cue
+	cuedAt   time.Time
+	cuesDone time.Duration
 }
 
 func newGame(lang, other language, engine synth.Instrument, d *dex.Dex, dexPath string, rng *rand.Rand, midi string) (*game, error) {
@@ -154,6 +160,7 @@ func (g *game) onKey(e keyboard.Event) {
 // old one held, so a skipped question never leaves its pedal behind.
 func (g *game) play(notes []keyboard.Note) {
 	g.stop()
+	g.cues = nil
 	g.seq = keyboard.NewSequence("ear", notes)
 	if err := g.seq.Listen(g.onKey); err != nil {
 		log.Println(err)
@@ -183,9 +190,22 @@ func (g *game) answer(i int) {
 	g.chosen = i
 	g.correct = g.series.Answer(i)
 	g.state = stateRevealed
-	if notes := g.activity.Correction(q, i); len(notes) > 0 {
-		g.play(notes)
+	g.playCorrection(q)
+}
+
+// playCorrection plays the correction of the answer given, with its
+// cues, and reports whether there was one to play.
+func (g *game) playCorrection(q Question) bool {
+	notes, cues := g.activity.Correction(q, g.chosen)
+	if len(notes) == 0 {
+		return false
 	}
+	g.play(notes)
+	g.cues, g.cuedAt, g.cuesDone = cues, time.Now(), 0
+	for _, n := range notes {
+		g.cuesDone = max(g.cuesDone, n.Start+n.Length)
+	}
+	return true
 }
 
 func (g *game) next() {
@@ -307,10 +327,10 @@ func (g *game) Update() error {
 
 	case stateRevealed:
 		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
+			// The whole correction again, both shapes after a mistake;
+			// the question when there is no correction.
 			q, _ := g.series.Current()
-			if notes := g.activity.Correction(q, g.chosen); len(notes) > 0 {
-				g.play(notes)
-			} else {
+			if !g.playCorrection(q) {
 				g.play(g.activity.Sound(q))
 			}
 		}
@@ -385,6 +405,9 @@ func (g *game) Draw(screen *ebiten.Image) {
 				verdict = fmt.Sprintf(w.wrong, g.lang.notion(q.Right()))
 			}
 			g.print(screen, verdict, 40, 130, foreground)
+			if c, ok := g.sounding(); ok {
+				g.print(screen, fmt.Sprintf(w.nowPlaying, g.lang.notion(q.Choices[c])), 40, 154, lit)
+			}
 			g.print(screen, w.next+"   "+w.replay, 40, 236, dim)
 		}
 
@@ -407,6 +430,26 @@ func (g *game) Draw(screen *ebiten.Image) {
 	}
 
 	g.drawFooter(screen)
+}
+
+// sounding returns the choice whose shape the correction is playing
+// now, and false outside a correction of two shapes or once it is
+// over. A single shape needs no naming: the verdict already did.
+func (g *game) sounding() (int, bool) {
+	if len(g.cues) < 2 {
+		return 0, false
+	}
+	elapsed := time.Since(g.cuedAt)
+	if elapsed >= g.cuesDone {
+		return 0, false
+	}
+	c := g.cues[0]
+	for _, next := range g.cues[1:] {
+		if elapsed >= next.at {
+			c = next
+		}
+	}
+	return c.choice, true
 }
 
 // buttons draws a row of numbered buttons, one per name, all written

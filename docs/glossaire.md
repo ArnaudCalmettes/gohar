@@ -51,7 +51,8 @@ quel que soit le nom qu'on leur donne.
 Ce qui appartient à `naming`, c'est le **mot**. Le noyau calcule
 `Interval.Alteration()` et rend un nombre ; `naming` en fait
 « augmentée », « diminuée », « mineure » ou « majeure », avec la
-partition entre intervalles justes et imparfaits pour son compte.
+partition entre intervalles justes et imparfaits pour son compte :
+c'est `Locale.IntervalName`.
 
 ## Notions structurelles
 
@@ -235,6 +236,13 @@ Ces règles viendront d'un musicien et se placeront au-dessus de
   `1 3 1`. On résiste à la tentation de nommer le reste, plutôt que
   d'emprunter un vocabulaire à une autre culture ou à une filiation
   douteuse.
+- Une **gamme nommée** n'est pas un mode. Cinq gammes ont un nom sur
+  leur tonique (« ré majeur », « fa♯ mineur harmonique ») : majeure,
+  mineure naturelle, mineure harmonique, mineure mélodique, majeure
+  harmonique. La gamme majeure n'est pas l'ionien, et la mineure
+  naturelle, gamme de référence des tonalités mineures, n'est pas
+  l'éolien, même si c'est aussi le mode du sixième degré de la
+  majeure. Voir `dex.md`.
 - L'identification des accords est **déterministe**. Les règles de
   construction tranchent avant toute comparaison ; ce qui ne
   correspond à aucune tétrade n'est pas un accord. Pas de score.

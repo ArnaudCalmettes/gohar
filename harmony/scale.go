@@ -58,9 +58,10 @@ type ScalePattern uint16
 // which is exactly what its name as a mode, ionian flat 3, says.
 //
 // Five of these are the mother scales the modes are drawn from, and a
-// [System] designates each of them. The natural minor is not one: it is
-// the aeolian, the sixth mode of the major, kept here because it is
-// asked for often enough to deserve a name.
+// [System] designates each of them. The natural minor is not one: it
+// is also the mode of the sixth degree of the major, and in a tonal
+// context a reference scale in its own right, the one the minor keys
+// are built on.
 const (
 	ScaleMajor               ScalePattern = 0b101010_110101
 	ScaleNaturalMinor        ScalePattern = 0b010110_101101

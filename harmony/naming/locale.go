@@ -69,9 +69,12 @@ type Locale struct {
 	DegreeWords [5]string
 
 	// Intervals names the seven interval sizes, indexed by degree
-	// minus one. Used by [IntervalDegrees] and the spoken register of
-	// [Locale.SpokenModeName]; empty in a locale that has none.
+	// minus one. Used by [IntervalDegrees] and [Locale.IntervalName].
 	Intervals [7]string
+
+	// QualityFirst puts the quality before the size in an interval
+	// name: major third rather than tierce majeure.
+	QualityFirst bool
 
 	// PerfectQualities names the qualities a perfect interval takes,
 	// indexed like DegreeWords. Degrees 1, 4 and 5.
@@ -99,6 +102,11 @@ type Locale struct {
 	// the empty string.
 	Functions [4]string
 
+	// Spoken says the locale has a spoken register for modes: see
+	// [Locale.SpokenModeName]. A locale can name intervals without
+	// having one, as English does.
+	Spoken bool
+
 	// ModeQualities names what a single altered third or fifth makes of
 	// a mode in the spoken register, in this order: major, minor,
 	// augmented. The phrygian natural 3 is said phrygien majeur, the
@@ -120,6 +128,11 @@ type Locale struct {
 	// the order of [namedTetrachords]. Only those five: any other
 	// tetrachord is designated by its steps in every language.
 	Tetrachords [5]string
+
+	// Scales names the scales practice gives a name to, in the order of
+	// [namedScales], as the words that follow the tonic: majeur,
+	// mineur harmonique; major, harmonic minor.
+	Scales [5]string
 }
 
 // A DegreeRenderer turns one altered degree into the words a mode name
@@ -149,8 +162,31 @@ func IntervalDegrees(l Locale) DegreeRenderer {
 		if step == 0 || step == 3 || step == 4 {
 			qualities = l.PerfectQualities
 		}
+		if l.QualityFirst {
+			return qualities[q+2] + " " + l.Intervals[step]
+		}
 		return l.Intervals[step] + " " + qualities[q+2]
 	}
+}
+
+// IntervalName names an interval up to the seventh: tierce majeure,
+// quarte augmentée; major third, augmented fourth. The unison is named
+// alone, having no quality worth saying.
+//
+// False past the seventh, beyond the doubly altered, and in a locale
+// with no interval words: the compound intervals wait for a use.
+func (l Locale) IntervalName(i harmony.Interval) (string, bool) {
+	a := int(i.Alteration())
+	if i.Degrees < 0 || i.Degrees > 6 || a < -2 || a > 2 || l.Intervals[0] == "" {
+		return "", false
+	}
+	if i.Degrees == 0 {
+		if a != 0 {
+			return "", false
+		}
+		return l.Intervals[0], true
+	}
+	return IntervalDegrees(l)(harmony.Degree(i.Degrees+1), Quality(a)), true
 }
 
 // French names notes with the solfège syllables. It also has a spoken
@@ -163,7 +199,9 @@ var French = Locale{
 	NaturalModes:    [7]string{"ionien", "dorien", "phrygien", "lydien", "mixolydien", "éolien", "locrien"},
 	Functions:       [4]string{"", "tonique", "sous-dominante", "dominante"},
 	Tetrachords:     [5]string{"majeur", "mineur", "phrygien", "lydien", "harmonique"},
+	Scales:          [5]string{"majeur", "mineur", "mineur harmonique", "mineur mélodique", "majeur harmonique"},
 
+	Spoken:        true,
 	ModeQualities: [3]string{"majeur", "mineur", "augmenté"},
 	Aliases: map[ModeKey][]string{
 		{harmony.MelodicMinor, 7}:  {"altéré"},
@@ -198,6 +236,19 @@ var English = Locale{
 	},
 	Functions:   [4]string{"", "tonic", "subdominant", "dominant"},
 	Tetrachords: [5]string{"major", "minor", "phrygian", "lydian", "harmonic"},
+	Scales:      [5]string{"major", "minor", "harmonic minor", "melodic minor", "harmonic major"},
+
+	Intervals: [7]string{
+		"unison", "second", "third", "fourth",
+		"fifth", "sixth", "seventh",
+	},
+	QualityFirst: true,
+	PerfectQualities: [5]string{
+		"doubly diminished", "diminished", "perfect", "augmented", "doubly augmented",
+	},
+	ImperfectQualities: [5]string{
+		"diminished", "minor", "major", "augmented", "doubly augmented",
+	},
 }
 
 // Name returns a spelled note in this locale and notation: fa♯ or fa
@@ -274,7 +325,7 @@ func (l Locale) ModeAlternatives(m Mode, notation Notation) []string {
 // French has one: phrygien sixte majeure, lydien augmenté. It is an
 // alternative, never the default name.
 func (l Locale) SpokenModeName(m Mode, notation Notation) (string, bool) {
-	if len(m.Altered) == 0 || l.Intervals[0] == "" {
+	if len(m.Altered) == 0 || !l.Spoken {
 		return "", false
 	}
 	return l.NaturalModes[int(m.Base)%7] + " " + l.spokenAlterations(m.Altered, notation), true

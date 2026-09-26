@@ -17,7 +17,7 @@ theory library never pulls in a graphics or audio stack.
 | Module    | What it holds |
 |-----------|---------------|
 | `harmony` | The theory core: pitches, intervals, scales, chords, the five mother scales and their 35 modes, tonalities, functions. No note names, no frequencies. |
-| `harmony/naming` | Words for the numbers: note spelling, mode names in French and English, as signs (`phrygien ♮6`) or words (`phrygien bécarre 6`). |
+| `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`). |
 | `harmony/analysis` | Deterministic chord recognition, without scoring. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
 | `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
@@ -25,7 +25,8 @@ theory library never pulls in a graphics or audio stack.
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
 for the choices and their reasons, `dex.md` for the collection,
-`glossaire.md` for the vocabulary, `chantiers.md` for what is open.
+`oreille.md` for the ear trainer, `glossaire.md` for the vocabulary,
+`chantiers.md` for what is open.
 
 ## Requirements
 
@@ -49,11 +50,21 @@ Run them from the `games` directory.
 
 ### ear
 
-The first ear training activity. A mode of the natural system sounds
-over a pedal on its tonic, and you name it among three. A mistake counts
-for nothing: the two modes are played one after the other, and the
-mode comes back a little later on another tonic. What you recognise
-goes into the dex, saved in `~/.config/gohar/dex.json`.
+The ear trainer. Something sounds over a pedal on its tonic, and you
+name it. A menu offers four activities, all open from the start:
+
+- **Degrees**: one note of a major scale, and you answer its degree.
+  The tonic stays for the whole series.
+- **Tetrachords**: four notes, and you name the shape among the four of
+  the natural system.
+- **Modes**: a mode of the natural system, to name among three.
+- **All seven modes**: the same, with the seven offered every time, each
+  in the place of its degree.
+
+A mistake counts for nothing: the right answer and yours are played one
+after the other, their names shown as they sound, and the question
+comes back a little later. What you recognise goes into the dex, saved
+in `~/.config/gohar/dex.json`.
 
 ```sh
 cd games
@@ -67,13 +78,15 @@ go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 
 | Key | Action |
 |-----|--------|
-| `1` `2` `3`, click | answer |
-| `R` | listen again |
-| `Space` | next question |
+| `1` to `7`, click | pick an activity, answer |
+| `R` | listen again, the whole correction after a mistake |
+| `Space` | next question; at the end, the same activity again |
+| `Enter` | back to the menu, at the end of a series |
+| `P` | hide the piano during questions, to work by ear alone |
 | `L` | switch between French and English |
 | `N` | switch between signs and words |
 | `H` | show audio delay figures |
-| `Q`, `Esc` | quit |
+| `Esc` | quit |
 
 ### keys
 

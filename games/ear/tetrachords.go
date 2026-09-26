@@ -96,13 +96,13 @@ func (a tetrachords) Sound(q Question) []keyboard.Note {
 	return notes
 }
 
-func (a tetrachords) Correction(q Question, chosen int) []keyboard.Note {
+func (a tetrachords) Correction(q Question, chosen int) ([]keyboard.Note, []cue) {
 	if chosen == q.Answer {
-		return nil
+		return nil, nil
 	}
 	right, end := scaleNotes(q.Tonic, tetrachordPattern(q.Right().Tetrachord), 0)
 	wrong, _ := scaleNotes(q.Tonic, tetrachordPattern(q.Choices[chosen].Tetrachord), end+gap)
-	return append(right, wrong...)
+	return append(right, wrong...), []cue{{0, q.Answer}, {end + gap, chosen}}
 }
 
 func (a tetrachords) Show(q Question, chosen int) display {

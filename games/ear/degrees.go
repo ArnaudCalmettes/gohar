@@ -91,8 +91,14 @@ func (a degrees) degree(choice int) harmony.Degree {
 	return harmony.Degree(choice + 1)
 }
 
+// Prompt names the scale rather than the tonic: the degree is read in
+// a scale, and the player sings that one.
 func (a degrees) Prompt(l language, q Question) string {
-	return fmt.Sprintf(l.words.whichDegree, l.note(q.Tonic))
+	name, ok := l.namer.ScaleName(q.Tonic, a.scale)
+	if !ok {
+		name = l.note(q.Tonic)
+	}
+	return fmt.Sprintf(l.words.whichDegree, name)
 }
 
 // Sound is the pedal and the one note, in the octave above the tonic.
@@ -120,13 +126,13 @@ func (a degrees) path(d harmony.Degree) []int {
 
 // Correction walks home from the right note, and after a mistake from
 // the chosen one too.
-func (a degrees) Correction(q Question, chosen int) []keyboard.Note {
+func (a degrees) Correction(q Question, chosen int) ([]keyboard.Note, []cue) {
 	right, end := pathNotes(q.Tonic, a.path(a.degree(q.Answer)), pedalBelow, 0)
 	if chosen == q.Answer {
-		return right
+		return right, []cue{{0, q.Answer}}
 	}
 	wrong, _ := pathNotes(q.Tonic, a.path(a.degree(chosen)), pedalBelow, end+gap)
-	return append(right, wrong...)
+	return append(right, wrong...), []cue{{0, q.Answer}, {end + gap, chosen}}
 }
 
 // Show lights the walks the correction plays.

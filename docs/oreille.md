@@ -1,9 +1,11 @@
-# Première activité d'oreille
+# L'ear trainer
 
-Le tracer bullet : une activité étroite qui traverse toutes les couches,
-`synth`, `keyboard`, `harmony`, `naming` en français et en anglais,
-`dex`, et un premier affichage. Ce n'est pas une production. Ce qu'elle
-doit rendre, c'est la liste de ce qui coince.
+`games/ear`, le jeu d'entraînement de l'oreille. Il est parti d'un
+tracer bullet : une activité étroite, les modes du système naturel, qui
+traverse toutes les couches (`synth`, `keyboard`, `harmony`, `naming`
+en français et en anglais, `dex`, et un premier affichage) pour rendre
+la liste de ce qui coince. Les règles ci-dessous sont nées avec lui et
+valent pour toutes les activités ; la feuille de route décrit la suite.
 
 ## Les règles, décidées
 
@@ -17,11 +19,14 @@ doit rendre, c'est la liste de ce qui coince.
   La couleur se lit contre la pédale.
 - **Tonique** : tirée au hasard à chaque question. `Recognized` n'est
   pas détaillé par tonique, on entraîne l'oreille relative d'emblée.
-- **Réponse** : au clic sur un nom. Le clavier MIDI sert à rejouer ou à
-  explorer librement pendant la question.
+- **Réponse** : au clic sur un bouton ou par sa touche chiffrée. Le
+  clavier MIDI sert à rejouer ou à explorer librement pendant la
+  question.
 - **Après une erreur** : la bonne réponse est révélée, puis les deux
-  modes sont joués l'un après l'autre sur la même tonique. C'est la
-  correction qu'on montre, pas un fait qu'on retient.
+  modes sont joués l'un après l'autre sur la même tonique, l'écran
+  nommant celui qui sonne (« On entend : dorien »). `R` rejoue la
+  correction entière. C'est la correction qu'on montre, pas un fait
+  qu'on retient.
 - **Reprise** : le mode raté revient deux ou trois questions plus loin,
   sur une autre tonique, une seule fois par série. Ce qui s'apprend,
   c'est la correction produite par le joueur.
@@ -31,7 +36,8 @@ doit rendre, c'est la liste de ce qui coince.
 - **Langue** : français ou anglais, par `-lang` ou la touche `L`.
 - **Notation** : signes par défaut (si♭, phrygien ♮6), mots en option
   (si bémol, phrygien bécarre 6), par `-notation` ou la touche `N`.
-- **Affichage** : trois boutons et un clavier vectoriel de do3 à do6,
+- **Affichage** : une rangée de boutons numérotés et un clavier
+  vectoriel de do3 à do6,
   qui s'allume sous ce qui sonne, de n'importe quelle source, et
   s'éteint en un quart de seconde. Ce qui sort de la plage (la pédale,
   un clavier MIDI réglé sur une autre octave) est ramené dedans et
@@ -40,8 +46,13 @@ doit rendre, c'est la liste de ce qui coince.
   bleu, avec le nom de chaque note orthographié dans le mode (mi♭ et
   fa♯ en sol mineur harmonique) et toujours en signes, faute de place.
   Après une erreur, les notes du seul bon mode sont en vert, celles du
-  seul mode choisi en rouge, les communes en gris : ce qui les sépare
-  saute aux yeux. Repris de la démo gohareact de l'ancien gohar.
+  seul mode choisi en rouge vif, les communes en gris : ce qui les
+  sépare saute aux yeux. Repris de la démo gohareact de l'ancien gohar.
+  La touche `P` masque le clavier pendant la question, pour travailler
+  à l'oreille seule ; il revient pour la révélation et la correction.
+- **Boutons** : toute la rangée s'écrit de la même façon, numéro et nom
+  côte à côte en grande police si tout tient, sinon en petite, sinon
+  le numéro au-dessus du nom.
 
 ## Les faits émis
 
@@ -60,7 +71,10 @@ doit rendre, c'est la liste de ce qui coince.
 - **Le clavier ne doit pas donner la réponse.** Surligner les touches
   du mode avant la réponse revient à l'afficher. Pendant la question on
   n'anime que la note qui sonne et les touches enfoncées ; le mode
-  entier se surligne à la révélation.
+  entier se surligne à la révélation. Pour les degrés, la note qui
+  sonne est déjà la réponse : en attendant que seul ce que joue le
+  joueur s'allume pendant la question (voir `chantiers.md`), la touche
+  `P` y pare.
 - **Jouer une séquence à l'heure.** `Engine.NoteOn` n'ordonnance rien :
   `at` sert à mesurer, pas à différer, et piloter la gamme depuis
   `Update` donnerait une gigue d'une frame (16,7 ms). Résolu par
@@ -86,6 +100,15 @@ doit rendre, c'est la liste de ce qui coince.
   notation est devenue un choix du `Namer`, indépendant de la langue,
   pour les deux langues à la fois : c'est aussi ce qui ouvre la porte à
   une synthèse vocale.
+- Ebitengine désigne les touches par leur place sur un clavier
+  américain. Sur un AZERTY, `M` tombe sur la virgule et `Q` sur le A :
+  le retour au menu est sur Entrée, et seul Échap quitte le jeu. Les
+  lettres restantes (R, H, L, N, P) sont à la même place.
+- Le texte débordait des boutons dès qu'un nom était long. La police se
+  choisit maintenant pour toute la rangée.
+- Les mots manquaient dans `naming` pour les intervalles et les gammes
+  (« ré majeur ») : ils y ont été ajoutés plutôt qu'écrits en dur dans
+  le jeu.
 
 ## Ce qu'il ne faut pas fermer, pour WASM
 
@@ -95,7 +118,7 @@ doit rendre, c'est la liste de ce qui coince.
   du jeu : un fichier au bureau (`store.go`), `localStorage` dans le
   navigateur.
 - Le navigateur ne démarre l'audio qu'après un geste de l'utilisateur :
-  l'écran « cliquer pour commencer » existe déjà.
+  le clic dans le menu en tient lieu.
 - La police des signes est embarquée, pas lue sur le système.
 
 ## Le découpage
@@ -128,8 +151,8 @@ Reste :
 
 ## La feuille de route
 
-Une fois le tracer bullet bouclé, `ear` devient le jeu d'oreille à
-part entière.
+Une fois le tracer bullet bouclé, `ear` devient un ear trainer à part
+entière.
 
 **L'abstraction, faite.** Les activités ont toutes la même forme :
 faire sonner quelque chose, proposer des réponses, émettre des faits.
@@ -146,8 +169,9 @@ Seuls changent ce qui sonne, les réponses et les notions.
 - `Series` est générique : l'erreur qui compte pour du beurre, la
   reprise unique, le rapport. Ce sont les principes du jeu, pas d'une
   activité.
-- Les modes sont la première activité (`modes.go`), les tétracordes
-  la deuxième (`tetrachords.go`).
+- Les activités : les degrés (`degrees.go`), les tétracordes
+  (`tetrachords.go`), les modes (`modes.go`). La correction dit aussi
+  quel choix sonne à quel moment, pour que l'écran le nomme.
 
 **Les niveaux sont des données** : une activité et ses paramètres
 (quels degrés, quel système, quelle distance entre distracteurs,
@@ -170,31 +194,33 @@ l'ambitus et le tempo en premier.
 
 **Une progression par compétences d'oreille** :
 
-- **Degrés, faits** (functional ear training) : une pédale de tonique
-  dans le même registre que la note (la tonique à la basse est un
-  palier au-dessus), une note de la gamme majeure dans l'octave
-  au-dessus de la tonique, et le joueur répond son degré. C'est
-  l'exercice du débutant au clavier : la main gauche tient la tonique,
-  l'index droit tombe au hasard, et on chante la gamme jusqu'à la note
-  pour trouver son numéro. Pas d'accords : la
-  pédale suffit à poser la tonique, et les cadences viendront avec le
-  volet harmonie. Les sept degrés sont toujours proposés, à leur place.
-  La tonique est fixe pendant la série, tirée au hasard ; la tonique
-  mobile est le palier suivant. Après la réponse, bonne ou non, la
-  gamme rentre à la tonique la plus proche : de la tonique jusqu'à la
-  note pour le tétracorde inférieur, de la note jusqu'à l'octave pour
-  le supérieur, la pédale redescendant à la basse pour éviter l'unisson
-  au départ de la tonique. Après une erreur, le chemin du degré choisi
-  suit.
-  Les degrés interrogés sont un paramètre de l'activité : le premier
-  niveau (1 3 5, ou 1 à 5) reste à trancher d'après les méthodes
-  existantes, et le menu propose les sept en attendant. Puis d'autres
-  gammes, et au plus difficile l'échelle chromatique, de l'unisson à
-  l'octave. Le degré n'est pas une notion du dex : ce sont les
-  **intervalles** depuis la tonique qui en sont (élémentaires, voir
-  `dex.md`). Une série jouée qui trouve tous les degrés d'une gamme
-  créditera la **production de cette gamme** sur sa tonique, avec la
-  réponse jouée.
+- **Degrés, faits** (functional ear training). L'exercice du débutant
+  au clavier : la main gauche tient la tonique, l'index droit tombe au
+  hasard dans l'octave au-dessus, et on chante la gamme jusqu'à la note
+  pour trouver son numéro.
+  - *Son* : une pédale de tonique dans le même registre que la note (la
+    tonique à la basse est un palier au-dessus), puis une note de la
+    gamme majeure. Pas d'accords : la pédale suffit à poser la tonique,
+    les cadences viendront avec le volet harmonie.
+  - *Énoncé* : il nomme la gamme (« Gamme : ré majeur ») plutôt que la
+    tonique.
+  - *Réponses* : les sept degrés, toujours à leur place. Un premier
+    niveau réduit serait de trop : dix questions sur les sept degrés
+    font très bien l'affaire.
+  - *Tonique* : fixe pendant la série, tirée au hasard.
+  - *Correction* : après la réponse, bonne ou non, la gamme rentre à la
+    tonique la plus proche, de la tonique jusqu'à la note pour le
+    tétracorde inférieur, de la note jusqu'à l'octave pour le
+    supérieur. La pédale redescend à la basse pour éviter l'unisson au
+    départ de la tonique. Après une erreur, le chemin du degré choisi
+    suit.
+  - *Dex* : le degré n'est pas une notion ; ce sont les
+    **intervalles** depuis la tonique qui en sont (élémentaires, voir
+    `dex.md`). Une série jouée qui trouve tous les degrés d'une gamme
+    créditera la **production de cette gamme** sur sa tonique, avec la
+    réponse jouée.
+  - *Paliers suivants* : la tonique mobile, la tonique à la basse,
+    d'autres gammes, et au plus difficile l'échelle chromatique.
 - **Tétracordes, faits** pour le système naturel : l'étape avant les
   modes. Les quatre formes (majeur, mineur, phrygien, lydien) sont
   proposées à chaque question, toujours à la même place : quatre
@@ -212,8 +238,8 @@ l'ambitus et le tempo en premier.
   gamme mère d'un mode, et que ça commence par une mémorisation stricte
   des degrés. Les distracteurs proches viennent avec, sans règle pour
   les choisir. Sur une ligne, le numéro passe au-dessus du nom quand
-  les deux ne tiennent pas côte à côte. Les autres systèmes viendront
-  par leurs tétracordes avant leurs modes.
+  les deux ne tiennent pas côte à côte (voir Boutons, plus haut). Les
+  autres systèmes viendront par leurs tétracordes avant leurs modes.
 - **À la fin**, tout mélanger, ou mieux, laisser le joueur composer ses
   propres défis.
 

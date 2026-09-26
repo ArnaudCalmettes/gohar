@@ -65,6 +65,13 @@ type display struct {
 	mistake   bool
 }
 
+// A cue marks where, in a correction, the shape of choice `choice`
+// starts to sound.
+type cue struct {
+	at     time.Duration
+	choice int
+}
+
 // An Activity is what differs from one exercise to the next: what to
 // sound, what to offer, what to learn from a right answer.
 //
@@ -96,7 +103,10 @@ type Activity interface {
 	// mistake, the right answer then the wrong one, to compare. After a
 	// right answer, nothing for most activities, and the question keeps
 	// sounding; a degree walks to its tonic either way.
-	Correction(q Question, chosen int) []keyboard.Note
+	//
+	// The cues say which choice sounds from when, so that the screen
+	// can name what the ear is hearing.
+	Correction(q Question, chosen int) ([]keyboard.Note, []cue)
 
 	// Show is what the keyboard shows once the answer is out.
 	Show(q Question, chosen int) display
