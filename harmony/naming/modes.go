@@ -87,12 +87,12 @@ type ModeKey struct {
 	Degree harmony.Degree
 }
 
-// Key returns the designation of m.
+// Key returns the designation of `m`.
 func (m Mode) Key() ModeKey {
 	return ModeKey{System: m.System, Degree: m.Degree}
 }
 
-// Pattern derives the scale pattern of m.
+// Pattern derives the scale pattern of `m`.
 //
 // Start from the offsets of the base natural mode, then for each
 // altered degree replace the offset with the major scale offset for
@@ -114,7 +114,7 @@ func (m Mode) Pattern() harmony.ScalePattern {
 	return p
 }
 
-// NaturalDegrees returns the DCN of m, inherited from its base mode.
+// NaturalDegrees returns the DCN of `m`, inherited from its base mode.
 //
 // Every mode carries the DCN of the natural mode it is named after,
 // including the twenty eight altered ones. The rule holds even where
@@ -123,7 +123,7 @@ func (m Mode) NaturalDegrees() []Alteration {
 	return slices.Clone(naturalModeDCN[m.Base])
 }
 
-// AlteredDegrees returns the DCA of m, which is its alteration list.
+// AlteredDegrees returns the DCA of `m`, which is its alteration list.
 //
 // The seven natural modes have none.
 func (m Mode) AlteredDegrees() []Alteration {
@@ -353,7 +353,7 @@ func Lookup(s harmony.System, d harmony.Degree) (Mode, bool) {
 	return Mode{}, false
 }
 
-// String returns the name of m: the base natural mode followed by its
+// String returns the name of `m`: the base natural mode followed by its
 // altered degrees, as in lydian #2 or locrian b4 bb7.
 //
 // The seven natural modes render as their bare name.

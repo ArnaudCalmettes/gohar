@@ -109,12 +109,12 @@ func ProgressionOf(id ProgressionID) Notion {
 	return Notion{Kind: KindProgression, Progression: id}
 }
 
-// IsZero reports whether n designates nothing.
+// IsZero reports whether `n` designates nothing.
 func (n Notion) IsZero() bool {
 	return n.Kind == 0
 }
 
-// String returns the stable designation of n, as in "mode:2/4".
+// String returns the stable designation of `n`, as in "mode:2/4".
 //
 // This is what persistence writes and reads back, which is why it must
 // not change once a dex exists in the wild. It is not a name: turning a

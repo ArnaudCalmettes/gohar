@@ -216,8 +216,9 @@ const (
 // # What no fact says
 //
 // That an attempt failed, or that a performance was good. The first
-// would punish, the second is a mark in disguise and would put the
-// decision back on the game's side.
+// would punish, the second is a judgement in disguise: the player
+// assesses themselves, and gets an honest account only when they ask
+// for one.
 type Fact struct {
 	Kind   FactKind
 	Notion Notion

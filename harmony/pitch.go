@@ -29,19 +29,19 @@ const (
 // no PitchEFlat, and no table of note names anywhere in this package.
 const MiddleC Pitch = 60
 
-// IsValid reports whether p falls within the MIDI range.
+// IsValid reports whether `p` falls within the MIDI range.
 func (p Pitch) IsValid() bool {
 	return p >= PitchMin && p <= PitchMax
 }
 
-// Class returns the pitch class of p, discarding its octave.
+// Class returns the pitch class of `p`, discarding its octave.
 //
 // Defined for every Pitch, including those outside the MIDI range.
 func (p Pitch) Class() PitchClass {
 	return PitchClass(((int(p) % 12) + 12) % 12)
 }
 
-// Octave returns the octave number of p, with [MiddleC] in octave 4.
+// Octave returns the octave number of `p`, with [MiddleC] in octave 4.
 //
 // This follows scientific pitch notation, where MIDI 60 is C4. Some
 // hardware numbers the same pitch C3. The library commits to C4 and
@@ -54,7 +54,7 @@ func (p Pitch) Octave() int8 {
 	return int8(oct - 1)
 }
 
-// Transpose moves p by s semitones.
+// Transpose moves `p` by `s` semitones.
 //
 // The result may fall outside the MIDI range. Transpose does not clamp
 // and does not report an error: an out of range intermediate value is
@@ -64,9 +64,9 @@ func (p Pitch) Transpose(s Semitones) Pitch {
 	return p + Pitch(s)
 }
 
-// Sub returns the signed distance from other to p.
+// Sub returns the signed distance from `other` to `p`.
 //
-// Positive when p is above other. The result can exceed one octave.
+// Positive when `p` is above `other`. The result can exceed one octave.
 func (p Pitch) Sub(other Pitch) Semitones {
 	return Semitones(p - other)
 }
@@ -101,7 +101,7 @@ const (
 // Write Semitones(7) in the core. The readable constants belong in the
 // naming package, where a context is available to justify them.
 
-// Abs returns the absolute value of s.
+// Abs returns the absolute value of `s`.
 func (s Semitones) Abs() Semitones {
 	if s < 0 {
 		return -s
@@ -109,7 +109,7 @@ func (s Semitones) Abs() Semitones {
 	return s
 }
 
-// Fold reduces s to the pitch class it reaches from class 0.
+// Fold reduces `s` to the pitch class it reaches from class 0.
 //
 // Defined for negative distances: Fold(-1) is 11, not an error.
 func (s Semitones) Fold() PitchClass {

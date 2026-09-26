@@ -23,7 +23,7 @@ const PitchClassCount = 12
 // parser in the naming package, which has the tables and the context
 // the core lacks.
 
-// IsValid reports whether c is below [PitchClassCount].
+// IsValid reports whether `c` is below [PitchClassCount].
 //
 // PitchClass is an unsigned byte, so out of range values are
 // representable. The type does not enforce the invariant, for the same
@@ -35,7 +35,7 @@ func (c PitchClass) IsValid() bool {
 	return c < PitchClassCount
 }
 
-// Transpose moves c by s semitones, wrapping around the octave.
+// Transpose moves `c` by `s` semitones, wrapping around the octave.
 //
 // Total and closed: every input yields a valid PitchClass, negative
 // distances included. Transpose(Semitones(-1)) on class 0 is 11.
@@ -43,7 +43,7 @@ func (c PitchClass) Transpose(s Semitones) PitchClass {
 	return PitchClass(((int(c)+int(s))%12 + 12) % 12)
 }
 
-// Up returns the ascending distance from c to other, in the range
+// Up returns the ascending distance from `c` to `other`, in the range
 // [0, 12).
 //
 // Not symmetric. Up from 0 to 11 is 11, while Up from 11 to 0 is 1.
@@ -53,7 +53,7 @@ func (c PitchClass) Up(other PitchClass) Semitones {
 	return Semitones(((int(other)-int(c))%12 + 12) % 12)
 }
 
-// Pitch returns the [Pitch] of class c in the given octave, with octave
+// Pitch returns the [Pitch] of class `c` in the given `octave`, with `octave`
 // 4 holding [MiddleC].
 //
 // The result may fall outside the MIDI range for extreme octaves. Check
@@ -62,12 +62,12 @@ func (c PitchClass) Pitch(octave int8) Pitch {
 	return Pitch(int(c) + 12*(int(octave)+1))
 }
 
-// Set returns the singleton [PitchSet] containing c.
+// Set returns the singleton [PitchSet] containing `c`.
 func (c PitchClass) Set() PitchSet {
 	return PitchSet(1) << c
 }
 
-// String returns the numeric value of c, for debugging only.
+// String returns the numeric value of `c`, for debugging only.
 //
 // It never returns a note name. Anything shown to a user goes through
 // the naming package, which needs a tonal context to decide between

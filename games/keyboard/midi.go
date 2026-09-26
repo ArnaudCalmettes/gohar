@@ -36,7 +36,7 @@ func Shutdown() {
 
 // OpenMIDI opens a MIDI input.
 //
-// spec is a number as Ports lists them, or a fragment of a name, or
+// `spec` is a number as Ports lists them, or a fragment of a name, or
 // empty for the first real input: a Through port, the loopback ALSA
 // creates on every Linux machine and lists first, is skipped then,
 // since it never sends anything unless something writes to it. A

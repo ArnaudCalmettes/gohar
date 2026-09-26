@@ -31,7 +31,7 @@ func scaleStart(tonic harmony.PitchClass) int {
 	return 57 + (int(tonic)+3)%12
 }
 
-// modeNotes lays one mode out from start, and returns where it ends.
+// modeNotes lays one mode out from `start`, and returns where it ends.
 //
 // Eight notes, the octave included: a scale that stops on its seventh
 // leaves the ear hanging on the most characteristic note of some modes.

@@ -91,12 +91,12 @@ func NewPhraseOffsets(offsets ...Semitones) (Phrase, error) {
 	return Phrase{offsets: slices.Clone(offsets)}, nil
 }
 
-// Len returns the number of notes in p.
+// Len returns the number of notes in `p`.
 func (p Phrase) Len() int {
 	return len(p.offsets)
 }
 
-// Offsets iterates over the notes of p, yielding each index with its
+// Offsets iterates over the notes of `p`, yielding each index with its
 // distance from the first note.
 func (p Phrase) Offsets() iter.Seq2[int, Semitones] {
 	return func(yield func(int, Semitones) bool) {
@@ -108,7 +108,7 @@ func (p Phrase) Offsets() iter.Seq2[int, Semitones] {
 	}
 }
 
-// At voices p from a starting pitch.
+// At voices `p` from a starting pitch.
 //
 // Pitches may fall outside the MIDI range for an extreme start; check
 // with [Pitch.IsValid] where it matters.
@@ -122,7 +122,7 @@ func (p Phrase) At(root Pitch) iter.Seq[Pitch] {
 	}
 }
 
-// Contour reduces p to its directions, one per step, so it has one
+// Contour reduces `p` to its directions, one per step, so it has one
 // fewer element than the phrase has notes.
 //
 // This is the shape a device with no pitch can still express, and the
@@ -146,7 +146,7 @@ func (p Phrase) Contour() iter.Seq[Direction] {
 	}
 }
 
-// Compare reads a performance against p.
+// Compare reads a performance against `p`.
 //
 // Same reports whether the shapes match, transposition ignored.
 // FirstDivergence locates where they parted, or is -1 when they did
@@ -181,7 +181,7 @@ func (p Phrase) Compare(played Phrase) Match {
 	return m
 }
 
-// CompareContour reads a performance against p by direction alone.
+// CompareContour reads a performance against `p` by direction alone.
 //
 // The forgiving comparison, for an exercise that asks a player to hear
 // where the line goes before asking by how much. FirstDivergence

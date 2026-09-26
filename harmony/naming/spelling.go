@@ -28,7 +28,7 @@ func (l Letter) Natural() harmony.PitchClass {
 	return letterNaturals[int(l)%LetterCount]
 }
 
-// Next returns the letter after l, wrapping from B back to C.
+// Next returns the letter after `l`, wrapping from B back to C.
 func (l Letter) Next() Letter {
 	return Letter((int(l) + 1) % LetterCount)
 }
@@ -70,7 +70,7 @@ type SpelledNote struct {
 	Accidental Accidental
 }
 
-// Class returns the pitch class n sounds.
+// Class returns the pitch class `n` sounds.
 //
 // Many to one: E sharp and F return the same class, which is the whole
 // reason the core works in classes and this package in spellings.
@@ -78,7 +78,7 @@ func (n SpelledNote) Class() harmony.PitchClass {
 	return n.Letter.Natural().Transpose(harmony.Semitones(n.Accidental))
 }
 
-// Enharmonic reports whether n and other sound the same class while
+// Enharmonic reports whether `n` and `other` sound the same class while
 // being written differently.
 func (n SpelledNote) Enharmonic(other SpelledNote) bool {
 	return n != other && n.Class() == other.Class()

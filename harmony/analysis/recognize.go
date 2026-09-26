@@ -76,7 +76,7 @@ var CommonTetrads = []harmony.ChordPattern{
 	harmony.ChordDominantSeventhSus4,
 }
 
-// Identify returns the readings of s, best first.
+// Identify returns the readings of `s`, best first.
 //
 // # How one reading is built
 //
@@ -148,7 +148,7 @@ func (r *Recognizer) Best(s Snapshot, ctx Context) (Reading, bool) {
 	return readings[0], true
 }
 
-// IdentifyRoot returns the reading of s under the given root, and
+// IdentifyRoot returns the reading of `s` under the given root, and
 // whether the notes form a chord on it at all.
 //
 // The single step [Recognizer.Identify] runs once per sounding note.

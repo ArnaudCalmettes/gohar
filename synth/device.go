@@ -50,9 +50,9 @@ type Device struct {
 	opts   Options
 }
 
-// Open starts playing src and returns once the device is ready.
+// Open starts playing `src` and returns once the device is ready.
 //
-// src is read from the audio goroutine, so it must not allocate, must
+// `src` is read from the audio goroutine, so it must not allocate, must
 // not block, and must always fill the buffer it is given. An Engine
 // satisfies all three.
 func Open(src io.Reader, opts Options) (*Device, error) {

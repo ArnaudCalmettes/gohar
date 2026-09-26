@@ -49,60 +49,54 @@ func NewPitchSet(classes ...PitchClass) (PitchSet, error) {
 	return s, nil
 }
 
-// Contains reports whether c belongs to s.
+// Contains reports whether `c` belongs to `s`.
 func (s PitchSet) Contains(c PitchClass) bool {
 	return s&(1<<c) != 0
 }
 
-// With returns s with c added. Adding a member already present returns
-// s unchanged.
+// With returns `s` with `c` added. Adding a member already present returns
+// `s` unchanged.
 func (s PitchSet) With(c PitchClass) PitchSet {
 	return s | 1<<c
 }
 
-// Without returns s with c removed. Removing an absent member returns s
+// Without returns `s` with `c` removed. Removing an absent member returns `s`
 // unchanged.
 func (s PitchSet) Without(c PitchClass) PitchSet {
 	return s &^ (1 << c)
 }
 
-// Union returns the classes belonging to s or other.
+// Union returns the classes belonging to `s` or `other`.
 func (s PitchSet) Union(other PitchSet) PitchSet {
 	return s | other
 }
 
-// Intersect returns the classes belonging to both s and other.
+// Intersect returns the classes belonging to both `s` and `other`.
 func (s PitchSet) Intersect(other PitchSet) PitchSet {
 	return s & other
 }
 
-// Difference returns the classes of s absent from other.
+// Difference returns the classes of `s` absent from `other`.
 func (s PitchSet) Difference(other PitchSet) PitchSet {
 	return s &^ other
 }
 
-// IsSubsetOf reports whether every class of s belongs to other.
-//
-// This is the workhorse of recognition. A player holding three notes of
-// a seventh chord produces a strict subset of the pattern, and the
-// engine has to decide whether the missing member is an omission or a
-// reason to prefer a smaller pattern. IsSubsetOf answers the mechanical
-// half of that question; the scoring answers the rest.
+// IsSubsetOf reports whether every class of `s` belongs to `other`.
 func (s PitchSet) IsSubsetOf(other PitchSet) bool {
 	return s&other == s
 }
 
-// Len returns the number of classes in s.
+// Len returns the number of classes in `s`.
 func (s PitchSet) Len() int {
 	return bits.OnesCount16(uint16(s))
 }
 
-// IsEmpty reports whether s contains no class.
+// IsEmpty reports whether `s` contains no class.
 func (s PitchSet) IsEmpty() bool {
 	return s == 0
 }
 
-// Transpose moves every class of s by n semitones.
+// Transpose moves every class of `s` by `n` semitones.
 //
 // This is a rotation over twelve bits, not a shift: a class leaving one
 // end re-enters at the other. A plain shift would drop members and the
@@ -117,7 +111,7 @@ func (s PitchSet) Transpose(n Semitones) PitchSet {
 	return ((s << shift) | (s >> (12 - shift))) & ChromaticPitchSet
 }
 
-// Classes iterates over the members of s in ascending numeric order.
+// Classes iterates over the members of `s` in ascending numeric order.
 //
 // Numeric order is not musical order. The set holds no root, so there
 // is no note to start from; a caller who wants an ordering relative to
@@ -132,8 +126,8 @@ func (s PitchSet) Classes() iter.Seq[PitchClass] {
 	}
 }
 
-// Rotations iterates over the twelve transpositions of s, yielding the
-// distance applied along with the result. The first pair is (0, s).
+// Rotations iterates over the twelve transpositions of `s`, yielding the
+// distance applied along with the result. The first pair is (0, `s`).
 //
 // This is the brute force half of root finding: rotate the played set
 // until it lines up with a pattern anchored at class 0, and the
@@ -150,8 +144,8 @@ func (s PitchSet) Rotations() iter.Seq2[Semitones, PitchSet] {
 	}
 }
 
-// Canonical returns the rotation of s with the smallest numeric value,
-// along with the distance that produces it from s.
+// Canonical returns the rotation of `s` with the smallest numeric value,
+// along with the distance that produces it from `s`.
 //
 // All twelve transpositions of a set share one canonical form, so it
 // serves as a key: a table indexed by canonical form turns pattern
@@ -176,7 +170,7 @@ func (s PitchSet) Canonical() (PitchSet, Semitones) {
 	return best, at
 }
 
-// String returns the twelve bits of s, for debugging only. It never
+// String returns the twelve bits of `s`, for debugging only. It never
 // returns note names.
 func (s PitchSet) String() string {
 	return fmt.Sprintf("%012b", uint16(s))

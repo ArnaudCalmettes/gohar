@@ -1,13 +1,10 @@
 // Package analysis turns what a player holds into what it means.
 //
-// # Identification, not scoring
+// # Identification
 //
-// An earlier draft of this package scored every pattern against every
-// root with tunable weights and returned a ranking. That was the wrong
-// shape. Harmony has construction rules, and those rules determine
-// most of what a weighting would otherwise guess at: whether a D in a
-// C chord is a second or a ninth follows from whether the chord holds
-// a third, and no amount of tuning improves on knowing that.
+// Harmony has construction rules, and those rules settle what the notes
+// are: whether a D in a C chord is a second or a ninth follows from
+// whether the chord holds a third. There is nothing to guess.
 //
 // So the pattern is normalised first, by [harmony.ChordPattern.Normalize],
 // and then matched against a table of tetrads by equality. A shape
@@ -115,7 +112,7 @@ type Reading struct {
 	Degree harmony.Degree
 }
 
-// IsZero reports whether r identifies nothing.
+// IsZero reports whether `r` identifies nothing.
 func (r Reading) IsZero() bool {
 	return r.Pattern == 0
 }
@@ -137,8 +134,7 @@ type Context struct {
 	//
 	// When it is still among the valid readings it is kept, which is
 	// what stops a display from flickering between the four equally
-	// correct roots of a diminished seventh chord. Stickiness rather than a
-	// score margin: with no scores to compare, the rule is simply that
-	// a still-valid answer does not get replaced by an equal one.
+	// correct roots of a diminished seventh chord. The rule is simply
+	// that a still-valid answer does not get replaced by an equal one.
 	Current Reading
 }

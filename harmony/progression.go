@@ -130,12 +130,12 @@ func NewProgressionSteps(steps ...Step) (Progression, error) {
 	return Progression{steps: slices.Clone(steps)}, nil
 }
 
-// Len returns the number of chords in p.
+// Len returns the number of chords in `p`.
 func (p Progression) Len() int {
 	return len(p.steps)
 }
 
-// Steps iterates over the chords of p in order.
+// Steps iterates over the chords of `p` in order.
 func (p Progression) Steps() iter.Seq2[int, Step] {
 	return func(yield func(int, Step) bool) {
 		for i, s := range p.steps {
@@ -146,7 +146,7 @@ func (p Progression) Steps() iter.Seq2[int, Step] {
 	}
 }
 
-// At anchors p on a root and yields the chords it becomes.
+// At anchors `p` on a root and yields the chords it becomes.
 //
 // The conversion out of relative space, as [ScalePattern.At] is for
 // scales.
@@ -161,15 +161,15 @@ func (p Progression) At(root PitchClass) iter.Seq[Chord] {
 	}
 }
 
-// Degrees returns the degree each chord of p is built on, once p is
-// anchored on the tonic of t.
+// Degrees returns the degree each chord of `p` is built on, once `p` is
+// anchored on the tonic of `t`.
 //
 // This is what a player is told. Naming the chords of an exercise by
 // their absolute roots is useless to someone who transposed it; naming
 // them by degree is the whole point, and it is why a tonality is a
 // precondition of teaching rather than a convenience.
 //
-// A chord whose root falls outside t has no degree, and its entry is
+// A chord whose root falls outside `t` has no degree, and its entry is
 // zero. Degrees are counted from one, so zero is unambiguous.
 func (p Progression) Degrees(root PitchClass, t Tonality) []Degree {
 	out := make([]Degree, len(p.steps))
@@ -215,7 +215,7 @@ type Match struct {
 	FirstDivergence int
 }
 
-// Compare matches p against played, ignoring transposition but
+// Compare matches `p` against `played`, ignoring transposition but
 // reporting it.
 //
 // # How the shift is found

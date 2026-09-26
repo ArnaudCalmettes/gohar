@@ -217,7 +217,7 @@ func (g *game) finish() {
 	g.state = stateEnd
 }
 
-// buttonRect places answer i.
+// buttonRect places answer `i`.
 func buttonRect(i int) (x, y, w, h float32) {
 	return 40 + float32(i)*190, 180, 180, 48
 }

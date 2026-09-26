@@ -42,7 +42,7 @@ const (
 	Dominant
 )
 
-// Has reports whether f includes the given role.
+// Has reports whether `f` includes the given role.
 func (f Function) Has(other Function) bool {
 	return f&other != 0
 }

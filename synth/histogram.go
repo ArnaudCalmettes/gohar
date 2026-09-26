@@ -49,8 +49,8 @@ func (h Histogram) Total() uint64 {
 	return n
 }
 
-// Quantile returns the upper bound of the bucket holding the q
-// quantile, q between 0 and 1: Quantile(0.99) is the delay 99 events
+// Quantile returns the upper bound of the bucket holding the `q`
+// quantile, `q` between 0 and 1: Quantile(0.99) is the delay 99 events
 // in 100 stayed under. Zero when nothing was counted.
 //
 // An upper bound and not an interpolation: with one millisecond

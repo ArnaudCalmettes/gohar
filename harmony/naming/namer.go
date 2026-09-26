@@ -101,17 +101,17 @@ func (n *Namer) WithNotation(notation Notation) *Namer {
 	return &out
 }
 
-// Notation returns how n writes accidentals.
+// Notation returns how `n` writes accidentals.
 func (n *Namer) Notation() Notation {
 	return n.notation
 }
 
-// Locale returns the language n speaks.
+// Locale returns the language `n` speaks.
 func (n *Namer) Locale() Locale {
 	return n.locale
 }
 
-// Tonality returns the context n spells in, or the zero value when it
+// Tonality returns the context `n` spells in, or the zero value when it
 // has none.
 //
 // The zero value means no context, never C major. An interface showing
@@ -145,7 +145,7 @@ func (n *Namer) Name(c harmony.PitchClass) string {
 
 // Scale spells every degree of the current context, in degree order.
 //
-// Returns nil when n has no context: there is no scale to spell, and an
+// Returns nil when `n` has no context: there is no scale to spell, and an
 // empty result says so more honestly than seven notes of C major would.
 func (n *Namer) Scale() []SpelledNote {
 	if n.tonality.IsZero() {

@@ -62,12 +62,12 @@ func tetrachordOf(a, b, c Semitones) Tetrachord {
 	return Tetrachord(uint16(a)<<8 | uint16(b)<<4 | uint16(c))
 }
 
-// Steps returns the three steps of t, from its lowest note up.
+// Steps returns the three steps of `t`, from its lowest note up.
 func (t Tetrachord) Steps() (a, b, c Semitones) {
 	return Semitones(t >> 8 & 0xf), Semitones(t >> 4 & 0xf), Semitones(t & 0xf)
 }
 
-// Span returns the distance from the lowest note of t to its highest.
+// Span returns the distance from the lowest note of `t` to its highest.
 //
 // Five semitones for a tetrachord that spans a perfect fourth, which is
 // the classical case. Not every tetrachord does: the lydian spans a
@@ -78,19 +78,19 @@ func (t Tetrachord) Span() Semitones {
 	return a + b + c
 }
 
-// IsFourth reports whether t spans a perfect fourth.
+// IsFourth reports whether `t` spans a perfect fourth.
 func (t Tetrachord) IsFourth() bool {
 	return t.Span() == 5
 }
 
-// IsValid reports whether t holds three steps of at least one semitone
+// IsValid reports whether `t` holds three steps of at least one semitone
 // and nothing above them.
 func (t Tetrachord) IsValid() bool {
 	a, b, c := t.Steps()
 	return t>>12 == 0 && a >= 1 && b >= 1 && c >= 1
 }
 
-// String returns the steps of t, as in 1 3 1. This is its designation,
+// String returns the steps of `t`, as in 1 3 1. This is its designation,
 // not a name, which is why it may live here.
 func (t Tetrachord) String() string {
 	a, b, c := t.Steps()
@@ -117,7 +117,7 @@ type TetrachordSplit struct {
 	Gap Semitones
 }
 
-// Tetrachords reads p as two tetrachords, and reports whether p is
+// Tetrachords reads `p` as two tetrachords, and reports whether `p` is
 // heptatonic, which is the only case where the reading applies.
 //
 // # A forced split, and what it is worth

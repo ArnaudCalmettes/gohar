@@ -42,8 +42,8 @@ type ChordPattern uint32
 // perfect fifth on a dominant chord is avoided outright, since it
 // settles a chord whose job is to be unstable. So a rootless or
 // fifthless voicing is not a chord with a note missing, it is a chord
-// as commonly played, and it deserves its own pattern rather than a
-// penalty in a score.
+// as commonly played, and it deserves its own pattern rather than being
+// read as an incomplete one.
 //
 // This is the difference between identifying and guessing. A
 // normalised pattern either equals one of these or is not a chord.
@@ -92,7 +92,7 @@ func NewChordPattern(offsets ...Semitones) (ChordPattern, error) {
 	return p, nil
 }
 
-// HasOffset reports whether p includes a note n semitones above its
+// HasOffset reports whether `p` includes a note `n` semitones above its
 // root.
 //
 // Position sensitive: a normalised pattern holding a ninth does not
@@ -106,7 +106,7 @@ func (p ChordPattern) HasOffset(n Semitones) bool {
 	return p&(1<<n) != 0
 }
 
-// With returns p with an offset added.
+// With returns `p` with an offset added.
 func (p ChordPattern) With(n Semitones) ChordPattern {
 	if n < 0 || n >= 24 {
 		return p
@@ -114,7 +114,7 @@ func (p ChordPattern) With(n Semitones) ChordPattern {
 	return p | 1<<n
 }
 
-// Without returns p with an offset removed. Removing offset 0 is
+// Without returns `p` with an offset removed. Removing offset 0 is
 // refused, since it would break the invariant.
 func (p ChordPattern) Without(n Semitones) ChordPattern {
 	if n <= 0 || n >= 24 {
@@ -123,12 +123,12 @@ func (p ChordPattern) Without(n Semitones) ChordPattern {
 	return p &^ (1 << n)
 }
 
-// Len returns the number of notes in p.
+// Len returns the number of notes in `p`.
 func (p ChordPattern) Len() int {
 	return bits.OnesCount32(uint32(p))
 }
 
-// Offsets iterates over the members of p in ascending order, starting
+// Offsets iterates over the members of `p` in ascending order, starting
 // at 0.
 //
 // Derived from the bits alone. No member is inserted, moved or patched
@@ -147,7 +147,7 @@ func (p ChordPattern) Offsets() iter.Seq[Semitones] {
 	}
 }
 
-// Has reports whether p contains the given interval.
+// Has reports whether `p` contains the given interval.
 //
 // Enharmonic by necessity: the test is on the semitone count, since a
 // bit mask holds no degree. A pattern with a raised ninth answers true
@@ -159,7 +159,7 @@ func (p ChordPattern) Has(i Interval) bool {
 	return p.HasOffset(i.Semitones)
 }
 
-// HasAny and HasAll report whether p contains any, or all, of the
+// HasAny and HasAll report whether `p` contains any, or all, of the
 // given intervals.
 func (p ChordPattern) HasAny(intervals ...Interval) bool {
 	for _, i := range intervals {
@@ -170,7 +170,7 @@ func (p ChordPattern) HasAny(intervals ...Interval) bool {
 	return false
 }
 
-// HasAll reports whether p contains every one of the given intervals.
+// HasAll reports whether `p` contains every one of the given intervals.
 func (p ChordPattern) HasAll(intervals ...Interval) bool {
 	if len(intervals) == 0 {
 		return false
@@ -183,12 +183,12 @@ func (p ChordPattern) HasAll(intervals ...Interval) bool {
 	return true
 }
 
-// Contains reports whether every member of other belongs to p.
+// Contains reports whether every member of `other` belongs to `p`.
 func (p ChordPattern) Contains(other ChordPattern) bool {
 	return p&other == other
 }
 
-// Collapse folds p into its first octave, keeping it a pattern.
+// Collapse folds `p` into its first octave, keeping it a pattern.
 //
 // The counterpart of [ChordPattern.Fold], which leaves pattern space
 // for a [PitchSet]. Collapse stays here, because it is the first step
@@ -198,7 +198,7 @@ func (p ChordPattern) Collapse() ChordPattern {
 	return (p | p>>12) & 0x000fff
 }
 
-// Normalize spreads p over two octaves, putting every member on the
+// Normalize spreads `p` over two octaves, putting every member on the
 // rung harmony assigns it.
 //
 // # What this replaces
@@ -208,8 +208,8 @@ func (p ChordPattern) Collapse() ChordPattern {
 // determined by whether the chord holds a third. Normalize is where
 // that determination happens, once, before anything is compared. A
 // pattern that has been normalised can be matched against a table of
-// tetrads by equality, and a shape that matches nothing is not a chord
-// rather than a chord with a poor score.
+// tetrads by equality, and a shape that matches nothing is not a chord.
+// There is no closest match to fall back on.
 //
 // # The rules it encodes
 //
@@ -235,9 +235,7 @@ func (p ChordPattern) Collapse() ChordPattern {
 // # How a member moves
 //
 // A member is raised by swapping its bit with the bit an octave above,
-// and only when exactly one of the two is set. A chord already voicing
-// both the second and the ninth keeps both: it is sounding two notes,
-// not one that needs relocating.
+// and only when exactly one of the two is set: see moveUp.
 func (p ChordPattern) Normalize() ChordPattern {
 	p = p.Collapse()
 	p = p.moveUp(IntMinorSecond)
@@ -274,7 +272,7 @@ func (p ChordPattern) Normalize() ChordPattern {
 	return p
 }
 
-// Intervals iterates over the members of p as intervals, degrees
+// Intervals iterates over the members of `p` as intervals, degrees
 // included.
 //
 // Meaningful on a normalised pattern only. On a raw one the degree
@@ -295,7 +293,7 @@ func (p ChordPattern) Intervals() iter.Seq[Interval] {
 	}
 }
 
-// Tetrad returns the first octave of p, which is what determines the
+// Tetrad returns the first octave of `p`, which is what determines the
 // chord's nature.
 //
 // Harmony holds that the first four sounds fix what a chord is, and
@@ -305,7 +303,7 @@ func (p ChordPattern) Tetrad() ChordPattern {
 	return p & 0x000fff
 }
 
-// Fold collapses p into the set of pitch classes it sounds.
+// Fold collapses `p` into the set of pitch classes it sounds.
 //
 // Lossy and one way. A ninth and a second fold to the same class, so
 // the distinction that justified twenty four bits does not survive.
@@ -313,15 +311,15 @@ func (p ChordPattern) Tetrad() ChordPattern {
 //
 // This is nonetheless the bridge to recognition. What a keyboard
 // produces is a [PitchSet], so matching a played set against a pattern
-// happens on folded forms, and the ambiguity Fold introduces is exactly
-// what the scoring layer exists to resolve. Deciding whether a held set
-// is a ninth chord or an added second is not a question the core can
-// answer, and Fold is where it stops trying.
+// happens on folded forms. The ambiguity Fold introduces is lifted on
+// the way back, not here: recognition rebuilds a pattern from the held
+// notes and [ChordPattern.Normalize] decides whether a D is a second or
+// a ninth.
 func (p ChordPattern) Fold() PitchSet {
 	return PitchSet(p.Collapse())
 }
 
-// IsSubsetOf reports whether every member of p belongs to other,
+// IsSubsetOf reports whether every member of `p` belongs to `other`,
 // compared at full twenty four bit resolution.
 func (p ChordPattern) IsSubsetOf(other ChordPattern) bool {
 	return p&other == p
@@ -351,7 +349,7 @@ func (p ChordPattern) From[T Transposable[T]](root T) iter.Seq[T] {
 	}
 }
 
-// String returns the twenty four bits of p, for debugging only.
+// String returns the twenty four bits of `p`, for debugging only.
 func (p ChordPattern) String() string {
 	return fmt.Sprintf("%024b", uint32(p))
 }
@@ -376,13 +374,13 @@ func NewChord(root PitchClass, p ChordPattern) (Chord, error) {
 	return Chord{Root: root, Pattern: p}, nil
 }
 
-// Set returns the classes c sounds, folded.
+// Set returns the classes `c` sounds, folded.
 func (c Chord) Set() PitchSet {
 	return c.Pattern.Fold().Transpose(Semitones(c.Root))
 }
 
-// Pitches voices c once, from the lowest root at or above from, and
-// stops at to.
+// Pitches voices `c` once, `from` the lowest root at or above `from`, and
+// stops at `to`.
 //
 // One stack, not every chord tone in the range. This differs from
 // [Scale.Pitches] on purpose, and the difference is what the two are
@@ -391,8 +389,8 @@ func (c Chord) Set() PitchSet {
 // of the octave below as well would hand back something no player is
 // holding.
 //
-// The bounds are therefore a register rather than a filter: from picks
-// which voicing, to cuts it short if the register is too narrow to
+// The bounds are therefore a register rather than a filter: `from` picks
+// which voicing, `to` cuts it short if the register is too narrow `to`
 // hold the whole chord.
 func (c Chord) Pitches(from, to Pitch) iter.Seq[Pitch] {
 	return func(yield func(Pitch) bool) {
@@ -415,8 +413,10 @@ func (c Chord) Pitches(from, to Pitch) iter.Seq[Pitch] {
 // moveUp raises a member by an octave, and only when exactly one of the
 // two positions is occupied.
 //
-// A chord voicing both the second and the ninth is sounding two notes,
-// not one that needs relocating, so it keeps both.
+// The check guards the swap, not the music. With both bits set, the XOR
+// would clear both and the class would vanish from the pattern. A valid
+// pattern never holds a class twice, so this only happens to one forged
+// by hand, which is left as it is rather than silently damaged.
 func (p ChordPattern) moveUp(i Interval) ChordPattern {
 	if !p.Has(i) {
 		return p

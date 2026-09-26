@@ -35,7 +35,7 @@ var systemPatterns = [SystemCount]ScalePattern{
 	DoubleHarmonicMajor: ScaleDoubleHarmonicMajor,
 }
 
-// Pattern returns the mother scale of s, read from its own tonic.
+// Pattern returns the mother scale of `s`, read from its own tonic.
 //
 // Returns the empty pattern for a value outside the five, rather than
 // panicking: a System that came from outside the package deserves an
@@ -47,7 +47,7 @@ func (s System) Pattern() ScalePattern {
 	return systemPatterns[s]
 }
 
-// Mode returns the pattern of degree d of s, and whether d exists.
+// Mode returns the pattern of degree `d` of `s`, and whether `d` exists.
 func (s System) Mode(d Degree) (ScalePattern, bool) {
 	return s.Pattern().Mode(d)
 }

@@ -105,12 +105,12 @@ la lecture de fichier.
 
 | Couche | Réglée par | Défaut |
 |---|---|---|
-| anneau du lecteur | `oto.Player.SetBufferSize` | **0,5 s** |
+| ring buffer du lecteur | `oto.Player.SetBufferSize` | **0,5 s** |
 | buffer du périphérique | `oto.NewContextOptions.BufferSize` | **2 × 1024 frames, soit 42,7 ms** |
 | serveur de son (PipeWire) | quantum du graphe | 1024 frames, soit 21,3 ms |
 | bus USB et convertisseur | rien, c'est le matériel | trames de 1 ms |
 
-L'anneau est rempli d'un coup au `Play()`, donc un son demandé ensuite
+Le ring buffer est rempli d'un coup au `Play()`, donc un son demandé ensuite
 arrive derrière tout ce qui y est déjà. Le buffer de périphérique vient
 du `else` de `driver_unix.go` dans oto, qui pose 1024 frames de période
 quand on ne lui donne rien.
@@ -121,7 +121,7 @@ quand on ne lui donne rien.
 d'échantillonnage et ne passe jamais `BufferSize` à oto. Les 42,7 ms de
 périphérique deviennent donc un plancher inaccessible.
 `audio.Player.SetBufferSize` existe et fonctionne, mais il ne règle que
-l'anneau au-dessus, pas la couche qui coûte cher.
+le ring buffer au-dessus, pas la couche qui coûte cher.
 
 ### La règle
 
@@ -139,8 +139,8 @@ génération en USB, profil `output:analog-stereo`.
 
 | Chemin | Plancher | Flam audible |
 |---|---|---|
-| `ebiten/v2/audio`, anneau à 30 ms | 71,5 ms | oui, franc |
-| oto direct, périphérique et anneau à 5 ms | 12,5 ms | non |
+| `ebiten/v2/audio`, ring buffer à 30 ms | 71,5 ms | oui, franc |
+| oto direct, périphérique et ring buffer à 5 ms | 12,5 ms | non |
 
 Gigue de 2,5 ms sur le second, sans dérive ni décrochage. Le matériel
 n'a jamais été en cause : le Scarlett tient 5 ms sans broncher, et le
@@ -350,8 +350,7 @@ l'affichage sous un accord diminué 7 dont quatre fondamentales sont
 
 ## Découpage du moteur d'analyse
 
-La reconnaissance se sépare en deux couches, sur le modèle qui a bien
-fonctionné pour les capteurs.
+La reconnaissance se sépare en deux couches.
 
 **Couche pure.** Un `Snapshot` de hauteurs vers des lectures ordonnées.
 Pas d'état, pas d'horloge, pas de goroutine. Elle prend des hauteurs et

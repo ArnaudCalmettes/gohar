@@ -200,7 +200,7 @@ func (t Target) dominantOf(c Chord) (PitchClass, bool) {
 	return 0, false
 }
 
-// suspensionResolves reports whether the chord at index i is a
+// suspensionResolves reports whether the chord at index `i` is a
 // suspension that a later chord on the same root resolves.
 //
 // A suspension has no third and holds a fourth or a second in its

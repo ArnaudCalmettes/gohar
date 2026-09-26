@@ -34,7 +34,7 @@ type Tonality struct {
 
 // NewTonality builds a tonal context.
 //
-// Fails when p is not heptatonic. That failure is the type doing its
+// Fails when `p` is not heptatonic. That failure is the type doing its
 // job, not an obstacle: a caller holding a pentatonic pattern has
 // learned that no tonal reading applies, which is information the
 // analysis engine should propagate rather than swallow.
@@ -52,7 +52,7 @@ func NewTonality(tonic PitchClass, p ScalePattern) (Tonality, error) {
 	return Tonality{tonic: tonic, pattern: p}, nil
 }
 
-// IsZero reports whether t is the zero value, meaning no tonal context.
+// IsZero reports whether `t` is the zero value, meaning no tonal context.
 //
 // The zero value is not C major and must never be treated as one. An
 // engine that has inferred nothing yet, and a player working outside
@@ -64,17 +64,17 @@ func (t Tonality) IsZero() bool {
 	return t.pattern == 0
 }
 
-// Tonic returns the tonic of t.
+// Tonic returns the tonic of `t`.
 func (t Tonality) Tonic() PitchClass {
 	return t.tonic
 }
 
-// Pattern returns the pattern of t, always heptatonic.
+// Pattern returns the pattern of `t`, always heptatonic.
 func (t Tonality) Pattern() ScalePattern {
 	return t.pattern
 }
 
-// Scale widens t to a [Scale], losing the heptatonic guarantee.
+// Scale widens `t` to a [Scale], losing the heptatonic guarantee.
 //
 // One way only. Narrowing back goes through [NewTonality], which
 // checks.
@@ -82,7 +82,7 @@ func (t Tonality) Scale() Scale {
 	return Scale{Tonic: t.tonic, Pattern: t.pattern}
 }
 
-// Set returns the classes belonging to t.
+// Set returns the classes belonging to `t`.
 func (t Tonality) Set() PitchSet {
 	if t.IsZero() {
 		return EmptyPitchSet
@@ -90,12 +90,12 @@ func (t Tonality) Set() PitchSet {
 	return t.pattern.At(t.tonic)
 }
 
-// Contains reports whether c belongs to t.
+// Contains reports whether `c` belongs to `t`.
 func (t Tonality) Contains(c PitchClass) bool {
 	return t.Set().Contains(c)
 }
 
-// Degree returns the class sitting at degree d, and whether d is in
+// Degree returns the class sitting at degree `d`, and whether `d` is in
 // range. For a Tonality the range is always 1 through 7.
 func (t Tonality) Degree(d Degree) (PitchClass, bool) {
 	if t.IsZero() {
@@ -104,13 +104,13 @@ func (t Tonality) Degree(d Degree) (PitchClass, bool) {
 	return t.Scale().Degree(d)
 }
 
-// DegreeOf returns the degree that c occupies in t, and whether c
-// belongs to t at all.
+// DegreeOf returns the degree that `c` occupies in `t`, and whether `c`
+// belongs to `t` at all.
 //
 // This is the operation both consumers are built on. Spelling by degree
 // needs it to assign one letter per rank, and functional analysis needs
 // it to recognise that a chord is built on the fifth degree. A class
-// outside t has no degree, and the false return is the honest answer:
+// outside `t` has no degree, and the false return is the honest answer:
 // an accidental note is not a degree of the key, it is a note foreign
 // to it, and the caller decides what that means.
 func (t Tonality) DegreeOf(c PitchClass) (Degree, bool) {
@@ -125,7 +125,7 @@ func (t Tonality) DegreeOf(c PitchClass) (Degree, bool) {
 	return 0, false
 }
 
-// Transpose moves t to the tonic n semitones away, keeping its pattern.
+// Transpose moves `t` to the tonic `n` semitones away, keeping its pattern.
 //
 // The pattern is unchanged, so the result is heptatonic and cannot
 // fail. This makes Tonality satisfy [Transposable].
@@ -136,7 +136,7 @@ func (t Tonality) Transpose(n Semitones) Tonality {
 	return Tonality{tonic: t.tonic.Transpose(n), pattern: t.pattern}
 }
 
-// String returns the tonic and pattern of t numerically, for debugging
+// String returns the tonic and pattern of `t` numerically, for debugging
 // only. It never returns a key name.
 func (t Tonality) String() string {
 	if t.IsZero() {

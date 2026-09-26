@@ -80,7 +80,7 @@ var (
 	IntMajorFourteenth   = Interval{13, 23}
 )
 
-// IsPerfect reports whether the degree span of i takes perfect
+// IsPerfect reports whether the degree span of `i` takes perfect
 // qualities rather than major and minor ones.
 //
 // The unison, the fourth and the fifth, and their compounds. The split
@@ -92,7 +92,7 @@ func (i Interval) IsPerfect() bool {
 	return d == 0 || d == 3 || d == 4
 }
 
-// Natural returns the semitone count that i would have at its natural
+// Natural returns the semitone count that `i` would have at its natural
 // quality: perfect for a perfect degree span, major for the others.
 //
 // This is the reference every quality is measured against. It is the
@@ -103,7 +103,7 @@ func (i Interval) Natural() Semitones {
 	return majorOffsets[d] + Semitones(12*octaves)
 }
 
-// Alteration returns how far i sits from its natural quality, in
+// Alteration returns how far `i` sits from its natural quality, in
 // semitones. Zero for a major or perfect interval, minus one for a
 // minor or diminished one, and so on.
 //
@@ -114,7 +114,7 @@ func (i Interval) Alteration() Semitones {
 	return i.Semitones - i.Natural()
 }
 
-// Fold reduces i below the octave, keeping its quality.
+// Fold reduces `i` below the octave, keeping its quality.
 //
 // A major ninth folds to a major second, a perfect eleventh to a
 // perfect fourth. Both numbers move together, which is what keeps the
@@ -125,17 +125,17 @@ func (i Interval) Fold() Interval {
 	return Interval{Degrees(d), majorOffsets[d] + i.Alteration()}
 }
 
-// Up returns i, and Down returns the same interval taken downward.
+// Up returns `i`, and Down returns the same interval taken downward.
 func (i Interval) Down() Interval {
 	return Interval{-i.Degrees, -i.Semitones}
 }
 
-// AddOctave returns i raised by one octave, a second becoming a ninth.
+// AddOctave returns `i` raised by one octave, a second becoming a ninth.
 func (i Interval) AddOctave() Interval {
 	return Interval{i.Degrees + 7, i.Semitones + 12}
 }
 
-// IsEnharmonic reports whether i and other span the same distance in
+// IsEnharmonic reports whether `i` and `other` span the same distance in
 // semitones while differing in degree.
 //
 // An augmented fourth and a diminished fifth are enharmonic. So are a
@@ -150,7 +150,7 @@ func (i Interval) IsEnharmonic(other Interval) bool {
 // scale, which is the reference every quality is measured against.
 var majorOffsets = [7]Semitones{0, 2, 4, 5, 7, 9, 11}
 
-// step reduces the degree span of i to a rung between 0 and 6, folding
+// step reduces the degree span of `i` to a rung between 0 and 6, folding
 // downward spans the same way as upward ones so that the quality of a
 // descending interval reads like that of its ascending twin.
 func (i Interval) step() int {

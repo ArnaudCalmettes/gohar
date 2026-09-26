@@ -101,7 +101,7 @@ type Engine struct {
 
 // NoteOn starts a key, or restarts it if it was already sounding.
 //
-// at is when the press happened, which the caller knows better than we
+// `at` is when the press happened, which the caller knows better than we
 // do: a MIDI driver hands over an event that already waited. It is
 // recorded so that Delays can say how long the press took to reach the
 // samples.

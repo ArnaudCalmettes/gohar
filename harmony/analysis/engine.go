@@ -84,11 +84,11 @@ type event struct {
 
 // Config tunes the temporal behaviour.
 //
-// Like [Weights], these are data because there is no correct value,
-// only values that feel right at the keyboard. Unlike Weights, these
-// cannot be validated by a test: an assertion can prove the engine
-// waits two hundred milliseconds, it cannot prove two hundred is the
-// right number. Expect to change them by playing, not by reasoning.
+// These are data because there is no correct value, only values that
+// feel right at the keyboard, and no test can validate them: an
+// assertion can prove the engine waits two hundred milliseconds, it
+// cannot prove two hundred is the right number. Expect to change them
+// by playing, not by reasoning.
 type Config struct {
 	// Gather is how long a note keeps counting toward the current
 	// reading after it stops sounding.
@@ -179,8 +179,9 @@ func (e *Engine) NoteOff(p harmony.Pitch, at time.Time) {
 	e.released[p] = at
 }
 
-// Advance moves the engine to now: expires what has fallen out of the
-// window, rescores, and applies the hysteresis.
+// Advance moves the engine to `now`: expires what has fallen out of the
+// window, reads the chord and the key again, and applies the
+// hysteresis.
 //
 // Idempotent for a given time, so a caller may advance twice on one
 // frame without changing anything.
@@ -364,8 +365,10 @@ func (e *Engine) clamp(at time.Time) time.Time {
 // inferTonality picks the key that best explains what has been struck
 // inside the window.
 //
-// Each event scores plus one for a key that contains its class and
-// minus one for one that does not. The best key has to clear
+// A count, not a classification: each event adds one for a key that
+// contains its class and takes one away for a key that does not. This
+// is the key, which really is a matter of evidence; chords are
+// recognised by equality, see [Recognizer]. The best key has to clear
 // TonalityMargin outright before anything is claimed, which is what
 // keeps a single chord from being called a key, and it has to beat the
 // current one by that margin again before it replaces it.

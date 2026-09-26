@@ -4,8 +4,9 @@ Le dex est la collection de notions musicales que le joueur se
 constitue. Il est **commun à tous les jeux** et n'en connaît aucun.
 
 Ce document fixe ce qu'il contient, ce que les jeux lui envoient et ce
-qu'ils peuvent lui demander. Il précède le code, comme le glossaire a
-précédé la bibliothèque.
+qu'ils peuvent lui demander. Il a précédé le code, comme le glossaire a
+précédé la bibliothèque, et il le suit depuis : quand l'un change,
+l'autre aussi.
 
 ## Le principe qui commande tout le reste
 
@@ -32,6 +33,22 @@ l'étoffe.
 Le mot « dex » est gardé pour la référence qu'il évoque. Le ton, lui,
 n'en reprend rien : aucune injonction à tout attraper, aucune formule
 qui parle de ce qui manque en dehors du cas borné ci-dessus.
+
+## Apprendre au joueur à se passer du jeu
+
+Un principe qui vaut pour tous les jeux du projet, posé dans le billet
+sur la game loop de l'improvisateur : **on ne veut surtout pas rendre
+un musicien prisonnier de son écran pour jouer**. Le but n'est pas que
+le joueur revienne au jeu, c'est qu'il n'en ait plus besoin, et qu'il
+reconnaisse et emploie une couleur au clavier, là où aucun jeu ne lui
+dit ce qu'il entend.
+
+Le dex sert ce but, il ne le remplace pas. C'est le joueur qui
+s'évalue, presque tout le temps : il sait ce qu'il reconnaît et ce qui
+lui échappe encore. Le dex garde ce qu'il a montré et ne lui en rend un
+bilan honnête que quand il le demande. Il ne le juge pas, ne le relance
+pas, et ne fabrique aucune raison de jouer qui ne soit pas la musique
+elle-même.
 
 ## Ce qu'est une entrée
 
@@ -93,7 +110,17 @@ laissant la couleur ouverte, le joueur pose un lydien dominante : ça se
 coche. Le même mode imposé par le jeu ne coche rien, si bien joué
 soit-il.
 
-C'est la seule marque qui oblige le dex à comprendre une cible.
+Juger que la couleur était ouverte revient au jeu, pas au dex : le dex
+ne lit aucune cible, il reçoit un `FactChosen` ou n'en reçoit pas. La
+couleur est ouverte tant que la cible ne nomme pas le mode. Une tétrade
+ne donne au mieux qu'une fonction et une indication de couleur (un
+m7♭5 implique une sous-dominante en mineur) ; ce sont les extensions et les degrés
+caractéristiques qui disent qu'une couleur a été choisie. Sur un slot
+`G7`, le lydien dominante n'est attribué que si le ♯11 a sonné.
+
+Qui a choisi a joué : `FactChosen` marque aussi la production sur sa
+tonique. Sans quoi un mode toujours improvisé et jamais exigé
+n'entrerait jamais dans la grille des douze toniques.
 
 ## La fraîcheur
 
@@ -130,6 +157,14 @@ déjà connus**. Le ii-V-I mineur apparaît dès que le joueur possède le
 mineur 7 bémol 5, la dominante et le mineur majeur 7. Avant, il n'existe
 pas pour lui.
 
+Une notion peut aussi apparaître en silhouette parce qu'elle a **sonné
+sans être nommée** : le musicien qui joue une couleur parce qu'elle
+sonne classe, bien avant d'en connaître le nom. C'est `Overheard`, qui
+n'est pas une des quatre marques : la notion n'entre pas dans la
+collection, elle devient visible. Le jeu peut alors la nommer (« ce mode
+s'appelle phrygien ♮6, tu veux le capturer ? »), et c'est cette
+nomination qui fait la découverte.
+
 Une famille apparaît de même une fois entamée, et montre alors ses
 places. Le compte « plus que trois » arrive ainsi au moment où il
 motive, à quelqu'un déjà dedans, et jamais à l'accueil.
@@ -146,13 +181,21 @@ l'activité, l'instant de fin, et une liste de faits.
 Ni score, ni réussite globale, ni difficulté, ni combo : le vocabulaire
 d'un jeu n'entre pas ici, sinon le dex cesse d'être un bien commun.
 
-| Fait | Ce qu'il porte | Ce qu'il déclenche |
+**Le dex reçoit des faits, il ne juge pas.** Décider qu'une réponse est
+juste, qu'une couleur était ouverte, qu'un trajet harmonique tient,
+appartient aux règles du jeu, qui émet ensuite les faits
+correspondants. Le dex décide seulement ce que chaque fait marque.
+
+| Fait | Ce qu'il porte | Ce qu'il marque |
 |---|---|---|
-| Entendu | la notion, la tonique | la découverte de l'entrée |
-| Nommé | la notion, si l'identification était juste | Reconnue |
+| Entendu | la notion, la tonique | Rencontrée |
+| Nommé | la notion, la tonique | Reconnue |
 | Produit | la notion, la tonique | Produite sur cette tonique |
-| Choisi | la notion, la tonique, ce que la cible demandait | Employée |
-| Sonné | la notion | rien, rafraîchit |
+| Choisi | la notion, la tonique | Employée, et Produite sur cette tonique |
+| Sonné | la notion | rien : rafraîchit ce qui est déjà marqué, ou fait apparaître une silhouette |
+
+La première marque posée sur une notion est sa **découverte**, et c'est
+le moment que le jeu peut célébrer.
 
 **Sonné** est le fait de fraîcheur, et il répond à un piège du rappel
 espacé : les notions ne sont pas indépendantes. Réviser un ii-V-I fait
@@ -163,8 +206,25 @@ l'auteur du jeu, qui rapporterait ce qu'il a programmé plutôt que ce qui
 a retenti.
 
 **Aucun fait ne dit qu'une tentative a échoué**, ni qu'une performance
-était bonne. Le premier est punitif, le second est une marque déguisée
-qui remettrait la décision du côté des jeux.
+était bonne. Le premier est punitif, le second est un jugement
+déguisé : ce n'est pas au dex d'évaluer le joueur, c'est au joueur de
+s'évaluer, et il n'obtient un bilan honnête que quand il le demande.
+
+**Une erreur compte pour du beurre.** Elle se corrige, elle ne
+s'apprend pas : ce qui s'apprend, c'est la correction que le joueur
+produit ensuite. Un jeu n'envoie donc `Nommé` que sur une
+identification, et la correction réussie arrive comme n'importe quelle
+autre, sans que le dex sache qu'une erreur l'a précédée.
+
+## La forme écrite
+
+Le dex se sérialise en JSON, et c'est tout ce qu'il sait de son
+stockage : un fichier au bureau, le stockage local dans un navigateur,
+c'est l'affaire du jeu. Une notion s'y écrit sous sa forme stable
+(`mode:0/4`), jamais sous les valeurs numériques de ses champs, et une
+marque jamais posée ne s'écrit pas. La lecture est stricte : ce qui ne
+se relit pas exactement est une erreur, jamais une devinette, parce
+qu'une collection mal relue déplacerait des marques en silence.
 
 ## Ce que les jeux demandent
 

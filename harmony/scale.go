@@ -70,10 +70,10 @@ const (
 	ScaleDoubleHarmonicMajor ScalePattern = 0b100110_110011
 )
 
-// NewScalePattern builds the pattern that s describes when read from
-// tonic.
+// NewScalePattern builds the pattern that `s` describes when read from
+// `tonic`.
 //
-// Fails when tonic does not belong to s, since bit 0 would come out
+// Fails when `tonic` does not belong to `s`, since bit 0 would come out
 // clear and break the invariant. That failure is worth surfacing: it
 // means the caller proposed a tonic the set does not contain, which in
 // the analysis engine is a candidate to reject rather than a value to
@@ -88,7 +88,7 @@ func NewScalePattern(s PitchSet, tonic PitchClass) (ScalePattern, error) {
 	return ScalePattern(s.Transpose(-Semitones(tonic))), nil
 }
 
-// At anchors p on tonic and returns the resulting set of classes.
+// At anchors `p` on `tonic` and returns the resulting set of classes.
 //
 // This is the conversion out of pattern space. [NewScalePattern] is the
 // conversion back in.
@@ -96,12 +96,12 @@ func (p ScalePattern) At(tonic PitchClass) PitchSet {
 	return PitchSet(p).Transpose(Semitones(tonic))
 }
 
-// Len returns the number of notes in p.
+// Len returns the number of notes in `p`.
 func (p ScalePattern) Len() int {
 	return bits.OnesCount16(uint16(p))
 }
 
-// IsHeptatonic reports whether p has exactly seven notes.
+// IsHeptatonic reports whether `p` has exactly seven notes.
 //
 // This is the precondition of [Tonality] and of spelling by degree: one
 // letter per degree only works when there are seven of them.
@@ -109,7 +109,7 @@ func (p ScalePattern) IsHeptatonic() bool {
 	return p.Len() == 7
 }
 
-// Contains reports whether p includes a note n semitones above its
+// Contains reports whether `p` includes a note `n` semitones above its
 // tonic.
 func (p ScalePattern) Contains(n Semitones) bool {
 	if n < 0 || n >= 12 {
@@ -118,7 +118,7 @@ func (p ScalePattern) Contains(n Semitones) bool {
 	return p&(1<<n) != 0
 }
 
-// Offsets iterates over the members of p, yielding each degree with its
+// Offsets iterates over the members of `p`, yielding each degree with its
 // distance above the tonic. The first pair is always (1, 0).
 func (p ScalePattern) Offsets() iter.Seq2[Degree, Semitones] {
 	return func(yield func(Degree, Semitones) bool) {
@@ -135,8 +135,8 @@ func (p ScalePattern) Offsets() iter.Seq2[Degree, Semitones] {
 	}
 }
 
-// Offset returns the distance from the tonic to degree d, and whether d
-// exists in p.
+// Offset returns the distance from the tonic to degree `d`, and whether `d`
+// exists in `p`.
 func (p ScalePattern) Offset(d Degree) (Semitones, bool) {
 	for degree, n := range p.Offsets() {
 		if degree == d {
@@ -146,13 +146,13 @@ func (p ScalePattern) Offset(d Degree) (Semitones, bool) {
 	return 0, false
 }
 
-// Mode returns the pattern read from degree d of p.
+// Mode returns the pattern read from degree `d` of `p`.
 //
-// Mode(2) of [ScaleMajor] is the dorian pattern. Mode(1) returns p
+// Mode(2) of [ScaleMajor] is the dorian pattern. Mode(1) returns `p`
 // unchanged. The result is a rotation that re-anchors bit 0 on the
-// member at degree d, so the invariants hold by construction.
+// member at degree `d`, so the invariants hold by construction.
 //
-// Reports whether d exists in p.
+// Reports whether `d` exists in `p`.
 func (p ScalePattern) Mode(d Degree) (ScalePattern, bool) {
 	n, ok := p.Offset(d)
 	if !ok {
@@ -211,7 +211,7 @@ func (p ScalePattern) Mirror() ScalePattern {
 	return out
 }
 
-// String returns the twelve bits of p, for debugging only.
+// String returns the twelve bits of `p`, for debugging only.
 func (p ScalePattern) String() string {
 	return fmt.Sprintf("%012b", uint16(p))
 }
@@ -238,17 +238,17 @@ func NewScale(tonic PitchClass, p ScalePattern) (Scale, error) {
 	return Scale{Tonic: tonic, Pattern: p}, nil
 }
 
-// Set returns the classes of s.
+// Set returns the classes of `s`.
 func (s Scale) Set() PitchSet {
 	return s.Pattern.At(s.Tonic)
 }
 
-// Classes iterates over the classes of s from its tonic upward.
+// Classes iterates over the classes of `s` from its tonic upward.
 func (s Scale) Classes() iter.Seq[PitchClass] {
 	return s.Pattern.From(s.Tonic)
 }
 
-// Pitches iterates over the pitches of s between from and to
+// Pitches iterates over the pitches of `s` between `from` and `to`
 // inclusive, ascending.
 //
 // Bounds are pitches rather than octave numbers so that a keyboard with
@@ -264,7 +264,7 @@ func (s Scale) Pitches(from, to Pitch) iter.Seq[Pitch] {
 	}
 }
 
-// Degree returns the class at degree d, and whether d exists in s.
+// Degree returns the class at degree `d`, and whether `d` exists in `s`.
 func (s Scale) Degree(d Degree) (PitchClass, bool) {
 	n, ok := s.Pattern.Offset(d)
 	if !ok {

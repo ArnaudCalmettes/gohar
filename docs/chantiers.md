@@ -9,6 +9,9 @@ conception de la collection dans `dex.md`, la première activité dans
 `oreille.md`. Ici il n'y a que ce qui reste à faire, et les décisions
 qu'il ne faut pas rouvrir.
 
+Mettre une doc à jour n'est pas un chantier : ça fait partie de la
+tâche qui la fait mentir.
+
 ## Où on en est
 
 `harmony` tient : hauteurs, intervalles, ensembles, gammes, tonalités,
@@ -42,40 +45,10 @@ couches et il tient au premier playtest.
 
 ## Les décisions du dex
 
-**Le dex reçoit des faits, il ne juge pas.** Décider qu'une réponse
-est juste, qu'une couleur était ouverte, qu'un trajet harmonique tient,
-appartient aux règles du jeu, qui émet ensuite les faits
-correspondants. Le dex ne lit aucune cible. `Target` vit dans
-`harmony`, avec un `Target.Resolve` qui rend des faits et pas un
-verdict : c'est là que le jeu trouve de quoi juger.
-
-**Une erreur compte pour du beurre.** Elle se corrige, elle ne
-s'apprend pas : ce qui s'apprend, c'est la correction produite par le
-joueur. Aucun fait ne dit qu'une tentative a échoué, et `FactNamed`
-n'est envoyé que sur une identification. Dans `ear`, une erreur ne
-produit rien : on montre la correction en comparant les deux modes, et
-le mode revient plus loin sur une autre tonique.
-
-**`FactSounded` ne touche que `Last`.** `Count` compte des
-démonstrations, pas des passages à l'oreille.
-
-**`FactChosen` marque aussi la production.** Qui a choisi a joué :
-`Used` et `Produced[tonic]`, sinon un mode toujours improvisé et jamais
-exigé n'entre jamais dans la grille des douze toniques.
-
-**La couleur est ouverte tant que la cible ne nomme pas le mode.** Une
-tétrade ne donne au mieux qu'une fonction et une indication de couleur
-(un m7♭5 implique le mineur). Ce sont les extensions et les degrés
-caractéristiques qui disent qu'une couleur a été choisie : sur un slot
-`G7`, le lydien dominante n'est attribué que si le ♯11 a sonné. C'est
-le jeu qui en juge.
-
-**Ce qui ouvre une entrée.** `FactHeard` (sonner et nommer),
-`FactNamed`, `FactProduced`, `FactChosen`. `FactSounded` sur une notion
-jamais rencontrée marque `Overheard` et fait apparaître une silhouette,
-pas une découverte : c'est le musicien qui joue une couleur parce
-qu'elle sonne classe, bien avant d'en connaître le nom. Le jeu peut
-alors la nommer, et ce `FactHeard` est la découverte.
+Elles sont dans `dex.md`, qui les tient : le dex reçoit des faits et ne
+juge pas, une erreur compte pour du beurre, `FactChosen` marque aussi la
+production, la couleur est ouverte tant que la cible ne nomme pas le
+mode, et ce qui sonne sans être nommé apparaît en silhouette.
 
 ## Les décisions du nommage
 
@@ -110,8 +83,6 @@ connaît.
 - [ ] distinguer le système comme gamme mère des modes et le système
       comme référence de l'harmonie tonale. Le mineur naturel n'est pas
       un citoyen de seconde zone.
-- [ ] écrire dans `dex.md` le principe « apprendre au joueur à se passer
-      du jeu », et les décisions ci-dessus.
 
 ## L'harmonie
 
@@ -119,13 +90,13 @@ connaît.
       caractéristiques d'un mode sur une fenêtre de jeu. Choix à faire
       sur la taille de la fenêtre et l'ambiguïté entre modes voisins.
       C'est ce qui fera exister les silhouettes et `FactChosen`.
-- [ ] passe ligne à ligne sur `Mode.Function`. Le catalogue porte
-      aujourd'hui 17 toniques, 9 dominantes, 5 sous-dominantes et 2 sans
-      fonction, remplies à partir des tétrades. La dictée d'Arnaud
-      donnait tout tonique sauf les deux sans tétrade et le mixolydien
-      ♭2 ♭5. Les deux premiers degrés du mineur harmonique et du majeur
-      harmonique portent `Tonic | Dominant` à dessein : ce sont aussi
-      des avatars de dominante sur pédale de tonique.
+- [ ] passe ligne à ligne sur `Mode.Function`. La règle est tranchée :
+      la fonction d'un mode se dérive de sa tétrade, plus les fonctions
+      qu'un expert ajoute. Le premier degré du mineur harmonique
+      (éolien ♮7) et celui du majeur harmonique (ionien ♭6) portent
+      ainsi `Tonic | Dominant` : ce sont aussi des avatars de dominante
+      sur pédale de tonique. Reste à relire les ajouts d'expert mode par
+      mode.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
@@ -223,12 +194,8 @@ pour en faire des règles. Elles relèvent du jeu, jamais du dex.
 
 ## Le dépôt
 
-- [ ] vérifier la section History du README : le lien vers
-      `gohar-archive` et ce qu'elle dit de l'ancien module.
 - [ ] tags préfixés le jour de la publication : `harmony/v0.1.0`,
       `synth/v0.1.0`.
-- [ ] `oreille.md` : le découpage a vieilli, les étapes 1 à 4 sont
-      faites et l'étape 4 utilise `text/v2`, pas `DebugPrint`.
 
 ## Pour une conversation neuve
 

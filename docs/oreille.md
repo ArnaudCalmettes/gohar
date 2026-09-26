@@ -28,8 +28,11 @@ doit rendre, c'est la liste de ce qui coince.
 - **Session** : dix questions, plus au plus une reprise par erreur. Un
   seul `Report` à la fin, les `Change` affichés (découvertes, marques
   gagnées).
-- **Langue** : français ou anglais, par option.
-- **Affichage** : un clavier vectoriel qui anime la note qui sonne.
+- **Langue** : français ou anglais, par `-lang` ou la touche `L`.
+- **Notation** : signes par défaut (si♭, phrygien ♮6), mots en option
+  (si bémol, phrygien bécarre 6), par `-notation` ou la touche `N`.
+- **Affichage** : pour l'instant du texte et trois boutons. Le clavier
+  vectoriel qui anime la note qui sonne reste à faire.
 
 ## Les faits émis
 
@@ -48,46 +51,57 @@ doit rendre, c'est la liste de ce qui coince.
 - **Le clavier ne doit pas donner la réponse.** Surligner les touches
   du mode avant la réponse revient à l'afficher. Pendant la question on
   n'anime que la note qui sonne et les touches enfoncées ; le mode
-  entier se surligne à la révélation.
+  entier se surligne à la révélation. À tenir pour le clavier
+  vectoriel.
 - **Jouer une séquence à l'heure.** `Engine.NoteOn` n'ordonnance rien :
-  `at` sert à mesurer, pas à différer. Piloter la séquence depuis
-  `Update` donnerait une gigue d'une frame (16,7 ms). Proposition :
-  une `keyboard.Source` qui rejoue une séquence datée sur sa propre
-  goroutine, avec des timers. C'est la « séquence rejouée » que
-  `keyboard.go` annonce déjà comme une vraie source, et sa gigue est
-  celle d'un doigt sur le clavier MIDI : le tampon du périphérique.
+  `at` sert à mesurer, pas à différer, et piloter la gamme depuis
+  `Update` donnerait une gigue d'une frame (16,7 ms). Résolu par
+  `keyboard.Sequence`, une `Source` qui rejoue des notes datées sur sa
+  propre goroutine : sa gigue est celle d'un doigt sur le clavier MIDI,
+  le buffer du périphérique.
 - **Deux sources, un moteur, un affichage.** Le rappel d'une `Source`
-  doit rendre la main tout de suite. Chaque événement va au moteur
-  directement, et vers le jeu par une file que `Update` vide.
-- **La persistance n'existe pas.** `Notion.String` donne la forme
-  écrite d'une notion, mais rien n'écrit un `Dex`. Sans elle, la
-  collection repart de zéro à chaque lancement et on ne valide rien.
+  doit rendre la main tout de suite. Résolu par `onKey`, seul chemin de
+  toute source vers le moteur et l'affichage.
+
+## Ce que le premier playtest a appris
+
+- Sous Linux, le port « Midi Through » arrive en tête de liste et ne
+  joue rien. `OpenMIDI` le saute quand aucun port n'est demandé.
+- Go Regular n'a pas ♭ ♮ ♯. Une coupe de DejaVu Sans de 4 Ko, embarquée
+  (`games/ear/fonts`), sert de police de secours.
+- Le français écrivait les notes en mots et l'anglais en signes. La
+  notation est devenue un choix du `Namer`, indépendant de la langue,
+  pour les deux langues à la fois : c'est aussi ce qui ouvre la porte à
+  une synthèse vocale.
 
 ## Ce qu'il ne faut pas fermer, pour WASM
 
 - Le jeu doit tourner sans clavier MIDI. `midi.go` passera derrière un
   build tag (`!js`), avec `webmididrv` plus tard.
-- La persistance s'écrit sur un `io.Writer` et se lit sur un
-  `io.Reader`. Le fichier côté bureau, `localStorage` côté navigateur,
-  c'est l'affaire du jeu.
+- Le dex ne sait que se sérialiser en JSON. Où le ranger est l'affaire
+  du jeu : un fichier au bureau (`store.go`), `localStorage` dans le
+  navigateur.
 - Le navigateur ne démarre l'audio qu'après un geste de l'utilisateur :
-  prévoir un écran « cliquer pour commencer », utile aussi au bureau.
+  l'écran « cliquer pour commencer » existe déjà.
+- La police des signes est embarquée, pas lue sur le système.
 
 ## Le découpage
 
-1. **Persistance du dex** : `MarshalJSON` et `UnmarshalJSON`, clés en
-   `Notion.String`, dates en RFC 3339, test d'aller-retour. Et
-   suppression de `Fact.Correct` : aucun fait ne dit qu'une tentative a
-   échoué, `FactNamed` n'est envoyé que sur une identification. Faible.
-2. **Séquence rejouée** : une `keyboard.Source` qui joue une liste
-   d'événements datés. Faible à moyen.
+Fait :
+
+1. **Persistance du dex**, et suppression de `Fact.Correct`.
+2. **Séquence rejouée** : `keyboard.Sequence`.
 3. **Histogramme des délais** dans `synth.Engine`, à cases fixes, sans
-   allocation sur la goroutine audio. Faible.
-4. **Le jeu en texte** : `games/ear`, Ebitengine, noms cliquables,
-   `ebitenutil.DebugPrint` pour tout le reste. La boucle complète, dex
-   compris. Moyen.
+   allocation sur la goroutine audio.
+4. **Le jeu en texte** : `games/ear`, la boucle complète, dex compris,
+   texte en `text/v2` avec la police de secours. La touche `H` affiche
+   déjà l'histogramme.
+
+Reste :
+
 5. **Le clavier vectoriel** : `ebiten/v2/vector`, deux octaves,
    animation de la note qui sonne, révélation du mode. Moyen.
-6. **Charge** : histogramme affiché par une touche de debug pendant que
-   le clavier s'anime. Faible, une fois 3 et 5 faits.
-7. **WASM** : build tags, stockage, écran de démarrage. Plus tard.
+6. **Charge** : lire l'histogramme après plusieurs minutes pendant que
+   le clavier s'anime. Faible, une fois 5 fait.
+7. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
+   Plus tard.

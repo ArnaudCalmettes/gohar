@@ -138,7 +138,7 @@ func (s *stream) ResetWorst() {
 	s.worst = 0
 }
 
-// Read fills buf with float32 little endian stereo samples.
+// Read fills `buf` with float32 little endian stereo samples.
 //
 // Runs on the audio goroutine. No allocation, no logging, no waiting on
 // anything the game loop might hold for long: whatever happens here
