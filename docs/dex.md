@@ -71,6 +71,12 @@ même si c'est aussi le mode du sixième degré de celle-ci : c'est ainsi
 que la tradition européenne construit les tonalités mineures. Leur
 place dans le modèle est le chantier `KindSystem`.
 
+Les **voicings** aussi sont des entrées (voir `voicings.md`) : les
+positions de tétrade, notions élémentaires, et les progressions voicées
+depuis une position de départ. Le II-V-I qui part de 1-3-7 et celui qui
+part de 1-7-3 sont deux entrées sœurs, deux compétences distinctes pour
+les mains.
+
 ### Les notions élémentaires
 
 L'**intervalle** est une entrée, mais élémentaire : un petit pas qu'on
@@ -126,6 +132,13 @@ poser la chose partout est ce qui muscle l'oreille relative.
 La production garde donc **par tonique** sa date et son compte de
 renforcements. L'agrégat par entrée se calcule à la demande ; l'inverse
 ne s'invente pas.
+
+Le détail dépend de la notion, et la tonique n'est que le premier cas.
+Une **position** de voicing se produit par tétrade et par fondamentale
+(voir `voicings.md`) : c'est ce couple qui fait changer la main. Le
+détail de la production deviendra un contexte propre à chaque genre de
+notion, la tonique pour un mode, le couple (tétrade, fondamentale) pour
+une position.
 
 ### Employée
 

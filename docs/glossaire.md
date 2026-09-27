@@ -36,6 +36,15 @@ convertibles, mais un pattern est ancré sur une tonique implicite en
 position 0, alors qu'un `PitchSet` est absolu. La conversion est
 explicite dans les deux sens et porte un nom.
 
+### Numérotation des octaves
+
+Do4 est le do du milieu (MIDI 60) et la4 fait 440 Hz, dans toutes les
+langues du projet, docs et code compris. Do3 est donc le do de l'octave
+en dessous du do du milieu, sur le deuxième interligne de la clé de fa.
+C'est la convention des logiciels et du MIDI. La fixer compte : une
+règle de tessiture fausse d'une octave ne se remarque pas à la
+lecture.
+
 ## Pourquoi `Interval` porte deux nombres
 
 Ni l'un ni l'autre ne suffit. Six demi-tons, c'est une quarte augmentée
@@ -65,6 +74,8 @@ c'est `Locale.IntervalName`.
 | `Chord` | Couple fondamentale + `ChordPattern`. | `ChordPattern` seul |
 | `Phrase` | Une forme mélodique : suite d'écarts signés depuis la première note. Jamais repliés. | `Progression`, qui replie |
 | `Direction` | Un pas de contour : `Up`, `Down`, `Level`. `Level` et non `Same`, qui voisinerait avec `Match.Same`. | |
+| Position | La suite des degrés d'un accord de la basse au soprane, numérotés sans altération et selon le chiffrage : 1-7-3-13-9. Un renversement en est une. Pas encore de type. Voir `voicings.md`. | Une réalisation, qui fixe les registres |
+| Réalisation | Une position placée dans des registres effectifs. Une position en admet plusieurs, dans la limite de la main. Pas encore de type. | Une position, qui ne fixe que l'ordre |
 | `Tonality` | Un contexte tonal : tonique + pattern **heptatonique**. N'existe que là où invoquer une tonalité a du sens, typiquement pour identifier une cadence ou épeler par degré. | `Scale`, qui accepte n'importe quel pattern |
 
 `Tonality` appartient au noyau et non à `naming`, parce qu'elle ne porte
@@ -95,6 +106,13 @@ L'orthographe vit exclusivement dans `naming`. Le noyau l'ignore.
 | `SpelledNote` | Une `PitchClass` associée à une lettre et une altération. Mi♯ et fa sont deux `SpelledNote` distinctes pour la même `PitchClass`. |
 | `Accidental` | Une altération écrite : bécarre, dièse, bémol, double dièse, double bémol. Valeur entière en demi-tons, domaine -2 à +2. |
 | `Locale` | Table de noms de lettres et de patterns pour une langue. Passé en paramètre, jamais global. |
+
+Les **chiffrages** s'écrivent avec les lettres américaines dans toutes
+les langues : un chiffrage français est « CmMaj7(add9) », pas
+« domMaj7(add9) ». Ils se **disent** en revanche dans la langue : « do
+mineur majeur 7 add 9 ». Le rendu écrit d'un chiffrage ne dépend donc
+pas de la locale, et son rendu parlé si, ce qui compte pour une
+synthèse vocale.
 
 Le mot **alteration** ne figure nulle part. C'est un gallicisme :
 l'anglais dit *accidental* pour le signe écrit.

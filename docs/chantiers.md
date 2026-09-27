@@ -5,8 +5,8 @@ Ce qui est ouvert, et ce qui attend une décision.
 Ce fichier existe pour qu'une conversation neuve reprenne sans rien
 redécouvrir et sans rouvrir un débat déjà tranché. Les raisons des choix
 faits sont dans `architecture.md`, le vocabulaire dans `glossaire.md`, la
-conception de la collection dans `dex.md`, la première activité dans
-`oreille.md`. Ici il n'y a que ce qui reste à faire, et les décisions
+conception de la collection dans `dex.md`, l'ear trainer dans
+`oreille.md`, les voicings dans `voicings.md`. Ici il n'y a que ce qui reste à faire, et les décisions
 qu'il ne faut pas rouvrir.
 
 Mettre une doc à jour n'est pas un chantier : ça fait partie de la
@@ -112,12 +112,51 @@ connaît.
 - [ ] test « un mode ne porte jamais moins de fonctions que sa tétrade ».
       Les ajouts d'expert n'enlèvent jamais un rôle.
 - [ ] rendre un chiffrage depuis une lecture : `C7♯9` à partir d'une
-      `Reading`.
+      `Reading`. Écrit en lettres américaines dans toutes les langues,
+      dit dans la langue (« do mineur majeur 7 add 9 ») : deux rendus,
+      dont un seul dépend de la locale.
+- [ ] l'inverse : lire un chiffrage écrit, pour les grilles.
 - [ ] catalogue de progressions, pour que `ProgressionID` désigne
       quelque chose. Servirait aussi à juger les détours d'une
       réharmonisation (voir les jeux).
 - [ ] un registre parlé anglais, s'il en existe un qui mérite d'être
       proposé en alternative. Aujourd'hui seul le français en a un.
+
+## Les voicings
+
+Les décisions sont dans `voicings.md`.
+
+- [ ] les types `Position` et réalisation dans `harmony`, et le calcul
+      de la position d'une réalisation selon une lecture d'accord.
+- [ ] la table de tessiture : partir des *low interval limits* de
+      Berklee, puis la corriger d'après le cours « Les bases de
+      l'harmonisation » d'Étienne Guéreau. Les annotations portent sur
+      toutes les paires de voix, jamais de refus.
+- [ ] le calcul du moindre mouvement, qui dérive les couples de
+      positions d'une progression.
+- [ ] dans le dex, un détail de production propre à la notion : le
+      couple (tétrade, fondamentale) pour une position.
+- [ ] vérifier la fin du II-V-I mineur en m6, 1-3-6-5.
+
+## Les grilles
+
+Lire les grilles iReal Pro pour qu'un pianiste travaille la sienne avec
+le dex : suggestions d'harmonisation, revue de tous les avatars
+cadentiels qu'il connaît sur chaque « change », voicings. Débroussaillé
+le 27/09.
+
+- [ ] le parseur iReal dans un paquet `charts` (`charts/ireal`), hors
+      du noyau, qui importe `harmony` et `naming`. Les URL encodent la
+      grille, brouillée par blocs ; plusieurs formats historiques et
+      leurs rustines, un test par rustine. Tests sur des grilles
+      originales, jamais sur le contenu des packs iReal.
+- [ ] le parseur de chiffrages, dialecte iReal compris (voir
+      l'harmonie).
+- [ ] la lecture d'une grille : centres tonaux et cadences, par le
+      catalogue de progressions. À concevoir ensemble d'abord.
+- [ ] les voicings sur une grille : la marque « Employée » du dex
+      constate une position placée spontanément sur les changes.
+- [ ] une grille iReal comme niveau du shoot'em up.
 
 ## L'audio
 

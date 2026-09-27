@@ -25,8 +25,8 @@ theory library never pulls in a graphics or audio stack.
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
 for the choices and their reasons, `dex.md` for the collection,
-`oreille.md` for the ear trainer, `glossaire.md` for the vocabulary,
-`chantiers.md` for what is open.
+`oreille.md` for the ear trainer, `voicings.md` for chord positions,
+`glossaire.md` for the vocabulary, `chantiers.md` for what is open.
 
 ## Requirements
 
