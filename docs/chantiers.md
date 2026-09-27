@@ -238,9 +238,10 @@ Reste :
       cycle des quartes) ; degrés et tonalités annoncées en gammes
       précises (`Degrees`, `Block.Announced`), faits, 70 degrés sur 83
       comme le livre ; la tonique pressentie, lue de gauche à droite
-      (tonique de fond et tonique locale, le I emprunté), conçue dans
-      `grilles.md` ; l'affichage annoté en ASCII dans le terminal,
-      enrichi à chaque étape ; les étages hauts dans la mesure où la
+      (`Sense` : tonique de fond et tonique locale, le I emprunté),
+      faite, 72 degrés sur 83, sauf le passage d'une tonique locale au
+      fond, qui attend les seuils de la modulation ; l'affichage annoté
+      en ASCII dans le terminal, enrichi à chaque étape ; les étages hauts dans la mesure où la
       fiche en a besoin. Puis le direct, avec l'attente
       et la surprise (voir `grilles.md`).
 - [ ] la grille annotée dans une fenêtre Ebitengine (police de Real

@@ -227,6 +227,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
 | Bloc | Une cadence, [II] [sus4] V → cible, avec la tonalité qu'elle annonce, qu'elle s'y résolve ou non | Une section de la grille |
 | Tonalités annoncées | Ce qu'un bloc annonce : une tonique et les gammes nommées où la lire, une `Tonality` par gamme (fa mineur harmonique ; ré♭ majeur ou mineur mélodique quand rien ne tranche) | Une seule `Tonality` ; jamais `Key`, qui reste la touche |
+| Tonique pressentie | La tonique que l'oreille attend après un accord, avec ce qui a sonné et rien d'autre : un fond installé, une tonique locale qu'une cadence vient de toniciser, ce que la cadence en cours annonce. En anglais `Sensed` | La tonalité du morceau, qui se conclut après coup (`Tune`) |
 | Préparation | Un ou deux accords ajoutés ou modifiés devant une arrivée. En anglais *approach* : `ApproachKind` en nomme le type | Un emprunt, qui peut en être une ; `Approach`, le chemin d'un joueur dans un slot |
 | Provenance | La ou les gammes nommées d'où vient un accord, quelle que soit leur tonique : ce que le joueur improvise dessus | La tonalité du morceau |
 | Dominante secondaire | Le V7 d'une arrivée autre que le I | La dominante chromatique |

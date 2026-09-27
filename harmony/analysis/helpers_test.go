@@ -49,6 +49,7 @@ func chordName(ch harmony.Chord) string {
 	nine, _ := harmony.NewChordPattern(0, 4, 7, 10, 14)
 	quality, ok := map[harmony.ChordPattern]string{
 		harmony.ChordMajorTriad:          "",
+		harmony.ChordMinorSixth:          "m6",
 		harmony.ChordMajorSeventh:        "maj7",
 		harmony.ChordMinorSeventh:        "m7",
 		harmony.ChordDominantSeventh:     "7",

@@ -149,19 +149,21 @@ var qualities = map[harmony.ChordPattern]string{
 //
 // The chords of a two five are read in the tonalities it announces, as
 // En Harmonie brackets them under their target: Dm7♭5 G7 before Cm7 in
-// E flat is II V, then VI. Every other chord is read in the home
-// tonalities, those of the tune, with its quality when it borrows: a V
+// E flat is II V, then VI. Every other chord is read in the ground of
+// its sensed tonic (see [Sense]), with its quality when it borrows: a V
 // alone, which En Harmonie writes as the degree it sits on (A7 before
 // Dm7 in C is VI7, a secondary dominant; A♭7 before Gm7 in E flat,
 // IV7), and a passing chord (♯Idim7, ♭IIIdim7), even when it is also
-// the dominant without root of the next chord.
-func Degrees(c Changes, blocks []Block, passing []int, home []harmony.Tonality) []Degree {
+// the dominant without root of the next chord. So is a two five that
+// does not resolve and whose two sits on the ground's tonic: E♭m7 A♭7
+// in E flat is Im7 IV7, a borrowed tonic.
+func Degrees(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
 	in := make([][]harmony.Tonality, len(c.Chords))
 	for i := range in {
-		in[i] = home
+		in[i] = sensed[i].Ground
 	}
 	for _, b := range blocks {
-		if len(b.Announced) == 0 || b.Two < 0 {
+		if len(b.Announced) == 0 || b.Two < 0 || borrowsTonic(c, b, sensed[b.Two].Ground) {
 			continue
 		}
 		for _, i := range []int{b.Two, b.Sus, b.Five} {

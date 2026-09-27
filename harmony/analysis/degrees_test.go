@@ -11,7 +11,9 @@ import (
 func degreesOf(c analysis.Changes, home []harmony.Tonality) string {
 	kinds := analysis.Approaches(c)
 	var out []string
-	for _, d := range analysis.Degrees(c, analysis.Blocks(c, kinds), analysis.PassingChords(c), home) {
+	blocks := analysis.Blocks(c, kinds)
+	sensed := analysis.Sense(c, blocks, home)
+	for _, d := range analysis.Degrees(c, blocks, analysis.PassingChords(c), sensed) {
 		out = append(out, d.String())
 	}
 	return strings.Join(out, " ")
@@ -35,17 +37,18 @@ func TestDegrees(t *testing.T) {
 		home    []harmony.Tonality
 		want    string
 	}{
-		// Tenderly, bars 1 to 16. Against En Harmonie: bars 3 and 4 read
-		// here as a two five of D flat that does not resolve, where
-		// En Harmonie reads a borrowed I and a IV; bars 13 and 14 as a
-		// two five of B flat, where En Harmonie reads VI and II7. Both
-		// readings are true; En Harmonie's come with the cadences.
+		// Tenderly, bars 1 to 16. Bars 3 and 4, E♭m7 A♭7, a two five
+		// that does not resolve with its two on the tonic, are a
+		// borrowed I and a IV7, as En Harmonie reads them. Against it:
+		// bars 13 and 14 read here as a two five of B flat, where
+		// En Harmonie reads VI and II7. Both readings are true;
+		// En Harmonie's will come with the cadences.
 		"Tenderly": {
 			changesOf(false, eb, maj7, ab, dom7, eb, min7, ab, dom7, f, min7, db, dom7, eb, maj7,
 				g, halfDim, c, flatNine, f, halfDim, bb, dom7, f, halfDim, bb, dom7, b, dim7,
 				c, min7, f, dom7, f, min7, bb, dom7),
 			analysis.MajorTonalities(eb),
-			"I IV7 II V II ♭VII7 I II V II V II V ♯Vdim7 II V II V",
+			"I IV7 Im7 IV7 II ♭VII7 I II V II V II V ♯Vdim7 II V II V",
 		},
 		// A chromatic dominant and its two, the chromatic subdominant.
 		"♭VIm7 ♭II7 I": {

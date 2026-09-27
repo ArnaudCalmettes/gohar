@@ -82,7 +82,8 @@ func find(path, title string) (ireal.Song, error) {
 // with the analysis on lines of its own above the chords: over each
 // chord, how it prepares the next, and above, the blocks with the tonality
 // they announce. Under the chords, their degrees, as En Harmonie writes
-// them, in the tonality the app gives the tune.
+// them, and under the degrees the sensed tonic where it changes, from
+// the tonality the app gives the tune.
 func render(s ireal.Song) string {
 	chart := ireal.Structure(ireal.Lex(s.Chart))
 	tl := chart.Timeline()
@@ -90,11 +91,9 @@ func render(s ireal.Song) string {
 	kinds := analysis.Approaches(changes)
 	passing := analysis.PassingChords(changes)
 	blocks := analysis.Blocks(changes, kinds)
-	home, known := s.HomeTonalities()
-	var degrees []analysis.Degree
-	if known {
-		degrees = analysis.Degrees(changes, blocks, passing, home)
-	}
+	home, _ := s.HomeTonalities()
+	sensed := analysis.Sense(changes, blocks, home)
+	degrees := analysis.Degrees(changes, blocks, passing, sensed)
 
 	// Each bar is two lines that line up word for word: the analysis
 	// above, the chords below. A bar holds "%" when the chord before
@@ -107,18 +106,14 @@ func render(s ireal.Song) string {
 		if !sp.NoChord {
 			name = symbol(sp.Chord)
 		}
-		degree := ""
-		if known {
-			degree = degrees[i].String()
-		}
-		off, w := cells[sp.Bar].add(walk(passing[i])+label(kinds[i]), name, degree)
+		off, w := cells[sp.Bar].add(walk(passing[i])+label(kinds[i]), name, degrees[i].String(), heard(sensed, i))
 		words[i] = word{sp.Bar, off, w}
 		started[sp.Bar] = true
 	}
 	width := 0
 	for i := range cells {
 		if !started[i] {
-			cells[i].add("", "%", "")
+			cells[i].add("", "%", "", "")
 		}
 		width = max(width, cells[i].width())
 	}
@@ -156,6 +151,13 @@ func render(s ireal.Song) string {
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s  ", pad(c.below, width))
 		}
+		var tonics strings.Builder
+		for _, c := range cells[start:end] {
+			fmt.Fprintf(&tonics, " %s  ", pad(c.tonic, width))
+		}
+		if strings.TrimSpace(tonics.String()) != "" {
+			fmt.Fprintf(&b, "\n%4s  %s", "", strings.TrimRight(tonics.String(), " "))
+		}
 		fmt.Fprintln(&b)
 		start = end
 	}
@@ -165,23 +167,45 @@ func render(s ireal.Song) string {
 	return b.String()
 }
 
-// A cell is one bar on its three lines: the analysis over the chords,
-// the degrees under them.
-type cell struct{ top, bottom, below string }
+// A cell is one bar on its four lines: the analysis over the chords,
+// the degrees under them, and the sensed tonic under the degrees.
+type cell struct{ top, bottom, below, tonic string }
 
 // add puts a word on each line, all padded to the widest so that what
 // follows stays aligned, and returns where it starts in the bar and how
 // wide it is.
-func (c *cell) add(top, bottom, below string) (int, int) {
-	w := max(utf8.RuneCountInString(top), utf8.RuneCountInString(bottom), utf8.RuneCountInString(below))
+func (c *cell) add(top, bottom, below, tonic string) (int, int) {
+	w := max(utf8.RuneCountInString(top), utf8.RuneCountInString(bottom),
+		utf8.RuneCountInString(below), utf8.RuneCountInString(tonic))
 	if c.bottom != "" {
-		c.top, c.bottom, c.below = c.top+" ", c.bottom+" ", c.below+" "
+		c.top, c.bottom, c.below, c.tonic = c.top+" ", c.bottom+" ", c.below+" ", c.tonic+" "
 	}
 	off := utf8.RuneCountInString(c.bottom)
 	c.top += pad(top, w)
 	c.bottom += pad(bottom, w)
 	c.below += pad(below, w)
+	c.tonic += pad(tonic, w)
 	return off, w
+}
+
+// heard names the sensed tonic at a change when it differs from the
+// change before: its ground, then in brackets the local tonic a
+// cadence has just tonicised. Nothing when nothing changed.
+func heard(sensed []analysis.Sensed, i int) string {
+	name := func(s analysis.Sensed) string {
+		if s.Ground == nil {
+			return "?"
+		}
+		n := short(flats[s.Ground[0].Tonic()], s.Ground)
+		if s.Local != nil {
+			n += " (" + short(flats[s.Local[0].Tonic()], s.Local) + ")"
+		}
+		return n
+	}
+	if i > 0 && name(sensed[i]) == name(sensed[i-1]) {
+		return ""
+	}
+	return name(sensed[i])
 }
 
 // A word is where a chord sits: its bar, its offset in the bar, its
@@ -284,9 +308,24 @@ func announced(bl analysis.Block, tl ireal.Timeline) (string, string) {
 	if bl.Target >= 0 && !tl.Spans[bl.Target].NoChord {
 		tonic = note(tl.Spans[bl.Target].Chord.Root)
 	}
+	name, short := scales(tonic, bl.Announced)
+	if bl.Target < 0 {
+		name, short = name+"…", short+"…"
+	}
+	return name, short
+}
+
+// short is the short name of tonalities on a tonic: "Gm", "D♭(m)".
+func short(tonic string, ts []harmony.Tonality) string {
+	_, s := scales(tonic, ts)
+	return s
+}
+
+// scales names tonalities on a tonic, long and short: see [announced].
+func scales(tonic string, ts []harmony.Tonality) (string, string) {
 	major := false
 	var minors []string
-	for _, t := range bl.Announced {
+	for _, t := range ts {
 		switch sc, _ := harmony.NamedScaleOf(t.Pattern()); sc {
 		case harmony.NamedMajor, harmony.NamedHarmonicMajor:
 			major = true
@@ -309,16 +348,14 @@ func announced(bl analysis.Block, tl ireal.Timeline) (string, string) {
 	default:
 		name, short = tonic+" M/m "+strings.Join(minors, "/"), tonic+"(m)"
 	}
-	if bl.Target < 0 {
-		name, short = name+"…", short+"…"
-	}
 	return name, short
 }
 
 var flats = [12]string{"C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"}
 
 func (c cell) width() int {
-	return max(utf8.RuneCountInString(c.top), utf8.RuneCountInString(c.bottom), utf8.RuneCountInString(c.below))
+	return max(utf8.RuneCountInString(c.top), utf8.RuneCountInString(c.bottom),
+		utf8.RuneCountInString(c.below), utf8.RuneCountInString(c.tonic))
 }
 
 func pad(s string, w int) string {
@@ -340,8 +377,12 @@ above, the blocks, [II] [sus4] V, and the tonality each one announces:
   D♭ M/m mel… ─ one that does not resolve, nor decide between D♭ major
                 and D♭ melodic minor
 
-under each chord, its degree in the tonality the app gives the tune,
-or in the one its two five announces: II V, ♭VII7, ♯Vdim7, I/3
+under each chord, its degree in the tonic sensed there, or in the
+tonality its two five announces: II V, ♭VII7, ♯Vdim7, I/3
+
+under the degrees, the tonic the ear senses, where it changes:
+  E♭            installed, from the app's key or the first cadence
+  E♭ (Fm)       and F minor, which a cadence has just tonicised
 `
 
 // walk marks a passing chord by the way its bass goes.

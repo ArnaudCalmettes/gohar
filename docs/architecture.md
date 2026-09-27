@@ -44,7 +44,8 @@ gohar/
     analysis/                identification déterministe, moteur,
                              suite d'accords à analyser (Changes),
                              préparations et chaînes, passages, blocs,
-                             tonalités annoncées, degrés
+                             tonalités annoncées, degrés, tonique
+                             pressentie (Sensed)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée

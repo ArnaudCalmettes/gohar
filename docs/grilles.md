@@ -481,8 +481,9 @@ Du plus fort au plus faible :
 3. **L'armure** : pour une grille iReal, le champ de tonalité de l'app
    donne un fond de départ, que la suite confirme ou dément.
 4. **Le premier accord**, faute d'armure, s'il peut être un accord de
-   tonique (maj7, 6, m6, m7, m(maj7)). C'est l'indice le plus faible :
-   beaucoup de standards commencent sur un II ou un IV.
+   tonique (triade, maj7, 6, m6, m(maj7), mais pas m7, trop souvent un
+   II). C'est l'indice le plus faible : beaucoup de standards
+   commencent sur un II ou un IV.
 
 Ce qui ne change rien au fond : les accords diatoniques, les emprunts
 sur la même tonique (Im7, IVm, ♭VII7), et les préparations qui ne se
@@ -589,19 +590,15 @@ indice.
 - L'ordre exact des lectures quand plusieurs valent : à écrire règle
   par règle, et à confronter aux fiches du livre.
 - **Le II-V sans résolution, contre le livre.** Les degrés concordent
-  avec les fiches du livre à 70 sur 83, et les écarts sont de deux
+  avec les fiches du livre à 72 sur 83, et les écarts sont de deux
   sortes. Les modulations (Tune Up, Black Orpheus) attendent les
   régions. Les autres sont des IIm7 V7 qui ne se résolvent pas, là où
-  le livre entend autre chose. Deux cas, à reprendre une fois la
-  tonalité du morceau détectée :
-  - **Le II qui est un I emprunté** (cas limite, ouvert). E♭m7 A♭7
-    dans Tenderly, mesures 3-4 : nous lisons un II-V de ré♭ qui ne se
-    résout pas, le livre lit I emprunté à l'éolien, puis IV7, en
-    parallèle avec E♭maj7 A♭7 des mesures 1-2. La clé : le « II » a
-    pour fondamentale la tonique pressentie, installée par les deux
-    premières mesures. La règle en découle (voir « Le I emprunté ») et
-    reste compatible avec le direct. À vérifier en la codant : qu'elle
-    ne casse rien, et qu'elle permet d'affiner proprement l'analyse.
+  le livre entend autre chose. Deux cas :
+  - **Le II qui est un I emprunté**, réglé par la tonique pressentie
+    (voir « Le I emprunté ») : E♭m7 A♭7 dans Tenderly, mesures 3-4, se
+    lit Im7 IV7. Le livre écrit « I IV » : il note la qualité empruntée
+    une fois (IV7 mesure 2) et plus ensuite ; l'analyse l'écrit chaque
+    fois. Cas limite à surveiller sur d'autres fiches.
   - **La marche IIm7-V7.** Cm7 F7 avant Fm7 (Tenderly mesures 13-14,
     There Will Never Be Another You mesures 12-13) : le livre lit VI,
     puis II7. Ici le II n'est pas sur la tonique ; la lecture du livre

@@ -260,6 +260,11 @@ func fromFiche(t *testing.T, f fiche) analysis.Changes {
 // where the book hears a borrowed chord. So the test only logs where
 // they part, and how often they agree: a number to watch as the
 // analysis grows.
+//
+// Two counts: the degrees, numeral and inversion, and the notation as
+// printed. The book writes a borrowed quality once and then leaves it
+// out (A♭7 is IV7 in bar 2 of Tenderly, IV in bar 4); the analysis
+// writes it each time.
 func TestFichesDegrees(t *testing.T) {
 	for name, f := range fiches(t) {
 		home, ok := Song{Key: f.Key}.HomeTonalities()
@@ -267,8 +272,8 @@ func TestFichesDegrees(t *testing.T) {
 			t.Fatalf("%s: key %q", name, f.Key)
 		}
 		c := fromFiche(t, f)
-		kinds := analysis.Approaches(c)
-		got := analysis.Degrees(c, analysis.Blocks(c, kinds), analysis.PassingChords(c), home)
+		blocks := analysis.Blocks(c, analysis.Approaches(c))
+		got := analysis.Degrees(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, home))
 		var want []string
 		for _, d := range f.Degrees {
 			if d != "%" {
@@ -278,19 +283,34 @@ func TestFichesDegrees(t *testing.T) {
 		if len(want) != len(got) {
 			t.Fatalf("%s: %d degrees in the book, %d chords", name, len(want), len(got))
 		}
-		agree := 0
+		degrees, notation := 0, 0
 		var parts []string
 		for i := range want {
 			if got[i].String() == want[i] {
-				agree++
+				notation++
+			}
+			if numeral(got[i].String()) == numeral(want[i]) {
+				degrees++
 				continue
 			}
 			bar := 1 + int(c.Chords[i].Start/(4*TicksPerBeat))
 			parts = append(parts, fmt.Sprintf("bar %d: %s for %s", bar, got[i], want[i]))
 		}
-		t.Logf("%s: %d degrees of %d as the book", name, agree, len(want))
+		t.Logf("%s: %d degrees of %d as the book, %d written the same", name, degrees, len(want), notation)
 		for _, p := range parts {
 			t.Log("  " + p)
 		}
 	}
+}
+
+var degreeParts = regexp.MustCompile(`^([♭♯]?[IV]+)[^/]*(/\d)?$`)
+
+// numeral keeps of a degree its numeral, with its accidental, and its
+// inversion: "♭VII/3" of "♭VIIm7/3".
+func numeral(d string) string {
+	m := degreeParts.FindStringSubmatch(d)
+	if m == nil {
+		return d
+	}
+	return m[1] + m[2]
 }
