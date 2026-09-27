@@ -305,22 +305,3 @@ pour en faire des règles. Elles relèvent du jeu, jamais du dex.
 
 - [ ] tags préfixés le jour de la publication : `harmony/v0.1.0`,
       `synth/v0.1.0`.
-
-## Pour une conversation neuve
-
-Sur l'harmonie, Arnaud est la source. Il a étudié à l'école de Bernard
-Maury et la nomenclature des modes vient de là. Ne pas nommer un mode
-par enharmonie, ne pas confondre un intervalle et un accord, dire
-« neuvième mineure » et « accord diminué 7 », « dominante chromatique »
-plutôt que « substitution tritonique ». Le reste du vocabulaire est dans
-`glossaire.md`.
-
-Trois billets publiés sur Zeste de Savoir servent de source à
-`analysis` : la représentation des accords, leur reconnaissance, et la
-game loop de l'improvisateur. Le troisième explore des possibles, ce ne
-sont pas des exigences.
-
-Méthode de travail : Arnaud compile et teste de son côté, les
-livraisons se font en archive à extraire à la racine du dépôt, et avant
-toute opération touchant beaucoup de fichiers il envoie l'état de son
-arbre.

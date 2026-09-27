@@ -453,3 +453,11 @@ du réglage : elles s'appliquent avant, et elles peuvent refuser.
 aux itérateurs. Il porte deux valeurs d'erreur et un helper de
 vérification pour un gain qui ne se mesure plus. Le noyau expose des
 `iter.Seq`, l'appelant collecte s'il en a besoin.
+
+## Les sources
+
+La nomenclature des modes vient de l'école de Bernard Maury. Trois
+billets publiés sur Zeste de Savoir servent de source à `analysis` : la
+représentation des accords, leur reconnaissance, et la game loop de
+l'improvisateur. Le troisième explore des possibles, ce ne sont pas des
+exigences.

@@ -1,10 +1,6 @@
 # Les voicings
 
-Comment gohar pense la disposition des accords au clavier. Ce document
-tient les décisions prises avec Arnaud, les questions laissées
-ouvertes, et le lien avec le dex et les grilles. Il ne tient pas de
-cours : les règles viennent de la pratique de l'école Maury, telle
-qu'Arnaud l'a apprise d'Étienne Guéreau et de Mathias Berger-Forestier.
+Comment gohar pense la disposition des accords au clavier.
 
 Le vocabulaire des shells, drops et positions sans fondamentale A et B
 est celui de la méthode Berklee. Il n'est pas celui de gohar.

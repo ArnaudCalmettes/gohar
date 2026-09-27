@@ -220,6 +220,18 @@ Ces règles viendront d'un musicien et se placeront au-dessus de
 | `Tone` | Ambigu : tonalité ou deux demi-tons. | `Semitones(2)` ou `Scale`. |
 | `CurrentLocale` | Singleton mutable. | Paramètre explicite. |
 
+## Dans la prose
+
+Les mêmes exigences valent pour ce qu'on écrit en français, dans la
+documentation comme dans les messages du jeu.
+
+- Ne jamais nommer un mode par enharmonie.
+- Ne pas confondre un intervalle et un accord : « septième diminuée »
+  est un intervalle, l'accord se dit « accord diminué 7 » ou « dim7 ».
+- « Neuvième mineure » (ou « bémol 9 », « ♭9 »), jamais « neuvième
+  bémol ».
+- « Dominante chromatique » plutôt que « substitution tritonique ».
+
 ## Points encore ouverts
 
 - La lecture tétracordale des modes des systèmes altérés. Sept notes
