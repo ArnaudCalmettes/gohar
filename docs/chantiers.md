@@ -189,6 +189,18 @@ Fait :
       comme sus2, h seul comme m7♭5, 11 comme 7sus4 add9, 7susadd3
       comme un 7 avec onzième, 7alt comme l'accord pandiatonique du
       locrien ♭4, 7(♭9, ♭10, ♭5, ♭13).
+- [x] **Des cases aux temps** : `Chart.Timeline`, les accords avec leur
+      durée, le début de chaque mesure, et la grille lue comme un cycle
+      (`Next`). La coda, jouée au dernier chorus seulement, est hors du
+      cycle. Un accord commence sur le temps où tombe sa case quand les
+      cases se partagent la mesure, arrondi au temps suivant : en 3/4
+      sur quatre cases, la case 2 est le temps 3 ; en 5/4, le temps 4
+      (Take Five, vérifié à l'écoute). Le temps est la pulsation : une
+      noire en 4/4 et 3/4, une noire pointée en 6/8 et 12/8.
+- [x] **Les fiches de référence** du livre dans
+      `charts/ireal/testdata/fiches` : Tune Up, Black Orpheus, There
+      Will Never Be Another You, Tenderly. Les quatre concordent mesure
+      par mesure avec les grilles du corpus, à la tétrade près.
 
 Les tests commités n'utilisent que des grilles fabriquées ; les exports
 de l'app vont dans `charts/ireal/testdata/local/`, ignoré par git, où un
@@ -196,13 +208,6 @@ test les lit s'il y en a.
 
 Reste :
 
-- [ ] des cases aux temps : une mesure fait le plus souvent quatre
-      cases, en 3/4 comme en 4/4. Une case vaut un temps en 4/4 ; pour
-      les autres métriques, la règle de l'app reste à établir.
-      **Prérequis de l'analyse** : la durée y sépare une plage modale
-      d'un passage, une modulation d'un emprunt.
-- [ ] dire à l'analyse que la forme boucle, pour que le turnaround se
-      lise par-delà la barre finale.
 - [ ] les directions que le dépliage ignore encore : « D.C. al 2nd
       ending » et consorts, un D.S. écrit dans une reprise pas encore
       terminée.
@@ -210,10 +215,10 @@ Reste :
       n'en a pas vu un vrai.
 - [ ] l'analyse d'une grille, conçue dans `grilles.md` : étages
       (morceau, plage, région, bloc, accord), analyse de droite à
-      gauche, lectures multiples, fiche de sortie. Commencer par les
-      quatre tests de référence tirés du livre (Tune Up, Black
-      Orpheus, There Will Never Be Another You, Tenderly), fiches
-      transcrites à la main.
+      gauche, lectures multiples, fiche de sortie. Les fiches du livre
+      sont l'oracle : le test compare aujourd'hui les accords, il
+      comparera les tonalités, modulations, emprunts et cadences à
+      mesure que l'analyse les produira.
 - [ ] les seuils de l'analyse, en données : durée d'une plage modale,
       indices d'une modulation.
 - [ ] les voicings sur une grille : la marque « Employée » du dex

@@ -1,0 +1,19 @@
+{
+  "title": "Manha De Carnaval (Black Orpheus)",
+  "source": "En Harmonie, tome 1, p. 160",
+  "from": 1,
+  "bars": ["A-", "Bh7 E7b9", "A-", "Bh7 E7b9", "A-", "D-7 G7", "C^7", "A7b9",
+           "D-7", "G7", "C^7", "F^7", "Bh7", "E7", "A-", "Bh7 E7b9"],
+  "degrees": ["I", "II V", "I", "II V", "I", "II V", "I", "VI7",
+              "II", "V", "I", "IV", "II", "V", "I", "II V"],
+  "structure": "AB",
+  "length": 32,
+  "rhythm": "1-2",
+  "key": "A-",
+  "modulations": [
+    {"key": "C", "bars": [6, 12]}
+  ],
+  "notes": [
+    "Le livre analyse les mesures 1 à 16 ; la tonalité revient en la mineur après la mesure 12."
+  ]
+}

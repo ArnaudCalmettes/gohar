@@ -1,0 +1,35 @@
+{
+  "title": "Tenderly",
+  "source": "En Harmonie, tome 1, p. 161",
+  "from": 1,
+  "bars": ["Eb^7", "Ab7", "Eb-7", "Ab7", "F-7", "Db7", "Eb^7", "Gh7 C7b9",
+           "Fh7", "Bb7b9", "Fh7", "Bb7 Bo7", "C-7", "F7", "F-7", "Bb7"],
+  "degrees": ["I", "IV7", "I", "IV", "II", "♭VII7", "I", "II V",
+              "II", "V", "II", "V ♯Vdim7", "VI", "II7", "II", "V"],
+  "structure": "ABAC",
+  "length": 32,
+  "rhythm": "1",
+  "key": "Eb",
+  "toward": [[8, 9]],
+  "cadences": [
+    {"name": "plagales", "bars": [1, 4]},
+    {"name": "♭VII7-Imaj7", "bars": [6, 7]},
+    {"name": "dim7 de passage, ou G7(♭9) sans basse", "bars": [12, 12]},
+    {"name": "II7, marche IIm7-V7", "bars": [14, 14]}
+  ],
+  "borrowings": [
+    {"bars": [2, 2], "chords": "Ab7", "scale": "Eb melodic minor"},
+    {"bars": [3, 3], "chords": "Eb-7", "scale": "Eb aeolian"},
+    {"bars": [4, 4], "chords": "Ab7", "scale": "Eb melodic minor"},
+    {"bars": [6, 6], "chords": "Db7", "scale": "Ab melodic minor"},
+    {"bars": [8, 8], "chords": "Gh7 C7b9", "scale": "F harmonic minor"},
+    {"bars": [9, 12], "chords": "Fh7 Bb7", "scale": "Eb harmonic minor"},
+    {"bars": [12, 12], "chords": "Bo7", "scale": "C harmonic minor"},
+    {"bars": [14, 14], "chords": "F7", "scale": "*"}
+  ],
+  "notes": [
+    "Le livre analyse les mesures 1 à 16.",
+    "Degrés recopiés tels qu'imprimés : I sous E♭m7, IV sous le second A♭7.",
+    "F7 : « IIe degré altéré pouvant correspondre à différents modes », d'où la gamme *."
+  ]
+}

@@ -14,6 +14,17 @@ type Played struct {
 	// or two bars before ("x", "r"), they are those bars' events; for
 	// an empty measure, none: the chord before goes on.
 	Events []Event
+
+	// From is the written measure the events come from: Index, unless
+	// the bar repeats another. Their cells count in that measure, which
+	// may not be as wide as this one: "Kcl" is two cells, the bar it
+	// repeats usually four.
+	From int
+
+	// Coda marks the first bar of the coda, reached by the jump of a
+	// "D.S." or "D.C. al Coda". The coda concludes the tune: the app
+	// plays it on the last chorus only.
+	Coda bool
 }
 
 // Unfold returns the measures in the order they are played: repeats
@@ -172,6 +183,7 @@ func (f form) play() []Played {
 
 	pass := map[*repeat]int{}
 	twoBack := false // the bar after an "r" repeats the one two back too
+	jumped := false  // to the coda: the next bar played opens it
 	limit := 16*len(ms) + 64
 
 	for i := 0; i < len(ms) && len(out) < limit; {
@@ -194,6 +206,9 @@ func (f form) play() []Played {
 		}
 
 		out = append(out, f.bar(i, out, &twoBack))
+		if jumped {
+			out[len(out)-1].Coda, jumped = true, false
+		}
 
 		switch {
 		case hasDir && !back && i == dir.at:
@@ -206,7 +221,7 @@ func (f form) play() []Played {
 		case back && dir.fine && f.fine(i):
 			return out
 		case back && !dir.fine && i == toCoda && coda > toCoda:
-			i = coda
+			i, jumped = coda, true
 			continue
 		}
 
@@ -223,16 +238,16 @@ func (f form) play() []Played {
 // bar resolves what sounds in measure i given the bars played before.
 func (f form) bar(i int, out []Played, twoBack *bool) Played {
 	m := f.ms[i]
-	b := Played{Index: i, Events: m.Events}
+	b := Played{Index: i, Events: m.Events, From: i}
 	switch {
 	case m.Repeat == 1 && len(out) >= 1:
-		b.Events = out[len(out)-1].Events
+		b.Events, b.From = out[len(out)-1].Events, out[len(out)-1].From
 	case m.Repeat == 2 && len(out) >= 2:
-		b.Events = out[len(out)-2].Events
+		b.Events, b.From = out[len(out)-2].Events, out[len(out)-2].From
 		*twoBack = true
 		return b
 	case *twoBack && len(m.Events) == 0 && len(out) >= 2:
-		b.Events = out[len(out)-2].Events
+		b.Events, b.From = out[len(out)-2].Events, out[len(out)-2].From
 	}
 	*twoBack = false
 	return b

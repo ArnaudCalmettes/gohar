@@ -1,0 +1,27 @@
+{
+  "title": "There Will Never Be Another You",
+  "source": "En Harmonie, tome 1, p. 160-161",
+  "from": 1,
+  "bars": ["Eb^7", "%", "Dh7", "G7b9", "C-7", "%", "Bb-7", "Eb7",
+           "Ab^7", "Db7", "Eb^7", "C-7", "F7", "%", "F-7", "Bb7",
+           "Eb^7", "%", "Dh7", "G7b9", "C-7", "%", "Bb-7", "Eb7",
+           "Ab^7", "Db7", "Eb^7", "Ah7 D7", "Eb^7 Ab7", "G-7 C7", "F-7 Bb7", "Eb6 Bb7"],
+  "degrees": ["I", "%", "II", "V", "VI", "%", "II", "V",
+              "IV", "♭VII7", "I", "VI", "II7", "%", "II", "V",
+              "I", "%", "II", "V", "VI", "%", "II", "V",
+              "IV", "♭VII7", "I", "II V", "I IV7", "II V", "II V", "I V"],
+  "structure": "ABAC",
+  "length": 32,
+  "key": "Eb",
+  "toward": [[3, 5], [7, 9], [19, 21], [23, 25], [30, 31]],
+  "cadences": [
+    {"name": "♭VII7-I", "bars": [10, 11]},
+    {"name": "♭VII7-I", "bars": [26, 27]}
+  ],
+  "borrowings": [
+    {"bars": [29, 29], "chords": "Ab7", "scale": "Eb melodic minor"}
+  ],
+  "notes": [
+    "Le B♭7 de la dernière mesure est entre parenthèses dans le livre : le turnaround."
+  ]
+}

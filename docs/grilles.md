@@ -367,8 +367,12 @@ devient l'oracle : on compare celle de gohar à celle des auteurs.
   plagales, ♭VII7-Imaj7, Bdim7 de passage (aussi G7(♭9) sans
   fondamentale), II7 en marche IIm7-V7.
 
-Les fiches se transcrivent à la main depuis le livre, dans des données
-de test, pas dans le code.
+Les fiches sont transcrites à la main dans
+`charts/ireal/testdata/fiches`, en données de test, pas dans le code.
+Elles montrent déjà ce que l'analyse devra encaisser : l'app donne
+Tune Up en si♭ et le joue sur 32 mesures avec deux fins, là où le livre
+l'analyse en ré majeur sur 16. Le champ de tonalité n'est qu'un
+indice.
 
 ## Hors périmètre
 

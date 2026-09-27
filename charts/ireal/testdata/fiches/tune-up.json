@@ -1,0 +1,20 @@
+{
+  "title": "Tune Up",
+  "source": "En Harmonie, tome 1, p. 160",
+  "from": 17,
+  "bars": ["E-7", "A7", "D^7", "%", "D-7", "G7", "C^7", "%",
+           "C-7", "F7", "Bb^7", "G-7", "E-7", "A7", "D^7", "%"],
+  "degrees": ["II", "V", "I", "%", "II", "V", "I", "%",
+              "II", "V", "I", "VI", "II", "V", "I", "%"],
+  "structure": "AA'",
+  "length": 16,
+  "rhythm": "1",
+  "key": "D",
+  "modulations": [
+    {"key": "C", "bars": [5, 8]},
+    {"key": "Bb", "bars": [9, 12]}
+  ],
+  "notes": [
+    "La grille de l'app dit si bémol et joue 32 mesures avec deux fins : le livre analyse le second passage, mesures 17 à 32 jouées."
+  ]
+}
