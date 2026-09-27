@@ -151,10 +151,24 @@ le 27/09.
       réelle de 328 grilles, zéro jeton inconnu. Les tests commités
       n'utilisent que des grilles fabriquées ; les exports de l'app vont
       dans `charts/ireal/testdata/local/`, ignoré par git.
-- [ ] couche 3 : les jetons en structure (sections, mesures, accords et
-      leur place, reprises et fins non dépliées).
-- [ ] le dépliage de la forme (reprises, fins, D.C., D.S., coda) en
-      ordre de jeu, sans l'automate à drapeaux des lecteurs existants.
+- [x] couche 3 : les jetons en mesures (barres, sections, métrique,
+      fins, signes, accords et leur case), reprises non dépliées. Les
+      cases vides de mise en page (après une reprise, après la barre
+      finale) ne font pas de mesures. Sur 1678 grilles réelles, aucune
+      mesure vide, et huit bizarreries de saisie (reprise jamais fermée,
+      fins dans le désordre) que le dépliage devra tolérer.
+- [ ] des cases aux temps : une mesure fait le plus souvent quatre
+      cases, en 3/4 comme en 4/4. Une case vaut un temps en 4/4 ; pour
+      les autres métriques, la règle de l'app reste à établir.
+- [x] le dépliage de la forme en ordre de jeu : reprises (« 3x »
+      compris), fins prises dans l'ordre écrit, D.C. et D.S. al Coda ou
+      al Fine avec la dernière fin au retour, « x » et « r » résolus.
+      Tolère les bizarreries de saisie et ne boucle jamais. Vérifié sur
+      les grilles connues (All The Things You Are 36, Autumn Leaves 32,
+      Anthropology 32) et sur les 1678 grilles réelles.
+- [ ] les directions que le dépliage ignore encore : « D.C. al 2nd
+      ending » et consorts, un D.S. écrit dans une reprise pas encore
+      terminée.
 - [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
       n'en a pas vu un vrai.
 - [ ] un format de grille ouvert, mieux conçu que celui d'iReal, une
