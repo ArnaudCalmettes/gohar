@@ -31,7 +31,7 @@ func TestNamedScales(t *testing.T) {
 }
 
 // The borrowings of Tenderly, bars 1 to 16, as En Harmonie analyses
-// them: each chord comes, among others, from the scale the book names.
+// them: each chord comes, among others, from the scale it names.
 func TestProvenancesOfTenderly(t *testing.T) {
 	const (
 		c, db, d, eb, e, f, gb, g, ab, a, bb, b harmony.PitchClass = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11

@@ -2,6 +2,7 @@ package ireal
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -9,11 +10,13 @@ import (
 	"testing"
 
 	"github.com/ArnaudCalmettes/gohar/harmony"
+	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 // A fiche is the analysis of a tune as a book prints it, transcribed by
 // hand into testdata/fiches: the oracle the analysis of charts will be
-// held to. See docs/grilles.md.
+// held to. See docs/grilles.md. Below, "the book" is the one a fiche
+// names in Source, En Harmonie for every fiche so far.
 //
 // Bars are numbered as in the book, from 1. Chords are written in the
 // app's spelling so that the same reader reads both; "%" is a bar where
@@ -222,4 +225,72 @@ func sameTetrad(a, b ChordSymbol) bool {
 		return false
 	}
 	return ra.Root.Class() == rb.Root.Class() && ra.Pattern.Tetrad() == rb.Pattern.Tetrad()
+}
+
+// fromFiche builds the changes of a fiche's bars, four beats to a bar
+// shared between its chords, "%" letting the chord before go on. The
+// changes loop when the fiche holds the whole form.
+func fromFiche(t *testing.T, f fiche) analysis.Changes {
+	c := analysis.Changes{Loops: len(f.Bars) == f.Length}
+	bar := 4 * TicksPerBeat
+	for i, b := range f.Bars {
+		start := Ticks(i) * bar
+		c.Bars = append(c.Bars, start)
+		if b == "%" {
+			c.Chords[len(c.Chords)-1].Length += bar
+			continue
+		}
+		cs := chords(b)
+		for j, sym := range cs {
+			r, err := sym.Read()
+			if err != nil {
+				t.Fatal(err)
+			}
+			ch := analysis.Change{Chord: r.Chord(), Bass: r.Chord().Root, Length: bar / Ticks(len(cs))}
+			ch.Start = start + Ticks(j)*ch.Length
+			c.Chords = append(c.Chords, ch)
+		}
+	}
+	return c
+}
+
+// The degrees the analysis reads, against those the book prints. They
+// need not all agree: the book gives one reading where the analysis
+// may give another that is also true, a two five that does not resolve
+// where the book hears a borrowed chord. So the test only logs where
+// they part, and how often they agree: a number to watch as the
+// analysis grows.
+func TestFichesDegrees(t *testing.T) {
+	for name, f := range fiches(t) {
+		home, ok := Song{Key: f.Key}.HomeTonalities()
+		if !ok {
+			t.Fatalf("%s: key %q", name, f.Key)
+		}
+		c := fromFiche(t, f)
+		kinds := analysis.Approaches(c)
+		got := analysis.Degrees(c, analysis.Blocks(c, kinds), analysis.PassingChords(c), home)
+		var want []string
+		for _, d := range f.Degrees {
+			if d != "%" {
+				want = append(want, strings.Fields(d)...)
+			}
+		}
+		if len(want) != len(got) {
+			t.Fatalf("%s: %d degrees in the book, %d chords", name, len(want), len(got))
+		}
+		agree := 0
+		var parts []string
+		for i := range want {
+			if got[i].String() == want[i] {
+				agree++
+				continue
+			}
+			bar := 1 + int(c.Chords[i].Start/(4*TicksPerBeat))
+			parts = append(parts, fmt.Sprintf("bar %d: %s for %s", bar, got[i], want[i]))
+		}
+		t.Logf("%s: %d degrees of %d as the book", name, agree, len(want))
+		for _, p := range parts {
+			t.Log("  " + p)
+		}
+	}
 }

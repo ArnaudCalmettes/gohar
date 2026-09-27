@@ -1,9 +1,11 @@
 package ireal
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ArnaudCalmettes/gohar/harmony"
+	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 func TestChanges(t *testing.T) {
@@ -40,5 +42,21 @@ func TestChangesUnread(t *testing.T) {
 	}
 	if len(changes.Chords) != 2 || changes.Chords[0].Silent || !changes.Chords[1].Silent {
 		t.Errorf("%+v", changes.Chords)
+	}
+}
+
+func TestHomeTonalities(t *testing.T) {
+	for key, want := range map[string]string{"Eb": "3 major", "A-": "9 minor", "F#-": "6 minor", "": "none"} {
+		ts, ok := Song{Key: key}.HomeTonalities()
+		got := "none"
+		if ok {
+			got = fmt.Sprintf("%d major", ts[0].Tonic())
+			if analysis.ModesOf(ts) == analysis.Minor {
+				got = fmt.Sprintf("%d minor", ts[0].Tonic())
+			}
+		}
+		if got != want {
+			t.Errorf("%q: %s, want %s", key, got, want)
+		}
 	}
 }

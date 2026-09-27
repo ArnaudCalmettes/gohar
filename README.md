@@ -124,6 +124,13 @@ ours to publish. Export yours from the app as HTML into
 ./...` in `charts` reads every chart in them and reports what it could
 not read.
 
+To see what the analysis makes of one of them, bar by bar:
+
+```sh
+cd charts
+go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
+```
+
 ## History
 
 This repository used to be a single module. Its tagged versions remain

@@ -137,10 +137,9 @@ connaît.
       diminué (dominante sans fondamentale), sus4 et II de… faits
       (`ApproachOf`, et les crochets II-V des fiches du livre vérifiés
       avec) ; restent les accords parallèles, en dernier.
-- [ ] l'accord de passage : une basse chromatique sur trois accords,
-      renversements compris (B♭/D D♭dim7 Cm7). Relève de l'analyse
-      d'une grille, qui a les basses, et non de `ApproachOf`, qui ne
-      voit que deux accords.
+- [ ] la ligne de basse chromatique sous d'autres accords que le
+      diminué (dominantes chromatiques et renversements, It Never
+      Entered My Mind) : une autre lecture, à côté de `PassingChords`.
 - [ ] un registre parlé anglais, s'il en existe un qui mérite d'être
       proposé en alternative. Aujourd'hui seul le français en a un.
 
@@ -231,11 +230,18 @@ Reste :
 - [ ] l'ordre de l'analyse, dans `harmony/analysis` comme une couche
       au-dessus de l'identification des accords : la suite d'accords
       (`analysis.Changes` : basses, durées, bouclage) et son pont depuis
-      iReal, faits ; les
-      préparations sur toute la suite ; le passage ; les blocs et leurs
-      tonalités ; degrés et provenance ; l'affichage annoté en ASCII
-      dans le terminal, enrichi à chaque étape ; les étages hauts dans
-      la mesure où la fiche en a besoin. Puis le direct, avec l'attente
+      iReal, faits ; les préparations sur toute la suite et les chaînes
+      remontées depuis chaque arrivée (`Approaches`, `Chains`), faites,
+      et visibles avec `charts/cmd/analyse` ; le passage
+      (`PassingChords`), fait ; les blocs et leurs tonalités annoncées
+      (`Blocks`), faits ; les relations entre blocs (marches de II-V,
+      cycle des quartes) ; degrés et tonalités annoncées en gammes
+      précises (`Degrees`, `Block.Announced`), faits, 70 degrés sur 83
+      comme le livre ; la tonique pressentie, lue de gauche à droite
+      (tonique de fond et tonique locale, le I emprunté), conçue dans
+      `grilles.md` ; l'affichage annoté en ASCII dans le terminal,
+      enrichi à chaque étape ; les étages hauts dans la mesure où la
+      fiche en a besoin. Puis le direct, avec l'attente
       et la surprise (voir `grilles.md`).
 - [ ] la grille annotée dans une fenêtre Ebitengine (police de Real
       Book, chiffrages en indices et exposants, réglable), une fois le

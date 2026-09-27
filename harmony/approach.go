@@ -14,7 +14,7 @@ package harmony
 // Whether a dominant is the dominant of the key or a secondary one
 // depends on the key, which only the analysis of a whole chart knows.
 // A kind only says what one chord does for the next, whatever their
-// qualities: the book's secondary dominant prepares "any chord of
+// qualities: En Harmonie's secondary dominant prepares "any chord of
 // arrival, whatever its quality or its function".
 //
 // # What two chords cannot tell
@@ -60,7 +60,7 @@ const (
 	// TwoApproach is a minor seventh or half diminished chord a fifth
 	// above a dominant: Em7 before A7, the two of a two five. Also a
 	// semitone above it, as the two of its tritone twin resolving
-	// straight onto it: B♭m7 before A7, the book's chromatic
+	// straight onto it: B♭m7 before A7, En Harmonie's chromatic
 	// subdominant.
 	TwoApproach
 )
@@ -70,13 +70,42 @@ func (k ApproachKind) Has(other ApproachKind) bool {
 	return k&other != 0
 }
 
+// String writes the kinds as the analyse command labels them, the
+// degree the chord stands on for the chord it prepares: V, ♭II (the
+// chromatic dominant), ° (the diminished chord), sus, II. Several kinds
+// are joined by a slash; no approach is "-".
+func (k ApproachKind) String() string {
+	if k == NoApproach {
+		return "-"
+	}
+	var out string
+	for _, n := range []struct {
+		kind ApproachKind
+		name string
+	}{
+		{TwoApproach, "II"},
+		{SuspensionApproach, "sus"},
+		{DominantApproach, "V"},
+		{ChromaticApproach, "♭II"},
+		{DiminishedApproach, "°"},
+	} {
+		if k.Has(n.kind) {
+			if out != "" {
+				out += "/"
+			}
+			out += n.name
+		}
+	}
+	return out
+}
+
 // ApproachOf returns how `from` prepares `to` when it comes right
 // before it.
 //
 // # The surface, not the form beneath
 //
 // Between two dominants, the kind reads what is played. In Sophisticated
-// Lady, F7 before E7 is a chromatic approach; the book hears it as the
+// Lady, F7 before E7 is a chromatic approach; En Harmonie hears it as the
 // dominant of the B♭7 that E7 stands in for. Both are true, since E7 and
 // B♭7 share their tritone. Recovering the form beneath, a chain of
 // dominants by fifths, is the analysis's business, and it can: a

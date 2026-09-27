@@ -15,7 +15,7 @@ const TicksPerBeat Ticks = 2520
 // The bass is part of it. It tells a perfect cadence from an imperfect
 // one, a first degree in first inversion from a third degree, and a
 // chromatic passing chord from a leap: an analysis that dropped it
-// could not see half of what the book teaches.
+// could not see half of what En Harmonie teaches.
 type Change struct {
 	Chord harmony.Chord
 	Bass  harmony.PitchClass // the root, unless the chord is inverted

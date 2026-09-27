@@ -3,7 +3,9 @@ package ireal
 import (
 	"errors"
 	"fmt"
+	"strings"
 
+	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
@@ -46,4 +48,21 @@ func (t Timeline) Changes() (analysis.Changes, error) {
 // [Timeline.Changes].
 func (c Chart) Changes() (analysis.Changes, error) {
 	return c.Timeline().Changes()
+}
+
+// HomeTonalities reads the tonality the app gives the song, its Key
+// field: "Eb" for E flat major, "A-" for A minor, read in all three
+// minors. It is the key signature of the chart, a clue to the
+// tonality of the tune that its cadences confirm or not, and false
+// when the app gives none that can be read.
+func (s Song) HomeTonalities() ([]harmony.Tonality, bool) {
+	root, minor := strings.CutSuffix(s.Key, "-")
+	n, ok := spell(root)
+	if !ok {
+		return nil, false
+	}
+	if minor {
+		return analysis.MinorTonalities(n.Class()), true
+	}
+	return analysis.MajorTonalities(n.Class()), true
 }

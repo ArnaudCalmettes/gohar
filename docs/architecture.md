@@ -42,7 +42,9 @@ gohar/
     naming/                  orthographe, locales, noms des 35 modes,
                              des intervalles et des gammes nommées
     analysis/                identification déterministe, moteur,
-                             suite d'accords à analyser (Changes)
+                             suite d'accords à analyser (Changes),
+                             préparations et chaînes, passages, blocs,
+                             tonalités annoncées, degrés
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
@@ -57,6 +59,7 @@ gohar/
     ireal/                   URL iReal Pro : playlist, jetons, mesures,
                              dépliage de la forme, chiffrages, temps,
                              pont vers analysis.Changes
+    cmd/analyse/             une grille et son analyse dans le terminal
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
@@ -255,10 +258,12 @@ l'inverse.**
 | `charts` | `harmony` et `naming`, pour lire les chiffrages ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
 | `games` | tout |
 
-Le noyau n'a **aucune méthode `String()` de présentation**. La conversion
-en texte lisible appartient à `naming`. Un `String()` de débogage est
-toléré s'il affiche la représentation brute (le masque en binaire, la
-valeur numérique) et jamais un nom de note.
+Un type du noyau peut avoir un `String()` lisible par un musicien, dans
+une notation fixe, celle des grilles de jazz : `V`, `♭II7`,
+`Dm7`. C'est ce qu'affichent les tests quand ils échouent et les outils
+en ligne de commande. Ce que `naming` garde pour lui, c'est tout ce qui
+dépend d'un choix : la langue, la notation (do ou C), l'orthographe
+d'une note dans une tonalité.
 
 Aucun dot-import nulle part. Si un dot-import paraît nécessaire, c'est
 que la frontière de paquet est au mauvais endroit.

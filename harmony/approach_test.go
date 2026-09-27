@@ -57,7 +57,7 @@ func TestApproachOf(t *testing.T) {
 		},
 		// The Night We Called It a Day: three chromatic dominants for a
 		// bass that walks down. Each chord before them is a two, the
-		// two of the dominant each one stands in for: the book's
+		// two of the dominant each one stands in for: En Harmonie's
 		// original grid is C♯m7♭5 F♯7 | Bm7 E7 | Am7 D7 | Gmaj7.
 		"chromatic dominants": {
 			{chordOf(t, db, halfDim...), two},
@@ -139,7 +139,7 @@ func TestApproachOf(t *testing.T) {
 	} {
 		for i := 0; i+1 < len(steps); i++ {
 			if got := harmony.ApproachOf(steps[i].chord, steps[i+1].chord); got != steps[i].kind {
-				t.Errorf("%s, chord %d: %b, want %b", name, i+1, got, steps[i].kind)
+				t.Errorf("%s, chord %d: %v, want %v", name, i+1, got, steps[i].kind)
 			}
 		}
 	}

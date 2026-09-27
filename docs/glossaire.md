@@ -225,6 +225,8 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
 | Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
+| Bloc | Une cadence, [II] [sus4] V → cible, avec la tonalité qu'elle annonce, qu'elle s'y résolve ou non | Une section de la grille |
+| Tonalités annoncées | Ce qu'un bloc annonce : une tonique et les gammes nommées où la lire, une `Tonality` par gamme (fa mineur harmonique ; ré♭ majeur ou mineur mélodique quand rien ne tranche) | Une seule `Tonality` ; jamais `Key`, qui reste la touche |
 | Préparation | Un ou deux accords ajoutés ou modifiés devant une arrivée. En anglais *approach* : `ApproachKind` en nomme le type | Un emprunt, qui peut en être une ; `Approach`, le chemin d'un joueur dans un slot |
 | Provenance | La ou les gammes nommées d'où vient un accord, quelle que soit leur tonique : ce que le joueur improvise dessus | La tonalité du morceau |
 | Dominante secondaire | Le V7 d'une arrivée autre que le I | La dominante chromatique |

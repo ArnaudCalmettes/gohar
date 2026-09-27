@@ -64,6 +64,10 @@ Une analyse se lit du plus large au plus fin.
 | Le bloc | Une cadence ou une préparation, avec la tonalité qu'elle annonce | Gm7♭5 C7(♭9), qui annonce fa mineur |
 | L'accord | Son degré, sa fonction, sa provenance, sa couleur proposée | D♭7 : ♭VII7, emprunté à la♭ mineur mélodique |
 
+La région se lit après coup, de droite à gauche. Elle a un pendant qui
+se lit au présent, de gauche à droite : la tonique pressentie (voir
+plus bas).
+
 ### Le morceau
 
 La tonalité se déduit de l'armure et des cadences de début et de fin.
@@ -118,6 +122,34 @@ sont des **paramètres, en données**, et près d'un seuil les deux
 lectures sont rendues.
 
 ### Les blocs
+
+Un bloc est une cadence : **[II] [sus4] V → cible** (`analysis.Blocks`).
+Le V est le seul accord obligatoire : il prépare la cible comme
+dominante, dominante chromatique ou diminué. Le sus4 est le X7sus4 de
+même fondamentale, le II celui qui prépare le V (ou son sus4). La cible
+n'est pas dans le bloc : le bloc la désigne.
+
+- **Découpage, de droite à gauche.** Chaque accord appartient à un
+  seul bloc, et un bloc peut viser un accord d'un autre : A7 Dm7 G7
+  Cmaj7 donne [Dm7 G7] → Cmaj7 et [A7] → Dm7, le V7/II puis le
+  II-V-I. Le double rôle du bebop en découle : dans Em7 A7 Dm7 G7
+  Cmaj7, Dm7 est la cible d'un bloc et le II du suivant.
+- **Sans résolution.** Un II et un V qui ne prépare pas l'accord
+  suivant font un bloc sans cible, le II-V sans résolution du livre,
+  qui annonce quand même sa tonalité, une quinte sous le V. Un V seul
+  qui ne prépare rien n'est pas un bloc.
+- **La tonalité annoncée** est une tonique et des gammes, une
+  `Tonality` par gamme (`Block.Announced`) : les gammes de la
+  pratique tonale (majeure, mineure naturelle, harmonique, mélodique)
+  qui contiennent toute la préparation, le II, le sus4 et le V. Un IIm7 garde ainsi le majeur
+  et le mineur mélodique, un IIm7♭5 le mineur harmonique, un V7(♭13)
+  les mineurs. La tierce de la cible départage ensuite, et seulement
+  si la préparation le permet : Gm7 C7 → Fm7 annonce fa mineur
+  mélodique, Gm7♭5 C7 → F reste fa mineur harmonique (le cas mixte).
+  Une dominante chromatique et son II ne sont pas des degrés de la
+  tonalité : la cible décide seule. La majeure harmonique contient
+  aussi certaines préparations, mais c'est une gamme d'emprunt, pas
+  une tonalité qu'on annonce ; elle reste dans la provenance.
 
 Un bloc porte la tonalité qu'il **annonce**, et l'accord d'arrivée
 porte la sienne. Dans *What Is This Thing Called Love*, le II-V porte
@@ -250,11 +282,23 @@ squelette et les gammes, `harmony` calcule les tétrades.
 
 ## Le chiffrage
 
+Les degrés (`analysis.Degrees`) :
+
 - Un degré diatonique s'écrit sans qualité, un degré emprunté avec :
-  II, mais IVm7.
+  II, mais IVm7. Le degré se compte dans la gamme de la tonalité : en
+  fa mineur, D♭maj7 est VI, pas ♭VI.
+- Une fondamentale hors de la gamme est un degré abaissé de
+  préférence (♭II, ♭III, ♭VI, ♭VII), haussé sous la quarte et la
+  quinte (♯IV) ; un accord de passage suit sa basse, haussé en montant
+  (♯Idim7, ♯Vdim7), abaissé en descendant (♭IIIdim7).
 - Les renversements s'écrivent I/3, I/5.
-- Un II-V se chiffre **relativement à sa cible**, avec un crochet et une
-  flèche vers elle, comme dans le livre.
+- Un II-V se chiffre **relativement à sa cible**, dans la tonalité
+  qu'il annonce, avec un crochet et une flèche vers elle, comme dans le
+  livre. Un V seul, un diminué seul et un accord de passage se
+  chiffrent dans la tonalité du morceau, avec leur qualité : VI7 pour
+  la dominante secondaire de II.
+- La tonalité du morceau est pour l'instant celle que donne l'app ; les
+  régions et les modulations viendront avec les étages hauts.
 - Une dominante secondaire s'écrit V7/II ou VI7. gohar stocke la
   relation (« V7 de Dm7 ») et rend l'une ou l'autre écriture : c'est un
   choix d'affichage.
@@ -399,6 +443,103 @@ même code, sur une suite complète ou sur une suite qui s'allonge. Les
 étages qui demandent de la durée (tonalité, modulation) restent
 provisoires plus longtemps.
 
+## La tonique pressentie
+
+À chaque accord, la tonique que l'oreille attend, avec ce qui a sonné
+et rien d'autre. Au troisième accord de Tenderly, deux mesures de
+E♭maj7 A♭7 ont installé mi♭ : E♭m7 s'entend comme la tonique qui a
+changé de couleur, pas comme le II de ré♭. Le II-V E♭m7 A♭7 ne
+toniciserait ré♭ que s'il y arrivait.
+
+C'est le pendant, au présent, de la région. Les deux lectures
+coexistent : la fiche montre les régions, le direct montre la tonique
+pressentie, et l'écart entre ce qu'elle attendait et ce qui arrive est
+la surprise.
+
+### Deux toniques
+
+- **La tonique de fond** : celle qui est installée. Les degrés se
+  comptent sur elle, comme le livre le fait même quand une cadence
+  tonicise un autre degré (Dm7♭5 G7 Cm7 en mi♭ : II V VI).
+- **La tonique locale** : celle qu'une cadence vient de toniciser, le
+  temps de cette cadence. Elle ne change pas le fond.
+
+Chacune est un ensemble de tonalités sur une même tonique, comme la
+tonalité annoncée d'un bloc (mi♭ majeur, ou mi♭ majeur et mineur
+mélodique quand rien ne tranche), ou vide quand rien n'est installé :
+au début d'un morceau sans armure, dans une plage atonale.
+
+### Ce qui installe une tonique
+
+Du plus fort au plus faible :
+
+1. **Une cadence qui se résout** : la cible devient tonique locale.
+2. **La durée** : une tonique locale qui tient, confirmée par d'autres
+   cadences, devient le fond. Ce sont les trois indices du livre
+   (cible hors de la tonalité, durée, cadences qui confirment), lus au
+   présent au lieu d'après coup ; leurs seuils sont en données.
+3. **L'armure** : pour une grille iReal, le champ de tonalité de l'app
+   donne un fond de départ, que la suite confirme ou dément.
+4. **Le premier accord**, faute d'armure, s'il peut être un accord de
+   tonique (maj7, 6, m6, m7, m(maj7)). C'est l'indice le plus faible :
+   beaucoup de standards commencent sur un II ou un IV.
+
+Ce qui ne change rien au fond : les accords diatoniques, les emprunts
+sur la même tonique (Im7, IVm, ♭VII7), et les préparations qui ne se
+résolvent pas.
+
+### Le I emprunté
+
+Un accord dont la fondamentale est la tonique de fond se lit comme un
+I emprunté, même quand il est le II d'un II-V : E♭m7 dans E♭m7 A♭7 en
+mi♭ est I, emprunté à l'éolien, et A♭7 redevient IV7. Le II-V reste un
+bloc qui annonce ré♭ ; c'est sa lecture en degrés qui change.
+
+### Tenderly, au présent
+
+| Mesure | Accord | Tonique pressentie | Ce que l'oreille entend |
+|---|---|---|---|
+| 1 | E♭maj7 | mi♭ (armure, premier accord) | I |
+| 2 | A♭7 | mi♭ | IV7, ou V de ré♭ : on attend peut-être ré♭ |
+| 3 | E♭m7 | mi♭ | ré♭ n'arrive pas ; la tonique change de couleur : I emprunté |
+| 4 | A♭7 | mi♭ | IV7 encore, en parallèle avec la mesure 2 |
+| 5 | Fm7 | mi♭ | II |
+| 6 | D♭7 | mi♭ | ♭VII7 : on attend mi♭ |
+| 7 | E♭maj7 | mi♭, confirmée | I, par la cadence ♭VII7-I |
+| 8 | Gm7♭5 C7♭9 | mi♭, locale fa mineur | II V de fa mineur : on attend Fm |
+| 9 | Fm7♭5 | mi♭, locale mi♭ mineur | surprise : pas Fm, mais le II de mi♭ mineur |
+
+### Local, avec une mémoire
+
+La contrainte du direct (chaque calcul ne regarde qu'un nombre borné
+d'accords) tient : la tonique pressentie est un état porté d'un accord
+au suivant, un résumé de ce qui a sonné, pas un retour en arrière. Le
+même code lit une grille complète en la parcourant de gauche à droite.
+
+La tonalité du morceau s'en déduit : c'est le fond de l'accord final,
+et quand un autre fond a dominé le morceau (le relatif majeur
+d'*Autumn Leaves*), les deux sont rendus.
+
+### Tranché
+
+- **Le relatif qui tonicise d'abord.** *Autumn Leaves* en sol mineur
+  commence par Cm7 F7 B♭maj7 : la première cadence installe si♭, et sol
+  mineur n'arrive qu'après. C'est un cas ambigu notoire, et les deux
+  lectures sont acceptables de loin : en direct, le fond passe de si♭ à
+  sol mineur quand sol mineur s'installe ; après coup, les deux sont
+  rendues, et la tonalité du morceau est celle de l'accord final, sol
+  mineur.
+- **La tonique de départ est gardée en mémoire**, à part du fond, pour
+  reconnaître le retour à la maison après un pont qui a modulé : c'est
+  très souvent le cas sur une forme AABA.
+- **Le tableau de Tenderly** est validé en attendant l'avis d'une
+  oreille plus experte : il sert de test.
+
+### À trancher
+
+- Quand une tonique locale tient-elle assez pour devenir le fond ?
+  Tune Up et Black Orpheus serviront à régler les seuils.
+
 ## Les tests de référence
 
 Le livre analyse des morceaux qui sont dans le corpus iReal. Sa fiche
@@ -447,3 +588,25 @@ indice.
   une préparation mais une région.
 - L'ordre exact des lectures quand plusieurs valent : à écrire règle
   par règle, et à confronter aux fiches du livre.
+- **Le II-V sans résolution, contre le livre.** Les degrés concordent
+  avec les fiches du livre à 70 sur 83, et les écarts sont de deux
+  sortes. Les modulations (Tune Up, Black Orpheus) attendent les
+  régions. Les autres sont des IIm7 V7 qui ne se résolvent pas, là où
+  le livre entend autre chose. Deux cas, à reprendre une fois la
+  tonalité du morceau détectée :
+  - **Le II qui est un I emprunté** (cas limite, ouvert). E♭m7 A♭7
+    dans Tenderly, mesures 3-4 : nous lisons un II-V de ré♭ qui ne se
+    résout pas, le livre lit I emprunté à l'éolien, puis IV7, en
+    parallèle avec E♭maj7 A♭7 des mesures 1-2. La clé : le « II » a
+    pour fondamentale la tonique pressentie, installée par les deux
+    premières mesures. La règle en découle (voir « Le I emprunté ») et
+    reste compatible avec le direct. À vérifier en la codant : qu'elle
+    ne casse rien, et qu'elle permet d'affiner proprement l'analyse.
+  - **La marche IIm7-V7.** Cm7 F7 avant Fm7 (Tenderly mesures 13-14,
+    There Will Never Be Another You mesures 12-13) : le livre lit VI,
+    puis II7. Ici le II n'est pas sur la tonique ; la lecture du livre
+    viendra plutôt des cadences du catalogue ou des relations entre
+    blocs.
+  - Écartée : départager par la qualité du II (m7 contre m7♭5). Elle
+    colle aux quatre cas du corpus mais ne repose sur aucune raison
+    musicale solide.
