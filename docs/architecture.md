@@ -50,7 +50,8 @@ gohar/
     device.go                ouverture d'oto et discipline des buffers
 
   charts/      go.mod        grilles venues d'autres logiciels
-    ireal/                   URL iReal Pro : playlist, débrouillage, jetons
+    ireal/                   URL iReal Pro : playlist, jetons, mesures,
+                             dépliage de la forme, chiffrages
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
@@ -246,7 +247,7 @@ l'inverse.**
 | `dex` | `harmony` |
 | `synth` | rien du dépôt, et d'externe uniquement oto |
 | `keyboard` | rien du dépôt, et d'externe uniquement gomidi |
-| `charts` | la bibliothèque standard pour lire un format ; `harmony` et `naming` quand il faudra lire les chiffrages |
+| `charts` | `harmony` et `naming`, pour lire les chiffrages ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
 | `games` | tout |
 
 Le noyau n'a **aucune méthode `String()` de présentation**. La conversion

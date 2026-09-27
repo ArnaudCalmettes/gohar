@@ -21,7 +21,7 @@ theory library never pulls in a graphics or audio stack.
 | `harmony/analysis` | Deterministic chord recognition, without scoring. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
 | `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
-| `charts`  | Reading chord charts from other software: iReal Pro playlists for now. Standard library only. |
+| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name. |
 | `games`   | The playable programs, Ebitengine and MIDI included. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
@@ -116,6 +116,12 @@ make vet
 make fmt
 make bench   # harmony benchmarks
 ```
+
+The iReal Pro reader is checked against real playlists that are not
+ours to publish. Export yours from the app as HTML into
+`charts/ireal/testdata/local/`, which git ignores, and `go test -v
+./...` in `charts` reads every chart in them and reports what it could
+not read.
 
 ## History
 

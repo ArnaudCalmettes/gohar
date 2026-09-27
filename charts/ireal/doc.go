@@ -7,9 +7,9 @@
 // chart again, which is what will let an edited chart be written back
 // one day. [Structure] then reads the tokens into measures, with their
 // bar lines, marks and chords, in the order they are written, and
-// [Chart.Unfold] gives the order they are played in. Chord
-// symbols stay strings here; turning them into chords is the business
-// of a chord symbol parser, not of a file format.
+// [Chart.Unfold] gives the order they are played in. Chord symbols are
+// kept as written, and [ChordSymbol.Read] reads one into a chord of
+// harmony, from a table of the app's qualities.
 //
 // # The format
 //

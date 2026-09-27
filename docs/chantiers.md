@@ -21,8 +21,9 @@ benché, vert.
 `naming` sépare la langue (français, anglais) et la notation (signes
 par défaut, mots en option). Il nomme les intervalles jusqu'à la
 septième et les gammes nommées (majeure, mineure naturelle, mineure
-harmonique, mineure mélodique, majeure harmonique) sur leur tonique. Chaque mode a un nom systématique et des
-alternatives : le registre parlé français et les alias.
+harmonique, mineure mélodique, majeure harmonique) sur leur tonique.
+Chaque mode a un nom systématique et des alternatives : le registre
+parlé français et les alias.
 
 `analysis` identifie les accords de façon déterministe, sans pondération.
 
@@ -32,6 +33,11 @@ alternatives : le registre parlé français et les alias.
 `synth` joue : conversion en fréquence, moteur polyphonique sans
 allocation, discipline des buffers audio, et un histogramme des délais
 à cases fixes.
+
+`charts/ireal` lit les grilles d'iReal Pro, de l'URL jusqu'aux accords
+dans l'ordre de jeu : playlist, jetons sans perte, mesures, dépliage de
+la forme, chiffrages lus en accords de `harmony`. Vérifié sur 1678
+grilles réelles, qui restent hors du dépôt.
 
 `games/keyboard` a deux sources : le clavier MIDI, qui saute les ports
 Through quand aucun n'est demandé, et la séquence rejouée, qui joue des
@@ -145,40 +151,58 @@ le dex : suggestions d'harmonisation, revue de tous les avatars
 cadentiels qu'il connaît sur chaque « change », voicings. Débroussaillé
 le 27/09.
 
-- [x] `charts/ireal`, couches 1 et 2 : l'URL et la playlist (champs lus
-      autour de la grille, pour les anciennes dispositions), le
-      débrouillage, et les jetons sans perte. Vérifié sur une playlist
-      réelle de 328 grilles, zéro jeton inconnu. Les tests commités
-      n'utilisent que des grilles fabriquées ; les exports de l'app vont
-      dans `charts/ireal/testdata/local/`, ignoré par git.
-- [x] couche 3 : les jetons en mesures (barres, sections, métrique,
-      fins, signes, accords et leur case), reprises non dépliées. Les
-      cases vides de mise en page (après une reprise, après la barre
-      finale) ne font pas de mesures. Sur 1678 grilles réelles, aucune
-      mesure vide, et huit bizarreries de saisie (reprise jamais fermée,
-      fins dans le désordre) que le dépliage devra tolérer.
+Fait :
+
+- [x] **L'URL et la playlist** : les champs lus autour de la grille,
+      ce qui couvre les anciennes dispositions ; le débrouillage.
+- [x] **Les jetons**, sans perte : joints, ils redonnent la grille.
+      Rustines trouvées sur les vraies grilles : les qualités tapées
+      librement entre étoiles (`A*m7*`), les blancs parasites (un saut
+      de ligne enregistré dans une grille), `T12` pour 12/8.
+- [x] **Les mesures** : barres, sections, métrique, fins, signes, et
+      chaque accord dans sa case. `LZ` porte une case et `Kcl` deux.
+      Les cases vides de mise en page (après une reprise, après la
+      barre finale) ne font pas de mesures.
+- [x] **Le dépliage** en ordre de jeu : reprises (« 3x » compris), fins
+      prises dans l'ordre écrit, D.C. et D.S. al Coda ou al Fine avec
+      la dernière fin au retour, « x » et « r » résolus. Tolère les
+      huit bizarreries de saisie du corpus (reprise jamais fermée, fins
+      dans le désordre) et ne boucle jamais. Vérifié sur des grilles
+      connues (All The Things You Are 36 mesures jouées, Autumn Leaves
+      32, Anthropology 32).
+- [x] **Les chiffrages** lus en accords de `harmony` : une table des
+      62 qualités de l'app, déjà sous la forme que `Normalize` produit
+      (un test y veille), plus les qualités tapées à la main, réécrites
+      dans l'orthographe de l'app (« m7 », « maj7 », « 7+ ») ou lues
+      dans une petite table à part (le diminué 7 ♮14). Sur 60 740
+      accords réels, un seul reste illisible : une faute de frappe.
+      Table relue et validée : la quinte écrite sauf altération, 2 lu
+      comme sus2, h seul comme m7♭5, 11 comme 7sus4 add9, 7susadd3
+      comme un 7 avec onzième, 7alt comme l'accord pandiatonique du
+      locrien ♭4, 7(♭9, ♭10, ♭5, ♭13).
+
+Les tests commités n'utilisent que des grilles fabriquées ; les exports
+de l'app vont dans `charts/ireal/testdata/local/`, ignoré par git, où un
+test les lit s'il y en a.
+
+Reste :
+
 - [ ] des cases aux temps : une mesure fait le plus souvent quatre
       cases, en 3/4 comme en 4/4. Une case vaut un temps en 4/4 ; pour
       les autres métriques, la règle de l'app reste à établir.
-- [x] le dépliage de la forme en ordre de jeu : reprises (« 3x »
-      compris), fins prises dans l'ordre écrit, D.C. et D.S. al Coda ou
-      al Fine avec la dernière fin au retour, « x » et « r » résolus.
-      Tolère les bizarreries de saisie et ne boucle jamais. Vérifié sur
-      les grilles connues (All The Things You Are 36, Autumn Leaves 32,
-      Anthropology 32) et sur les 1678 grilles réelles.
 - [ ] les directions que le dépliage ignore encore : « D.C. al 2nd
       ending » et consorts, un D.S. écrit dans une reprise pas encore
       terminée.
 - [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
       n'en a pas vu un vrai.
-- [ ] un format de grille ouvert, mieux conçu que celui d'iReal, une
-      fois la structure et le dépliage en place.
-- [ ] le parseur de chiffrages, dialecte iReal compris (voir
-      l'harmonie).
 - [ ] la lecture d'une grille : centres tonaux et cadences, par le
       catalogue de progressions. À concevoir ensemble d'abord.
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
+- [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on
+      tape soi-même, quand un jeu en aura besoin.
+- [ ] un format de grille ouvert, mieux conçu que celui d'iReal, une
+      fois la structure et le dépliage en place.
 - [ ] une grille iReal comme niveau du shoot'em up.
 
 ## L'audio

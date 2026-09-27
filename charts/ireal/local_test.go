@@ -29,7 +29,7 @@ func TestLocalCharts(t *testing.T) {
 				t.Errorf("%s: %v", file, err)
 				continue
 			}
-			unknown, measures := 0, 0
+			unknown, measures, unread := 0, 0, map[string]int{}
 			var odds []string
 			for _, s := range p.Songs {
 				ts := Lex(s.Chart)
@@ -51,6 +51,11 @@ func TestLocalCharts(t *testing.T) {
 					t.Errorf("%s: round trip lost %q", file, s.Title)
 				}
 				for _, tok := range ts {
+					if tok.Kind == Chord || tok.Kind == Alternate {
+						if _, ok := offsets(tok.Chord.Quality, tok.Chord.Custom); !ok {
+							unread[tok.Chord.Quality]++
+						}
+					}
 					if tok.Kind == Unknown {
 						unknown++
 						if unknown <= 10 {
@@ -62,6 +67,11 @@ func TestLocalCharts(t *testing.T) {
 			t.Logf("%s: %q, %d songs, %d measures, %d unknown tokens, %d oddities", filepath.Base(file), p.Name, len(p.Songs), measures, unknown, len(odds))
 			for _, odd := range odds {
 				t.Log("  " + odd)
+			}
+			// Qualities typed by hand that no reading covers: logged,
+			// since whoever typed them may have meant anything.
+			if len(unread) > 0 {
+				t.Logf("  unread qualities: %v", unread)
 			}
 		}
 	}
