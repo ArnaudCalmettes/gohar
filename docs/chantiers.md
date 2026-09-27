@@ -16,8 +16,9 @@ tâche qui la fait mentir.
 ## Où on en est
 
 `harmony` tient : hauteurs, intervalles, ensembles, gammes, tonalités,
-accords, fonctions, systèmes, tétracordes, et les 35 modes. Testé,
-benché, vert.
+accords, fonctions, systèmes, tétracordes, et les 35 modes. Pour
+l'analyse des grilles : les gammes nommées et la provenance d'un
+accord, et les préparations d'un accord à l'autre. Testé, benché, vert.
 
 `naming` sépare la langue (français, anglais) et la notation (signes
 par défaut, mots en option). Il nomme les intervalles jusqu'à la
@@ -37,8 +38,9 @@ allocation, discipline des buffers audio, et un histogramme des délais
 
 `charts/ireal` lit les grilles d'iReal Pro, de l'URL jusqu'aux accords
 dans l'ordre de jeu : playlist, jetons sans perte, mesures, dépliage de
-la forme, chiffrages lus en accords de `harmony`. Vérifié sur 1678
-grilles réelles, qui restent hors du dépôt.
+la forme, chiffrages lus en accords de `harmony`, durées en temps.
+Vérifié sur 1678 grilles réelles, qui restent hors du dépôt, et sur
+quatre fiches d'analyse du livre *En Harmonie*.
 
 `games/keyboard` a deux sources : le clavier MIDI, qui saute les ports
 Through quand aucun n'est demandé, et la séquence rejouée, qui joue des
@@ -130,9 +132,15 @@ connaît.
       gammes nommées qui le contiennent, sur toutes les toniques, avec
       le degré de sa fondamentale et le mode à jouer. Vérifiée sur les
       emprunts de Tenderly.
-- [ ] élargir `Approach` aux types de préparation de `grilles.md`
-      (sus4, dominante secondaire et chromatique, diminué, parallèle,
-      II de…), qui se composent.
+- [ ] les types de préparation de `grilles.md`, `harmony.ApproachKind`
+      (*approach* en anglais) : dominante, dominante chromatique,
+      diminué (dominante sans fondamentale), sus4 et II de… faits
+      (`ApproachOf`, et les crochets II-V des fiches du livre vérifiés
+      avec) ; restent les accords parallèles, en dernier.
+- [ ] l'accord de passage : une basse chromatique sur trois accords,
+      renversements compris (B♭/D D♭dim7 Cm7). Relève de l'analyse
+      d'une grille, qui a les basses, et non de `ApproachOf`, qui ne
+      voit que deux accords.
 - [ ] un registre parlé anglais, s'il en existe un qui mérite d'être
       proposé en alternative. Aujourd'hui seul le français en a un.
 

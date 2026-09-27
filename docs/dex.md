@@ -68,8 +68,9 @@ gamme majeure n'est pas l'entrée de l'ionien, ni la gamme mineure
 naturelle celle de l'éolien. Dans un contexte tonal, la mineure
 naturelle est une gamme de référence au même titre que la majeure,
 même si c'est aussi le mode du sixième degré de celle-ci : c'est ainsi
-que la tradition européenne construit les tonalités mineures. Leur
-place dans le modèle est le chantier `KindSystem`.
+que la tradition européenne construit les tonalités mineures.
+`harmony.NamedScale` les désigne ; leur place dans le dex est le
+chantier `KindSystem`.
 
 Les **voicings** aussi sont des entrées (voir `voicings.md`) : les
 positions de tétrade, notions élémentaires, et les progressions voicées

@@ -19,7 +19,7 @@ dépendances, pas le rangement.
 
 ```
 gohar/
-  go.work                    use ./dex ./games ./harmony ./synth
+  go.work                    use ./charts ./dex ./games ./harmony ./synth
   docs/                      glossaire, architecture
 
   harmony/     go.mod        théorie musicale, zéro dépendance
@@ -32,9 +32,12 @@ gohar/
     chord.go                 ChordPattern, Normalize, Chord
     function.go              Function, FunctionOf
     system.go                System, ModeOf : gamme mère et degré d'un mode
+    provenance.go            NamedScale, Provenances : d'où vient un accord
     tetrachord.go            Tetrachord, lecture tétracordale d'une gamme
     progression.go           Step, Progression, Match
     phrase.go                Phrase, Direction
+    target.go                Target, Approach, Resolution
+    approach.go              ApproachKind, ApproachOf : les préparations
 
     naming/                  orthographe, locales, noms des 35 modes,
                              des intervalles et des gammes nommées
@@ -51,7 +54,7 @@ gohar/
 
   charts/      go.mod        grilles venues d'autres logiciels
     ireal/                   URL iReal Pro : playlist, jetons, mesures,
-                             dépliage de la forme, chiffrages
+                             dépliage de la forme, chiffrages, temps
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
@@ -62,7 +65,7 @@ gohar/
 ```
 
 Le dex est commun à tous les jeux et n'en connaît aucun. Sa conception
-est dans `docs/DEX.md`.
+est dans `dex.md`.
 
 ## Pourquoi plusieurs modules
 

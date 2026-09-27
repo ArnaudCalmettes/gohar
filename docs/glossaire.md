@@ -142,7 +142,7 @@ par paquet.
    joueur comme un contexte reconnu.
 
 Le contexte ne peut pas osciller librement : voir la note sur les deux
-constantes de temps dans ARCHITECTURE.md.
+constantes de temps dans `architecture.md`.
 
 ## Analyse
 
@@ -208,7 +208,9 @@ Ce qui **ne** se dérive pas : jusqu'où un chemin a le droit de
 s'éloigner. Un ii-V à la place d'un V, une chaîne de dominantes
 secondaires, rien dans la théorie transcrite ici ne dit où ça s'arrête.
 Ces règles viendront d'un musicien et se placeront au-dessus de
-`Resolution`, jamais dedans.
+`Resolution`, jamais dedans. Les premières sont venues d'*En
+Harmonie* : ce que chaque accord fait pour le suivant est
+`ApproachKind` (voir `grilles.md`).
 
 ## Analyse des grilles
 
@@ -222,7 +224,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
 | Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
-| Préparation | Un ou deux accords ajoutés ou modifiés devant une arrivée | Un emprunt, qui peut en être une |
+| Préparation | Un ou deux accords ajoutés ou modifiés devant une arrivée. En anglais *approach* : `ApproachKind` en nomme le type | Un emprunt, qui peut en être une ; `Approach`, le chemin d'un joueur dans un slot |
 | Provenance | La ou les gammes nommées d'où vient un accord, quelle que soit leur tonique : ce que le joueur improvise dessus | La tonalité du morceau |
 | Dominante secondaire | Le V7 d'une arrivée autre que le I | La dominante chromatique |
 | Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |

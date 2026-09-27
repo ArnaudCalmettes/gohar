@@ -36,7 +36,9 @@ raconte pas l'histoire du morceau.
   ce contexte, jamais laquelle est vraie. Em7-A7 est un II-V de ré ou un
   III-VI7 de do : deux façons valables de se représenter la même
   progression, plus ou moins pertinentes selon le contexte, sans
-  hiérarchie de niveau.
+  hiérarchie de niveau. Plusieurs outils peuvent ainsi expliquer le
+  même phénomène, et chacun reste un calcul exact : l'analyse n'est pas
+  une affaire d'interprétation, elle rend toutes les lectures vraies.
 - **De droite à gauche.** Le livre le dit en toutes lettres : on repère
   les accords réels de la tonalité, on prend l'accord d'arrivée, puis on
   remonte ses préparations. C'est aussi l'algorithme. L'arrivée
@@ -134,8 +136,10 @@ faire jouer à un accord le rôle de tonique secondaire.
 ## Les préparations
 
 Préparer un accord cible, c'est ajouter ou modifier un ou deux accords
-devant lui. L'unité de l'analyse est donc une **arrivée** et ce qui la
-prépare, chaque accord de préparation ayant un type.
+devant lui. L'anglais dit *approach* : dans le code, `ApproachKind`
+nomme le type d'une préparation, et `ApproachOf` dit comment un accord
+prépare le suivant. L'unité de l'analyse est donc une **arrivée** et
+ce qui la prépare, chaque accord de préparation ayant un type.
 
 | Type | Chiffrage | Exemple vers Dm7 en do |
 |---|---|---|
@@ -207,8 +211,11 @@ possibles : `harmony` le calcule par symétrie. Deux emplois :
   la tierce, la quinte, la septième et la ♭9 de A7(♭9) et prépare Dm7.
   C'est la basse suivante qui désigne la fondamentale sous-entendue.
 - **Accord de passage** entre deux accords diatoniques, pour une basse
-  chromatique. En montant (I ♯Idim7 II ♯IIdim7 III, *Mean to Me*), les
-  deux emplois coïncident et les deux lectures sont rendues. En
+  chromatique. Ce ne sont pas deux bits d'un même calcul : la dominante
+  se voit sur deux accords (`ApproachOf`), le passage demande trois
+  accords et leurs basses, que seule l'analyse d'une grille a. En
+  montant (I ♯Idim7 II ♯IIdim7 III, *Mean to Me*), les deux emplois
+  coïncident et les deux lectures sont rendues. En
   descendant, entre I/3 et II (B♭/D D♭dim7 Cm7), le diminué n'est pas la
   dominante de sa cible : il ne reste que le passage.
 

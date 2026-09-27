@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/ArnaudCalmettes/gohar/harmony"
 )
 
 // A fiche is the analysis of a tune as a book prints it, transcribed by
@@ -100,6 +102,39 @@ func TestFichesHoldTogether(t *testing.T) {
 				if _, err := c.Read(); err != nil {
 					t.Errorf("%s, bar %d: %v", name, i+1, err)
 				}
+			}
+		}
+	}
+}
+
+// The book's brackets: a two five resolving on a later bar. The five,
+// the last chord before that bar, must approach its first chord, and
+// the two, the chord before the five, must approach the five.
+func TestFichesBrackets(t *testing.T) {
+	read := func(c ChordSymbol) harmony.Chord {
+		r, err := c.Read()
+		if err != nil {
+			t.Fatal(err)
+		}
+		return r.Chord()
+	}
+	for name, f := range fiches(t) {
+		for _, br := range f.Toward {
+			var before []ChordSymbol
+			for _, bar := range f.Bars[br[0]-1 : br[1]-1] {
+				before = append(before, chords(bar)...)
+			}
+			target := chords(f.Bars[br[1]-1])
+			if len(before) < 2 || len(target) == 0 {
+				t.Errorf("%s, bracket %v: no two five to read", name, br)
+				continue
+			}
+			two, five := before[len(before)-2], before[len(before)-1]
+			if k := harmony.ApproachOf(read(five), read(target[0])); k == harmony.NoApproach {
+				t.Errorf("%s, bracket %v: %v does not approach %v", name, br, five, target[0])
+			}
+			if k := harmony.ApproachOf(read(two), read(five)); !k.Has(harmony.TwoApproach) {
+				t.Errorf("%s, bracket %v: %v is not the two of %v", name, br, two, five)
 			}
 		}
 	}

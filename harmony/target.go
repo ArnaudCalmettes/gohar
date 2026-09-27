@@ -139,7 +139,6 @@ func NewApproach(chords ...Chord) (Approach, error) {
 	return Approach{Chords: slices.Clone(chords)}, nil
 }
 
-
 // Resolve reads an approach against a target and reports what it did.
 //
 // Nothing here refuses. An approach that reaches nothing comes back
@@ -177,27 +176,16 @@ func (t Target) Resolve(a Approach) Resolution {
 // onto the target, and on which root it sits.
 //
 // The test is on the tritone rather than on the chord's name, which is
-// what makes the substitution fall out instead of needing a table. The
-// tritone of a dominant on the fifth above the target and the tritone
-// of the one a tritone away are the same two classes.
+// what makes the substitution fall out instead of needing a table: the
+// leading tone rises a semitone to the target and the seventh falls a
+// semitone to its third, and either orientation of that pair is the
+// same tritone. That is the dominant and the chromatic approaches of
+// [ApproachOf], and nothing else.
 func (t Target) dominantOf(c Chord) (PitchClass, bool) {
-	if !c.Pattern.HasAll(IntMajorThird, IntMinorSeventh) {
+	if approachTo(c, t.Root) == NoApproach {
 		return 0, false
 	}
-
-	third := c.Root.Transpose(IntMajorThird.Semitones)
-	seventh := c.Root.Transpose(IntMinorSeventh.Semitones)
-
-	// The leading tone rises a semitone to the target and the seventh
-	// falls a semitone to its third. Either orientation of the pair is
-	// the same tritone, which is exactly why two roots share it.
-	if third.Transpose(1) == t.Root || seventh.Transpose(-1) == t.Root.Transpose(4) {
-		return c.Root, true
-	}
-	if seventh.Transpose(1) == t.Root || third.Transpose(-1) == t.Root.Transpose(4) {
-		return c.Root, true
-	}
-	return 0, false
+	return c.Root, true
 }
 
 // suspensionResolves reports whether the chord at index `i` is a
@@ -208,18 +196,11 @@ func (t Target) dominantOf(c Chord) (PitchClass, bool) {
 // third the suspension was standing in for.
 func suspensionResolves(chords []Chord, i int) bool {
 	c := chords[i]
-	if c.Pattern.HasAny(IntMajorThird, IntMinorThird) {
+	if !isSuspension(c.Pattern) {
 		return false
 	}
-	if !c.Pattern.HasAny(IntPerfectFourth, IntMajorSecond) {
-		return false
-	}
-
 	for _, next := range chords[i+1:] {
-		if next.Root != c.Root {
-			continue
-		}
-		if next.Pattern.HasAny(IntMajorThird, IntMinorThird) {
+		if next.Root == c.Root && hasThird(next.Pattern) {
 			return true
 		}
 	}
