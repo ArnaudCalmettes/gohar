@@ -210,6 +210,27 @@ secondaires, rien dans la théorie transcrite ici ne dit où ça s'arrête.
 Ces règles viendront d'un musicien et se placeront au-dessus de
 `Resolution`, jamais dedans.
 
+## Analyse des grilles
+
+Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
+
+| Terme | Sens retenu | À ne pas confondre avec |
+|---|---|---|
+| Rythme harmonique | Le nombre d'accords par mesure | Le tempo |
+| Plage | Un passage tonal (centre et fonctions), modal (un accord tenu installe un mode) ou atonal (pas de centre) | Une section de la grille |
+| Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée | Un emprunt |
+| Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
+| Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
+| Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
+| Préparation | Un ou deux accords ajoutés ou modifiés devant une arrivée | Un emprunt, qui peut en être une |
+| Provenance | La ou les gammes nommées d'où vient un accord, quelle que soit leur tonique : ce que le joueur improvise dessus | La tonalité du morceau |
+| Dominante secondaire | Le V7 d'une arrivée autre que le I | La dominante chromatique |
+| Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |
+| Sous-dominante secondaire | Le II d'une dominante secondaire : II-V de… | |
+| Sous-dominante chromatique | Le II d'une dominante chromatique, ♭VIm7 ou ♭VIm7♭5 | |
+| Cellule anatole | L'enchaînement I-VI-II-V, qui boucle | La forme anatole, structure de morceau (*rhythm changes*) |
+| Cadence, cellule | Une cadence aboutit, une cellule tourne | |
+
 ## Mots proscrits
 
 | Mot | Pourquoi | À la place |

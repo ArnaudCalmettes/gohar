@@ -6,8 +6,9 @@ Ce fichier existe pour qu'une conversation neuve reprenne sans rien
 redécouvrir et sans rouvrir un débat déjà tranché. Les raisons des choix
 faits sont dans `architecture.md`, le vocabulaire dans `glossaire.md`, la
 conception de la collection dans `dex.md`, l'ear trainer dans
-`oreille.md`, les voicings dans `voicings.md`. Ici il n'y a que ce qui reste à faire, et les décisions
-qu'il ne faut pas rouvrir.
+`oreille.md`, les voicings dans `voicings.md`, l'analyse des grilles
+dans `grilles.md`. Ici il n'y a que ce qui reste à faire, et les
+décisions qu'il ne faut pas rouvrir.
 
 Mettre une doc à jour n'est pas un chantier : ça fait partie de la
 tâche qui la fait mentir.
@@ -124,7 +125,15 @@ connaît.
 - [ ] l'inverse : lire un chiffrage écrit, pour les grilles.
 - [ ] catalogue de progressions, pour que `ProgressionID` désigne
       quelque chose. Servirait aussi à juger les détours d'une
-      réharmonisation (voir les jeux).
+      réharmonisation (voir les jeux). Le contenu v0 est dans
+      `grilles.md` : cadences, cellules, préparations, variantes en
+      squelette de degrés et provenance par degré.
+- [ ] la provenance d'un accord : toutes les gammes nommées qui le
+      contiennent sur ce degré, quelle que soit leur tonique. Calculée,
+      sans table.
+- [ ] élargir `Approach` aux types de préparation de `grilles.md`
+      (sus4, dominante secondaire et chromatique, diminué, parallèle,
+      II de…), qui se composent.
 - [ ] un registre parlé anglais, s'il en existe un qui mérite d'être
       proposé en alternative. Aujourd'hui seul le français en a un.
 
@@ -190,13 +199,23 @@ Reste :
 - [ ] des cases aux temps : une mesure fait le plus souvent quatre
       cases, en 3/4 comme en 4/4. Une case vaut un temps en 4/4 ; pour
       les autres métriques, la règle de l'app reste à établir.
+      **Prérequis de l'analyse** : la durée y sépare une plage modale
+      d'un passage, une modulation d'un emprunt.
+- [ ] dire à l'analyse que la forme boucle, pour que le turnaround se
+      lise par-delà la barre finale.
 - [ ] les directions que le dépliage ignore encore : « D.C. al 2nd
       ending » et consorts, un D.S. écrit dans une reprise pas encore
       terminée.
 - [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
       n'en a pas vu un vrai.
-- [ ] la lecture d'une grille : centres tonaux et cadences, par le
-      catalogue de progressions. À concevoir ensemble d'abord.
+- [ ] l'analyse d'une grille, conçue dans `grilles.md` : étages
+      (morceau, plage, région, bloc, accord), analyse de droite à
+      gauche, lectures multiples, fiche de sortie. Commencer par les
+      quatre tests de référence tirés du livre (Tune Up, Black
+      Orpheus, There Will Never Be Another You, Tenderly), fiches
+      transcrites à la main.
+- [ ] les seuils de l'analyse, en données : durée d'une plage modale,
+      indices d'une modulation.
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
 - [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on
@@ -283,7 +302,9 @@ pour en faire des règles. Elles relèvent du jeu, jamais du dex.
       et sans doute l'accord diminué 7 sur la sensible. Notion distincte
       de `Mode.Function`, qui dit seulement qu'un mode peut tenir un
       rôle. Si la fonction devient un critère de validité, la passe sur
-      `Mode.Function` devient bloquante.
+      `Mode.Function` devient bloquante. Le livre répond pour
+      l'essentiel : V7, ♭II7 et VIIdim7 pour la dominante, et la liste
+      des sous-dominantes (voir `grilles.md`).
 - [ ] **choix de tétrade comme fait.** Sous un slot purement
       fonctionnel, jouer D♭7 plutôt que G7 est un choix d'harmonisation,
       comme un choix de couleur. Faut-il un fait pour ça, et les
