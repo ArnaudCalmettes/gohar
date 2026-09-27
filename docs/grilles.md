@@ -223,9 +223,11 @@ signale comme une conjecture.
 
 La gamme d'où vient un accord, c'est ce que le joueur improvise dessus.
 Elle se calcule, sans table, parmi **toutes les gammes nommées** qui
-contiennent l'accord sur ce degré, et pas seulement celles de la
-tonique. Tenderly le montre : D♭7 est emprunté à la♭ mineur mélodique,
-Gm7♭5 C7(♭9) à fa mineur harmonique, Bdim7 à do mineur harmonique.
+contiennent l'accord, et pas seulement celles de la tonique :
+`harmony.Provenances`. Toutes les notes comptent, extensions
+comprises : C7 vient de sept gammes, C7(♭9) de trois. Tenderly le
+montre : D♭7 est emprunté à la♭ mineur mélodique, Gm7♭5 C7(♭9) à fa
+mineur harmonique, Bdim7 à do mineur harmonique.
 
 Ordre de présentation : d'abord la tonalité de la région, puis celle
 qu'annonce le bloc, puis les autres. Plusieurs provenances sont

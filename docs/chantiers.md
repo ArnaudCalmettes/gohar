@@ -87,11 +87,9 @@ connaît.
       n'existe nulle part.
 - [ ] `KindSystem` : une gamme est une entrée à part entière, avec ses
       propres marques, distincte des entrées de ses modes (l'ionien,
-      l'éolien). Acté, pas écrit. Question ouverte : dans `harmony`,
-      la gamme majeure et la mineure naturelle relèvent du même
-      `System` (`NaturalMajor`), et le couple (système, degré) désigne
-      des modes. Il faut une autre désignation pour une gamme ;
-      `naming` s'appuie déjà sur le `ScalePattern`.
+      l'éolien). Acté, pas écrit. La désignation existe :
+      `harmony.NamedScale` désigne les cinq gammes nommées, comme
+      `System` et un degré désignent un mode.
 - [ ] distinguer le système comme gamme mère des modes et la gamme
       comme référence de l'harmonie tonale. La gamme mineure naturelle
       n'est pas un citoyen de seconde zone : dans un contexte tonal,
@@ -128,9 +126,10 @@ connaît.
       réharmonisation (voir les jeux). Le contenu v0 est dans
       `grilles.md` : cadences, cellules, préparations, variantes en
       squelette de degrés et provenance par degré.
-- [ ] la provenance d'un accord : toutes les gammes nommées qui le
-      contiennent sur ce degré, quelle que soit leur tonique. Calculée,
-      sans table.
+- [x] la provenance d'un accord : `harmony.Provenances`, toutes les
+      gammes nommées qui le contiennent, sur toutes les toniques, avec
+      le degré de sa fondamentale et le mode à jouer. Vérifiée sur les
+      emprunts de Tenderly.
 - [ ] élargir `Approach` aux types de préparation de `grilles.md`
       (sus4, dominante secondaire et chromatique, diminué, parallèle,
       II de…), qui se composent.

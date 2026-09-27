@@ -129,10 +129,10 @@ type Locale struct {
 	// tetrachord is designated by its steps in every language.
 	Tetrachords [5]string
 
-	// Scales names the scales practice gives a name to, in the order of
-	// [namedScales], as the words that follow the tonic: majeur,
+	// Scales names the scales practice gives a name to, indexed by
+	// [harmony.NamedScale], as the words that follow the tonic: majeur,
 	// mineur harmonique; major, harmonic minor.
-	Scales [5]string
+	Scales [harmony.NamedScaleCount]string
 }
 
 // A DegreeRenderer turns one altered degree into the words a mode name

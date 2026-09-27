@@ -287,10 +287,11 @@ documentation comme dans les messages du jeu.
   `1 3 1`. On résiste à la tentation de nommer le reste, plutôt que
   d'emprunter un vocabulaire à une autre culture ou à une filiation
   douteuse.
-- Une **gamme nommée** n'est pas un mode. Cinq gammes ont un nom sur
-  leur tonique (« ré majeur », « fa♯ mineur harmonique ») : majeure,
-  mineure naturelle, mineure harmonique, mineure mélodique, majeure
-  harmonique. La gamme majeure n'est pas l'ionien, et la mineure
+- Une **gamme nommée** n'est pas un mode, et `harmony.NamedScale` la
+  désigne comme `System` et un degré désignent un mode. Cinq gammes
+  ont un nom sur leur tonique (« ré majeur », « fa♯ mineur
+  harmonique ») : majeure, mineure naturelle, mineure harmonique,
+  mineure mélodique, majeure harmonique. La gamme majeure n'est pas l'ionien, et la mineure
   naturelle, gamme de référence des tonalités mineures, n'est pas
   l'éolien, même si c'est aussi le mode du sixième degré de la
   majeure. Voir `dex.md`.
