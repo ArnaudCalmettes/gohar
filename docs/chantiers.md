@@ -228,6 +228,20 @@ Reste :
       mesure que l'analyse les produira.
 - [ ] les seuils de l'analyse, en données : durée d'une plage modale,
       indices d'une modulation.
+- [ ] l'ordre de l'analyse, dans `harmony/analysis` comme une couche
+      au-dessus de l'identification des accords : la suite d'accords
+      (basses, durées, bouclage) et son pont depuis iReal ; les
+      préparations sur toute la suite ; le passage ; les blocs et leurs
+      tonalités ; degrés et provenance ; l'affichage annoté en ASCII
+      dans le terminal, enrichi à chaque étape ; les étages hauts dans
+      la mesure où la fiche en a besoin. Puis le direct, avec l'attente
+      et la surprise (voir `grilles.md`).
+- [ ] la grille annotée dans une fenêtre Ebitengine (police de Real
+      Book, chiffrages en indices et exposants, réglable), une fois le
+      cœur validé.
+- [ ] le moteur d'analyse en WASM dans une page web, pour distribuer et
+      faire connaître le travail. Le moins prioritaire, à ne pas
+      perdre de vue.
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
 - [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on

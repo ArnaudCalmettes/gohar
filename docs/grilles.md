@@ -360,6 +360,45 @@ chapitre 10 :
   cible ;
 - pour chaque accord, la ou les gammes à jouer.
 
+La fiche s'affiche sur la grille elle-même, annotée comme dans le
+livre : degrés sous les accords, crochets et flèches des II-V,
+tonalités au-dessus des blocs. Trois supports, dans cet ordre :
+
+1. **Le terminal**, en texte : c'est le banc d'essai, qui grandit à
+   chaque étape de l'analyse.
+2. **Une fenêtre Ebitengine**, le jour où l'analyse est validée et où
+   l'on joue en direct : une police de Real Book ou de MuseScore, du
+   marqueur noir sur fond blanc, les chiffrages avec leurs indices et
+   leurs exposants, le tout réglable. Cosmétique, donc après le cœur.
+3. **Une page web**, le moteur compilé en WASM : on donne une grille,
+   on reçoit l'analyse annotée. Pour distribuer et faire connaître le
+   travail, dans la lignée de l'ancien gohareact ; le moins pressé.
+
+## L'attente et la surprise
+
+Un musicien à l'oreille entraînée entend « on dirait qu'on est en ré
+majeur » tant que rien ne le dément, et sursaute quand une couleur belle
+et inattendue le détrompe. L'analyse en direct doit faire la même
+chose, au même instant : c'est un objectif, tant qu'on n'a pas prouvé
+qu'il est impossible.
+
+- **Les lectures provisoires** sont celles que ce qui a sonné permet :
+  un II-V annonce son arrivée avant qu'elle ne sonne.
+- **La surprise** est l'écart entre l'arrivée attendue et ce qui
+  arrive, et elle se qualifie : cadence rompue, emprunt, dominante
+  chromatique qui repart ailleurs. Ce n'est pas une erreur, c'est une
+  couleur que la théorie sait nommer, et c'est ce qui fait la
+  différence entre « faux » et « monstrueux ».
+- **Pour un jeu**, c'est la récompense idéale : elle salue une prise de
+  risque réussie, pas la conformité.
+
+Une seule exigence en découle pour tout le code d'analyse : **chaque
+calcul reste local**, il ne regarde qu'un nombre borné d'accords autour
+de lui. L'analyse d'une grille et l'analyse en direct sont alors le
+même code, sur une suite complète ou sur une suite qui s'allonge. Les
+étages qui demandent de la durée (tonalité, modulation) restent
+provisoires plus longtemps.
+
 ## Les tests de référence
 
 Le livre analyse des morceaux qui sont dans le corpus iReal. Sa fiche
