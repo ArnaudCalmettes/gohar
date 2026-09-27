@@ -81,9 +81,10 @@ func find(path, title string) (ireal.Song, error) {
 // render lays the chart out four bars to a row, as a lead sheet does,
 // with the analysis on lines of its own above the chords: over each
 // chord, how it prepares the next, and above, the blocks with the tonality
-// they announce. Under the chords, their degrees, as En Harmonie writes
-// them, and under the degrees the sensed tonic where it changes, from
-// the tonality the app gives the tune.
+// they announce and, when it differs, the block read as En Harmonie
+// brackets it. Under the chords, their degrees on the installed tonic,
+// and under the degrees the sensed tonic where it changes, from the
+// tonality the app gives the tune.
 func render(s ireal.Song) string {
 	chart := ireal.Structure(ireal.Lex(s.Chart))
 	tl := chart.Timeline()
@@ -93,7 +94,8 @@ func render(s ireal.Song) string {
 	blocks := analysis.Blocks(changes, kinds)
 	home, _ := s.HomeTonalities()
 	sensed := analysis.Sense(changes, blocks, home)
-	degrees := analysis.Degrees(changes, blocks, passing, sensed)
+	degrees := analysis.Degrees(changes, passing, sensed)
+	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 
 	// Each bar is two lines that line up word for word: the analysis
 	// above, the chords below. A bar holds "%" when the chord before
@@ -138,7 +140,7 @@ func render(s ireal.Song) string {
 		for end < len(cells) && end-start < barsPerRow && marks[end] == "" {
 			end++
 		}
-		fmt.Fprintf(&b, "\n%s", drawBlocks(blocks, tl, words, start, end, width))
+		fmt.Fprintf(&b, "\n%s", drawBlocks(blocks, tl, words, bracketed(blocks, degrees, bracket), start, end, width))
 		fmt.Fprintf(&b, "\n%4s  ", marks[start])
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s  ", pad(c.top, width))
@@ -226,14 +228,14 @@ func column(bar, first, width int) int {
 // block across the loop, its two at the end of the chorus and its V at
 // the start, is drawn in both places. A name that would run into the
 // next block's is cut short.
-func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, first, end, width int) string {
+func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, readings []string, first, end, width int) string {
 	line := []rune(strings.Repeat(" ", column(end, first, width)))
 	type name struct {
 		at          int
 		text, short []rune
 	}
 	var names []name
-	for _, bl := range blocks {
+	for n, bl := range blocks {
 		start := bl.Five
 		if bl.Sus >= 0 {
 			start = bl.Sus
@@ -265,6 +267,9 @@ func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, first,
 		if a.bar >= first && a.bar < end {
 			from = column(a.bar, first, width) + a.off
 			long, short := announced(bl, tl)
+			if readings[n] != "" {
+				long += " : " + readings[n]
+			}
 			names = append(names, name{from, []rune(long + " "), []rune(short + " ")})
 		}
 		if z.bar >= first && z.bar < end {
@@ -291,6 +296,29 @@ func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, first,
 		}
 	}
 	return strings.TrimRight(string(line), " ")
+}
+
+// bracketed gives for each block its chords as En Harmonie brackets
+// them, in the tonality it announces ("II V"), when its degrees differ
+// from those on the installed tonic; "" when they do not, as when a two
+// five announces the minor of the tonic (Fm7♭5 B♭7 in E flat).
+func bracketed(blocks []analysis.Block, ground, bracket []analysis.Degree) []string {
+	out := make([]string, len(blocks))
+	for n, bl := range blocks {
+		var ds []string
+		differs := false
+		for _, i := range []int{bl.Two, bl.Sus, bl.Five} {
+			if i >= 0 {
+				ds = append(ds, bracket[i].String())
+				differs = differs || bracket[i].Number != ground[i].Number ||
+					bracket[i].Accidental != ground[i].Accidental
+			}
+		}
+		if differs {
+			out[n] = strings.Join(ds, " ")
+		}
+	}
+	return out
 }
 
 // announced names the tonalities a block announces: their tonic as the
@@ -374,11 +402,14 @@ over each chord:
 
 above, the blocks, [II] [sus4] V, and the tonality each one announces:
   Fm harm ─     a two five announcing F harmonic minor, whatever it lands on
+  Fm harm : II V ─
+                and its chords read in F minor, as En Harmonie brackets
+                them, when that differs from the degrees below
   D♭ M/m mel… ─ one that does not resolve, nor decide between D♭ major
                 and D♭ melodic minor
 
-under each chord, its degree in the tonic sensed there, or in the
-tonality its two five announces: II V, ♭VII7, ♯Vdim7, I/3
+under each chord, its degree on the tonic the ear has installed there,
+IIIm7♭5 VI7 for Gm7♭5 C7 in E♭; ♭VII7, ♯Vdim7, I/3
 
 under the degrees, the tonic the ear senses, where it changes:
   E♭            installed, from the app's key or the first cadence

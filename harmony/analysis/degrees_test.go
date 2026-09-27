@@ -8,15 +8,20 @@ import (
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
-func degreesOf(c analysis.Changes, home []harmony.Tonality) string {
-	kinds := analysis.Approaches(c)
-	var out []string
-	blocks := analysis.Blocks(c, kinds)
+// degreesOf writes both readings of a sequence: on the installed
+// tonic, and bracketed as En Harmonie prints it.
+func degreesOf(c analysis.Changes, home []harmony.Tonality) (string, string) {
+	blocks := analysis.Blocks(c, analysis.Approaches(c))
 	sensed := analysis.Sense(c, blocks, home)
-	for _, d := range analysis.Degrees(c, blocks, analysis.PassingChords(c), sensed) {
-		out = append(out, d.String())
+	passing := analysis.PassingChords(c)
+	write := func(ds []analysis.Degree) string {
+		var out []string
+		for _, d := range ds {
+			out = append(out, d.String())
+		}
+		return strings.Join(out, " ")
 	}
-	return strings.Join(out, " ")
+	return write(analysis.Degrees(c, passing, sensed)), write(analysis.Bracketed(c, blocks, passing, sensed))
 }
 
 func TestDegrees(t *testing.T) {
@@ -35,31 +40,43 @@ func TestDegrees(t *testing.T) {
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
 		home    []harmony.Tonality
-		want    string
+		ground  string // on the installed tonic
+		bracket string // as En Harmonie prints it
 	}{
-		// Tenderly, bars 1 to 16. Bars 3 and 4, E♭m7 A♭7, a two five
+		// Tenderly, bars 1 to 16. On the tonic, bar 8 is the three six
+		// of a three six two five one; bracketed, as En Harmonie prints
+		// it, a two five of F minor. Bars 3 and 4, E♭m7 A♭7, a two five
 		// that does not resolve with its two on the tonic, are a
-		// borrowed I and a IV7, as En Harmonie reads them. Against it:
-		// bars 13 and 14 read here as a two five of B flat, where
-		// En Harmonie reads VI and II7. Both readings are true;
-		// En Harmonie's will come with the cadences.
+		// borrowed I and a IV7 either way. Bars 13 and 14 are VI II7 on
+		// the tonic, as En Harmonie reads them, but a bracketed two five
+		// of B flat: its reading will come with the cadences.
 		"Tenderly": {
 			changesOf(false, eb, maj7, ab, dom7, eb, min7, ab, dom7, f, min7, db, dom7, eb, maj7,
 				g, halfDim, c, flatNine, f, halfDim, bb, dom7, f, halfDim, bb, dom7, b, dim7,
 				c, min7, f, dom7, f, min7, bb, dom7),
 			analysis.MajorTonalities(eb),
+			"I IV7 Im7 IV7 II ♭VII7 I IIIm7♭5 VI7 IIm7♭5 V IIm7♭5 V ♯Vdim7 VI II7 II V",
 			"I IV7 Im7 IV7 II ♭VII7 I II V II V II V ♯Vdim7 II V II V",
+		},
+		// There Will Never Be Another You: a two five tonicises the VI.
+		"a two five toward the VI": {
+			changesOf(false, eb, maj7, d, halfDim, g, dom7, c, min7),
+			analysis.MajorTonalities(eb),
+			"I VII III7 VI",
+			"I II V VI",
 		},
 		// A chromatic dominant and its two, the chromatic subdominant.
 		"♭VIm7 ♭II7 I": {
 			changesOf(false, d, min7, ab, min7, db, dom7, c, maj7),
 			analysis.MajorTonalities(c),
 			"II ♭VIm7 ♭II7 I",
+			"II ♭VIm7 ♭II7 I",
 		},
 		// In F minor, D♭maj7 is VI, not ♭VI.
 		"a degree of the minor": {
 			changesOf(false, f, harmony.ChordMinorTriad, db, maj7, g, halfDim, c, flatNine),
 			analysis.MinorTonalities(f),
+			"I VI II V",
 			"I VI II V",
 		},
 		// Someday My Prince Will Come: B♭/D D♭dim7 Cm7, a passing chord
@@ -72,6 +89,7 @@ func TestDegrees(t *testing.T) {
 			}(),
 			analysis.MajorTonalities(bb),
 			"I/3 ♭IIIdim7 II",
+			"I/3 ♭IIIdim7 II",
 		},
 		// A secondary dominant alone is written on its degree, with its
 		// quality: VI7, the V7/II.
@@ -79,10 +97,15 @@ func TestDegrees(t *testing.T) {
 			changesOf(false, c, maj7, a, dom7, d, min7, g, dom7, c, maj7),
 			analysis.MajorTonalities(c),
 			"I VI7 II V I",
+			"I VI7 II V I",
 		},
 	} {
-		if got := degreesOf(tc.changes, tc.home); got != tc.want {
-			t.Errorf("%s:\n got %s\nwant %s", name, got, tc.want)
+		ground, bracket := degreesOf(tc.changes, tc.home)
+		if ground != tc.ground {
+			t.Errorf("%s, on the tonic:\n got  %s\n want %s", name, ground, tc.ground)
+		}
+		if bracket != tc.bracket {
+			t.Errorf("%s, bracketed:\n got  %s\n want %s", name, bracket, tc.bracket)
 		}
 	}
 }

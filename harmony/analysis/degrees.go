@@ -145,36 +145,42 @@ var qualities = map[harmony.ChordPattern]string{
 	harmony.ChordDominantSeventhSus4:   "7sus4",
 }
 
-// Degrees reads every change of a sequence in its tonalities.
+// Degrees reads every change of a sequence in the ground of its sensed
+// tonic (see [Sense]), with its quality when it borrows: what each
+// chord is in the tonality the ear has installed. In E flat, Gm7♭5
+// C7♭9 before Fm7♭5 is IIIm7♭5 VI7, the three six of a three six two
+// five one; A7 before Dm7 in C is VI7, a secondary dominant; a passing
+// chord is ♯Idim7 or ♭IIIdim7, even when it is also the dominant
+// without root of the next chord.
 //
-// The chords of a two five are read in the tonalities it announces, as
-// En Harmonie brackets them under their target: Dm7♭5 G7 before Cm7 in
-// E flat is II V, then VI. Every other chord is read in the ground of
-// its sensed tonic (see [Sense]), with its quality when it borrows: a V
-// alone, which En Harmonie writes as the degree it sits on (A7 before
-// Dm7 in C is VI7, a secondary dominant; A♭7 before Gm7 in E flat,
-// IV7), and a passing chord (♯Idim7, ♭IIIdim7), even when it is also
-// the dominant without root of the next chord. So is a two five that
-// does not resolve and whose two sits on the ground's tonic: E♭m7 A♭7
-// in E flat is Im7 IV7, a borrowed tonic.
-func Degrees(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
-	in := make([][]harmony.Tonality, len(c.Chords))
-	for i := range in {
-		in[i] = sensed[i].Ground
+// [Bracketed] gives the other reading, the one En Harmonie prints.
+func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
+	out := make([]Degree, len(c.Chords))
+	for i, ch := range c.Chords {
+		out[i] = degreeOf(ch, sensed[i].Ground, passing[i])
 	}
+	return out
+}
+
+// Bracketed reads a sequence as En Harmonie prints it, a bracket under
+// each two five toward its target: the chords of a two five in the
+// tonalities it announces, the others as [Degrees] does. Dm7♭5 G7
+// before Cm7 in E flat is II V, then VI.
+//
+// A two five that does not resolve and whose two sits on the ground's
+// tonic is not bracketed: E♭m7 A♭7 in E flat is Im7 IV7, a borrowed
+// tonic.
+func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
+	out := Degrees(c, passing, sensed)
 	for _, b := range blocks {
 		if len(b.Announced) == 0 || b.Two < 0 || borrowsTonic(c, b, sensed[b.Two].Ground) {
 			continue
 		}
 		for _, i := range []int{b.Two, b.Sus, b.Five} {
 			if i >= 0 && passing[i] == 0 {
-				in[i] = b.Announced
+				out[i] = degreeOf(c.Chords[i], b.Announced, 0)
 			}
 		}
-	}
-	out := make([]Degree, len(c.Chords))
-	for i, ch := range c.Chords {
-		out[i] = degreeOf(ch, in[i], passing[i])
 	}
 	return out
 }

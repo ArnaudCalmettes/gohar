@@ -254,12 +254,12 @@ func fromFiche(t *testing.T, f fiche) analysis.Changes {
 	return c
 }
 
-// The degrees the analysis reads, against those the book prints. They
-// need not all agree: the book gives one reading where the analysis
-// may give another that is also true, a two five that does not resolve
-// where the book hears a borrowed chord. So the test only logs where
-// they part, and how often they agree: a number to watch as the
-// analysis grows.
+// The degrees the analysis reads bracketed, against those the book
+// prints, bracketed too. They need not all agree: the book gives one
+// reading where the analysis may give another that is also true, a two
+// five that does not resolve where the book hears a borrowed chord. So
+// the test only logs where they part, and how often they agree: a
+// number to watch as the analysis grows.
 //
 // Two counts: the degrees, numeral and inversion, and the notation as
 // printed. The book writes a borrowed quality once and then leaves it
@@ -273,7 +273,7 @@ func TestFichesDegrees(t *testing.T) {
 		}
 		c := fromFiche(t, f)
 		blocks := analysis.Blocks(c, analysis.Approaches(c))
-		got := analysis.Degrees(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, home))
+		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, home))
 		var want []string
 		for _, d := range f.Degrees {
 			if d != "%" {

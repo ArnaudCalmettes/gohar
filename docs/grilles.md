@@ -282,7 +282,22 @@ squelette et les gammes, `harmony` calcule les tétrades.
 
 ## Le chiffrage
 
-Les degrés (`analysis.Degrees`) :
+Deux lectures, simultanées :
+
+- **Sur la tonique installée** (`analysis.Degrees`) : chaque accord
+  par son degré dans le fond de la tonique pressentie. En mi♭, Gm7♭5
+  C7♭9 avant Fm7♭5 est IIIm7♭5 VI7, le III-VI d'un III-VI-II-V-I.
+- **En crochets** (`analysis.Bracketed`), comme le livre les imprime :
+  un II-V se chiffre relativement à sa cible, dans la tonalité qu'il
+  annonce, avec un crochet vers elle. La même mesure est II V de fa
+  mineur. C'est cette lecture que les fiches comparent.
+
+Sans le crochet, un « II V » se lit comme un II-V de la tonique : c'est
+pourquoi la ligne des degrés de `analyse` donne la première lecture,
+et la ligne des blocs, qui sert de crochet, la seconde (« Fm harm : II
+V »), seulement quand leurs degrés diffèrent.
+
+Les règles du chiffrage, communes aux deux :
 
 - Un degré diatonique s'écrit sans qualité, un degré emprunté avec :
   II, mais IVm7. Le degré se compte dans la gamme de la tonalité : en
@@ -292,13 +307,12 @@ Les degrés (`analysis.Degrees`) :
   quinte (♯IV) ; un accord de passage suit sa basse, haussé en montant
   (♯Idim7, ♯Vdim7), abaissé en descendant (♭IIIdim7).
 - Les renversements s'écrivent I/3, I/5.
-- Un II-V se chiffre **relativement à sa cible**, dans la tonalité
-  qu'il annonce, avec un crochet et une flèche vers elle, comme dans le
-  livre. Un V seul, un diminué seul et un accord de passage se
-  chiffrent dans la tonalité du morceau, avec leur qualité : VI7 pour
-  la dominante secondaire de II.
-- La tonalité du morceau est pour l'instant celle que donne l'app ; les
-  régions et les modulations viendront avec les étages hauts.
+- Un V seul, un diminué seul et un accord de passage se chiffrent sur
+  la tonique installée dans les deux lectures, avec leur qualité : VI7
+  pour la dominante secondaire de II.
+- La tonique installée vient de l'armure (le champ de l'app) ou des
+  premières cadences ; son passage à une autre tonique, la modulation,
+  viendra avec les étages hauts.
 - Une dominante secondaire s'écrit V7/II ou VI7. gohar stocke la
   relation (« V7 de Dm7 ») et rend l'une ou l'autre écriture : c'est un
   choix d'affichage.
@@ -509,6 +523,28 @@ bloc qui annonce ré♭ ; c'est sa lecture en degrés qui change.
 | 7 | E♭maj7 | mi♭, confirmée | I, par la cadence ♭VII7-I |
 | 8 | Gm7♭5 C7♭9 | mi♭, locale fa mineur | II V de fa mineur : on attend Fm |
 | 9 | Fm7♭5 | mi♭, locale mi♭ mineur | surprise : pas Fm, mais le II de mi♭ mineur |
+
+### Le pivot diminué
+
+Tenderly, mesure 12 : B♭7 Bdim7, puis Cm7. Après B♭7, l'oreille attend
+mi♭ mineur. Bdim7 (si ré fa la♭) est enharmoniquement Ddim7 (ré fa la♭
+do♭), le VIIdim7 de mi♭ mineur harmonique : il prolonge l'attente. Il
+est aussi le VIIdim7 de do, et c'est Cm7 qui arrive. Les deux
+résolutions restent ouvertes jusqu'au dernier moment.
+
+- **Ce que gohar voit déjà** : la préparation par diminué est
+  symétrique, un dim7 prépare toute cible un demi-ton au-dessus de
+  l'une de ses quatre notes (do, mi♭, sol♭ et la pour Bdim7).
+- **Ce qui manque** : le bloc ne garde que la cible réelle (« Cm harm
+  »). Au moment du dim7, l'attente devrait porter ses quatre toniques
+  possibles, et celles qui prolongent l'attente précédente en font un
+  **pivot**.
+- **La surprise se gradue** : l'arrivée sur une tonique que le pivot
+  laissait ouverte est plus douce qu'une arrivée que rien n'annonçait.
+  Ce n'est pas un « WOOOH » : le mouvement est très courant (on le
+  trouve aussi dans *Someday My Prince Will Come*), il est surtout
+  bien écrit. C'est donc un test à l'envers : la surprise ne doit pas
+  se déclencher ici.
 
 ### Local, avec une mémoire
 
