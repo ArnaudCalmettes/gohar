@@ -11,7 +11,7 @@ left.
 
 ## Repository layout
 
-The repository is a Go workspace of four modules, so that using the
+The repository is a Go workspace of five modules, so that using the
 theory library never pulls in a graphics or audio stack.
 
 | Module    | What it holds |
@@ -21,6 +21,7 @@ theory library never pulls in a graphics or audio stack.
 | `harmony/analysis` | Deterministic chord recognition, without scoring. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
 | `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
+| `charts`  | Reading chord charts from other software: iReal Pro playlists for now. Standard library only. |
 | `games`   | The playable programs, Ebitengine and MIDI included. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`

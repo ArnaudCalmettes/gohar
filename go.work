@@ -1,6 +1,7 @@
 go 1.27.0
 
 use (
+	./charts
 	./dex
 	./games
 	./harmony

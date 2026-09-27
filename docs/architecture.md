@@ -49,6 +49,9 @@ gohar/
     engine.go                voix, enveloppe, mélange, io.Reader
     device.go                ouverture d'oto et discipline des buffers
 
+  charts/      go.mod        grilles venues d'autres logiciels
+    ireal/                   URL iReal Pro : playlist, débrouillage, jetons
+
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
     ear/                     ear trainer : menu, degrés, tétracordes, modes
@@ -243,6 +246,7 @@ l'inverse.**
 | `dex` | `harmony` |
 | `synth` | rien du dépôt, et d'externe uniquement oto |
 | `keyboard` | rien du dépôt, et d'externe uniquement gomidi |
+| `charts` | la bibliothèque standard pour lire un format ; `harmony` et `naming` quand il faudra lire les chiffrages |
 | `games` | tout |
 
 Le noyau n'a **aucune méthode `String()` de présentation**. La conversion

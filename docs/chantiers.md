@@ -145,11 +145,20 @@ le dex : suggestions d'harmonisation, revue de tous les avatars
 cadentiels qu'il connaît sur chaque « change », voicings. Débroussaillé
 le 27/09.
 
-- [ ] le parseur iReal dans un paquet `charts` (`charts/ireal`), hors
-      du noyau, qui importe `harmony` et `naming`. Les URL encodent la
-      grille, brouillée par blocs ; plusieurs formats historiques et
-      leurs rustines, un test par rustine. Tests sur des grilles
-      originales, jamais sur le contenu des packs iReal.
+- [x] `charts/ireal`, couches 1 et 2 : l'URL et la playlist (champs lus
+      autour de la grille, pour les anciennes dispositions), le
+      débrouillage, et les jetons sans perte. Vérifié sur une playlist
+      réelle de 328 grilles, zéro jeton inconnu. Les tests commités
+      n'utilisent que des grilles fabriquées ; les exports de l'app vont
+      dans `charts/ireal/testdata/local/`, ignoré par git.
+- [ ] couche 3 : les jetons en structure (sections, mesures, accords et
+      leur place, reprises et fins non dépliées).
+- [ ] le dépliage de la forme (reprises, fins, D.C., D.S., coda) en
+      ordre de jeu, sans l'automate à drapeaux des lecteurs existants.
+- [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
+      n'en a pas vu un vrai.
+- [ ] un format de grille ouvert, mieux conçu que celui d'iReal, une
+      fois la structure et le dépliage en place.
 - [ ] le parseur de chiffrages, dialecte iReal compris (voir
       l'harmonie).
 - [ ] la lecture d'une grille : centres tonaux et cadences, par le

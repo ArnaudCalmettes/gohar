@@ -1,7 +1,7 @@
 # go test ./... ne traverse pas les frontières de modules, d'où ce
 # fichier plutôt qu'une commande à retenir.
 
-MODULES := harmony dex synth games
+MODULES := harmony dex synth games charts
 
 .PHONY: test vet fmt bench all
 
