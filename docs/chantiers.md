@@ -230,7 +230,8 @@ Reste :
       indices d'une modulation.
 - [ ] l'ordre de l'analyse, dans `harmony/analysis` comme une couche
       au-dessus de l'identification des accords : la suite d'accords
-      (basses, durées, bouclage) et son pont depuis iReal ; les
+      (`analysis.Changes` : basses, durées, bouclage) et son pont depuis
+      iReal, faits ; les
       préparations sur toute la suite ; le passage ; les blocs et leurs
       tonalités ; degrés et provenance ; l'affichage annoté en ASCII
       dans le terminal, enrichi à chaque étape ; les étages hauts dans

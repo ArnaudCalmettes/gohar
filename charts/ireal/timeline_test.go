@@ -12,6 +12,9 @@ func timed(chart string) string {
 	var out []string
 	for _, s := range Structure(Lex(chart)).Timeline().Spans {
 		name := s.Chord.Root + s.Chord.Quality
+		if s.Chord.Bass != "" {
+			name += "/" + s.Chord.Bass
+		}
 		if s.NoChord {
 			name = "n"
 		}
@@ -31,6 +34,8 @@ func TestTimeline(t *testing.T) {
 		"x repeats":                  {"[C D-LZKcl LZEXyQZ", "C:2 D-:2 C:2 D-:2 E:4"},
 		"a slash is the chord again": {"[CpD-p|EXyQZ", "C:2 D-:2 E:4"},
 		"W takes the root before":    {"[C^7 W7LZDXyQZ", "C^7:2 C7:2 D:4"},
+		"W walks the bass":           {"[C-7 W/BbLZDXyQZ", "C-7:2 C-7/Bb:2 D:4"},
+		"W after no chord":           {"[n W/DLZDXyQZ", "n:4 D:4"},
 		"silence before the first":   {"[XyQ|CXyQZ", "n:4 C:4"},
 		"no chord":                   {"[C nLZDXyQZ", "C:2 n:2 D:4"},
 	} {

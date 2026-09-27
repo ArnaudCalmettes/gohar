@@ -43,6 +43,9 @@ func TestLocalCharts(t *testing.T) {
 				if u := (Chart{ms}).Unfold(); len(u) < len(ms) || len(u) >= 16*len(ms)+64 {
 					t.Errorf("%s, %q: %d measures played for %d written", file, s.Title, len(u), len(ms))
 				}
+				if _, err := (Chart{ms}).Changes(); err != nil {
+					odds = append(odds, fmt.Sprintf("%s, %q: changes: %v", filepath.Base(file), s.Title, err))
+				}
 				for _, odd := range oddities(ms) {
 					odd = fmt.Sprintf("%s, %q: %s", filepath.Base(file), s.Title, odd)
 					odds = append(odds, odd)

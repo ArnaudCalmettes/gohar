@@ -41,7 +41,8 @@ gohar/
 
     naming/                  orthographe, locales, noms des 35 modes,
                              des intervalles et des gammes nommées
-    analysis/                identification déterministe, moteur
+    analysis/                identification déterministe, moteur,
+                             suite d'accords à analyser (Changes)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
@@ -54,7 +55,8 @@ gohar/
 
   charts/      go.mod        grilles venues d'autres logiciels
     ireal/                   URL iReal Pro : playlist, jetons, mesures,
-                             dépliage de la forme, chiffrages, temps
+                             dépliage de la forme, chiffrages, temps,
+                             pont vers analysis.Changes
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi

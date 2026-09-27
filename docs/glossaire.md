@@ -218,6 +218,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 
 | Terme | Sens retenu | À ne pas confondre avec |
 |---|---|---|
+| `Changes` | La suite d'accords qu'on analyse, chacun avec sa basse, son début et sa durée. Celle d'une grille boucle, celle d'un joueur s'allonge | Une `Progression`, relative et sans durées |
 | Rythme harmonique | Le nombre d'accords par mesure | Le tempo |
 | Plage | Un passage tonal (centre et fonctions), modal (un accord tenu installe un mode) ou atonal (pas de centre) | Une section de la grille |
 | Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée | Un emprunt |

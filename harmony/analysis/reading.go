@@ -22,6 +22,15 @@
 // out, with no state, no clock and no goroutine. The engine above it
 // holds the sliding window, the stickiness and the inferred tonality.
 // The pure layer is checked by table; the engine is tuned by ear.
+//
+// # Then the changes
+//
+// Above the chords, the analysis of their sequence, [Changes]: what
+// each chord prepares, the keys, the degrees, the scales to play,
+// as docs/grilles.md sets them out. It reads a chart and a performance
+// alike, and every calculation in it looks at a bounded number of
+// chords around the one it reads, so that a performance can be read
+// as it grows.
 package analysis
 
 import "github.com/ArnaudCalmettes/gohar/harmony"

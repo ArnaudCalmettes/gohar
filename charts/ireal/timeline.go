@@ -1,12 +1,15 @@
 package ireal
 
-// Ticks measure time in a chart: TicksPerBeat to a beat.
-type Ticks int
+import "github.com/ArnaudCalmettes/gohar/harmony/analysis"
 
-// TicksPerBeat leaves room below the beat. Chords read from a chart
-// always start on a beat (see [Chart.Timeline]), but what is timed
-// later, a chord the player sounds, will not.
-const TicksPerBeat Ticks = 2520
+// Ticks measure time in a chart, as in the changes the analysis reads:
+// the same unit, so that a timeline becomes changes without a
+// conversion.
+type Ticks = analysis.Ticks
+
+// TicksPerBeat is the analysis's. Chords read from a chart always
+// start on a beat (see [Chart.Timeline]).
+const TicksPerBeat = analysis.TicksPerBeat
 
 // A Span is one chord and how long it sounds, in the order played.
 type Span struct {
@@ -79,8 +82,13 @@ func (t Timeline) Next(i int) int {
 // # What goes on
 //
 // An empty measure, a slash and a chord written again the same all let
-// the chord before go on: the timeline holds one span for them. A "W"
-// root takes the root of the chord before.
+// the chord before go on: the timeline holds one span for them.
+//
+// A "W" root is the chord before, written again to change its bass:
+// "C-7 W/Bb" is C-7 then C-7/Bb, the bass walking under a held chord.
+// It takes the root of the chord before, and its quality when it has
+// none of its own. After no chord, "n W/D W/F#", only a bass line
+// sounds, and the span has no chord.
 func (c Chart) Timeline() Timeline {
 	var t Timeline
 	var now Ticks
@@ -121,16 +129,25 @@ func (t *Timeline) add(s Span) {
 		t.Spans = append(t.Spans, Span{NoChord: true})
 	}
 	n := len(t.Spans)
+	if s.Chord.Root == "W" {
+		switch {
+		case n == 0 || t.Spans[n-1].NoChord:
+			s.NoChord = true
+		default:
+			before := t.Spans[n-1].Chord
+			s.Chord.Root = before.Root
+			if s.Chord.Quality == "" {
+				s.Chord.Quality, s.Chord.Custom = before.Quality, before.Custom
+			}
+		}
+	}
 	if n == 0 {
 		t.Spans = append(t.Spans, s)
 		return
 	}
 	last := &t.Spans[n-1]
-	if s.Chord.Root == "W" && !last.NoChord {
-		s.Chord.Root = last.Chord.Root
-	}
 	switch {
-	case s.NoChord == last.NoChord && s.Chord == last.Chord:
+	case s.NoChord && last.NoChord, !s.NoChord && !last.NoChord && s.Chord == last.Chord:
 		return // written again, goes on
 	case s.Start <= last.Start:
 		// Two chords on one beat, which the rule of a cell per beat
