@@ -92,8 +92,7 @@ func render(s ireal.Song) string {
 	kinds := analysis.Approaches(changes)
 	passing := analysis.PassingChords(changes)
 	blocks := analysis.Blocks(changes, kinds)
-	home, _ := s.HomeTonalities()
-	sensed := analysis.Sense(changes, blocks, home)
+	sensed := analysis.Sense(changes, blocks)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 
@@ -134,6 +133,7 @@ func render(s ireal.Song) string {
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
+	fmt.Fprint(&b, heardIn(s, changes, analysis.Tune(changes, sensed)))
 	fmt.Fprint(&b, legend)
 	for start := 0; start < len(cells); {
 		end := start + 1
@@ -188,6 +188,26 @@ func (c *cell) add(top, bottom, below, tonic string) (int, int) {
 	c.below += pad(below, w)
 	c.tonic += pad(tonic, w)
 	return off, w
+}
+
+// heardIn says in which tonality the analysis hears the tune, and when
+// it differs, what the app declares: the analysis does not read the
+// app's key, which is often wrong.
+func heardIn(s ireal.Song, changes analysis.Changes, tune []harmony.Tonality) string {
+	if tune == nil {
+		return "no tonality heard\n"
+	}
+	name := short(flats[tune[0].Tonic()], tune)
+	line := "heard in " + name
+	if _, ok := analysis.Blues(changes); ok {
+		line += ", a blues"
+	}
+	if declared, ok := s.DeclaredTonalities(); ok {
+		if d := short(flats[declared[0].Tonic()], declared); d != name {
+			line += ", where the app declares " + d
+		}
+	}
+	return line + "\n"
 }
 
 // heard names the sensed tonic at a change when it differs from the
@@ -408,11 +428,12 @@ above, the blocks, [II] [sus4] V, and the tonality each one announces:
   D♭ M/m mel… ─ one that does not resolve, nor decide between D♭ major
                 and D♭ melodic minor
 
-under each chord, its degree on the tonic the ear has installed there,
+under each chord, its degree on the tonic installed there, heard
+afterwards: a modulation counts from the cadence that led to it.
 IIIm7♭5 VI7 for Gm7♭5 C7 in E♭; ♭VII7, ♯Vdim7, I/3
 
-under the degrees, the tonic the ear senses, where it changes:
-  E♭            installed, from the app's key or the first cadence
+under the degrees, the tonic the ear senses as it goes, where it changes:
+  E♭            installed: the app's key, the first cadence, a modulation
   E♭ (Fm)       and F minor, which a cadence has just tonicised
 `
 

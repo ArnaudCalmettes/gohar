@@ -53,7 +53,10 @@ func degreeOf(ch Change, ts []harmony.Tonality, walk int) Degree {
 			break
 		}
 	}
-	if !found {
+	// A passing chord is named by its walking bass, even when its root
+	// is a degree under another name: D♯dim7 between Dm7 and C7/E in C
+	// minor is ♯IIdim7, not IIIdim7.
+	if !found || walk != 0 {
 		d.Number, d.Accidental = altered(ts[0].Pattern(), s, walk)
 	}
 	if !holds(ts, ch.Chord.Set()) {
@@ -145,19 +148,22 @@ var qualities = map[harmony.ChordPattern]string{
 	harmony.ChordDominantSeventhSus4:   "7sus4",
 }
 
-// Degrees reads every change of a sequence in the ground of its sensed
-// tonic (see [Sense]), with its quality when it borrows: what each
-// chord is in the tonality the ear has installed. In E flat, Gm7♭5
+// Degrees reads every change of a sequence in its ground, heard
+// afterwards (see [Grounds]), with its quality when it borrows: what
+// each chord is in the tonality installed there. In E flat, Gm7♭5
 // C7♭9 before Fm7♭5 is IIIm7♭5 VI7, the three six of a three six two
 // five one; A7 before Dm7 in C is VI7, a secondary dominant; a passing
 // chord is ♯Idim7 or ♭IIIdim7, even when it is also the dominant
-// without root of the next chord.
+// without root of the next chord. Where the tune modulates, the
+// degrees count from the new tonic from the cadence that led there on:
+// in Tune Up, Dm7 G7 Cmaj7 is II V I.
 //
 // [Bracketed] gives the other reading, the one En Harmonie prints.
 func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
+	grounds := Grounds(c, sensed)
 	out := make([]Degree, len(c.Chords))
 	for i, ch := range c.Chords {
-		out[i] = degreeOf(ch, sensed[i].Ground, passing[i])
+		out[i] = degreeOf(ch, grounds[i], passing[i])
 	}
 	return out
 }

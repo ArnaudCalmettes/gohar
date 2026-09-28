@@ -20,7 +20,9 @@ dépendances, pas le rangement.
 ```
 gohar/
   go.work                    use ./charts ./dex ./games ./harmony ./synth
-  docs/                      glossaire, architecture
+  docs/                      architecture, glossaire, chantiers, et la
+                             conception du dex, de l'oreille, des
+                             voicings et de l'analyse des grilles
 
   harmony/     go.mod        théorie musicale, zéro dépendance
     pitch.go                 Pitch, Semitones, Transposable
@@ -42,10 +44,11 @@ gohar/
     naming/                  orthographe, locales, noms des 35 modes,
                              des intervalles et des gammes nommées
     analysis/                identification déterministe, moteur,
-                             suite d'accords à analyser (Changes),
-                             préparations et chaînes, passages, blocs,
-                             tonalités annoncées, degrés, tonique
-                             pressentie (Sensed)
+                             et l'analyse d'une grille : suite
+                             d'accords (Changes), préparations et
+                             chaînes, passages, blocs et tonalités
+                             annoncées, degrés, tonique pressentie et
+                             modulations (Sensed), blues
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
@@ -61,6 +64,8 @@ gohar/
                              dépliage de la forme, chiffrages, temps,
                              pont vers analysis.Changes
     cmd/analyse/             une grille et son analyse dans le terminal
+    cmd/corpus/              l'analyse de playlists entières, comparée
+                             à la tonalité que l'app déclare
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
@@ -256,7 +261,7 @@ l'inverse.**
 | `dex` | `harmony` |
 | `synth` | rien du dépôt, et d'externe uniquement oto |
 | `keyboard` | rien du dépôt, et d'externe uniquement gomidi |
-| `charts` | `harmony` et `naming`, pour lire les chiffrages ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
+| `charts` | `harmony` et `naming`, pour lire les chiffrages, et `analysis`, pour lui passer une grille (`Changes`) et l'afficher ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
 | `games` | tout |
 
 Un type du noyau peut avoir un `String()` lisible par un musicien, dans
@@ -471,4 +476,5 @@ La nomenclature des modes vient de l'école de Bernard Maury. Trois
 billets publiés sur Zeste de Savoir servent de source à `analysis` : la
 représentation des accords, leur reconnaissance, et la game loop de
 l'improvisateur. Le troisième explore des possibles, ce ne sont pas des
-exigences.
+exigences. L'analyse des grilles suit le tome 1 d'*En Harmonie*
+(Dericq et Guéreau), chapitres 8 à 10 (voir `grilles.md`).

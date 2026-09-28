@@ -267,13 +267,9 @@ func fromFiche(t *testing.T, f fiche) analysis.Changes {
 // writes it each time.
 func TestFichesDegrees(t *testing.T) {
 	for name, f := range fiches(t) {
-		home, ok := Song{Key: f.Key}.HomeTonalities()
-		if !ok {
-			t.Fatalf("%s: key %q", name, f.Key)
-		}
 		c := fromFiche(t, f)
 		blocks := analysis.Blocks(c, analysis.Approaches(c))
-		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, home))
+		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks))
 		var want []string
 		for _, d := range f.Degrees {
 			if d != "%" {

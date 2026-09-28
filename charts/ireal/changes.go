@@ -50,12 +50,15 @@ func (c Chart) Changes() (analysis.Changes, error) {
 	return c.Timeline().Changes()
 }
 
-// HomeTonalities reads the tonality the app gives the song, its Key
-// field: "Eb" for E flat major, "A-" for A minor, read in all three
-// minors. It is the key signature of the chart, a clue to the
-// tonality of the tune that its cadences confirm or not, and false
-// when the app gives none that can be read.
-func (s Song) HomeTonalities() ([]harmony.Tonality, bool) {
+// DeclaredTonalities reads the tonality the app declares for the song,
+// its Key field: "Eb" for E flat major, "A-" for A minor, read in all
+// three minors; false when the app gives none that can be read.
+//
+// It is the key signature of the chart, and the analysis does not use
+// it: it finds the tonality from the cadences (see analysis.Sense).
+// The declared one is only there to be compared, and the app is often
+// wrong: Tune Up is declared in B flat, and starts and ends in D.
+func (s Song) DeclaredTonalities() ([]harmony.Tonality, bool) {
 	root, minor := strings.CutSuffix(s.Key, "-")
 	n, ok := spell(root)
 	if !ok {

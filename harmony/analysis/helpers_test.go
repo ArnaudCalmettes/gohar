@@ -25,6 +25,28 @@ func changesOf(loops bool, chords ...any) analysis.Changes {
 	return c
 }
 
+// barsOf builds changes bar by bar, a bar four beats long shared by
+// the chords written in it as a root and a pattern each.
+func barsOf(loops bool, bars ...[]any) analysis.Changes {
+	c := analysis.Changes{Loops: loops}
+	bar := 4 * analysis.TicksPerBeat
+	for n, b := range bars {
+		start := analysis.Ticks(n) * bar
+		c.Bars = append(c.Bars, start)
+		length := bar / analysis.Ticks(len(b)/2)
+		for i := 0; i+1 < len(b); i += 2 {
+			root := b[i].(harmony.PitchClass)
+			c.Chords = append(c.Chords, analysis.Change{
+				Chord:  harmony.Chord{Root: root, Pattern: b[i+1].(harmony.ChordPattern)},
+				Bass:   root,
+				Start:  start + analysis.Ticks(i/2)*length,
+				Length: length,
+			})
+		}
+	}
+	return c
+}
+
 // The names below write the expectations of the tests as a musician
 // reads a chart, until naming names chords and tonalities.
 
@@ -50,6 +72,7 @@ func chordName(ch harmony.Chord) string {
 	quality, ok := map[harmony.ChordPattern]string{
 		harmony.ChordMajorTriad:          "",
 		harmony.ChordMinorSixth:          "m6",
+		harmony.ChordMinorTriad:          "m",
 		harmony.ChordMajorSeventh:        "maj7",
 		harmony.ChordMinorSeventh:        "m7",
 		harmony.ChordDominantSeventh:     "7",

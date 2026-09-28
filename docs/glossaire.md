@@ -221,11 +221,13 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | `Changes` | La suite d'accords qu'on analyse, chacun avec sa basse, son début et sa durée. Celle d'une grille boucle, celle d'un joueur s'allonge | Une `Progression`, relative et sans durées |
 | Rythme harmonique | Le nombre d'accords par mesure | Le tempo |
 | Plage | Un passage tonal (centre et fonctions), modal (un accord tenu installe un mode) ou atonal (pas de centre) | Une section de la grille |
-| Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée | Un emprunt |
+| Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée ou une deuxième cadence. Entendue au moment où elle s'installe (`Sense`), elle commence après coup à la cadence qui y menait (`Grounds`) | Un emprunt ; une tonicisation, qui ne tient pas plus d'une mesure |
 | Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
 | Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
 | Bloc | Une cadence, [II] [sus4] V → cible, avec la tonalité qu'elle annonce, qu'elle s'y résolve ou non | Une section de la grille |
+| Septième d'espèce | Un X7 qui n'est pas une dominante : il ne prépare rien, il est la couleur de son degré. Le I7 et le IV7 du blues, le X7sus4 de *Maiden Voyage* | Une dominante, qui a le même son mais prépare un accord |
+| Armure | L'attribut de la partition écrite qui évite d'écrire les altérations ; pour une grille iReal, le champ de tonalité de l'app (`DeclaredTonalities`). L'analyse ne la lit pas et signale quand elle se trompe | La tonalité, que l'analyste détermine lui-même |
 | Tonalités annoncées | Ce qu'un bloc annonce : une tonique et les gammes nommées où la lire, une `Tonality` par gamme (fa mineur harmonique ; ré♭ majeur ou mineur mélodique quand rien ne tranche) | Une seule `Tonality` ; jamais `Key`, qui reste la touche |
 | Lecture en crochets | Un II-V chiffré relativement à sa cible, dans la tonalité qu'il annonce, comme *En Harmonie* l'imprime : Gm7♭5 C7 avant Fm en mi♭ est II V de fa mineur (`Bracketed`) | La lecture sur la tonique installée, IIIm7♭5 VI7 (`Degrees`) ; les deux sont rendues |
 | Tonique pressentie | La tonique que l'oreille attend après un accord, avec ce qui a sonné et rien d'autre : un fond installé, une tonique locale qu'une cadence vient de toniciser, ce que la cadence en cours annonce. En anglais `Sensed` | La tonalité du morceau, qui se conclut après coup (`Tune`) |

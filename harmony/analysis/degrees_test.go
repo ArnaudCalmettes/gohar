@@ -10,9 +10,9 @@ import (
 
 // degreesOf writes both readings of a sequence: on the installed
 // tonic, and bracketed as En Harmonie prints it.
-func degreesOf(c analysis.Changes, home []harmony.Tonality) (string, string) {
+func degreesOf(c analysis.Changes) (string, string) {
 	blocks := analysis.Blocks(c, analysis.Approaches(c))
-	sensed := analysis.Sense(c, blocks, home)
+	sensed := analysis.Sense(c, blocks)
 	passing := analysis.PassingChords(c)
 	write := func(ds []analysis.Degree) string {
 		var out []string
@@ -39,7 +39,6 @@ func TestDegrees(t *testing.T) {
 	flatNine, _ := harmony.NewChordPattern(0, 4, 7, 10, 13)
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
-		home    []harmony.Tonality
 		ground  string // on the installed tonic
 		bracket string // as En Harmonie prints it
 	}{
@@ -54,28 +53,24 @@ func TestDegrees(t *testing.T) {
 			changesOf(false, eb, maj7, ab, dom7, eb, min7, ab, dom7, f, min7, db, dom7, eb, maj7,
 				g, halfDim, c, flatNine, f, halfDim, bb, dom7, f, halfDim, bb, dom7, b, dim7,
 				c, min7, f, dom7, f, min7, bb, dom7),
-			analysis.MajorTonalities(eb),
 			"I IV7 Im7 IV7 II ♭VII7 I IIIm7♭5 VI7 IIm7♭5 V IIm7♭5 V ♯Vdim7 VI II7 II V",
 			"I IV7 Im7 IV7 II ♭VII7 I II V II V II V ♯Vdim7 II V II V",
 		},
 		// There Will Never Be Another You: a two five tonicises the VI.
 		"a two five toward the VI": {
 			changesOf(false, eb, maj7, d, halfDim, g, dom7, c, min7),
-			analysis.MajorTonalities(eb),
 			"I VII III7 VI",
 			"I II V VI",
 		},
 		// A chromatic dominant and its two, the chromatic subdominant.
 		"♭VIm7 ♭II7 I": {
 			changesOf(false, d, min7, ab, min7, db, dom7, c, maj7),
-			analysis.MajorTonalities(c),
 			"II ♭VIm7 ♭II7 I",
 			"II ♭VIm7 ♭II7 I",
 		},
 		// In F minor, D♭maj7 is VI, not ♭VI.
 		"a degree of the minor": {
 			changesOf(false, f, harmony.ChordMinorTriad, db, maj7, g, halfDim, c, flatNine),
-			analysis.MinorTonalities(f),
 			"I VI II V",
 			"I VI II V",
 		},
@@ -87,7 +82,6 @@ func TestDegrees(t *testing.T) {
 				ch.Chords[0].Bass = d
 				return ch
 			}(),
-			analysis.MajorTonalities(bb),
 			"I/3 ♭IIIdim7 II",
 			"I/3 ♭IIIdim7 II",
 		},
@@ -95,17 +89,29 @@ func TestDegrees(t *testing.T) {
 		// quality: VI7, the V7/II.
 		"a secondary dominant": {
 			changesOf(false, c, maj7, a, dom7, d, min7, g, dom7, c, maj7),
-			analysis.MajorTonalities(c),
 			"I VI7 II V I",
 			"I VI7 II V I",
 		},
 	} {
-		ground, bracket := degreesOf(tc.changes, tc.home)
+		ground, bracket := degreesOf(tc.changes)
 		if ground != tc.ground {
 			t.Errorf("%s, on the tonic:\n got  %s\n want %s", name, ground, tc.ground)
 		}
 		if bracket != tc.bracket {
 			t.Errorf("%s, bracketed:\n got  %s\n want %s", name, bracket, tc.bracket)
 		}
+	}
+}
+
+// Stolen Moments: D♯dim7 walks from Dm7 up to C7/E. Its root is also E
+// flat, a degree of C minor, but the bass names it: ♯IIdim7.
+func TestPassingChordNamedByItsBass(t *testing.T) {
+	const c, d, eb harmony.PitchClass = 0, 2, 3
+	ch := changesOf(false, c, harmony.ChordMinorSixth, d, harmony.ChordMinorSeventh,
+		eb, harmony.ChordDiminishedSeventh, c, harmony.ChordDominantSeventh)
+	ch.Chords[3].Bass = 4
+	ground, _ := degreesOf(ch)
+	if want := "I II ♯IIdim7 I7/3"; ground != want {
+		t.Errorf("%s, want %s", ground, want)
 	}
 }

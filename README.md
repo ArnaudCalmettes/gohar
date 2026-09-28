@@ -18,10 +18,10 @@ theory library never pulls in a graphics or audio stack.
 |-----------|---------------|
 | `harmony` | The theory core: pitches, intervals, scales, chords, the five mother scales and their 35 modes, tonalities, functions. No note names, no frequencies. |
 | `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`). |
-| `harmony/analysis` | Deterministic chord recognition, without scoring. |
+| `harmony/analysis` | Deterministic chord recognition, without scoring, and the analysis of a chord chart after the book *En Harmonie*: preparations, cadences, degrees, the tonic the ear senses and its modulations. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
 | `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
-| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name. |
+| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name, and two commands to see their analysis. |
 | `games`   | The playable programs, Ebitengine and MIDI included. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
@@ -129,6 +129,14 @@ To see what the analysis makes of one of them, bar by bar:
 ```sh
 cd charts
 go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
+```
+
+And over whole playlists, where the tonality it hears differs from the
+one the app declares, grouped by how the two relate:
+
+```sh
+cd charts
+go run ./cmd/corpus ireal/testdata/local/*.html
 ```
 
 ## History

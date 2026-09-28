@@ -7,8 +7,9 @@ redécouvrir et sans rouvrir un débat déjà tranché. Les raisons des choix
 faits sont dans `architecture.md`, le vocabulaire dans `glossaire.md`, la
 conception de la collection dans `dex.md`, l'ear trainer dans
 `oreille.md`, les voicings dans `voicings.md`, l'analyse des grilles
-dans `grilles.md`. Ici il n'y a que ce qui reste à faire, et les
-décisions qu'il ne faut pas rouvrir.
+dans `grilles.md`. Ici il n'y a que ce qui reste à faire, les
+décisions qu'il ne faut pas rouvrir, et, pour s'y retrouver, un bref
+état de ce qui est fait.
 
 Mettre une doc à jour n'est pas un chantier : ça fait partie de la
 tâche qui la fait mentir.
@@ -27,7 +28,13 @@ harmonique, mineure mélodique, majeure harmonique) sur leur tonique.
 Chaque mode a un nom systématique et des alternatives : le registre
 parlé français et les alias.
 
-`analysis` identifie les accords de façon déterministe, sans pondération.
+`analysis` identifie les accords de façon déterministe, sans pondération,
+et analyse une grille à la manière d'*En Harmonie* : préparations,
+passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
+installée et en crochets, tonique pressentie et modulations, blues.
+Les fiches du livre concordent à 79 degrés sur 83, et l'analyse tombe
+d'accord avec la tonalité déclarée par l'app sur 75 % du corpus, sans
+la lire.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
 `Cooling` et `Discoverable`.
@@ -40,7 +47,10 @@ allocation, discipline des buffers audio, et un histogramme des délais
 dans l'ordre de jeu : playlist, jetons sans perte, mesures, dépliage de
 la forme, chiffrages lus en accords de `harmony`, durées en temps.
 Vérifié sur 1678 grilles réelles, qui restent hors du dépôt, et sur
-quatre fiches d'analyse du livre *En Harmonie*.
+quatre fiches d'analyse du livre *En Harmonie*. Deux commandes :
+`charts/cmd/analyse` affiche une grille annotée dans le terminal,
+`charts/cmd/corpus` compare l'analyse à l'app sur des playlists
+entières.
 
 `games/keyboard` a deux sources : le clavier MIDI, qui saute les ports
 Through quand aucun n'est demandé, et la séquence rejouée, qui joue des
@@ -122,21 +132,16 @@ connaît.
       `Reading`. Écrit en lettres américaines dans toutes les langues,
       dit dans la langue (« do mineur majeur 7 add 9 ») : deux rendus,
       dont un seul dépend de la locale.
-- [ ] l'inverse : lire un chiffrage écrit, pour les grilles.
 - [ ] catalogue de progressions, pour que `ProgressionID` désigne
       quelque chose. Servirait aussi à juger les détours d'une
       réharmonisation (voir les jeux). Le contenu v0 est dans
       `grilles.md` : cadences, cellules, préparations, variantes en
       squelette de degrés et provenance par degré.
-- [x] la provenance d'un accord : `harmony.Provenances`, toutes les
-      gammes nommées qui le contiennent, sur toutes les toniques, avec
-      le degré de sa fondamentale et le mode à jouer. Vérifiée sur les
-      emprunts de Tenderly.
-- [ ] les types de préparation de `grilles.md`, `harmony.ApproachKind`
-      (*approach* en anglais) : dominante, dominante chromatique,
-      diminué (dominante sans fondamentale), sus4 et II de… faits
-      (`ApproachOf`, et les crochets II-V des fiches du livre vérifiés
-      avec) ; restent les accords parallèles, en dernier.
+- [ ] l'accord parallèle comme type de préparation
+      (`harmony.ApproachKind`), le seul du tableau de `grilles.md` qui
+      manque ; il demande la mélodie pour être sûr (voir « L'analyse
+      des grilles » pour la marche d'accords parallèles, qui ne la
+      demande pas).
 - [ ] la ligne de basse chromatique sous d'autres accords que le
       diminué (dominantes chromatiques et renversements, It Never
       Entered My Mind) : une autre lecture, à côté de `PassingChords`.
@@ -159,54 +164,38 @@ Les décisions sont dans `voicings.md`.
       couple (tétrade, fondamentale) pour une position.
 - [ ] vérifier la fin du II-V-I mineur en m6, 1-3-6-5.
 
-## Les grilles
+## La lecture des grilles iReal
 
 Lire les grilles iReal Pro pour qu'un pianiste travaille la sienne avec
 le dex : suggestions d'harmonisation, revue de tous les avatars
-cadentiels qu'il connaît sur chaque « change », voicings. Débroussaillé
-le 27/09.
+cadentiels qu'il connaît sur chaque « change », voicings.
 
-Fait :
+Fait, dans `charts/ireal` :
 
-- [x] **L'URL et la playlist** : les champs lus autour de la grille,
-      ce qui couvre les anciennes dispositions ; le débrouillage.
-- [x] **Les jetons**, sans perte : joints, ils redonnent la grille.
-      Rustines trouvées sur les vraies grilles : les qualités tapées
-      librement entre étoiles (`A*m7*`), les blancs parasites (un saut
-      de ligne enregistré dans une grille), `T12` pour 12/8.
-- [x] **Les mesures** : barres, sections, métrique, fins, signes, et
-      chaque accord dans sa case. `LZ` porte une case et `Kcl` deux.
-      Les cases vides de mise en page (après une reprise, après la
-      barre finale) ne font pas de mesures.
-- [x] **Le dépliage** en ordre de jeu : reprises (« 3x » compris), fins
-      prises dans l'ordre écrit, D.C. et D.S. al Coda ou al Fine avec
-      la dernière fin au retour, « x » et « r » résolus. Tolère les
-      huit bizarreries de saisie du corpus (reprise jamais fermée, fins
-      dans le désordre) et ne boucle jamais. Vérifié sur des grilles
-      connues (All The Things You Are 36 mesures jouées, Autumn Leaves
-      32, Anthropology 32).
-- [x] **Les chiffrages** lus en accords de `harmony` : une table des
-      62 qualités de l'app, déjà sous la forme que `Normalize` produit
-      (un test y veille), plus les qualités tapées à la main, réécrites
-      dans l'orthographe de l'app (« m7 », « maj7 », « 7+ ») ou lues
-      dans une petite table à part (le diminué 7 ♮14). Sur 60 740
-      accords réels, un seul reste illisible : une faute de frappe.
-      Table relue et validée : la quinte écrite sauf altération, 2 lu
-      comme sus2, h seul comme m7♭5, 11 comme 7sus4 add9, 7susadd3
-      comme un 7 avec onzième, 7alt comme l'accord pandiatonique du
-      locrien ♭4, 7(♭9, ♭10, ♭5, ♭13).
-- [x] **Des cases aux temps** : `Chart.Timeline`, les accords avec leur
-      durée, le début de chaque mesure, et la grille lue comme un cycle
-      (`Next`). La coda, jouée au dernier chorus seulement, est hors du
-      cycle. Un accord commence sur le temps où tombe sa case quand les
-      cases se partagent la mesure, arrondi au temps suivant : en 3/4
-      sur quatre cases, la case 2 est le temps 3 ; en 5/4, le temps 4
-      (Take Five, vérifié à l'écoute). Le temps est la pulsation : une
-      noire en 4/4 et 3/4, une noire pointée en 6/8 et 12/8.
-- [x] **Les fiches de référence** du livre dans
-      `charts/ireal/testdata/fiches` : Tune Up, Black Orpheus, There
-      Will Never Be Another You, Tenderly. Les quatre concordent mesure
-      par mesure avec les grilles du corpus, à la tétrade près.
+- **L'URL et la playlist**, les anciennes dispositions comprises, et le
+  débrouillage.
+- **Les jetons**, sans perte : joints, ils redonnent la grille, qualités
+  tapées librement (`A*m7*`), blancs parasites et `T12` compris.
+- **Les mesures** : barres, sections, métrique, fins, signes, chaque
+  accord dans sa case (`LZ` une case, `Kcl` deux).
+- **Le dépliage** en ordre de jeu : reprises (« 3x »), fins dans l'ordre
+  écrit, D.C. et D.S. al Coda, al Fine et al Nth ending, écrits
+  n'importe où dans le commentaire, « x » et « r ». Tolère les
+  bizarreries de saisie du corpus et ne boucle jamais ; seul un « D.C.
+  on cue » reste non suivi.
+- **Les chiffrages** lus en accords de `harmony` : la table des 62
+  qualités de l'app, relue et validée, et les qualités tapées à la main.
+  Sur 60 740 accords réels, un seul reste illisible, une faute de
+  frappe.
+- **Des cases aux temps** (`Chart.Timeline`) : un accord commence sur
+  le temps où tombe sa case, arrondi au temps suivant (Take Five,
+  vérifié à l'écoute) ; la pulsation est la noire, ou la noire pointée
+  en 6/8 et 12/8. La coda, jouée au dernier chorus seulement, est hors
+  du cycle.
+- **Les fiches de référence** du livre dans
+  `charts/ireal/testdata/fiches` : Tune Up, Black Orpheus, There Will
+  Never Be Another You, Tenderly, qui concordent mesure par mesure avec
+  les grilles du corpus, à la tétrade près.
 
 Les tests commités n'utilisent que des grilles fabriquées ; les exports
 de l'app vont dans `charts/ireal/testdata/local/`, ignoré par git, où un
@@ -214,37 +203,63 @@ test les lit s'il y en a.
 
 Reste :
 
-- [ ] les directions que le dépliage ignore encore : « D.C. al 2nd
-      ending » et consorts, un D.S. écrit dans une reprise pas encore
-      terminée.
+- [ ] un D.S. écrit dans une reprise pas encore terminée, s'il s'en
+      présente un.
 - [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
       n'en a pas vu un vrai.
-- [ ] l'analyse d'une grille, conçue dans `grilles.md` : étages
-      (morceau, plage, région, bloc, accord), analyse de droite à
-      gauche, lectures multiples, fiche de sortie. Les fiches du livre
-      sont l'oracle : le test compare aujourd'hui les accords, il
-      comparera les tonalités, modulations, emprunts et cadences à
-      mesure que l'analyse les produira.
-- [ ] les seuils de l'analyse, en données : durée d'une plage modale,
-      indices d'une modulation.
-- [ ] l'ordre de l'analyse, dans `harmony/analysis` comme une couche
-      au-dessus de l'identification des accords : la suite d'accords
-      (`analysis.Changes` : basses, durées, bouclage) et son pont depuis
-      iReal, faits ; les préparations sur toute la suite et les chaînes
-      remontées depuis chaque arrivée (`Approaches`, `Chains`), faites,
-      et visibles avec `charts/cmd/analyse` ; le passage
-      (`PassingChords`), fait ; les blocs et leurs tonalités annoncées
-      (`Blocks`), faits ; les relations entre blocs (marches de II-V,
-      cycle des quartes) ; degrés et tonalités annoncées en gammes
-      précises (`Degrees` sur la tonique installée, `Bracketed` en
-      crochets comme le livre, `Block.Announced`), faits ; la tonique
-      pressentie, lue de gauche à droite (`Sense` : tonique de fond et
-      tonique locale, le I emprunté),
-      faite, 72 degrés sur 83, sauf le passage d'une tonique locale au
-      fond, qui attend les seuils de la modulation ; l'affichage annoté
-      en ASCII dans le terminal, enrichi à chaque étape ; les étages hauts dans la mesure où la
-      fiche en a besoin. Puis le direct, avec l'attente
-      et la surprise (voir `grilles.md`).
+- [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on
+      tape soi-même, quand un jeu en aura besoin.
+- [ ] un format de grille ouvert, mieux conçu que celui d'iReal.
+
+## L'analyse des grilles
+
+Conçue dans `grilles.md`, qui en tient les règles et les décisions,
+et codée dans `harmony/analysis`. Le but du moment : charger une grille
+iReal et en afficher une analyse exemplaire au sens d'*En Harmonie*,
+de quoi la montrer à ses auteurs.
+
+Fait :
+
+- **La suite d'accords** (`Changes` : basses, durées, bouclage, coda)
+  et son pont depuis iReal.
+- **Les préparations** d'un accord au suivant (`Approaches`) et les
+  chaînes remontées depuis chaque arrivée (`Chains`) ; **le passage**
+  (`PassingChords`), nommé d'après sa basse.
+- **Les blocs**, [II] [sus4] V → cible, et les tonalités qu'ils
+  annoncent en gammes précises (`Blocks`, `Block.Announced`).
+- **Les degrés**, en deux lectures simultanées : sur la tonique
+  installée (`Degrees`) et en crochets comme le livre (`Bracketed`).
+- **La tonique pressentie**, lue de gauche à droite (`Sense`) : tonique
+  de fond, tonique locale, ce qu'une cadence attend, le I emprunté.
+- **La modulation**, installée en direct (`Sense`) et datée après coup
+  (`Grounds`), le retour à la maison sur une cadence ou sur le seul
+  accord de tonique ; Tune Up et Black Orpheus concordent entièrement
+  avec leurs fiches.
+- **La tonalité du morceau** (`Tune`), trouvée par les cadences et la
+  fin, jamais par l'armure ; une grille qui boucle entendue comme son
+  deuxième chorus ; la tonique mineure écrite m7.
+- **Le blues**, reconnu à sa forme (`Blues`), sa septième d'espèce lue
+  comme sa tonique.
+- **L'affichage** dans le terminal (`charts/cmd/analyse`) et **le
+  rapport sur le corpus** (`charts/cmd/corpus`).
+
+La suite, dans l'ordre :
+
+- [ ] les plages modales : *So What*, *Maiden Voyage*, et les grilles
+      de jeux vidéo modales.
+- [ ] les cadences du catalogue sans II-V : le backdoor ♭VII7-I, les
+      plagales, le V seul, et ce que chacune fait attendre ; la lecture
+      du livre pour la marche IIm7-V7 (VI II7 dans Tenderly).
+- [ ] les relations entre blocs : marches de II-V, cycle des quartes.
+- [ ] la marche d'accords parallèles (*Stolen Moments*).
+- [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),
+      reconnues sur la ligne des degrés.
+- [ ] la modulation « confirmée », et les seuils en données.
+- [ ] rendre aussi le fond qui a dominé le morceau quand ce n'est pas
+      celui de la fin (*Autumn Leaves*).
+- [ ] la jauge de tension, puis le direct avec l'attente et la
+      surprise (voir `grilles.md`), dont le pivot diminué de Tenderly
+      comme test à l'envers.
 - [ ] la grille annotée dans une fenêtre Ebitengine (police de Real
       Book, chiffrages en indices et exposants, réglable), une fois le
       cœur validé.
@@ -253,10 +268,6 @@ Reste :
       perdre de vue.
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
-- [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on
-      tape soi-même, quand un jeu en aura besoin.
-- [ ] un format de grille ouvert, mieux conçu que celui d'iReal, une
-      fois la structure et le dépliage en place.
 - [ ] une grille iReal comme niveau du shoot'em up.
 
 ## L'audio
