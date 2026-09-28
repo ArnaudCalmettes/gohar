@@ -275,6 +275,13 @@ majeur ». Le livre appelle **Ier degré temporaire** l'arrivée d'un bloc
 emprunté (Misty : A♭maj7 préparé par B♭m7 E♭7) : c'est une
 tonicisation.
 
+Le premier pas d'une **marche IIm7-V7**, dont le V7 devient le II du
+bloc suivant sur la même fondamentale, n'est pas mis entre crochets :
+Cm7 F7 Fm7 B♭7 en mi♭ (Tenderly mesures 13 à 16, There Will Never Be
+Another You mesures 12 à 16) se lit VI II7 II V, comme le livre. F7 est
+un « IIe degré altéré », pas le V d'un si♭ qui ne vient jamais ; le bloc
+annonce quand même si♭ au-dessus des accords.
+
 ### Les accords parallèles
 
 Ils n'ont pas de fonction, et sont de deux sortes. **Un accord qui
@@ -578,7 +585,7 @@ la lignée de l'ancien gohareact.
 
 Le livre analyse des morceaux du corpus iReal ; ses fiches, transcrites
 à la main dans `charts/ireal/testdata/fiches`, sont l'oracle. Les degrés
-en crochets concordent à 79 sur 83, avec ou sans la tonalité que l'app
+en crochets concordent à 83 sur 83, avec ou sans la tonalité que l'app
 déclare, qui donne Tune Up en si♭ et le joue sur 32 mesures avec deux
 fins.
 
@@ -587,7 +594,7 @@ fins.
 | Tune Up | AA', 16 mesures, ré majeur, modulations en do (5 à 8) et en si♭ (9 à 12) | la modulation à chaque phrase, clé de construction du morceau ; 13 sur 13 |
 | Black Orpheus | AB, 32 mesures, la mineur, do majeur 6 à 12 | la modulation par deuxième cadence, qui résiste à A7♭9 Dm7 ; 20 sur 20 |
 | There Will Never Be Another You | ABAC, 32 mesures, mi♭ majeur, sans modulation | Cm7 tenu une mesure tonicise le VI sans l'installer |
-| Tenderly | ABAC, 32 mesures, mi♭ majeur, huit emprunts, plagales | la tonique pressentie, le I emprunté, le pivot diminué ; restent Cm7 F7, lus VI II7 par le livre |
+| Tenderly | ABAC, 32 mesures, mi♭ majeur, huit emprunts, plagales | la tonique pressentie, le I emprunté, le pivot diminué, la marche IIm7-V7 lue VI II7 |
 
 ### Les autres cas tranchés
 
@@ -642,12 +649,6 @@ aussi.
 
 ## Ouvert
 
-- **La marche IIm7-V7.** Cm7 F7 avant Fm7 (Tenderly mesures 13-14,
-  There Will Never Be Another You mesures 12-13) : le livre lit VI puis
-  II7, l'analyse un II-V de si♭ qui ne se résout pas. Ce sont les 4
-  écarts restants avec les fiches ; la lecture du livre viendra des
-  relations entre blocs. (Écartée : départager par la qualité du II, m7
-  contre m7♭5, qui collait au corpus sans raison musicale.)
 - **Les thèmes ambigus entre relatifs**, *Corcovado* (la mineur ou do)
   en tête : la tradition tranche parfois là où l'oreille hésite.
 - **L'attente d'un diminué**, ses quatre toniques possibles, pour le

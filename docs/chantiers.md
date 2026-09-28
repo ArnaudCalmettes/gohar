@@ -32,8 +32,8 @@ parlé français et les alias.
 et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
-Les fiches du livre concordent à 79 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app sur 76 % du corpus, sans
+Les fiches du livre concordent à 83 degrés sur 83, et l'analyse tombe
+d'accord avec la tonalité déclarée par l'app sur 77 % du corpus, sans
 la lire.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
@@ -254,8 +254,7 @@ La suite, dans l'ordre :
       de jeux vidéo modales.
 - [ ] les cadences du catalogue qui restent : ♭VIImaj7-I et ♭VIIm7-I,
       IV7-I7, la demi-cadence et la rompue, le V seul et ce qu'il fait
-      attendre ; la lecture du livre pour la marche IIm7-V7 (VI II7
-      dans Tenderly).
+      attendre.
 - [ ] les relations entre blocs : marches de II-V, cycle des quartes.
 - [ ] la marche d'accords parallèles (*Stolen Moments*).
 - [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),

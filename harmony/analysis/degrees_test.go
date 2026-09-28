@@ -46,15 +46,15 @@ func TestDegrees(t *testing.T) {
 		// of a three six two five one; bracketed, as En Harmonie prints
 		// it, a two five of F minor. Bars 3 and 4, E♭m7 A♭7, a two five
 		// that does not resolve with its two on the tonic, are a
-		// borrowed I and a IV7 either way. Bars 13 and 14 are VI II7 on
-		// the tonic, as En Harmonie reads them, but a bracketed two five
-		// of B flat: its reading will come with the cadences.
+		// borrowed I and a IV7 either way. Bars 13 and 14 are VI II7 either
+		// way too, as En Harmonie reads them: the first step of a march,
+		// F7 turning into Fm7, the two of the next two five.
 		"Tenderly": {
 			changesOf(false, eb, maj7, ab, dom7, eb, min7, ab, dom7, f, min7, db, dom7, eb, maj7,
 				g, halfDim, c, flatNine, f, halfDim, bb, dom7, f, halfDim, bb, dom7, b, dim7,
 				c, min7, f, dom7, f, min7, bb, dom7),
 			"I IV7 Im7 IV7 II ♭VII7 I IIIm7♭5 VI7 IIm7♭5 V IIm7♭5 V ♯Vdim7 VI II7 II V",
-			"I IV7 Im7 IV7 II ♭VII7 I II V II V II V ♯Vdim7 II V II V",
+			"I IV7 Im7 IV7 II ♭VII7 I II V II V II V ♯Vdim7 VI II7 II V",
 		},
 		// There Will Never Be Another You: a two five tonicises the VI.
 		"a two five toward the VI": {

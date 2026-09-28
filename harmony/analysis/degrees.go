@@ -177,11 +177,16 @@ func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
 // it concludes on. A two five that does not resolve and whose two sits
 // on the ground's tonic is not bracketed either: E♭m7 A♭7 in E flat is
 // Im7 IV7, a borrowed tonic.
+//
+// Nor is the first step of a march of two fives, whose V7 turns into
+// the two of the next one on the same root: Cm7 F7 Fm7 B♭7 in E flat,
+// bars 13 to 16 of Tenderly, is VI II7 II V. F7 is a two altered, as
+// En Harmonie puts it, not the V of a B flat that never comes.
 func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
 	out := Degrees(c, passing, sensed)
 	for _, b := range blocks {
 		if len(b.Announced) == 0 || b.Two < 0 || b.Kind == harmony.PlagalApproach ||
-			borrowsTonic(c, b, sensed[b.Two].Ground) {
+			borrowsTonic(c, b, sensed[b.Two].Ground) || marches(c, blocks, b) {
 			continue
 		}
 		for _, i := range []int{b.Two, b.Sus, b.Five} {
@@ -191,4 +196,24 @@ func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degr
 		}
 	}
 	return out
+}
+
+// marches reports whether a two five that does not resolve is the first
+// step of a march: its V7 turns into the minor seventh two of the next
+// block, on the same root (F7 Fm7 B♭7).
+func marches(c Changes, blocks []Block, b Block) bool {
+	if b.Target >= 0 || b.Five < 0 {
+		return false
+	}
+	n := c.Next(b.Five)
+	if n < 0 || c.Chords[n].Chord.Root != c.Chords[b.Five].Chord.Root ||
+		c.Chords[n].Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
+		return false
+	}
+	for _, o := range blocks {
+		if o.Two == n && o.Five >= 0 {
+			return true
+		}
+	}
+	return false
 }
