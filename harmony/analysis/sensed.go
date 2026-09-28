@@ -46,17 +46,50 @@ type Sensed struct {
 	// loop, on the first chord of the chart.
 	Resolves []harmony.Tonality
 	Across   bool
+
+	// Home is where the tune sets out from, once its first phrase has
+	// landed: see [Home].
+	Home []harmony.Tonality
+
+	// Lands tells that the music comes to rest here, on Tonic: a phrase
+	// ends. The first phrase to land gives the tune its home (see
+	// [Tune]).
+	Lands bool
 }
 
 // Sense reads the sensed tonic at each change.
 //
 // # What installs a tonic
 //
-// The first chord gives the ground to start from when it can be a
-// tonic chord (a major or minor triad, maj7, 6, m6, m(maj7), but not
-// m7, almost always a subdominant), and else the first cadence that
-// resolves. A cadence that resolves elsewhere than on the ground makes
-// its target a local tonic.
+// Home is where the first phrase comes to rest. A phrase has no set
+// length: it goes on until it lands on a tonic chord that a cadence
+// leads to, and that either
+//
+//   - brings back the chord the tune opened on, when that one could be
+//     a tonic: How Insensitive is a long sigh from Dm down to Dm again,
+//     fourteen bars later, and Fly Me To The Moon comes back to Am7 at
+//     bar 8;
+//   - or holds longer than a bar and longer than the chords that lead
+//     to it: Gm6 in Autumn Leaves, two bars after Am7♭5 D7.
+//
+// A tonic passed through does not end the phrase (B♭maj7 in Autumn
+// Leaves), nor does a subdominant, however long: E♭maj7 two bars after
+// B♭6 Fm7 B♭7 in Cherokee is its IV. Past the opening chord, a phrase
+// rests on a tonic chord, not on a m7, almost always a subdominant:
+// Cm7, held two bars in There Will Never Be Another You, is its VI. And
+// a m7 is not led to its rest by a plagal cadence: C7 Gm7 in
+// Honeysuckle Rose goes back and forth between a two and its five.
+//
+// A tune can also open at rest, on a tonic chord held longer than a bar
+// (E♭maj7 in There Will Never Be Another You), unless the first phrase
+// then lands a fifth above it: Just Friends opens on Cmaj7, its IV, and
+// lands on Gmaj7 after Cm7 F7, a plagal cadence stretched out.
+//
+// Until the first phrase lands, the ground is a guess: the first chord
+// when it can be a tonic chord (a major or minor triad, maj7, 6, m6,
+// m(maj7), but not m7), and else the first cadence that resolves.
+// Landing makes it home. A cadence that resolves elsewhere than on the
+// ground makes its target a local tonic.
 //
 // A blues is recognised by its form (see [Blues]), and its tonic is
 // the ground from the start: its I7 is a seventh of kind, not a
@@ -158,16 +191,69 @@ func Sense(c Changes, blocks []Block) []Sensed {
 		return nil
 	}
 
+	// opening is the first chord that sounds, the one a phrase can come
+	// back to when it could be a tonic.
+	opening := opening(c)
+	openingTonic := false
+	if opening >= 0 {
+		o := c.Chords[opening]
+		openingTonic = tonicOf(o) != nil
+		if o.Chord.Pattern.Tetrad() == harmony.ChordMinorSeventh {
+			// A m7 opens on a tonic unless it is a two, whether or not a
+			// block claims it: Gm7 C7 in Honeysuckle Rose.
+			n := c.Next(opening)
+			openingTonic = member[opening] < 0 && !(n >= 0 && c.Chords[n].Chord.Root == o.Chord.Root.Transpose(5) &&
+				c.Chords[n].Chord.Pattern.Tetrad() == harmony.ChordDominantSeventh)
+		}
+	}
+
+	held := func(i int) Ticks { return held(c, i) }
+
+	// landsAt tells what tonic the music comes to rest on at change i,
+	// nil when a phrase does not end there: see "What installs a tonic".
+	landsAt := func(i int, ground []harmony.Tonality) []harmony.Tonality {
+		n := target[i]
+		if n < 0 || blocks[n].Five > i || len(blocks[n].Announced) == 0 {
+			return nil
+		}
+		t := tonicAt(i, false)
+		if t == nil || blocks[n].Announced[0].Tonic() != t[0].Tonic() ||
+			tonicOf(c.Chords[i]) == nil && blocks[n].Kind == harmony.PlagalApproach {
+			return nil
+		}
+		if o := c.Chords[opening].Chord; openingTonic && o.Root == t[0].Tonic() &&
+			isMinor(o.Pattern) == (ModesOf(t) == Minor) {
+			return t
+		}
+		if tonicOf(c.Chords[i]) == nil ||
+			ground != nil && t[0].Tonic() == ground[0].Tonic().Transpose(5) {
+			return nil
+		}
+		h := held(i)
+		if h <= bar {
+			return nil
+		}
+		for _, k := range []int{blocks[n].Two, blocks[n].Sus, blocks[n].Five} {
+			if k >= 0 && c.Chords[k].Length >= h {
+				return nil
+			}
+		}
+		return t
+	}
+
 	// pass hears the chart once. On the first hearing, a cadence across
 	// the loop has not sounded yet when its target, the first chord, does.
 	pass := func(s Sensed, first bool) []Sensed {
 		out := make([]Sensed, len(c.Chords))
+		landed := !first
+		atRest := false // the tune opened at rest, and has not landed since
 		for i, ch := range c.Chords {
-			s.Awaited, s.Tonic, s.Resolves, s.Across = nil, nil, nil, false
+			s.Awaited, s.Tonic, s.Resolves, s.Across, s.Lands = nil, nil, nil, false, false
 			if ch.Silent {
 				out[i] = s
 				continue
 			}
+			before := s.Ground
 			s.Tonic = tonicAt(i, false)
 			if s.Ground == nil && i == 0 {
 				s.Ground = s.Tonic
@@ -222,6 +308,23 @@ func Sense(c Changes, blocks []Block) []Sensed {
 			if s.Local != nil && tonic != nil && (stable > bar || cadences >= 2) {
 				installed(&s)
 			}
+			if t := landsAt(i, before); t != nil {
+				s.Lands = true
+				wasAtRest := atRest
+				atRest = false
+				if !landed || wasAtRest && t[0].Tonic() == s.Start[0].Tonic().Transpose(7) {
+					// The first phrase lands: the guess gives way to home.
+					landed = true
+					s.Start, s.Home, s.Local = t, t, nil
+					if !sameTonic(t, s.Ground) {
+						s.Ground, s.Since = t, firstOf(blocks[n])
+					}
+				}
+			} else if i == opening && !landed && s.Tonic != nil && tonicOf(ch) != nil && held(i) > bar {
+				// The tune opens at rest.
+				s.Lands, landed, atRest = true, true, true
+				s.Start, s.Ground, s.Home = s.Tonic, s.Tonic, s.Tonic
+			}
 			if s.Start == nil {
 				s.Start = s.Ground
 			}
@@ -239,9 +342,8 @@ func Sense(c Changes, blocks []Block) []Sensed {
 	// A chart loops: the chorus is heard again after itself, and that is
 	// the hearing to render. The ground and the local tonic go on from
 	// the end of the first chorus (or from the bar before the coda), so
-	// that a turnaround prepares the first chord, and home is where the
-	// tune ends: its last tonic, the coda's when it has one, installed
-	// by being the last.
+	// that a turnaround prepares the first chord. Heard a second time,
+	// the tune is known: its start tonic is where it stops (see [Tune]).
 	seed := Sensed{}
 	if t, ok := Blues(c); ok {
 		seed.Start, seed.Ground = t, t
@@ -315,76 +417,227 @@ func sameTonic(a, b []harmony.Tonality) bool {
 	return a[0].Tonic() == b[0].Tonic()
 }
 
-// Tune reads the tonality of the tune from its end, in the major or the
-// three minors as its tonic's third says. Walking back from the last
-// chord, the first of these decides:
+// Tune reads the tonality of the tune, in the major or the three
+// minors as its tonic's third says: the last tonic heard, where the
+// last phrase stops. A standard is played to that tonic and no
+// further: the turnaround after it goes back to the first chord, which
+// it always points to, and says nothing of the tonality. Lullaby Of
+// Birdland stops on A♭maj7 before Gm7♭5 C7 goes back to Fm; All The
+// Things You Are is only settled by its last A♭maj7. Walking back from
+// the last chord, the first of these decides:
 //
 //   - a chord heard as the tonic of the ground: F/C C at the end of My
 //     Way, a plagal amen on C; Cmaj7 before the turnaround of Fly Me To
 //     The Moon;
-//   - the V of a cadence that resolves on a tonic: E♭7 A♭maj7 at the
-//     end of Along Came Betty, before the turnaround Bm7 E7;
-//   - across the loop, a cadence that goes back to the ground: G7 at
-//     the end of Sugar goes back to Cm7 and makes it a tune in C minor,
-//     not in the F minor that G♭7 Fm7 tonicises in bar 11. A turnaround
-//     toward a first chord that is not the ground (E7 Am7 in Fly Me To
-//     The Moon) does not count.
+//   - a two five one within the chorus: B♭m7 E♭7 A♭maj7 at the end of
+//     Lullaby Of Birdland or Along Came Betty, before their
+//     turnarounds. A lone V does not stop a tune: Yesterdays goes
+//     through B♭maj7 in its cycle of dominants, and stops in D minor.
+//     Nor does a m7, almost always a subdominant, unless it is the
+//     ground's tonic: F♯7 Fm7 near the end of Sugar tonicises its IV,
+//     and Sugar stops in C minor. A V does, on the last chord of the
+//     chart: B♭7 E♭7 A♭6 at the end of Sweet Georgia Brown.
 //
-// A tierce picarde does not make a minor tune major: when the tonic
-// chord that decides is major but the tune spends longer on its minor
-// tonic than on its major one, the tune is in the minor (see
-// [Picardy]).
+// Some charts do not write the last tonic, and stop on the IV of home
+// before a turnaround back to it that is the last cadence:
+// Unforgettable, from G, stops on Cmaj7 before Am7 D7 Gmaj7. The IV is
+// then skipped.
 //
-// A blues is in its own tonic, and with none of these, the tune is in
-// the ground at the end.
+// A tune that opens at rest, on its tonic held longer than a bar, and
+// whose first cadence comes back to it, has installed its home before
+// leaving it, and is in it wherever it stops: In a Sentimental Mood
+// holds Dm for two bars, returns to it by A7, and is in D minor though
+// it concludes on Gm7 C7♭9 Fmaj7, in its relative major. Blue Skies
+// opens on the same line from Am, but its first cadence goes to C6:
+// it is in C. A tune that ends on the same tonic keeps the mode it
+// ends in: Chega De Saudade holds D minor for its first half, D major
+// for its second, stops on D6, and is in D major.
+// Elsewhere, where the tune sets out from (see [Home]) is not always
+// where it stops: Lullaby Of Birdland sets out from F minor, on a
+// chord held half a bar. A picardy third does not make a minor tune
+// major: the tonic that decides may turn major on the final chord, and
+// the tune stays minor (see [Picardy]).
+//
+// A blues is in its own tonic, found by its form. A tune with none of
+// these is in its home, and else in the ground at the end.
 func Tune(c Changes, sensed []Sensed) []harmony.Tonality {
-	t, _ := tune(c, sensed)
+	if t, ok := Blues(c); ok {
+		return t
+	}
+	t, _ := ending(c, sensed)
+	if h := Home(c, sensed); opensAtRest(c, h) && sameTonic(firstCadence(c, sensed), h) && !sameTonic(t, h) {
+		return h
+	}
 	return t
 }
 
+// Home reads where the tune sets out from: the tonic its first phrase
+// comes to rest on (see [Sense]), nil when no phrase lands. Autumn
+// Leaves sets out from G minor, How Insensitive from D minor.
+func Home(c Changes, sensed []Sensed) []harmony.Tonality {
+	if t, ok := Blues(c); ok {
+		return t
+	}
+	if len(sensed) == 0 {
+		return nil
+	}
+	return sensed[len(sensed)-1].Home
+}
+
+// hasTwo reports whether the V at change i comes after its two, a m7
+// or m7♭5 a fifth above it.
+func hasTwo(c Changes, i int) bool {
+	if i == 0 {
+		return false
+	}
+	p := c.Chords[i-1]
+	t := p.Chord.Pattern.Tetrad()
+	return !p.Silent && p.Chord.Root == c.Chords[i].Chord.Root.Transpose(7) &&
+		(t == harmony.ChordMinorSeventh || t == harmony.ChordHalfDiminished)
+}
+
+// held returns how long a tonic holds from change i: the chord and the
+// chords on the same root and third after it, tonic chords or, for a
+// minor tonic, its m7 (Gm6 | Gm6, the line of Dm Dm(maj7) Dm7 Dm6 in
+// In a Sentimental Mood; not Gm6 | G7, nor E♭maj7 | E♭m6 in Candy, the
+// IV turning minor).
+func held(c Changes, i int) Ticks {
+	var d Ticks
+	first := c.Chords[i].Chord
+	for k := i; k < len(c.Chords); k++ {
+		ch := c.Chords[k]
+		keeps := ch.Chord.Pattern == first.Pattern ||
+			isMinor(ch.Chord.Pattern) == isMinor(first.Pattern) && (tonicOf(ch) != nil ||
+				isMinor(first.Pattern) && ch.Chord.Pattern.Tetrad() == harmony.ChordMinorSeventh)
+		if ch.Silent || ch.Chord.Root != first.Root || k > i && !keeps {
+			break
+		}
+		d += ch.Length
+	}
+	return d
+}
+
+// firstCadence returns the tonic the first cadence within the chorus
+// resolves on, nil when none does.
+func firstCadence(c Changes, sensed []Sensed) []harmony.Tonality {
+	for i, s := range sensed {
+		if s.Resolves != nil && !s.Across && tonicOf(c.Chords[c.Next(i)]) != nil {
+			return s.Resolves
+		}
+	}
+	return nil
+}
+
+// opensAtRest reports whether the tune opens on a tonic chord held
+// longer than a bar, the home it sets out from.
+func opensAtRest(c Changes, home []harmony.Tonality) bool {
+	o := opening(c)
+	if o < 0 || home == nil {
+		return false
+	}
+	bar := 4 * TicksPerBeat
+	if len(c.Bars) > 1 {
+		bar = c.Bars[1] - c.Bars[0]
+	}
+	t := tonicOf(c.Chords[o])
+	return t != nil && sameTonic(t, home) && held(c, o) > bar
+}
+
+// opening returns the first change that sounds, -1 when none does.
+func opening(c Changes) int {
+	for i, ch := range c.Chords {
+		if !ch.Silent {
+			return i
+		}
+	}
+	return -1
+}
+
 // Picardy reports whether a minor tune ends on its tonic made major,
-// the tierce picarde of church music: a major chord rings with fewer
-// clashing partials under the resonance of a great organ.
+// the picardy third of church music: a major chord rings with fewer
+// clashing partials under the resonance of a great organ. It is on the
+// last chord: a major tonic heard before is a modulation to it, unless
+// a section closed there as the tune does and the minor came back
+// ('Round Midnight).
 func Picardy(c Changes, sensed []Sensed) bool {
-	_, p := tune(c, sensed)
+	if _, ok := Blues(c); ok {
+		return false
+	}
+	_, p := ending(c, sensed)
 	return p
 }
 
-func tune(c Changes, sensed []Sensed) ([]harmony.Tonality, bool) {
-	if t, ok := Blues(c); ok {
-		return t, false
-	}
-	// picardy keeps the minor under a major tonic chord, when the tune
-	// heard its minor tonic longer than its major one.
-	picardy := func(t []harmony.Tonality) ([]harmony.Tonality, bool) {
-		if ModesOf(t) != Major {
+// ending returns the tonality the tune ends in (see [Tune]) and whether
+// a major tonic there is a picardy third.
+func ending(c Changes, sensed []Sensed) ([]harmony.Tonality, bool) {
+	// picardy keeps the minor under a major tonic at change at, the last
+	// tonic heard, when it is a picardy third: the tonic, minor so
+	// far and only minor, turns major on the final chord, and the tune
+	// was in the minor when it got there. A section may
+	// close with the same ending before: 'Round Midnight ends its second
+	// A as it ends, on E♭6, and its last A starts again on E♭m. Any other
+	// major tonic, or the minor not coming back, is a modulation: the
+	// second half of Chega De Saudade, in D major.
+	picardy := func(t []harmony.Tonality, at int) ([]harmony.Tonality, bool) {
+		if ModesOf(t) != Major || at == 0 || ModesOf(sensed[at-1].Ground) != Minor ||
+			!sameTonic(sensed[at-1].Ground, t) {
 			return t, false
 		}
-		var major, minor Ticks
-		for i, s := range sensed {
-			if s.Tonic == nil || !sameTonic(s.Tonic, t) {
+		last := at
+		for last > 0 && c.Chords[last-1].Chord.Root == t[0].Tonic() && !c.Chords[last-1].Silent {
+			last--
+		}
+		// same tells whether change i closes as the tune does: the same
+		// chord before the same tonic.
+		same := func(i int) bool {
+			return i > 0 && last > 0 && c.Chords[i].Chord == c.Chords[last].Chord &&
+				c.Chords[i-1].Chord == c.Chords[last-1].Chord
+		}
+		minor, closed := false, false // closed: a section just closed in the major
+		for i, s := range sensed[:last] {
+			if s.Tonic == nil || !sameTonic(s.Tonic, t) || c.Chords[i].Silent {
 				continue
 			}
-			if ModesOf(s.Tonic) == Major {
-				major += c.Chords[i].Length
-			} else {
-				minor += c.Chords[i].Length
+			if ModesOf(s.Tonic) != Major {
+				minor, closed = true, false
+			} else if closed || !same(i) {
+				return t, false
+			} else if c.Chords[i-1].Chord.Root != t[0].Tonic() {
+				closed = true
 			}
 		}
-		if minor > major {
+		if minor && !closed {
 			return MinorTonalities(t[0].Tonic()), true
 		}
 		return t, false
+	}
+	home := Home(c, sensed)
+	// back tells whether the last cadence goes back to home across the
+	// loop, and subdominant a tonic that is then the IV of home: the
+	// chart stops there, and leaves the last cadence to the first chord.
+	back := false
+	for i := len(sensed) - 1; i >= 0; i-- {
+		if s := sensed[i]; s.Resolves != nil {
+			back = s.Across && home != nil && sameTonic(s.Resolves, home)
+			break
+		}
+	}
+	subdominant := func(t []harmony.Tonality) bool {
+		return back && t[0].Tonic() == home[0].Tonic().Transpose(5)
 	}
 	for i := len(sensed) - 1; i >= 0; i-- {
 		s := sensed[i]
 		switch {
 		case c.Chords[i].Silent:
-		case s.Tonic != nil && sameTonic(s.Tonic, s.Ground):
-			return picardy(s.Tonic)
-		case s.Resolves != nil && (!s.Across || sameTonic(s.Resolves, s.Ground)):
-			return picardy(s.Resolves)
+		case s.Tonic != nil && sameTonic(s.Tonic, s.Ground) && !subdominant(s.Tonic):
+			return picardy(s.Tonic, i)
+		case s.Resolves != nil && !s.Across && !subdominant(s.Resolves) &&
+			tonicOf(c.Chords[c.Next(i)]) != nil && (hasTwo(c, i) || c.Next(i) == len(c.Chords)-1):
+			return picardy(s.Resolves, c.Next(i))
 		}
+	}
+	if h := home; h != nil {
+		return h, false
 	}
 	for i := len(sensed) - 1; i >= 0; i-- {
 		if sensed[i].Ground != nil {
@@ -419,4 +672,9 @@ func tonicOf(change Change) []harmony.Tonality {
 func borrowsTonic(c Changes, b Block, ground []harmony.Tonality) bool {
 	return b.Two >= 0 && b.Target < 0 && ground != nil &&
 		c.Chords[b.Two].Chord.Root == ground[0].Tonic()
+}
+
+// isMinor reports whether a chord has a minor third and no major one.
+func isMinor(p harmony.ChordPattern) bool {
+	return p.HasOffset(3) && !p.HasOffset(4)
 }

@@ -235,10 +235,12 @@ Fait :
   (`Grounds`), le retour à la maison sur une cadence ou sur le seul
   accord de tonique ; Tune Up et Black Orpheus concordent entièrement
   avec leurs fiches.
-- **La tonalité du morceau** (`Tune`), trouvée par les cadences et la
-  fin, jamais par l'armure ; une grille qui boucle entendue comme son
-  deuxième chorus ; la tonique mineure écrite m7 ; la tierce picarde
-  (`Picardy`).
+- **La maison** (`Home`), là où se pose la première phrase, et **la
+  tonalité du morceau** (`Tune`), la dernière tonique entendue,
+  turnaround exclu, sauf quand le morceau s'ouvre au repos et que sa
+  première cadence y revient ; jamais l'armure ; une grille qui boucle
+  entendue comme son deuxième chorus ; la tonique mineure écrite m7 ;
+  la tierce picarde (`Picardy`).
 - **Les cadences plagales** : le IV de toute qualité, et le ♭VII7 avec
   son IVm7 (`PlagalApproach`), qui concluent sans ouvrir de tonique.
 - **Le blues**, reconnu à sa forme (`Blues`), sa septième d'espèce lue
@@ -259,8 +261,6 @@ La suite, dans l'ordre :
 - [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),
       reconnues sur la ligne des degrés.
 - [ ] la modulation « confirmée », et les seuils en données.
-- [ ] rendre aussi le fond qui a dominé le morceau quand ce n'est pas
-      celui de la fin (*Autumn Leaves*).
 - [ ] la jauge de tension, puis le direct avec l'attente et la
       surprise (voir `grilles.md`), dont le pivot diminué de Tenderly
       comme test à l'envers.

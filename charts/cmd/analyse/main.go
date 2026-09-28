@@ -206,6 +206,9 @@ func heardIn(s ireal.Song, changes analysis.Changes, sensed []analysis.Sensed) s
 	if analysis.Picardy(changes, sensed) {
 		line += ", ending on a Picardy third"
 	}
+	if home := analysis.Home(changes, sensed); home != nil && short(flats[home[0].Tonic()], home) != name {
+		line += ", setting out from " + short(flats[home[0].Tonic()], home)
+	}
 	if declared, ok := s.DeclaredTonalities(); ok {
 		if d := short(flats[declared[0].Tonic()], declared); d != name {
 			line += ", where the app declares " + d

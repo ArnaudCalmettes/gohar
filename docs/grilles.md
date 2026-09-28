@@ -61,25 +61,65 @@ l'oreille attend accord par accord.
 
 ### Sa tonalité
 
-La tonalité se déduit des cadences, et d'abord de celles de la fin
-(`Tune`). En remontant depuis le dernier accord, le premier indice
-trouvé décide : un accord entendu comme la tonique du fond (le do final
-de *My Way*, le Cmaj7 d'avant le turnaround de *Fly Me To The Moon*),
-le V d'une cadence qui se résout sur une tonique (E♭7 A♭maj7 à la fin
-d'*Along Came Betty*), ou, à travers la boucle, une cadence qui revient
-au fond : le dernier G7 de *Sugar* revient à Cm7, et le morceau est en
-do mineur, pas dans le fa mineur que G♭7 Fm7 tonicise en passant. Un
-turnaround vers un premier accord qui n'est pas le fond, comme E7 Am7
-dans *Fly Me To The Moon*, ne compte pas.
+Deux questions, que l'analyse sépare : d'où le morceau part, et où il
+s'arrête.
+
+**La maison** (`Home`) est là où se pose la première phrase. Une
+phrase n'a pas de longueur fixe : elle court jusqu'à se poser sur un
+accord de tonique qu'une cadence amène, et qui revient sur l'accord
+d'ouverture (*How Insensitive*, un long soupir de Dm à Dm, quatorze
+mesures plus loin) ou tient plus d'une mesure et plus longtemps que les
+accords qui y mènent (le Gm6 d'*Autumn Leaves*). Une tonique de passage
+ne pose rien (le B♭maj7 d'*Autumn Leaves*), ni un IV, si long soit-il
+(le E♭maj7 de *Cherokee*), ni un m7 après l'ouverture (le Cm7 de *There
+Will Never Be Another You*, son VI). Un morceau peut aussi s'ouvrir au
+repos, sur sa tonique tenue plus d'une mesure, sauf quand la première
+phrase se pose ensuite une quinte au-dessus : *Just Friends* s'ouvre
+sur Cmaj7, son IV, et se pose sur Gmaj7. Tant que rien ne s'est posé,
+le premier accord n'est qu'une hypothèse.
+
+**La tonalité du morceau** (`Tune`) est la dernière tonique entendue,
+là où s'arrête la dernière phrase. On joue un standard jusqu'à elle, et
+pas au-delà : le turnaround qui suit ramène au premier accord, vers
+lequel il pointe forcément, et ne dit rien de la tonalité. *Lullaby Of
+Birdland* part de fa mineur et s'arrête sur A♭maj7, avant que Gm7♭5 C7
+ne ramène à Fm : il est en la♭. *All The Things You Are* n'est tranché
+que par son dernier A♭maj7. Pour arrêter le morceau hors du fond, il
+faut un II-V-I : un V seul ne fait que traverser (*Yesterdays* passe
+par B♭maj7 dans son cycle de dominantes, et reste en ré mineur), sauf
+sur le tout dernier accord de la grille. Un m7 ne l'arrête que s'il
+est la tonique du fond : le F♯7 Fm7 de la fin de *Sugar* tonicise le
+IV. Certaines grilles n'écrivent pas leur dernière tonique et
+s'arrêtent sur le IV de la maison, avant un turnaround qui y revient :
+*Unforgettable* s'arrête sur Cmaj7 avant Am7 D7, et ce IV est sauté.
+
+**Un morceau qui s'ouvre au repos et que sa première cadence ramène
+chez lui** a installé sa maison avant d'en partir, et il y reste où
+qu'il s'arrête. *In a Sentimental Mood* tient Dm deux mesures (Dm,
+Dm(maj7), Dm7, Dm6), y revient par A7, et reste en ré mineur bien qu'il
+conclue par Gm7 C7♭9 Fmaj7, dans son relatif majeur ; c'est aussi ce
+que dit la tradition. *Blue Skies* s'ouvre sur la même ligne depuis
+Am, mais sa première cadence va à C6 : il est en do.
+
+Quand la maison et la fin diffèrent, `analyse` donne les deux : *Fly Me
+To The Moon* part de la mineur et s'arrête en do, *Lullaby Of Birdland*
+part de fa mineur et s'arrête en la♭.
 
 **La tierce picarde** ne rend pas majeur un morceau mineur. Héritée de
 la musique d'église, où un accord majeur sonne avec moins de partiels
 qui frottent sous la résonance d'un grand orgue, elle majorise la
-tonique sur le dernier accord. Quand le morceau s'est tenu plus
-longtemps sur sa tonique mineure que sur la majeure, il est en mineur,
-et l'analyse signale la tierce picarde (`Picardy`) : *'Round Midnight*,
-*Black And Tan Fantasy*. Un morceau qui passe en majeur pour de bon
-(*Chega De Saudade*) est en majeur.
+tonique sur le dernier accord : la tonique, mineure jusque-là et
+exclusivement, se majorise sur l'accord de fin. Le morceau reste
+mineur, et l'analyse la signale (`Picardy`). Une section peut se clore
+de la même façon avant, si le mineur revient ensuite : *'Round
+Midnight* finit son deuxième A comme il finit, sur E♭6, et son dernier
+A repart sur E♭m. Tout autre majeur homonyme est une modulation :
+*Chega De Saudade* est en ré mineur pour ses deux premières parties, en
+ré majeur pour les deux dernières, s'arrête sur D6, et est en ré
+majeur. De même
+*I Love Paris* et *Black And Tan Fantasy*, dont la seconde partie est
+en majeur. Un morceau qui finit sur sa propre tonique garde le mode où
+il finit, même s'il s'est ouvert au repos dans l'autre.
 
 **L'armure n'est pas lue.** C'est un attribut de la partition écrite,
 utile pour ne pas écrire des altérations partout, et au mieux le plus
@@ -340,8 +380,10 @@ Une **cadence qui se résout** fait de sa cible une tonique locale. Au
 début, le **premier accord** installe le fond s'il peut être une
 tonique, sinon la première cadence résolue ; c'est l'indice le plus
 faible, beaucoup de standards commençant sur un II ou un IV, et après
-coup les accords d'avant la première tonique lui appartiennent. Un
-**blues** reconnu a sa tonique pour fond dès la première mesure.
+coup les accords d'avant la première tonique lui appartiennent. Ce fond
+n'est qu'une hypothèse : quand la première phrase se pose (voir « Sa
+tonalité »), sa tonique devient la maison et le fond. Un **blues**
+reconnu a sa tonique pour fond dès la première mesure.
 
 Une **plagale conclut sans ouvrir** : elle confirme une tonique déjà là
 (le fond, la tonique de départ, la tonique locale), ramène à la maison
@@ -402,7 +444,7 @@ d'accords) tient : la tonique pressentie est un état porté d'un accord
 au suivant, un résumé de ce qui a sonné. Seule la lecture d'une grille
 entière va plus loin, parce qu'elle le peut : une grille qui boucle est
 entendue comme son deuxième chorus, qui part de la fin du premier, avec
-pour chez-soi la tonalité où le morceau finit. Un turnaround en fin de
+pour chez-soi la tonalité du morceau, désormais connue. Un turnaround en fin de
 grille prépare donc le premier accord, et Tune Up commence en ré. À la
 première écoute, une cadence à travers la boucle n'a pas encore sonné
 quand son premier accord sonne ; le direct n'a que cette première
@@ -554,11 +596,17 @@ fins.
 | Along Came Betty | le cul entre deux chaises : deux tonalités à un demi-ton qui se chevauchent, des toniques tenues une seule mesure, pas de modulation ; l'analyse montre l'hésitation sans la trancher |
 | Giant Steps | trois centres, mais des tonicisations de moins d'une seconde à ce tempo : pas de modulation |
 | Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
-| Autumn Leaves | le relatif qui tonicise d'abord : si♭ entendu avant sol mineur, où le morceau finit |
+| Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur où se pose la première phrase |
+| How Insensitive | une première phrase de quatorze mesures, qui revient sur son accord d'ouverture |
+| Just Friends | un morceau qui s'ouvre sur son IV, et se pose sur son I par une plagale |
+| Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
+| In a Sentimental Mood, Blue Skies | la maison installée avant de partir, et ce qui la distingue d'une simple ouverture |
+| Yesterdays, Unforgettable | une tonique traversée par un V seul, un IV où la grille s'arrête sans écrire sa tonique |
 | My Way | la quarte et sixte F/C, et le retour par une plagale |
-| Sugar, Fly Me To The Moon | ce que vaut une cadence à travers la boucle |
+| Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; Fly Me part de la mineur et s'arrête en do |
 | Softly, Summertime | la tonique mineure écrite m7 |
-| 'Round Midnight | la tierce picarde |
+| 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
+| Chega De Saudade | le majeur homonyme installé pour de bon : une modulation, le morceau est en ré |
 | Stolen Moments | la marche d'accords parallèles |
 | So What | la plage modale, à venir |
 | Sonnymoon for Two, Chasin' the Trane, Blues For Alice | le blues reconnu à sa forme |
@@ -571,7 +619,8 @@ les écarts par relation (relatif, quinte, quarte, homonyme, autre) avec
 des indices pour trancher : le nombre de cadences résolues, la fin sur
 la tonique entendue, le blues, la tierce picarde, la grille de jeu
 vidéo. Sur les 1678 grilles des deux playlists, les deux tombent
-d'accord pour 1271 (76 %). Les écarts ne sont pas tous des erreurs de
+d'accord pour 1300 (77 %), l'app se trompant parfois (Chega De
+Saudade, déclaré en ré mineur). Les écarts ne sont pas tous des erreurs de
 l'analyse, et leurs familles pointent les questions ouvertes.
 
 ## Hors périmètre
@@ -599,8 +648,8 @@ aussi.
   écarts restants avec les fiches ; la lecture du livre viendra des
   relations entre blocs. (Écartée : départager par la qualité du II, m7
   contre m7♭5, qui collait au corpus sans raison musicale.)
-- **Le fond qui a dominé** un morceau, quand ce n'est pas celui de la
-  fin (le relatif majeur d'*Autumn Leaves*), à rendre aussi.
+- **Les thèmes ambigus entre relatifs**, *Corcovado* (la mineur ou do)
+  en tête : la tradition tranche parfois là où l'oreille hésite.
 - **L'attente d'un diminué**, ses quatre toniques possibles, pour le
   pivot.
 - **Les seuils** de la modulation, en données, et la durée d'une plage

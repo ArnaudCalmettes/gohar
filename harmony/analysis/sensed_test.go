@@ -355,16 +355,20 @@ func TestSenseBlues(t *testing.T) {
 	}
 }
 
-// The end of My Way. After a modulation to F, F/C is a six-four over
-// the tonic pedal, not a tonic: with C it makes a plagal cadence, an
-// amen that brings home back, and heard afterwards C starts with it.
+// The end of My Way. The first phrase lands on C, held two bars after
+// G7. After a modulation to F, F/C is a six-four over the tonic pedal,
+// not a tonic: with C it makes a plagal cadence, an amen that brings
+// home back, and heard afterwards C starts with it.
 func TestHomeOnSight(t *testing.T) {
 	const c, f, g harmony.PitchClass = 0, 5, 7
-	ch := changesOf(false, c, harmony.ChordMajorSeventh, g, harmony.ChordMinorSeventh,
+	ch := changesOf(false, g, harmony.ChordDominantSeventh, c, harmony.ChordMajorSeventh, c, harmony.ChordMajorSeventh,
+		g, harmony.ChordMinorSeventh,
 		c, harmony.ChordDominantSeventh, f, harmony.ChordMajorSeventh, f, harmony.ChordMajorSeventh,
 		f, harmony.ChordMajorTriad, c, harmony.ChordMajorTriad)
-	ch.Chords[5].Bass = c
+	ch.Chords[7].Bass = c
 	want := []string{
+		"G7 in ?, in C afterwards",
+		"Cmaj7 in C",
 		"Cmaj7 in C",
 		"Gm7 in C, in F afterwards",
 		"C7 in C, in F afterwards",
@@ -378,12 +382,16 @@ func TestHomeOnSight(t *testing.T) {
 	}
 }
 
-// Where a tune ends, and so which tonality it is in.
+// Where a tune stops, and so which tonality it is in.
 func TestTuneEndings(t *testing.T) {
 	const (
-		c, d, e, f, gb, g, a, b harmony.PitchClass = 0, 2, 4, 5, 6, 7, 9, 11
+		c, d, eb, e, f, gb, g, ab, a, bb, b harmony.PitchClass = 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 	)
 	const (
+		min     = harmony.ChordMinorTriad
+		minMaj7 = harmony.ChordMinorMajorSeventh
+		min6    = harmony.ChordMinorSixth
+		six     = harmony.ChordMajorSixth
 		maj7    = harmony.ChordMajorSeventh
 		min7    = harmony.ChordMinorSeventh
 		dom7    = harmony.ChordDominantSeventh
@@ -407,27 +415,62 @@ func TestTuneEndings(t *testing.T) {
 				bar{c, min7}, bar{gb, dom7}, bar{f, min7}, bar{d, halfDim}, bar{g, dom7}),
 			"Cm nat/harm/mel",
 		},
-		// Fly Me To The Moon: the turnaround goes back to Am7, a VI, after
-		// the tune has ended on its I.
-		"a turnaround toward a VI": {
+		// Fly Me To The Moon sets out from A minor, its first phrase
+		// back to Am7 at bar 8, and stops on Cmaj7 before the turnaround.
+		"a turnaround after the last tonic": {
 			barsOf(true, bar{a, min7}, bar{d, min7}, bar{g, dom7}, bar{c, maj7},
 				bar{f, maj7}, bar{b, halfDim}, bar{e, dom7}, bar{a, min7},
 				bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{b, halfDim, e, dom7}),
-			"C",
+			"C, setting out from Am nat/harm/mel",
+		},
+		// Lullaby Of Birdland sets out from F minor, and stops on A♭maj7:
+		// Gm7♭5 C7 after it goes back to the first chord, and is not
+		// played at the end.
+		"the last tonic before the turnaround": {
+			barsOf(true, bar{f, min, d, halfDim}, bar{g, dom7, c, dom7}, bar{f, min}, bar{bb, min7, eb, dom7},
+				bar{c, min7, f, min7}, bar{bb, min7, eb, dom7}, bar{ab, maj7}, bar{g, halfDim, c, dom7}),
+			"A♭, setting out from Fm nat/harm/mel",
+		},
+		// Yesterdays goes through B♭maj7 in its cycle of dominants, a V
+		// with no two: it stops in D minor.
+		"a tonic passed through by a lone V": {
+			barsOf(true, bar{d, min}, bar{e, halfDim, a, dom7}, bar{d, min}, bar{e, halfDim, a, dom7},
+				bar{d, min}, bar{d, dom7}, bar{g, dom7}, bar{c, dom7}, bar{f, dom7}, bar{bb, maj7},
+				bar{e, halfDim}, bar{a, dom7}),
+			"Dm nat/harm/mel",
+		},
+		// In a Sentimental Mood holds Dm two bars, comes back to it by
+		// A7, and stays in D minor though it concludes in F.
+		"a tune that opens at rest": {
+			barsOf(true, bar{d, min, d, minMaj7}, bar{d, min7, d, min6}, bar{g, min7}, bar{g, min7, a, dom7},
+				bar{d, min}, bar{d, dom7}, bar{g, min7, c, dom7}, bar{f, maj7}),
+			"Dm nat/harm/mel",
+		},
+		// Blue Skies opens on the same line from Am, but its first cadence
+		// goes to C6.
+		"a tune that opens at rest elsewhere": {
+			barsOf(true, bar{a, min, a, minMaj7}, bar{a, min7, a, min6}, bar{c, maj7, a, dom7}, bar{d, min7, g, dom7},
+				bar{c, six}, bar{c, six}, bar{b, halfDim, e, dom7}),
+			"C, setting out from Am nat/harm/mel",
 		},
 	} {
 		sensed := analysis.Sense(tc.changes, analysis.Blocks(tc.changes, analysis.Approaches(tc.changes)))
-		if got := tonalityName(analysis.Tune(tc.changes, sensed)); got != tc.want {
+		got := tonalityName(analysis.Tune(tc.changes, sensed))
+		if home := tonalityName(analysis.Home(tc.changes, sensed)); home != got {
+			got += ", setting out from " + home
+		}
+		if got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
 	}
 }
 
 // A minor tune that ends on its tonic made major stays minor: the
-// tierce picarde. A tune that stays major longer is major.
+// picardy third. A tune that turns major before is major.
 func TestPicardy(t *testing.T) {
-	const c, d, g harmony.PitchClass = 0, 2, 7
+	const c, d, e, g, a harmony.PitchClass = 0, 2, 4, 7, 9
 	const (
+		six     = harmony.ChordMajorSixth
 		maj     = harmony.ChordMajorTriad
 		maj7    = harmony.ChordMajorSeventh
 		min6    = harmony.ChordMinorSixth
@@ -450,6 +493,20 @@ func TestPicardy(t *testing.T) {
 				bar{d, min7, g, dom7}, bar{c, maj7}),
 			"C", false,
 		},
+		// 'Round Midnight closes a section as it ends, on the major tonic,
+		// and starts the next one again in the minor.
+		"a section closing like the tune": {
+			barsOf(false, bar{c, min6}, bar{d, halfDim, g, dom7}, bar{c, maj}, bar{c, min6},
+				bar{d, halfDim, g, dom7}, bar{c, maj}),
+			"Cm nat/harm/mel", true,
+		},
+		// Chega De Saudade: D minor for its first half, D major for its
+		// second, and a stop on D6. A modulation, not a picardy third.
+		"a minor tune turning major": {
+			barsOf(false, bar{d, min6}, bar{e, halfDim, a, dom7}, bar{d, min6}, bar{d, min6},
+				bar{e, min7, a, dom7}, bar{d, six}, bar{d, six}, bar{e, min7, a, dom7}, bar{d, six}),
+			"D", false,
+		},
 	} {
 		c := tc.changes
 		sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
@@ -457,7 +514,78 @@ func TestPicardy(t *testing.T) {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
 		if got := analysis.Picardy(c, sensed); got != tc.picardy {
-			t.Errorf("%s: tierce picarde %v, want %v", name, got, tc.picardy)
+			t.Errorf("%s: picardy third %v, want %v", name, got, tc.picardy)
+		}
+	}
+}
+
+// Home, where a tune sets out from, is where its first phrase comes to
+// rest, however long that phrase is.
+func TestHome(t *testing.T) {
+	const (
+		c, cs, d, eb, e, f, g, ab, a, bb harmony.PitchClass = 0, 1, 2, 3, 4, 5, 7, 8, 9, 10
+	)
+	const (
+		maj     = harmony.ChordMajorTriad
+		min     = harmony.ChordMinorTriad
+		maj7    = harmony.ChordMajorSeventh
+		six     = harmony.ChordMajorSixth
+		min6    = harmony.ChordMinorSixth
+		min7    = harmony.ChordMinorSeventh
+		dom7    = harmony.ChordDominantSeventh
+		halfDim = harmony.ChordHalfDiminished
+		dim7    = harmony.ChordDiminishedSeventh
+	)
+	type bar = []any
+	for name, tc := range map[string]struct {
+		changes analysis.Changes
+		want    string
+	}{
+		// Autumn Leaves: B♭maj7 is passed through, Gm6 held two bars is
+		// where the phrase rests.
+		"Autumn Leaves": {
+			barsOf(true, bar{c, min7}, bar{f, dom7}, bar{bb, maj7}, bar{eb, maj7},
+				bar{a, halfDim}, bar{d, dom7}, bar{g, min6}, bar{g, min6}),
+			"Gm nat/harm/mel",
+		},
+		// How Insensitive: a long sigh down from Dm, back to it.
+		"How Insensitive": {
+			barsOf(true, bar{d, min}, bar{d, min}, bar{cs, dim7}, bar{cs, dim7}, bar{c, min6}, bar{c, min6},
+				bar{g, dom7}, bar{g, dom7}, bar{bb, maj7}, bar{bb, maj7}, bar{e, halfDim, a, dom7}, bar{d, min}),
+			"Dm nat/harm/mel",
+		},
+		// There Will Never Be Another You opens at rest on E♭maj7; Cm7,
+		// held two bars after G7, is its VI.
+		"There Will Never Be Another You": {
+			barsOf(true, bar{eb, maj7}, bar{eb, maj7}, bar{d, halfDim, g, dom7}, bar{c, min7}, bar{c, min7},
+				bar{f, min7}, bar{bb, dom7}, bar{eb, maj7}),
+			"E♭",
+		},
+		// Just Friends opens on Cmaj7, the IV of G where it lands.
+		"Just Friends": {
+			barsOf(true, bar{c, maj7}, bar{c, maj7}, bar{c, min7}, bar{f, dom7}, bar{g, maj7}, bar{g, maj7},
+				bar{a, min7}, bar{d, dom7}),
+			"G",
+		},
+		// Cherokee: E♭maj7 held two bars is the IV, and the phrase comes
+		// back to B♭6 by A♭7.
+		"Cherokee": {
+			barsOf(true, bar{bb, six}, bar{f, min7}, bar{bb, dom7}, bar{eb, maj7}, bar{eb, maj7},
+				bar{ab, dom7}, bar{bb, six}, bar{c, min7, f, dom7}),
+			"B♭",
+		},
+		// Honeysuckle Rose opens on a two, and C7 Gm7 is not a plagal
+		// cadence to rest on.
+		"Honeysuckle Rose": {
+			barsOf(true, bar{g, min7, c, dom7}, bar{g, min7, c, dom7}, bar{g, min7, c, dom7}, bar{g, min7, c, dom7},
+				bar{f, maj}, bar{f, maj}, bar{g, min7}, bar{c, dom7}),
+			"F",
+		},
+	} {
+		c := tc.changes
+		sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
+		if got := tonalityName(analysis.Home(c, sensed)); got != tc.want {
+			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
 	}
 }
