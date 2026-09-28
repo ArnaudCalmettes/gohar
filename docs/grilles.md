@@ -542,10 +542,10 @@ Des données, relues ligne à ligne comme la table des qualités iReal.
 
 | Cadences | Formes | Codées |
 |---|---|---|
-| À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-VI) | parfaite et imparfaite ; la demi-cadence et la rompue se définissent par une absence, et attendent |
+| À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-VI) | parfaite et imparfaite. La rompue se lit sur la tonique du passage (II V VI dans les degrés) : lue seule, Dm7 G7 Am7 est la cadence éolienne de la mineur, IVm7 ♭VII7 Im7, un bloc plagal. La nommer est l'affaire de la surprise. La demi-cadence est une phrase qui s'arrête sur le V, et attend les fins de section |
 | II-V-I | majeur IIm7-V7-Imaj7 ; mineur harmonique IIm7♭5-V7(♭9, ♭13)-Im(maj7) ; mineur mélodique IIm7-V7(9, ♭13)-Im(maj7) ; mixte IIm7♭5-V7(9, ♭13)-Imaj7 | oui |
 | Plagales | IVmaj7-I ; IV7-I et IV7-Im (mineur mélodique) ; IVm7-I (mineur harmonique) ; IVm(maj7)-I (majeur harmonique) ; IV-IVm-I ; IV7-I7 (« bluesy ») | toutes, sauf IV7-I7 (le I7 n'est pas un accord de tonique) |
-| Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7 (phrygien) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I |
+| Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7 (phrygien) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I. Le ♭VIImaj7 et le ♭VIIm7 ne se lisent pas sur deux accords : sans leur mode, ce sont les mouvements conjoints de n'importe quelle grille tonale (Em7 Fmaj7 en do, Dm7 Em7). Ils attendent une grille qui porte ses modes |
 | Avatars du V | V7, ♭II7, VIIdim7 | oui |
 
 **Les sous-dominantes**, d'après le tableau du chapitre 9 : IIm7,

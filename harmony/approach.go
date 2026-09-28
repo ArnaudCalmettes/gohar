@@ -70,6 +70,12 @@ const (
 	// in the bass it is Fm6). The tonic must be a chord that can be one.
 	// A plagal cadence concludes as a V-I does, but draws less: what it
 	// may do in the analysis of a chart is the analysis's to say.
+	//
+	// The other ♭VII-I of En Harmonie, B♭maj7 from the mixolydian and
+	// B♭m7 from the phrygian, are not read from two chords: without
+	// their mode, they are the stepwise motion of any tonal chart, Em7
+	// Fmaj7 in C, Dm7 Em7. They wait for a chart that carries its
+	// modes.
 	PlagalApproach
 )
 

@@ -31,6 +31,15 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // V (Kind is harmony.PlagalApproach): the IV before the tonic, or the
 // ♭VII7 with its IVm7 as its two (Fm7 B♭7 Cmaj7). It concludes, but
 // draws less than a V: see [Sense] for what it may do.
+//
+// # Deceptive
+//
+// The deceptive cadence (cadence rompue), the V going to the VI of its
+// tonality, is not a block's to tell: Dm7 G7 Am7 read alone is the
+// aeolian IVm7 ♭VII7 Im7 of A minor, a plagal block, and it is the
+// tonic of the passage, C, that makes it a V going to its VI. The
+// degrees say so (II V VI), and the surprise, once the analysis
+// expects, will name it.
 type Block struct {
 	Two, Sus int // indices of the changes, -1 when absent
 	Five     int

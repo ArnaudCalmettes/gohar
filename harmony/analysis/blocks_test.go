@@ -85,6 +85,13 @@ func TestBlocks(t *testing.T) {
 			changesOf(false, c, maj7, g, dom7, f, maj7),
 			"",
 		},
+		// The deceptive cadence of C, Dm7 G7 Am7, read alone is the
+		// aeolian cadence of A minor, IVm7 ♭VII7 Im7: a plagal block.
+		// Only the tonic of the passage tells them apart.
+		"deceptive, or aeolian": {
+			changesOf(false, d, min7, g, dom7, a, min7),
+			"Dm7 G7 → Am7 : Am",
+		},
 		// A7♭9 holds only D harmonic minor, and keeps it before D major;
 		// E9 holds A major and A melodic minor, and the target decides.
 		"the colours of the V decide without a two": {

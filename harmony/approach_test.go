@@ -82,7 +82,7 @@ func TestApproachOf(t *testing.T) {
 		"not an approach": {
 			{chordOf(t, g, seventh...), none}, // to the dominant a tone below
 			{chordOf(t, f, seventh...), plag}, // ♭VII7-I: a plagal, see below
-			{chordOf(t, g, major7...), none},
+			{chordOf(t, g, major7...), none}, // ♭VIImaj7: a modal cadence, not read
 			{chordOf(t, a, minor7...), none}, // a two needs a dominant after
 			{chordOf(t, d, major7...), none},
 		},
@@ -143,6 +143,15 @@ func TestApproachOf(t *testing.T) {
 			{chordOf(t, c, major7...), none},
 			{chordOf(t, f, major7...), none}, // not before a dominant
 			{chordOf(t, c, seventh...), none},
+		},
+		// The modal ♭VII-I, B♭maj7 from C mixolydian, B♭m7 from C
+		// phrygian, are not read from two chords: they are the stepwise
+		// motion of any tonal chart.
+		"modal cadences, not read": {
+			{chordOf(t, bb, major7...), none},
+			{chordOf(t, c, major7...), none},
+			{chordOf(t, bb, minor7...), none},
+			{chordOf(t, c, minor7...), none},
 		},
 		"a two five one": {
 			{chordOf(t, d, minor7...), two},

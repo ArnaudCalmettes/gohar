@@ -257,9 +257,11 @@ La suite, dans l'ordre :
 - [ ] la modalité, sur de vraies grilles modales qui portent leurs
       couleurs : ce que devient un accord dans une plage, et le format
       de grille qui les écrit.
-- [ ] les cadences du catalogue qui restent : ♭VIImaj7-I et ♭VIIm7-I,
-      IV7-I7, la demi-cadence et la rompue, le V seul et ce qu'il fait
-      attendre.
+- [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
+      manque : la demi-cadence (les fins de section), la rompue (la
+      surprise), le V seul et ce qu'il fait attendre (la surprise), le
+      ♭VIImaj7-I et le ♭VIIm7-I (les modes de la grille), IV7-I7 (le
+      blues).
 - [ ] les relations entre blocs : marches de II-V, cycle des quartes.
 - [ ] la marche d'accords parallèles (*Stolen Moments*).
 - [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),
