@@ -132,3 +132,15 @@ func sharpened(name string) string {
 	}
 	return name
 }
+
+// phrasesOf cuts changes into phrases, from their blocks.
+func phrasesOf(c analysis.Changes) []analysis.Phrase {
+	return analysis.Phrases(c, analysis.Blocks(c, analysis.Approaches(c)))
+}
+
+// sense reads the sensed tonic of changes, from their blocks and
+// phrases.
+func sense(c analysis.Changes) []analysis.Sensed {
+	blocks := analysis.Blocks(c, analysis.Approaches(c))
+	return analysis.Sense(c, blocks, analysis.Phrases(c, blocks))
+}

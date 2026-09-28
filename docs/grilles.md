@@ -62,44 +62,50 @@ l'oreille attend accord par accord.
 ### Sa tonalité
 
 Deux questions, que l'analyse sépare : d'où le morceau part, et où il
-s'arrête.
+s'arrête. Toutes deux se lisent sur les **phrases** (`Phrases`) : la
+première, et la dernière.
 
-**La maison** (`Home`) est là où se pose la première phrase. Une
-phrase n'a pas de longueur fixe : elle court jusqu'à se poser sur un
-accord de tonique qu'une cadence amène, et qui revient sur l'accord
+Une **phrase** va d'un repos au suivant, et n'a pas de longueur fixe.
+Elle se termine quand elle se pose, ou quand le morceau s'arrête. Elle
+se pose sur un accord de tonique qu'une cadence amène, et qui revient sur l'accord
 d'ouverture (*How Insensitive*, un long soupir de Dm à Dm, quatorze
 mesures plus loin) ou tient plus d'une mesure et plus longtemps que les
 accords qui y mènent (le Gm6 d'*Autumn Leaves*). Une tonique de passage
 ne pose rien (le B♭maj7 d'*Autumn Leaves*), ni un IV, si long soit-il
 (le E♭maj7 de *Cherokee*), ni un m7 après l'ouverture (le Cm7 de *There
-Will Never Be Another You*, son VI). Un morceau peut aussi s'ouvrir au
-repos, sur sa tonique tenue plus d'une mesure, sauf quand la première
-phrase se pose ensuite une quinte au-dessus : *Just Friends* s'ouvre
-sur Cmaj7, son IV, et se pose sur Gmaj7. Tant que rien ne s'est posé,
-le premier accord n'est qu'une hypothèse.
+Will Never Be Another You*, son VI). Le repos dure autant que la
+tonique tient.
 
-**La tonalité du morceau** (`Tune`) est la dernière tonique entendue,
-là où s'arrête la dernière phrase. On joue un standard jusqu'à elle, et
+**La maison** (`Home`) est là où se pose la première phrase. Un
+morceau peut aussi **s'ouvrir au repos** : sa tonique est tenue plus
+d'une mesure, et sa première cadence y revient. Il part alors de là.
+*In a Sentimental Mood* tient Dm deux mesures et y revient par A7 ;
+*Just Friends* s'ouvre sur Cmaj7, son IV, mais sa première cadence va à
+Gmaj7, où il se pose, et *Blue Skies* s'ouvre sur la même ligne que
+Sentimental Mood depuis Am, mais sa première cadence va à C6. Tant que
+rien ne s'est posé, le premier accord n'est qu'une hypothèse.
+
+**La tonalité du morceau** (`Tune`) est là où s'arrête la dernière
+phrase : la dernière tonique entendue. On joue un standard jusqu'à elle, et
 pas au-delà : le turnaround qui suit ramène au premier accord, vers
 lequel il pointe forcément, et ne dit rien de la tonalité. *Lullaby Of
 Birdland* part de fa mineur et s'arrête sur A♭maj7, avant que Gm7♭5 C7
 ne ramène à Fm : il est en la♭. *All The Things You Are* n'est tranché
-que par son dernier A♭maj7. Pour arrêter le morceau hors du fond, il
-faut un II-V-I : un V seul ne fait que traverser (*Yesterdays* passe
-par B♭maj7 dans son cycle de dominantes, et reste en ré mineur), sauf
-sur le tout dernier accord de la grille. Un m7 ne l'arrête que s'il
-est la tonique du fond : le F♯7 Fm7 de la fin de *Sugar* tonicise le
-IV. Certaines grilles n'écrivent pas leur dernière tonique et
-s'arrêtent sur le IV de la maison, avant un turnaround qui y revient :
-*Unforgettable* s'arrête sur Cmaj7 avant Am7 D7, et ce IV est sauté.
+que par son dernier A♭maj7. Une tonique déjà installée, celle de
+l'ouverture, du repos précédent ou de la première cadence, revient sans
+cadence (le D6 final de *Chega
+De Saudade*, le E♭6 de *'Round Midnight*). Une autre demande un II-V-I
+ou une plagale : un V seul ne fait que traverser (*Yesterdays* passe
+par B♭maj7 dans son cycle de dominantes, et reste en ré mineur), et un
+m7, presque toujours une sous-dominante, n'arrête rien (le F♯7 Fm7 de
+la fin de *Sugar* tonicise le IV).
 
-**Un morceau qui s'ouvre au repos et que sa première cadence ramène
-chez lui** a installé sa maison avant d'en partir, et il y reste où
-qu'il s'arrête. *In a Sentimental Mood* tient Dm deux mesures (Dm,
-Dm(maj7), Dm7, Dm6), y revient par A7, et reste en ré mineur bien qu'il
-conclue par Gm7 C7♭9 Fmaj7, dans son relatif majeur ; c'est aussi ce
-que dit la tradition. *Blue Skies* s'ouvre sur la même ligne depuis
-Am, mais sa première cadence va à C6 : il est en do.
+**Un morceau qui s'ouvre au repos** a installé sa maison avant d'en
+partir, et il y reste où qu'il s'arrête, sauf s'il s'arrête sur la même
+tonique : *In a Sentimental Mood* reste en ré mineur bien qu'il conclue
+par Gm7 C7♭9 Fmaj7, dans son relatif majeur, ce que dit aussi la
+tradition ; *Chega De Saudade* s'ouvre sur ré mineur et s'arrête sur D6,
+en ré majeur.
 
 Quand la maison et la fin diffèrent, `analyse` donne les deux : *Fly Me
 To The Moon* part de la mineur et s'arrête en do, *Lullaby Of Birdland*
@@ -108,15 +114,12 @@ part de fa mineur et s'arrête en la♭.
 **La tierce picarde** ne rend pas majeur un morceau mineur. Héritée de
 la musique d'église, où un accord majeur sonne avec moins de partiels
 qui frottent sous la résonance d'un grand orgue, elle majorise la
-tonique sur le dernier accord : la tonique, mineure jusque-là et
-exclusivement, se majorise sur l'accord de fin. Le morceau reste
-mineur, et l'analyse la signale (`Picardy`). Une section peut se clore
-de la même façon avant, si le mineur revient ensuite : *'Round
-Midnight* finit son deuxième A comme il finit, sur E♭6, et son dernier
-A repart sur E♭m. Tout autre majeur homonyme est une modulation :
-*Chega De Saudade* est en ré mineur pour ses deux premières parties, en
-ré majeur pour les deux dernières, s'arrête sur D6, et est en ré
-majeur. De même
+tonique sur le dernier accord : la tonique est mineure là où on
+l'entend d'abord et là où on l'entend en dernier avant la fin, et
+majeure sur l'accord final. Le morceau reste mineur, et l'analyse la
+signale (`Picardy`). *'Round Midnight* clôt son deuxième A sur E♭6,
+puis son dernier A repart sur E♭m : tierce picarde. *Chega De Saudade*
+tient ré majeur toute sa seconde moitié : il est en ré majeur. De même
 *I Love Paris* et *Black And Tan Fantasy*, dont la seconde partie est
 en majeur. Un morceau qui finit sur sa propre tonique garde le mode où
 il finit, même s'il s'est ouvert au repos dans l'autre.
@@ -162,15 +165,27 @@ Une plage est **tonale** quand les accords s'enchaînent autour d'un
 centre et ont une fonction : c'est l'essentiel de ce document. Elle est
 **modale** quand un accord tenu plusieurs mesures installe un mode et
 non un centre, comme le X7sus4 « d'espèce » de *Maiden Voyage*, qui
-par sa durée, sans résolution sur son X7, n'a pas de fonction ; le
-critère est une durée sans cadence, au-delà d'un seuil. Elle est
+par sa durée, sans résolution sur son X7, n'a pas de fonction. Elle est
 **atonale** quand on passe d'un mode à l'autre au gré des accords (*Pee
 Wee*) : chaque accord reçoit sa provenance, aucun ne reçoit de degré,
 et c'est la valeur zéro de `Tonality`, un état légitime. Un même
-morceau peut mêler les trois. Les plages modales ne sont pas encore
-codées : *So What* (ré dorien, mi♭ dorien, ré dorien) en sera le test,
-et son pont est aujourd'hui chiffré ♭IIm7 en ré mineur, ce qui n'a pas
-de sens.
+morceau peut mêler les trois.
+
+**La plage modale se reconnaît, son mode ne se lit pas** (`Modal`). Un
+accord tenu quatre mesures ou plus (`ModalBars`), sans cadence qui y
+mène ni qui en sorte, fait une plage : les trois de *So What*, les huit
+de *Maiden Voyage*. Un turnaround vers le premier accord n'est pas une
+cadence qui y mène. Dans une plage, pas de degré ni de tonique
+pressentie ; `analyse` écrit « modal » sous l'accord. Mais une grille
+qui n'écrit que des tétrades ne dit pas la couleur : Dm7 ne distingue
+pas ré dorien de ré éolien, et c'est la mélodie, ou ce qu'on sait du
+morceau, qui dit que *So What* est dorien. L'analyse le laisse aux
+provenances de l'accord et ne choisit pas. La modalité se travaillera
+sur de vraies grilles modales, qui portent leurs couleurs, pas sur des
+grilles auxquelles il manque l'information. Un morceau dont les plages
+font au moins la moitié est **un morceau modal** (`IsModal`), et le
+corpus le met à part, comme tout morceau où aucune cadence ne se résout
+sur une tonique.
 
 ## Les cadences
 
@@ -608,14 +623,14 @@ fins.
 | Just Friends | un morceau qui s'ouvre sur son IV, et se pose sur son I par une plagale |
 | Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
 | In a Sentimental Mood, Blue Skies | la maison installée avant de partir, et ce qui la distingue d'une simple ouverture |
-| Yesterdays, Unforgettable | une tonique traversée par un V seul, un IV où la grille s'arrête sans écrire sa tonique |
+| Yesterdays | une tonique traversée par un V seul |
 | My Way | la quarte et sixte F/C, et le retour par une plagale |
 | Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; Fly Me part de la mineur et s'arrête en do |
 | Softly, Summertime | la tonique mineure écrite m7 |
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
 | Chega De Saudade | le majeur homonyme installé pour de bon : une modulation, le morceau est en ré |
 | Stolen Moments | la marche d'accords parallèles |
-| So What | la plage modale, à venir |
+| So What, Maiden Voyage | la plage modale reconnue, son mode laissé à la grille qui ne le dit pas |
 | Sonnymoon for Two, Chasin' the Trane, Blues For Alice | le blues reconnu à sa forme |
 
 ### Le corpus
@@ -623,12 +638,27 @@ fins.
 `charts/cmd/corpus` compare, sur une ou plusieurs playlists, la
 tonalité que l'analyse entend à celle que l'app déclare, en groupant
 les écarts par relation (relatif, quinte, quarte, homonyme, autre) avec
-des indices pour trancher : le nombre de cadences résolues, la fin sur
-la tonique entendue, le blues, la tierce picarde, la grille de jeu
-vidéo. Sur les 1678 grilles des deux playlists, les deux tombent
-d'accord pour 1300 (77 %), l'app se trompant parfois (Chega De
-Saudade, déclaré en ré mineur). Les écarts ne sont pas tous des erreurs de
-l'analyse, et leurs familles pointent les questions ouvertes.
+des indices pour trancher : le nombre de cadences résolues sur une
+tonique, la fin sur la tonique entendue, le blues, la tierce picarde,
+les plages modales, la grille de jeu vidéo.
+
+Les grilles auxquelles il manque ce qui dit une tonalité sont **mises à
+part**, pas jugées : les morceaux modaux et ceux où aucune cadence ne
+se résout sur une tonique, que le rapport reconnaît, et une liste
+relue à la main, `charts/ireal/testdata/set-aside.txt`, avec la raison
+de chaque titre : les thèmes modaux à accords courts dont la grille
+n'écrit pas les couleurs (*Speak No Evil*, *Infant Eyes*, *Nefertiti*,
+*Afro Blue*), et les blues d'une forme que `Blues` ne connaît pas
+(*Freddie Freeloader*, *Doxy*, *Watermelon Man*), et les thèmes que
+ni l'un ni l'autre ne connaissons, sans rien pour vérifier l'analyse.
+On résiste à la tentation de gérer des grilles auxquelles il manque
+l'information : on travaille sur de vraies données, et cette liste est
+celle des grilles à réécrire dans un format qui porte l'information.
+
+Sur les 1678 grilles des deux playlists, 1569 sont jugées, et les deux
+tombent d'accord pour 1259 (80 %), l'app se trompant parfois (Chega De
+Saudade, déclaré en ré mineur). Les écarts ne sont pas tous des erreurs
+de l'analyse, et leurs familles pointent les questions ouvertes.
 
 ## Hors périmètre
 
@@ -651,10 +681,15 @@ aussi.
 
 - **Les thèmes ambigus entre relatifs**, *Corcovado* (la mineur ou do)
   en tête : la tradition tranche parfois là où l'oreille hésite.
+- **La grille qui n'écrit pas sa dernière tonique** et s'arrête sur le
+  IV de la maison, avant un turnaround qui y revient : *Unforgettable*
+  s'arrête sur Cmaj7 avant Am7 D7 ; *Someday My Prince Will Come*,
+  *Wave*. Une règle le sauvait, retirée pour garder le code simple :
+  à reprendre quand les phrases auront convergé.
 - **L'attente d'un diminué**, ses quatre toniques possibles, pour le
   pivot.
-- **Les seuils** de la modulation, en données, et la durée d'une plage
-  modale, à régler sur les morceaux de référence puis à l'oreille.
+- **Les seuils** de la modulation et de la plage modale, en données, à
+  régler sur les morceaux de référence puis à l'oreille.
 - **La longueur d'une chaîne** de préparations avant qu'elle ne soit
   plus une préparation mais une région.
 - **L'ordre exact des lectures** quand plusieurs valent, règle par

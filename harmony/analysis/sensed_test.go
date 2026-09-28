@@ -15,7 +15,7 @@ import (
 //	Gm7♭5 in E♭, awaiting Fm harm
 func sensedOf(c analysis.Changes) string {
 	var out []string
-	for i, s := range analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c))) {
+	for i, s := range sense(c) {
 		line := changeName(c.Chords[i]) + " in "
 		if s.Ground == nil {
 			line += "?"
@@ -116,8 +116,7 @@ func TestTune(t *testing.T) {
 	leaves := changesOf(false, c, harmony.ChordMinorSeventh, f, harmony.ChordDominantSeventh,
 		bb, harmony.ChordMajorSeventh, eb, harmony.ChordMajorSeventh,
 		a, harmony.ChordHalfDiminished, d, harmony.ChordDominantSeventh, g, harmony.ChordMinorSixth)
-	sensed := analysis.Sense(leaves, analysis.Blocks(leaves, analysis.Approaches(leaves)))
-	if got := tonalityName(analysis.Tune(leaves, sensed)); got != "Gm nat/harm/mel" {
+	if got := tonalityName(analysis.Tune(leaves, phrasesOf(leaves))); got != "Gm nat/harm/mel" {
 		t.Errorf("%s, want Gm nat/harm/mel", got)
 	}
 }
@@ -128,7 +127,7 @@ func TestTune(t *testing.T) {
 //
 //	Dm7 in D, in C afterwards
 func groundsOf(c analysis.Changes) string {
-	sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
+	sensed := sense(c)
 	grounds := analysis.Grounds(c, sensed)
 	var out []string
 	name := func(ts []harmony.Tonality) string {
@@ -279,8 +278,7 @@ func TestTuneAfterATurnaround(t *testing.T) {
 	const c, d, f, g harmony.PitchClass = 0, 2, 5, 7
 	ch := changesOf(false, f, harmony.ChordMajorSeventh, d, harmony.ChordMinorSeventh,
 		g, harmony.ChordDominantSeventh, c, harmony.ChordDominantSeventh)
-	sensed := analysis.Sense(ch, analysis.Blocks(ch, analysis.Approaches(ch)))
-	if got := tonalityName(analysis.Tune(ch, sensed)); got != "F" {
+	if got := tonalityName(analysis.Tune(ch, phrasesOf(ch))); got != "F" {
 		t.Errorf("%s, want F", got)
 	}
 }
@@ -447,16 +445,15 @@ func TestTuneEndings(t *testing.T) {
 			"Dm nat/harm/mel",
 		},
 		// Blue Skies opens on the same line from Am, but its first cadence
-		// goes to C6.
+		// goes to C6: it does not open at rest, and is in C.
 		"a tune that opens at rest elsewhere": {
 			barsOf(true, bar{a, min, a, minMaj7}, bar{a, min7, a, min6}, bar{c, maj7, a, dom7}, bar{d, min7, g, dom7},
 				bar{c, six}, bar{c, six}, bar{b, halfDim, e, dom7}),
-			"C, setting out from Am nat/harm/mel",
+			"C",
 		},
 	} {
-		sensed := analysis.Sense(tc.changes, analysis.Blocks(tc.changes, analysis.Approaches(tc.changes)))
-		got := tonalityName(analysis.Tune(tc.changes, sensed))
-		if home := tonalityName(analysis.Home(tc.changes, sensed)); home != got {
+		got := tonalityName(analysis.Tune(tc.changes, phrasesOf(tc.changes)))
+		if home := tonalityName(analysis.Home(tc.changes, phrasesOf(tc.changes))); home != got {
 			got += ", setting out from " + home
 		}
 		if got != tc.want {
@@ -509,11 +506,10 @@ func TestPicardy(t *testing.T) {
 		},
 	} {
 		c := tc.changes
-		sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
-		if got := tonalityName(analysis.Tune(c, sensed)); got != tc.want {
+		if got := tonalityName(analysis.Tune(c, phrasesOf(c))); got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
-		if got := analysis.Picardy(c, sensed); got != tc.picardy {
+		if got := analysis.Picardy(c, phrasesOf(c)); got != tc.picardy {
 			t.Errorf("%s: picardy third %v, want %v", name, got, tc.picardy)
 		}
 	}
@@ -583,8 +579,7 @@ func TestHome(t *testing.T) {
 		},
 	} {
 		c := tc.changes
-		sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
-		if got := tonalityName(analysis.Home(c, sensed)); got != tc.want {
+		if got := tonalityName(analysis.Home(c, phrasesOf(c))); got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
 	}

@@ -132,11 +132,12 @@ go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
 ```
 
 And over whole playlists, where the tonality it hears differs from the
-one the app declares, grouped by how the two relate:
+one the app declares, grouped by how the two relate, the charts that
+lack what tells a tonality set aside:
 
 ```sh
 cd charts
-go run ./cmd/corpus ireal/testdata/local/*.html
+go run ./cmd/corpus -aside ireal/testdata/set-aside.txt ireal/testdata/local/*.html
 ```
 
 ## History

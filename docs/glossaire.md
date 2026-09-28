@@ -220,7 +220,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 |---|---|---|
 | `Changes` | La suite d'accords qu'on analyse, chacun avec sa basse, son début et sa durée. Celle d'une grille boucle, celle d'un joueur s'allonge | Une `Progression`, relative et sans durées |
 | Rythme harmonique | Le nombre d'accords par mesure | Le tempo |
-| Plage | Un passage tonal (centre et fonctions), modal (un accord tenu installe un mode) ou atonal (pas de centre) | Une section de la grille |
+| Plage | Un passage tonal (centre et fonctions), modal (un accord tenu quatre mesures sans cadence installe un mode, que la grille ne dit pas : `Modal`) ou atonal (pas de centre) | Une section de la grille |
 | Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée ou une deuxième cadence. Entendue au moment où elle s'installe (`Sense`), elle commence après coup à la cadence qui y menait (`Grounds`) | Un emprunt ; une tonicisation, qui ne tient pas plus d'une mesure |
 | Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
 | Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
@@ -228,7 +228,8 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Bloc | Une cadence, [II] [sus4] V → cible, avec la tonalité qu'elle annonce, qu'elle s'y résolve ou non | Une section de la grille |
 | Cadence plagale | Une sous-dominante avant la tonique : le IV de toute qualité, ou le ♭VII7, plagale mineure déguisée (avec le IV à la basse, B♭7 devient Fm6 en do). Elle conclut, mais n'ouvre pas de tonique (`PlagalApproach`) | Le backdoor, autre nom du ♭VII7-I, qu'on ne garde pas |
 | Quarte et sixte | Un accord avec sa quinte à la basse : sur une pédale, ce n'est pas une tonique. Dans le F/C C final de *My Way*, le fa est une broderie au-dessus du do, et l'ensemble une plagale | Un renversement de tonique, I/3, qui en reste une |
-| Tierce picarde | La tonique, mineure jusque-là et exclusivement, majorisée sur l'accord de fin ; une section peut se clore de même avant, si le mineur revient (*'Round Midnight*). Le morceau reste mineur (`Picardy`) | Une modulation au majeur homonyme (*Chega De Saudade*, en ré) |
+| Tierce picarde | La tonique, mineure là où on l'entend d'abord et en dernier avant la fin, majorisée sur l'accord de fin (*'Round Midnight*). Le morceau reste mineur (`Picardy`) | Une modulation au majeur homonyme (*Chega De Saudade*, en ré) |
+| Phrase | Ce qui va d'un repos au suivant, sans longueur fixe : elle se termine quand elle se pose sur une tonique, ou quand le morceau s'arrête (`Phrases`) | Une section de la grille |
 | Maison | Là où se pose la première phrase, d'où le morceau part (`Home`). Elle devient la tonalité du morceau quand il s'ouvre au repos et que sa première cadence y revient | La tonalité du morceau, là où s'arrête la dernière phrase (`Tune`) |
 | Septième d'espèce | Un X7 qui n'est pas une dominante : il ne prépare rien, il est la couleur de son degré. Le I7 et le IV7 du blues, le X7sus4 de *Maiden Voyage* | Une dominante, qui a le même son mais prépare un accord |
 | Armure | L'attribut de la partition écrite qui évite d'écrire les altérations ; pour une grille iReal, le champ de tonalité de l'app (`DeclaredTonalities`). L'analyse ne la lit pas et signale quand elle se trompe | La tonalité, que l'analyste détermine lui-même |

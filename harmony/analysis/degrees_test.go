@@ -12,7 +12,7 @@ import (
 // tonic, and bracketed as En Harmonie prints it.
 func degreesOf(c analysis.Changes) (string, string) {
 	blocks := analysis.Blocks(c, analysis.Approaches(c))
-	sensed := analysis.Sense(c, blocks)
+	sensed := analysis.Sense(c, blocks, analysis.Phrases(c, blocks))
 	passing := analysis.PassingChords(c)
 	write := func(ds []analysis.Degree) string {
 		var out []string

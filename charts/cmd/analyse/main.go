@@ -92,7 +92,9 @@ func render(s ireal.Song) string {
 	kinds := analysis.Approaches(changes)
 	passing := analysis.PassingChords(changes)
 	blocks := analysis.Blocks(changes, kinds)
-	sensed := analysis.Sense(changes, blocks)
+	phrases := analysis.Phrases(changes, blocks)
+	plages := analysis.Modal(changes, blocks)
+	sensed := analysis.Sense(changes, blocks, phrases)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 
@@ -107,7 +109,11 @@ func render(s ireal.Song) string {
 		if !sp.NoChord {
 			name = symbol(sp.Chord)
 		}
-		off, w := cells[sp.Bar].add(walk(passing[i])+label(kinds[i]), name, degrees[i].String(), heard(sensed, i))
+		degree, tonic := degrees[i].String(), heard(sensed, i)
+		if inPlage(plages, i) {
+			degree, tonic = "modal", ""
+		}
+		off, w := cells[sp.Bar].add(walk(passing[i])+label(kinds[i]), name, degree, tonic)
 		words[i] = word{sp.Bar, off, w}
 		started[sp.Bar] = true
 	}
@@ -133,7 +139,7 @@ func render(s ireal.Song) string {
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
-	fmt.Fprint(&b, heardIn(s, changes, sensed))
+	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
 	fmt.Fprint(&b, legend)
 	for start := 0; start < len(cells); {
 		end := start + 1
@@ -193,20 +199,24 @@ func (c *cell) add(top, bottom, below, tonic string) (int, int) {
 // heardIn says in which tonality the analysis hears the tune, and when
 // it differs, what the app declares: the analysis does not read the
 // app's key, which is often wrong.
-func heardIn(s ireal.Song, changes analysis.Changes, sensed []analysis.Sensed) string {
-	tune := analysis.Tune(changes, sensed)
+func heardIn(s ireal.Song, changes analysis.Changes, phrases []analysis.Phrase, plages []analysis.Plage) string {
+	var modal string
+	if n := len(plages); n > 0 {
+		modal = fmt.Sprintf(", %d modal plage%s, the chart not saying which mode", n, plural(n))
+	}
+	tune := analysis.Tune(changes, phrases)
 	if tune == nil {
-		return "no tonality heard\n"
+		return "no tonality heard" + modal + "\n"
 	}
 	name := short(flats[tune[0].Tonic()], tune)
-	line := "heard in " + name
+	line := "heard in " + name + modal
 	if _, ok := analysis.Blues(changes); ok {
 		line += ", a blues"
 	}
-	if analysis.Picardy(changes, sensed) {
+	if analysis.Picardy(changes, phrases) {
 		line += ", ending on a Picardy third"
 	}
-	if home := analysis.Home(changes, sensed); home != nil && short(flats[home[0].Tonic()], home) != name {
+	if home := analysis.Home(changes, phrases); home != nil && short(flats[home[0].Tonic()], home) != name {
 		line += ", setting out from " + short(flats[home[0].Tonic()], home)
 	}
 	if declared, ok := s.DeclaredTonalities(); ok {
@@ -437,6 +447,8 @@ above, the blocks ([II] [sus4] V) and the tonality each announces:
 under each chord, its degree in the tonality of the passage:
   IIIm7♭5 VI7      Gm7♭5 C7 in E♭ major
   ♭VII7 ♯Vdim7 I/3 a borrowed chord, a passing chord, an inversion
+  modal            a chord held four bars or more with no cadence: a
+                   modal plage, whose mode the chart does not say
 
 under the degrees, the tonic the ear hears, where it changes:
   E♭               E♭ is the tonic
@@ -495,4 +507,21 @@ func symbol(c ireal.ChordSymbol) string {
 
 func note(n string) string {
 	return strings.NewReplacer("b", "♭", "#", "♯").Replace(n)
+}
+
+// inPlage reports whether change i is in a modal plage.
+func inPlage(plages []analysis.Plage, i int) bool {
+	for _, p := range plages {
+		if p.From <= i && i <= p.To {
+			return true
+		}
+	}
+	return false
+}
+
+func plural(n int) string {
+	if n > 1 {
+		return "s"
+	}
+	return ""
 }

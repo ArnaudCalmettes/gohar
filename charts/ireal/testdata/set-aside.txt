@@ -1,0 +1,79 @@
+# Charts set aside by the corpus report: their tonality is not what to
+# judge the analysis on. One title per line, as the app's playlists
+# write it, then " | " and the reason.
+#
+# Modal tunes whose colours the chart does not write: the chords are
+# held one or two bars, below what Modal sees, and a tetrad does not
+# tell the mode. To be written again in a format that carries the
+# colours, the day modality is worked on.
+Speak No Evil | modal, the chart not writing its colours
+Infant Eyes | modal, the chart not writing its colours
+Nefertiti | modal, the chart not writing its colours
+Fall | modal, the chart not writing its colours
+Iris | modal, the chart not writing its colours
+Pinocchio | modal, the chart not writing its colours
+E.S.P. | modal, the chart not writing its colours
+Black Narcissus | modal, the chart not writing its colours
+Recordame | modal, the chart not writing its colours
+Nardis | modal, the chart not writing its colours
+Afro Blue | modal, the chart not writing its colours
+Eighty One | modal, the chart not writing its colours
+Sidewinder | modal, the chart not writing its colours
+Limbo | modal, the chart not writing its colours
+Straight Life | modal, the chart not writing its colours
+Song For My Lady | modal, the chart not writing its colours
+Epistrophy | Monk, a mode a chord at a time
+#
+# Blues of a form Blues does not know: a riff over the changes, or a
+# chorus longer than twelve bars.
+Freddie Freeloader | a blues Blues does not know
+Blues March | a blues Blues does not know
+Doxy | a blues Blues does not know
+Twisted | a blues Blues does not know
+Twisted Blues | a blues Blues does not know
+Watermelon Man | a blues Blues does not know
+Sister Sadie | a blues Blues does not know
+Killer Joe | a blues Blues does not know
+Locomotion | a blues Blues does not know
+Relaxin' At Camarillo | a blues Blues does not know
+Better Git It In Your Soul | a blues Blues does not know
+Chicken, The | a blues Blues does not know
+#
+# Tunes neither of us knows, set aside by the report for want of a
+# cadence: nothing to check the analysis against. Real, usable data
+# first.
+A Sound For Sore Ears | unknown to us, nothing to check against
+Adam's Apple | unknown to us, nothing to check against
+And On The Third Day | unknown to us, nothing to check against
+Bolivia | unknown to us, nothing to check against
+Butterfly Dreams | unknown to us, nothing to check against
+Conference Of The Birds | unknown to us, nothing to check against
+Contemplation | unknown to us, nothing to check against
+Core, The | unknown to us, nothing to check against
+Deluge | unknown to us, nothing to check against
+Eye of the Hurricane | unknown to us, nothing to check against
+Green Chimneys | unknown to us, nothing to check against
+Humpty Dumpty | unknown to us, nothing to check against
+In Pursuit Of The 27th Man | unknown to us, nothing to check against
+Isotope | unknown to us, nothing to check against
+It's Just Talk | unknown to us, nothing to check against
+Jackie-ing | unknown to us, nothing to check against
+Let's Call This | unknown to us, nothing to check against
+Litha | unknown to us, nothing to check against
+Ma Belle Hélène | unknown to us, nothing to check against
+Moon Alley | unknown to us, nothing to check against
+Nothing Personal | unknown to us, nothing to check against
+Oliloqui Valley | unknown to us, nothing to check against
+On Broadway | unknown to us, nothing to check against
+Passion Dance | unknown to us, nothing to check against
+Phase Dance | unknown to us, nothing to check against
+Saga Of Harrison Crabfeathers, The | unknown to us, nothing to check against
+San Francisco Holiday | unknown to us, nothing to check against
+Serene | unknown to us, nothing to check against
+Seven Come Eleven | unknown to us, nothing to check against
+Summer Band Camp | unknown to us, nothing to check against
+Sweet Georgia Bright | unknown to us, nothing to check against
+Swinging At The Haven | unknown to us, nothing to check against
+Witch Hunt | unknown to us, nothing to check against
+You Better Leave it Alone | unknown to us, nothing to check against
+Zoltan | unknown to us, nothing to check against

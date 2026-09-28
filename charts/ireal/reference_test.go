@@ -269,7 +269,7 @@ func TestFichesDegrees(t *testing.T) {
 	for name, f := range fiches(t) {
 		c := fromFiche(t, f)
 		blocks := analysis.Blocks(c, analysis.Approaches(c))
-		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks))
+		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, analysis.Phrases(c, blocks)))
 		var want []string
 		for _, d := range f.Degrees {
 			if d != "%" {

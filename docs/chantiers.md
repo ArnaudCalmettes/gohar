@@ -33,8 +33,9 @@ et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
 Les fiches du livre concordent à 83 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app sur 77 % du corpus, sans
-la lire.
+d'accord avec la tonalité déclarée par l'app sur 80 % du corpus (1259
+des 1569 grilles jugées, les modales et une liste relue à la main
+mises à part), sans la lire.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
 `Cooling` et `Discoverable`.
@@ -50,7 +51,8 @@ Vérifié sur 1678 grilles réelles, qui restent hors du dépôt, et sur
 quatre fiches d'analyse du livre *En Harmonie*. Deux commandes :
 `charts/cmd/analyse` affiche une grille annotée dans le terminal,
 `charts/cmd/corpus` compare l'analyse à l'app sur des playlists
-entières.
+entières, les grilles auxquelles il manque l'information mises à part
+(`charts/ireal/testdata/set-aside.txt`).
 
 `games/keyboard` a deux sources : le clavier MIDI, qui saute les ports
 Through quand aucun n'est demandé, et la séquence rejouée, qui joue des
@@ -222,9 +224,8 @@ Fait :
 
 - **La suite d'accords** (`Changes` : basses, durées, bouclage, coda)
   et son pont depuis iReal.
-- **Les préparations** d'un accord au suivant (`Approaches`) et les
-  chaînes remontées depuis chaque arrivée (`Chains`) ; **le passage**
-  (`PassingChords`), nommé d'après sa basse.
+- **Les préparations** d'un accord au suivant (`Approaches`) et **le
+  passage** (`PassingChords`), nommé d'après sa basse.
 - **Les blocs**, [II] [sus4] V → cible, et les tonalités qu'ils
   annoncent en gammes précises (`Blocks`, `Block.Announced`).
 - **Les degrés**, en deux lectures simultanées : sur la tonique
@@ -235,9 +236,9 @@ Fait :
   (`Grounds`), le retour à la maison sur une cadence ou sur le seul
   accord de tonique ; Tune Up et Black Orpheus concordent entièrement
   avec leurs fiches.
-- **La maison** (`Home`), là où se pose la première phrase, et **la
-  tonalité du morceau** (`Tune`), la dernière tonique entendue,
-  turnaround exclu, sauf quand le morceau s'ouvre au repos et que sa
+- **Les phrases** (`Phrases`), qui vont d'un repos au suivant ; **la
+  maison** (`Home`), là où se pose la première, et **la tonalité du
+  morceau** (`Tune`), là où s'arrête la dernière, turnaround exclu, sauf quand le morceau s'ouvre au repos et que sa
   première cadence y revient ; jamais l'armure ; une grille qui boucle
   entendue comme son deuxième chorus ; la tonique mineure écrite m7 ;
   la tierce picarde (`Picardy`).
@@ -245,13 +246,17 @@ Fait :
   son IVm7 (`PlagalApproach`), qui concluent sans ouvrir de tonique.
 - **Le blues**, reconnu à sa forme (`Blues`), sa septième d'espèce lue
   comme sa tonique.
+- **La plage modale** (`Modal`), un accord tenu quatre mesures sans
+  cadence, reconnue sans que son mode soit lu : la grille ne le dit
+  pas. Le corpus met les morceaux modaux à part (`IsModal`).
 - **L'affichage** dans le terminal (`charts/cmd/analyse`) et **le
   rapport sur le corpus** (`charts/cmd/corpus`).
 
 La suite, dans l'ordre :
 
-- [ ] les plages modales : *So What*, *Maiden Voyage*, et les grilles
-      de jeux vidéo modales.
+- [ ] la modalité, sur de vraies grilles modales qui portent leurs
+      couleurs : ce que devient un accord dans une plage, et le format
+      de grille qui les écrit.
 - [ ] les cadences du catalogue qui restent : ♭VIImaj7-I et ♭VIIm7-I,
       IV7-I7, la demi-cadence et la rompue, le V seul et ce qu'il fait
       attendre.

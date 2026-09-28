@@ -2,7 +2,7 @@
 // playlists and reports where the tonality it hears differs from the
 // one the app declares.
 //
-//	corpus playlist.html [more.html ...]
+//	corpus [-aside set-aside.txt] playlist.html [more.html ...]
 //
 // The analysis does not read the app's key (see docs/grilles.md): it
 // finds the tonality from the cadences. The app is often wrong, and so
@@ -12,9 +12,18 @@
 // and each chart comes with the clues that help decide: how many
 // cadences resolve, whether the tune ends on the tonic heard, whether it
 // is a blues.
+//
+// Some charts lack what tells a tonality, and are set apart rather than
+// judged: a modal tune, plages for half of it or more, or one where no
+// cadence resolves on a tonic, and the titles listed in the -aside file
+// with their reason, the modal tunes whose colours the chart does not
+// write, Speak No Evil or Infant Eyes, and the blues of a form [Blues]
+// does not know.
 package main
 
 import (
+	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"regexp"
@@ -28,12 +37,19 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: corpus <playlist> [more ...]")
+	asideFile := flag.String("aside", "", "titles to set aside, one per line, with their reason after \" | \"")
+	flag.Parse()
+	if flag.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] <playlist> [more ...]")
 		os.Exit(2)
 	}
+	aside, err := readAside(*asideFile)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 	var songs []ireal.Song
-	for _, path := range os.Args[1:] {
+	for _, path := range flag.Args() {
 		s, err := read(path)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
@@ -41,7 +57,32 @@ func main() {
 		}
 		songs = append(songs, s...)
 	}
-	fmt.Print(report(songs))
+	fmt.Print(report(songs, aside))
+}
+
+// readAside reads the titles to set aside and their reasons: "Speak No
+// Evil | modal, the chart not writing its colours". Blank lines and
+// lines starting with # are skipped.
+func readAside(path string) (map[string]string, error) {
+	out := map[string]string{}
+	if path == "" {
+		return out, nil
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	sc := bufio.NewScanner(f)
+	for sc.Scan() {
+		line := strings.TrimSpace(sc.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		title, reason, _ := strings.Cut(line, " | ")
+		out[strings.TrimSpace(title)] = strings.TrimSpace(reason)
+	}
+	return out, sc.Err()
 }
 
 var link = regexp.MustCompile(`irealb://[^"\s<]*`)
@@ -73,8 +114,11 @@ func read(path string) ([]ireal.Song, error) {
 type reading struct {
 	title                       string
 	declared, heard             []harmony.Tonality
-	cadences                    int  // blocks that resolve
-	endsOnTonic, blues, picardy bool // the last chord is the tonic heard
+	cadences                    int    // blocks that resolve
+	endsOnTonic, blues, picardy bool   // the last chord is the tonic heard
+	plages                      int    // modal plages
+	modal                       bool   // a modal tune, plages for half of it
+	aside                       string // why the chart is set aside, listed
 }
 
 // The relations between the tonality declared and the one heard, in
@@ -88,14 +132,20 @@ const (
 	other    = "other"
 	nothing  = "no tonality heard"
 	unread   = "no key declared, or chords unread"
+	modal    = "set aside: modal, or no cadence resolving on a tonic"
+	listed   = "set aside: listed, with the reason"
 )
 
-var order = []string{relative, fifth, fourth, parallel, other, nothing, unread, same}
+var order = []string{relative, fifth, fourth, parallel, other, nothing, unread, modal, listed, same}
 
 func relation(r reading) string {
 	switch {
 	case r.declared == nil:
 		return unread
+	case r.aside != "":
+		return listed
+	case r.modal, r.cadences == 0 && !r.blues:
+		return modal
 	case r.heard == nil:
 		return nothing
 	}
@@ -121,8 +171,8 @@ func minor(ts []harmony.Tonality) bool {
 	return analysis.ModesOf(ts[:1]) == analysis.Minor
 }
 
-func analyse(s ireal.Song) reading {
-	r := reading{title: s.Title}
+func analyse(s ireal.Song, aside map[string]string) reading {
+	r := reading{title: s.Title, aside: aside[strings.TrimSpace(s.Title)]}
 	if d, ok := s.DeclaredTonalities(); ok {
 		r.declared = d
 	}
@@ -132,15 +182,17 @@ func analyse(s ireal.Song) reading {
 		return r
 	}
 	blocks := analysis.Blocks(changes, analysis.Approaches(changes))
-	for _, b := range blocks {
-		if b.Target >= 0 {
+	phrases := analysis.Phrases(changes, blocks)
+	for _, s := range analysis.Sense(changes, blocks, phrases) {
+		if s.Resolves != nil && !s.Across {
 			r.cadences++
 		}
 	}
-	sensed := analysis.Sense(changes, blocks)
-	r.heard = analysis.Tune(changes, sensed)
-	r.picardy = analysis.Picardy(changes, sensed)
+	r.heard = analysis.Tune(changes, phrases)
+	r.picardy = analysis.Picardy(changes, phrases)
 	_, r.blues = analysis.Blues(changes)
+	plages := analysis.Modal(changes, blocks)
+	r.plages, r.modal = len(plages), analysis.IsModal(changes, plages)
 	if r.heard != nil {
 		for i := len(changes.Chords) - 1; i >= 0; i-- {
 			if ch := changes.Chords[i]; !ch.Silent {
@@ -152,15 +204,16 @@ func analyse(s ireal.Song) reading {
 	return r
 }
 
-func report(songs []ireal.Song) string {
+func report(songs []ireal.Song, aside map[string]string) string {
 	groups := map[string][]reading{}
 	for _, s := range songs {
-		r := analyse(s)
+		r := analyse(s, aside)
 		rel := relation(r)
 		groups[rel] = append(groups[rel], r)
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "%d charts\n\n", len(songs))
+	judged := len(songs) - len(groups[modal]) - len(groups[listed])
+	fmt.Fprintf(&b, "%d charts, %d judged\n\n", len(songs), judged)
 	for _, rel := range order {
 		fmt.Fprintf(&b, "%5d  %s\n", len(groups[rel]), rel)
 	}
@@ -180,17 +233,24 @@ func report(songs []ireal.Song) string {
 }
 
 // clues lists what helps tell whether the app or the analysis is
-// wrong: few cadences mean little to hear a tonality from, a tune that
+// wrong: few cadences resolving on a tonic mean little to hear a
+// tonality from, a tune that
 // does not end on the tonic heard leaves it to its last cadence, and a
 // video game chart is less reliable than a standard.
 func clues(r reading) string {
 	var out []string
+	if r.aside != "" {
+		out = append(out, r.aside)
+	}
 	out = append(out, fmt.Sprintf("%d cadences", r.cadences))
 	if r.heard != nil && !r.endsOnTonic {
 		out = append(out, "ends elsewhere")
 	}
 	if r.blues {
 		out = append(out, "blues")
+	}
+	if r.plages > 0 {
+		out = append(out, fmt.Sprintf("%d modal plage%s", r.plages, plural(r.plages)))
 	}
 	if r.picardy {
 		out = append(out, "Picardy third")
@@ -226,4 +286,11 @@ func cut(s string, w int) string {
 		return string(r[:w-1]) + "…"
 	}
 	return string(r)
+}
+
+func plural(n int) string {
+	if n > 1 {
+		return "s"
+	}
+	return ""
 }
