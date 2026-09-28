@@ -71,10 +71,10 @@ func read(path string) ([]ireal.Song, error) {
 
 // A reading is what the report says of one chart.
 type reading struct {
-	title              string
-	declared, heard    []harmony.Tonality
-	cadences           int  // blocks that resolve
-	endsOnTonic, blues bool // the last chord is the tonic heard
+	title                       string
+	declared, heard             []harmony.Tonality
+	cadences                    int  // blocks that resolve
+	endsOnTonic, blues, picardy bool // the last chord is the tonic heard
 }
 
 // The relations between the tonality declared and the one heard, in
@@ -137,7 +137,9 @@ func analyse(s ireal.Song) reading {
 			r.cadences++
 		}
 	}
-	r.heard = analysis.Tune(changes, analysis.Sense(changes, blocks))
+	sensed := analysis.Sense(changes, blocks)
+	r.heard = analysis.Tune(changes, sensed)
+	r.picardy = analysis.Picardy(changes, sensed)
 	_, r.blues = analysis.Blues(changes)
 	if r.heard != nil {
 		for i := len(changes.Chords) - 1; i >= 0; i-- {
@@ -189,6 +191,9 @@ func clues(r reading) string {
 	}
 	if r.blues {
 		out = append(out, "blues")
+	}
+	if r.picardy {
+		out = append(out, "Picardy third")
 	}
 	if strings.Contains(r.title, "(vgls)") {
 		out = append(out, "video game")

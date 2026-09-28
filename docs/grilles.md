@@ -190,6 +190,15 @@ annoncée, et la marche est une relation entre eux : « II-V en mi
 mineur, puis II-V en ré mineur, puis II-V en do mineur qui se résout sur
 do majeur ».
 
+**Les plagales sont des blocs aussi**, leur sous-dominante à la place
+du V : le IV avant la tonique, ou le ♭VII7 avec son IVm7. Une plagale
+conclut autant qu'un V-I (le F/C C final de *My Way* est un gros
+amen sur do), mais elle attire moins : V-I peut faire changer de
+tonalité avec une force d'attraction maximale, IV-I ne le fait pas. Ce
+qu'elle fait dans la tonique pressentie en découle (voir plus bas).
+Une plagale ne se lit pas en crochets : son IVm7 ♭VII7 se chiffre sur
+la tonique qu'il conclut.
+
 Le livre appelle **Ier degré temporaire** l'arrivée d'un bloc emprunté
 (Misty : A♭maj7 préparé par B♭m7 E♭7). C'est une **tonicisation** :
 faire jouer à un accord le rôle de tonique secondaire.
@@ -403,7 +412,14 @@ Des données, relues ligne à ligne, comme la table des qualités iReal.
   IIm7♭5-V7(9, ♭13)-Imaj7.
 - **Modales ♭VII-I** : ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7
   (phrygien, plus rare) ; et préparées : II-♭VII7-I, IV-♭VII7-I,
-  IVm7-♭VII7-I.
+  IVm7-♭VII7-I. Le ♭VII7-I est le faux nez d'une plagale mineure :
+  avec le IV à la basse, B♭7 devient Fm6 en do. Il est donc lu comme
+  une plagale.
+
+Codées (`harmony.PlagalApproach`) : les plagales, le IV de toute
+qualité devant un accord de tonique, et le ♭VII7, avec son IVm7 pour
+II (Fm7 B♭7 Cmaj7). Pas encore : ♭VIImaj7 et ♭VIIm7, IV7-I7 (le I7
+n'est pas un accord de tonique), la demi-cadence et la rompue.
 - **Les avatars du V** : V7, ♭II7, VIIdim7.
 
 ### Les sous-dominantes
@@ -587,6 +603,13 @@ Ce qui ne change rien au fond : les accords diatoniques, les emprunts
 sur la même tonique (Im7, IVm, ♭VII7), et les préparations qui ne se
 résolvent pas.
 
+**Une cadence plagale conclut sans ouvrir.** Elle confirme une tonique
+déjà là (le fond, le chez-soi, la tonique locale) : elle ramène à la
+maison, et compte comme une deuxième cadence qui confirme une
+modulation. Elle n'ouvre pas à elle seule une tonique locale. Ce
+qu'elle annonce, l'oreille l'attend : après D♭7 dans *Tenderly*, on
+attend mi♭.
+
 ### La modulation
 
 Les trois indices du livre (cible hors de la tonalité, durée, cadences
@@ -703,6 +726,14 @@ fin ; le premier de ces indices décide :
   premier accord qui n'est pas le fond (E7 Am7 dans *Fly Me To The
   Moon*) ne compte pas.
 
+**Une tierce picarde** ne rend pas majeur un morceau mineur : quand
+l'accord de tonique qui décide est majeur mais que le morceau s'est
+tenu plus longtemps sur sa tonique mineure que sur sa tonique majeure,
+il est en mineur, et l'analyse signale la tierce picarde (`Picardy`).
+Héritée de la musique d'église, où un accord majeur sonne avec moins
+de partiels qui frottent sous la résonance d'un grand orgue.
+*'Round Midnight* et *Black And Tan Fantasy* sont ainsi en mineur.
+
 Un blues est dans sa propre tonique. À la première écoute, une cadence
 à travers la boucle n'a pas encore sonné quand son premier accord
 sonne : elle ne compte qu'à la deuxième. Rendre aussi le fond qui a
@@ -781,7 +812,7 @@ déclare, en groupant les écarts par relation (relatif, quinte, quarte,
 homonyme, autre) avec des indices pour trancher : le nombre de
 cadences résolues, la fin sur la tonique entendue, le blues, la grille
 de jeu vidéo. Sur les 1678 grilles des deux playlists, les deux
-tombent d'accord pour 1264 (75 %). Les écarts ne sont pas tous des
+tombent d'accord pour 1271 (76 %). Les écarts ne sont pas tous des
 erreurs de l'analyse : l'app se trompe (Tune Up), les thèmes modaux sont
 écrits comme en do, les grilles de jeux vidéo sont moins sûres. Les
 familles d'écarts pointent les questions ouvertes (voir « Ouvert »).

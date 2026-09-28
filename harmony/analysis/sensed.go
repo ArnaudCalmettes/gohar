@@ -77,6 +77,11 @@ type Sensed struct {
 // chord. A tonic held a single bar only tonicises: Along Came Betty
 // dances from A flat to A and back, and never modulates.
 //
+// A plagal cadence (the IV, or the ♭VII7, before the tonic) concludes
+// as a V-I does, and draws less: it confirms a tonic already there,
+// the ground, home or the local tonic, and brings it back, but opens
+// none.
+//
 // A cadence toward a degree of the local tonic that cannot be a tonic
 // (A7 Dm7 while C major is local) does not interrupt it. Coming home
 // is easier than leaving: one cadence that resolves on the start tonic
@@ -178,7 +183,15 @@ func Sense(c Changes, blocks []Block) []Sensed {
 					s.Since = firstOf(blocks[n])
 				}
 			}
-			if n := target[i]; n >= 0 && len(blocks[n].Announced) > 0 && !(first && blocks[n].Five > i) {
+			n := target[i]
+			heard := n >= 0 && len(blocks[n].Announced) > 0 && !(first && blocks[n].Five > i)
+			if heard && blocks[n].Kind == harmony.PlagalApproach {
+				// A plagal cadence concludes on a tonic already there, the
+				// ground, home or the local tonic, and opens none.
+				t := blocks[n].Announced
+				heard = sameTonic(t, s.Ground) || sameTonic(t, s.Start) || sameTonic(t, s.Local)
+			}
+			if heard {
 				t := blocks[n].Announced
 				from := firstOf(blocks[n])
 				switch {
@@ -317,28 +330,68 @@ func sameTonic(a, b []harmony.Tonality) bool {
 //     toward a first chord that is not the ground (E7 Am7 in Fly Me To
 //     The Moon) does not count.
 //
+// A tierce picarde does not make a minor tune major: when the tonic
+// chord that decides is major but the tune spends longer on its minor
+// tonic than on its major one, the tune is in the minor (see
+// [Picardy]).
+//
 // A blues is in its own tonic, and with none of these, the tune is in
 // the ground at the end.
 func Tune(c Changes, sensed []Sensed) []harmony.Tonality {
+	t, _ := tune(c, sensed)
+	return t
+}
+
+// Picardy reports whether a minor tune ends on its tonic made major,
+// the tierce picarde of church music: a major chord rings with fewer
+// clashing partials under the resonance of a great organ.
+func Picardy(c Changes, sensed []Sensed) bool {
+	_, p := tune(c, sensed)
+	return p
+}
+
+func tune(c Changes, sensed []Sensed) ([]harmony.Tonality, bool) {
 	if t, ok := Blues(c); ok {
-		return t
+		return t, false
+	}
+	// picardy keeps the minor under a major tonic chord, when the tune
+	// heard its minor tonic longer than its major one.
+	picardy := func(t []harmony.Tonality) ([]harmony.Tonality, bool) {
+		if ModesOf(t) != Major {
+			return t, false
+		}
+		var major, minor Ticks
+		for i, s := range sensed {
+			if s.Tonic == nil || !sameTonic(s.Tonic, t) {
+				continue
+			}
+			if ModesOf(s.Tonic) == Major {
+				major += c.Chords[i].Length
+			} else {
+				minor += c.Chords[i].Length
+			}
+		}
+		if minor > major {
+			return MinorTonalities(t[0].Tonic()), true
+		}
+		return t, false
 	}
 	for i := len(sensed) - 1; i >= 0; i-- {
 		s := sensed[i]
 		switch {
 		case c.Chords[i].Silent:
 		case s.Tonic != nil && sameTonic(s.Tonic, s.Ground):
-			return s.Tonic
+			return picardy(s.Tonic)
 		case s.Resolves != nil && (!s.Across || sameTonic(s.Resolves, s.Ground)):
-			return s.Resolves
+			return picardy(s.Resolves)
 		}
 	}
 	for i := len(sensed) - 1; i >= 0; i-- {
 		if sensed[i].Ground != nil {
-			return sensed[i].Ground
+			return sensed[i].Ground, false
 		}
 	}
-	return nil
+	return nil, false
 }
 
 // tonicOf returns the tonalities a change is the tonic of, nil when it

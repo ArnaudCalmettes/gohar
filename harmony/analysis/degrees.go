@@ -173,13 +173,15 @@ func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
 // tonalities it announces, the others as [Degrees] does. Dm7♭5 G7
 // before Cm7 in E flat is II V, then VI.
 //
-// A two five that does not resolve and whose two sits on the ground's
-// tonic is not bracketed: E♭m7 A♭7 in E flat is Im7 IV7, a borrowed
-// tonic.
+// A plagal cadence is not bracketed: its IVm7 ♭VII7 reads on the tonic
+// it concludes on. A two five that does not resolve and whose two sits
+// on the ground's tonic is not bracketed either: E♭m7 A♭7 in E flat is
+// Im7 IV7, a borrowed tonic.
 func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
 	out := Degrees(c, passing, sensed)
 	for _, b := range blocks {
-		if len(b.Announced) == 0 || b.Two < 0 || borrowsTonic(c, b, sensed[b.Two].Ground) {
+		if len(b.Announced) == 0 || b.Two < 0 || b.Kind == harmony.PlagalApproach ||
+			borrowsTonic(c, b, sensed[b.Two].Ground) {
 			continue
 		}
 		for _, i := range []int{b.Two, b.Sus, b.Five} {

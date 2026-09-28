@@ -24,6 +24,13 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // five without resolution of En Harmonie, which announces its tonality
 // all the same, a fifth under its V. A dominant alone that prepares
 // nothing is not a block.
+//
+// # Plagal
+//
+// A plagal cadence is a block too, its subdominant in the place of the
+// V (Kind is harmony.PlagalApproach): the IV before the tonic, or the
+// ♭VII7 with its IVm7 as its two (Fm7 B♭7 Cmaj7). It concludes, but
+// draws less than a V: see [Sense] for what it may do.
 type Block struct {
 	Two, Sus int // indices of the changes, -1 when absent
 	Five     int
@@ -54,6 +61,8 @@ func Blocks(c Changes, kinds []harmony.ApproachKind) []Block {
 			continue
 		case kinds[f]&fives != 0:
 			b.Target, b.Kind = c.Next(f), kinds[f]&fives
+		case kinds[f].Has(harmony.PlagalApproach):
+			b.Target, b.Kind = c.Next(f), harmony.PlagalApproach
 		case !isDominant(five.Chord.Pattern):
 			continue
 		}
@@ -62,7 +71,10 @@ func Blocks(c Changes, kinds []harmony.ApproachKind) []Block {
 		if p >= 0 && kinds[p].Has(harmony.SuspensionApproach) {
 			b.Sus, p = p, c.Prev(p)
 		}
-		if p >= 0 && p != f && !b.Kind.Has(harmony.DiminishedApproach) && isTwoOf(c.Chords[p], five) {
+		// A plagal IV has no two; the ♭VII7 has its IVm7 (Fm7 B♭7 C).
+		backdoor := b.Target >= 0 && c.Chords[b.Target].Chord.Root == five.Chord.Root.Transpose(2)
+		if p >= 0 && p != f && !b.Kind.Has(harmony.DiminishedApproach) &&
+			(b.Kind != harmony.PlagalApproach || backdoor) && isTwoOf(c.Chords[p], five) {
 			b.Two = p
 		}
 		if b.Target < 0 && b.Two < 0 {

@@ -33,7 +33,7 @@ et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
 Les fiches du livre concordent à 79 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app sur 75 % du corpus, sans
+d'accord avec la tonalité déclarée par l'app sur 76 % du corpus, sans
 la lire.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
@@ -237,7 +237,10 @@ Fait :
   avec leurs fiches.
 - **La tonalité du morceau** (`Tune`), trouvée par les cadences et la
   fin, jamais par l'armure ; une grille qui boucle entendue comme son
-  deuxième chorus ; la tonique mineure écrite m7.
+  deuxième chorus ; la tonique mineure écrite m7 ; la tierce picarde
+  (`Picardy`).
+- **Les cadences plagales** : le IV de toute qualité, et le ♭VII7 avec
+  son IVm7 (`PlagalApproach`), qui concluent sans ouvrir de tonique.
 - **Le blues**, reconnu à sa forme (`Blues`), sa septième d'espèce lue
   comme sa tonique.
 - **L'affichage** dans le terminal (`charts/cmd/analyse`) et **le
@@ -247,9 +250,10 @@ La suite, dans l'ordre :
 
 - [ ] les plages modales : *So What*, *Maiden Voyage*, et les grilles
       de jeux vidéo modales.
-- [ ] les cadences du catalogue sans II-V : le backdoor ♭VII7-I, les
-      plagales, le V seul, et ce que chacune fait attendre ; la lecture
-      du livre pour la marche IIm7-V7 (VI II7 dans Tenderly).
+- [ ] les cadences du catalogue qui restent : ♭VIImaj7-I et ♭VIIm7-I,
+      IV7-I7, la demi-cadence et la rompue, le V seul et ce qu'il fait
+      attendre ; la lecture du livre pour la marche IIm7-V7 (VI II7
+      dans Tenderly).
 - [ ] les relations entre blocs : marches de II-V, cycle des quartes.
 - [ ] la marche d'accords parallèles (*Stolen Moments*).
 - [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),

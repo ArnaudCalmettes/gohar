@@ -133,7 +133,7 @@ func render(s ireal.Song) string {
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
-	fmt.Fprint(&b, heardIn(s, changes, analysis.Tune(changes, sensed)))
+	fmt.Fprint(&b, heardIn(s, changes, sensed))
 	fmt.Fprint(&b, legend)
 	for start := 0; start < len(cells); {
 		end := start + 1
@@ -193,7 +193,8 @@ func (c *cell) add(top, bottom, below, tonic string) (int, int) {
 // heardIn says in which tonality the analysis hears the tune, and when
 // it differs, what the app declares: the analysis does not read the
 // app's key, which is often wrong.
-func heardIn(s ireal.Song, changes analysis.Changes, tune []harmony.Tonality) string {
+func heardIn(s ireal.Song, changes analysis.Changes, sensed []analysis.Sensed) string {
+	tune := analysis.Tune(changes, sensed)
 	if tune == nil {
 		return "no tonality heard\n"
 	}
@@ -201,6 +202,9 @@ func heardIn(s ireal.Song, changes analysis.Changes, tune []harmony.Tonality) st
 	line := "heard in " + name
 	if _, ok := analysis.Blues(changes); ok {
 		line += ", a blues"
+	}
+	if analysis.Picardy(changes, sensed) {
+		line += ", ending on a Picardy third"
 	}
 	if declared, ok := s.DeclaredTonalities(); ok {
 		if d := short(flats[declared[0].Tonic()], declared); d != name {
@@ -412,29 +416,28 @@ func pad(s string, w int) string {
 
 // legend explains the marks over the chords, one to a line.
 const legend = `
-over each chord:
-  V→    prepares the next as its dominant
-  ♭II→  as its chromatic dominant
-  °→    as its diminished chord, a dominant without its root
-  sus→  as its suspension
-  II→   as the two of a dominant
-  ↗ ↘   a passing chord, its bass walking up or down
+over each chord, how it prepares the next:
+  V→               as its dominant
+  ♭II→             as its chromatic dominant
+  °→               as its diminished chord, a dominant without its root
+  sus→             as its suspension
+  II→              as the two of a dominant
+  IV→              as its subdominant, in a plagal cadence (IV or ♭VII7)
+  ↗ ↘              a passing chord, its bass walking up or down
 
-above, the blocks, [II] [sus4] V, and the tonality each one announces:
-  Fm harm ─     a two five announcing F harmonic minor, whatever it lands on
-  Fm harm : II V ─
-                and its chords read in F minor, as En Harmonie brackets
-                them, when that differs from the degrees below
-  D♭ M/m mel… ─ one that does not resolve, nor decide between D♭ major
-                and D♭ melodic minor
+above, the blocks ([II] [sus4] V) and the tonality each announces:
+  Fm harm ──       F harmonic minor
+  D♭ M/m mel… ──   D♭ major or melodic minor, not resolved
+  Fm harm : II V   the block read in that tonality, as En Harmonie
+                   brackets it, when it differs from the degrees below
 
-under each chord, its degree on the tonic installed there, heard
-afterwards: a modulation counts from the cadence that led to it.
-IIIm7♭5 VI7 for Gm7♭5 C7 in E♭; ♭VII7, ♯Vdim7, I/3
+under each chord, its degree in the tonality of the passage:
+  IIIm7♭5 VI7      Gm7♭5 C7 in E♭ major
+  ♭VII7 ♯Vdim7 I/3 a borrowed chord, a passing chord, an inversion
 
-under the degrees, the tonic the ear senses as it goes, where it changes:
-  E♭            installed: the app's key, the first cadence, a modulation
-  E♭ (Fm)       and F minor, which a cadence has just tonicised
+under the degrees, the tonic the ear hears, where it changes:
+  E♭               E♭ is the tonic
+  E♭ (Fm)          E♭ is the tonic, and a cadence has just led to F minor
 `
 
 // walk marks a passing chord by the way its bass goes.
@@ -460,6 +463,7 @@ func label(k harmony.ApproachKind) string {
 		{harmony.DiminishedApproach, "°"},
 		{harmony.SuspensionApproach, "sus"},
 		{harmony.TwoApproach, "II"},
+		{harmony.PlagalApproach, "IV"},
 	} {
 		if k.Has(l.kind) {
 			out = append(out, l.text)

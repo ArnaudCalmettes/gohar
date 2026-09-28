@@ -50,7 +50,10 @@ func TestSense(t *testing.T) {
 		want    []string
 	}{
 		// Tenderly, bars 1 to 9, as docs/grilles.md hears them. E♭m7
-		// A♭7 awaits nothing: its two is the tonic, borrowed. The
+		// A♭7 awaits nothing: its two is the tonic, borrowed. Plagal
+		// cadences do await their tonic: A♭7 E♭m7, the IV7-Im of the
+		// melodic minor (En Harmonie borrows A♭7 from E flat melodic
+		// minor), and D♭7, the ♭VII7 of a minor plagal. The
 		// cadence onto Fm7♭5 tonicises F minor for one chord, and
 		// Fm7♭5 is already the two of E flat minor.
 		"Tenderly": {
@@ -58,11 +61,11 @@ func TestSense(t *testing.T) {
 				g, halfDim, c, flatNine, f, halfDim, bb, flatNine),
 			[]string{
 				"E♭maj7 in E♭",
-				"A♭7 in E♭",
+				"A♭7 in E♭, awaiting E♭m mel",
 				"E♭m7 in E♭",
 				"A♭7 in E♭",
 				"Fm7 in E♭",
-				"D♭7 in E♭",
+				"D♭7 in E♭, awaiting E♭m",
 				"E♭maj7 in E♭",
 				"Gm7♭5 in E♭, awaiting Fm harm",
 				"C7♭9 in E♭, awaiting Fm harm",
@@ -352,9 +355,9 @@ func TestSenseBlues(t *testing.T) {
 	}
 }
 
-// Home is recognised on sight. After a modulation to F, F/C is a
-// six-four over the tonic pedal, not a tonic, and C alone brings C
-// back, with no cadence: the end of My Way.
+// The end of My Way. After a modulation to F, F/C is a six-four over
+// the tonic pedal, not a tonic: with C it makes a plagal cadence, an
+// amen that brings home back, and heard afterwards C starts with it.
 func TestHomeOnSight(t *testing.T) {
 	const c, f, g harmony.PitchClass = 0, 5, 7
 	ch := changesOf(false, c, harmony.ChordMajorSeventh, g, harmony.ChordMinorSeventh,
@@ -367,7 +370,7 @@ func TestHomeOnSight(t *testing.T) {
 		"C7 in C, in F afterwards",
 		"Fmaj7 in C, in F afterwards",
 		"Fmaj7 in F",
-		"F/C in F",
+		"F/C in F, in C afterwards",
 		"C in C",
 	}
 	if got := groundsOf(ch); got != strings.Join(want, "\n") {
@@ -416,6 +419,45 @@ func TestTuneEndings(t *testing.T) {
 		sensed := analysis.Sense(tc.changes, analysis.Blocks(tc.changes, analysis.Approaches(tc.changes)))
 		if got := tonalityName(analysis.Tune(tc.changes, sensed)); got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
+		}
+	}
+}
+
+// A minor tune that ends on its tonic made major stays minor: the
+// tierce picarde. A tune that stays major longer is major.
+func TestPicardy(t *testing.T) {
+	const c, d, g harmony.PitchClass = 0, 2, 7
+	const (
+		maj     = harmony.ChordMajorTriad
+		maj7    = harmony.ChordMajorSeventh
+		min6    = harmony.ChordMinorSixth
+		dom7    = harmony.ChordDominantSeventh
+		min7    = harmony.ChordMinorSeventh
+		halfDim = harmony.ChordHalfDiminished
+	)
+	type bar = []any
+	for name, tc := range map[string]struct {
+		changes analysis.Changes
+		want    string
+		picardy bool
+	}{
+		"a minor tune ending major": {
+			barsOf(false, bar{c, min6}, bar{d, halfDim, g, dom7}, bar{c, min6}, bar{d, halfDim, g, dom7}, bar{c, maj}),
+			"Cm nat/harm/mel", true,
+		},
+		"a major tune with a minor bar": {
+			barsOf(false, bar{c, maj7}, bar{d, min7, g, dom7}, bar{c, maj7}, bar{d, halfDim, g, dom7}, bar{c, min6},
+				bar{d, min7, g, dom7}, bar{c, maj7}),
+			"C", false,
+		},
+	} {
+		c := tc.changes
+		sensed := analysis.Sense(c, analysis.Blocks(c, analysis.Approaches(c)))
+		if got := tonalityName(analysis.Tune(c, sensed)); got != tc.want {
+			t.Errorf("%s: %s, want %s", name, got, tc.want)
+		}
+		if got := analysis.Picardy(c, sensed); got != tc.picardy {
+			t.Errorf("%s: tierce picarde %v, want %v", name, got, tc.picardy)
 		}
 	}
 }

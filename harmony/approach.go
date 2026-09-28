@@ -63,6 +63,14 @@ const (
 	// straight onto it: B♭m7 before A7, En Harmonie's chromatic
 	// subdominant.
 	TwoApproach
+
+	// PlagalApproach is a subdominant before the tonic it concludes on:
+	// the IV of any quality, Fmaj7, F7, Fm6 before C, the plagal amen;
+	// and the ♭VII7, B♭7 before C, the minor plagal in disguise (with F
+	// in the bass it is Fm6). The tonic must be a chord that can be one.
+	// A plagal cadence concludes as a V-I does, but draws less: what it
+	// may do in the analysis of a chart is the analysis's to say.
+	PlagalApproach
 )
 
 // Has reports whether `k` includes the given kind.
@@ -72,8 +80,9 @@ func (k ApproachKind) Has(other ApproachKind) bool {
 
 // String writes the kinds as the analyse command labels them, the
 // degree the chord stands on for the chord it prepares: V, ♭II (the
-// chromatic dominant), ° (the diminished chord), sus, II. Several kinds
-// are joined by a slash; no approach is "-".
+// chromatic dominant), ° (the diminished chord), sus, II, IV (the
+// plagal subdominant, the ♭VII7 included). Several kinds are joined
+// by a slash; no approach is "-".
 func (k ApproachKind) String() string {
 	if k == NoApproach {
 		return "-"
@@ -88,6 +97,7 @@ func (k ApproachKind) String() string {
 		{DominantApproach, "V"},
 		{ChromaticApproach, "♭II"},
 		{DiminishedApproach, "°"},
+		{PlagalApproach, "IV"},
 	} {
 		if k.Has(n.kind) {
 			if out != "" {
@@ -126,7 +136,23 @@ func ApproachOf(from, to Chord) ApproachKind {
 		(from.Root == to.Root.Transpose(7) || from.Root == to.Root.Transpose(1)):
 		k |= TwoApproach
 	}
+	if isTonicChord(to.Pattern) && hasThird(from.Pattern) && !isDiminishedSeventh(from.Pattern) &&
+		(from.Root == to.Root.Transpose(5) || from.Root == to.Root.Transpose(10) && isDominant(from.Pattern)) {
+		k |= PlagalApproach
+	}
 	return k
+}
+
+// isTonicChord reports whether a pattern can be a tonic: a major or
+// minor triad, maj7, 6, m6, m(maj7), and the m7 charts write for a
+// minor tonic.
+func isTonicChord(p ChordPattern) bool {
+	switch p.Tetrad() {
+	case ChordMajorTriad, ChordMajorSeventh, ChordMajorSixth,
+		ChordMinorTriad, ChordMinorSixth, ChordMinorMajorSeventh, ChordMinorSeventh:
+		return true
+	}
+	return false
 }
 
 // approachTo reads the dominant approaches of a chord to a target known

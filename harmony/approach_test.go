@@ -30,6 +30,7 @@ func TestApproachOf(t *testing.T) {
 		dimin = harmony.DiminishedApproach
 		susp  = harmony.SuspensionApproach
 		two   = harmony.TwoApproach
+		plag  = harmony.PlagalApproach
 	)
 	type step struct {
 		chord harmony.Chord
@@ -80,7 +81,7 @@ func TestApproachOf(t *testing.T) {
 		// No tritone, or the tritone going elsewhere.
 		"not an approach": {
 			{chordOf(t, g, seventh...), none}, // to the dominant a tone below
-			{chordOf(t, f, seventh...), none}, // ♭VII7-I, a modal cadence
+			{chordOf(t, f, seventh...), plag}, // ♭VII7-I: a plagal, see below
 			{chordOf(t, g, major7...), none},
 			{chordOf(t, a, minor7...), none}, // a two needs a dominant after
 			{chordOf(t, d, major7...), none},
@@ -126,6 +127,22 @@ func TestApproachOf(t *testing.T) {
 			{chordOf(t, ab, halfDim...), two},
 			{chordOf(t, g, seventh...), dom},
 			{chordOf(t, c, major7...), none},
+		},
+		// Plagal cadences: the IV of any quality before the tonic, and
+		// the ♭VII7, a minor plagal in disguise, prepared by its IVm7.
+		// Not before a chord that cannot be a tonic.
+		"plagal cadences": {
+			{chordOf(t, f, major7...), plag},
+			{chordOf(t, c, major7...), none},
+			{chordOf(t, f, minor7...), plag},
+			{chordOf(t, c, minor7...), none},
+			{chordOf(t, f, minor7...), two},
+			{chordOf(t, bb, seventh...), plag},
+			{chordOf(t, c, major7...), none},
+			{chordOf(t, f, seventh...), plag},
+			{chordOf(t, c, major7...), none},
+			{chordOf(t, f, major7...), none}, // not before a dominant
+			{chordOf(t, c, seventh...), none},
 		},
 		"a two five one": {
 			{chordOf(t, d, minor7...), two},
