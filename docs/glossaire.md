@@ -227,6 +227,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
 | Bloc | Une cadence, [II] [sus4] V → cible, avec la tonalité qu'elle annonce, qu'elle s'y résolve ou non | Une section de la grille |
 | Cadence plagale | Une sous-dominante avant la tonique : le IV de toute qualité, ou le ♭VII7, plagale mineure déguisée (avec le IV à la basse, B♭7 devient Fm6 en do). Elle conclut, mais n'ouvre pas de tonique (`PlagalApproach`) | Le backdoor, autre nom du ♭VII7-I, qu'on ne garde pas |
+| Quarte et sixte | Un accord avec sa quinte à la basse : sur une pédale, ce n'est pas une tonique. Dans le F/C C final de *My Way*, le fa est une broderie au-dessus du do, et l'ensemble une plagale | Un renversement de tonique, I/3, qui en reste une |
 | Tierce picarde | La tonique d'un morceau mineur rendue majeure sur l'accord final. Le morceau reste mineur (`Picardy`) | Un morceau qui passe en majeur pour de bon (*Chega De Saudade*) |
 | Septième d'espèce | Un X7 qui n'est pas une dominante : il ne prépare rien, il est la couleur de son degré. Le I7 et le IV7 du blues, le X7sus4 de *Maiden Voyage* | Une dominante, qui a le même son mais prépare un accord |
 | Armure | L'attribut de la partition écrite qui évite d'écrire les altérations ; pour une grille iReal, le champ de tonalité de l'app (`DeclaredTonalities`). L'analyse ne la lit pas et signale quand elle se trompe | La tonalité, que l'analyste détermine lui-même |

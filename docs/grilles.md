@@ -4,21 +4,19 @@ Comment gohar lit une grille : tonalités, cadences, emprunts,
 modulations, et la gamme qui va sur chaque accord.
 
 La progression suit le tome 1 d'*En Harmonie* (Dericq et Guéreau,
-Outre Mesure), chapitres 8 à 10. Les exemples cités par titre en
-viennent.
+Outre Mesure), chapitres 8 à 10, et « le livre » désigne ici ce
+tome-là. Le code vit dans `harmony/analysis` ; `charts/cmd/analyse`
+affiche une grille annotée dans le terminal, et `charts/cmd/corpus`
+compare l'analyse à l'app sur des playlists entières.
 
 ## À quoi elle sert
 
 Le livre donne trois raisons d'analyser un morceau, et gohar les
-reprend dans cet ordre :
-
-1. **Jouer juste** : la gamme ou le mode qui va sur chaque accord.
-   C'est la sortie la plus utile au joueur, et elle rejoint le dex, où
-   gammes et modes sont des entrées.
-2. **Modifier l'harmonie** en connaissance de cause : savoir ce que fait
-   chaque accord, pour le remplacer ou le préparer autrement.
-3. **Mémoriser** la grille : une suite de cadences se retient mieux
-   qu'une suite d'accords.
+reprend dans cet ordre : **jouer juste**, la gamme ou le mode qui va
+sur chaque accord, ce qui rejoint le dex ; **modifier l'harmonie** en
+connaissance de cause, en sachant ce que fait chaque accord ;
+**mémoriser** la grille, puisqu'une suite de cadences se retient mieux
+qu'une suite d'accords.
 
 Le public visé est l'autodidacte, avec des questions pratiques
 immédiates. L'analyse lui dit ce que fait chaque accord ; elle ne lui
@@ -27,473 +25,405 @@ raconte pas l'histoire du morceau.
 ## Les principes
 
 - **L'analyse propose, elle ne tranche pas.** Le mieux reste d'écouter,
-  de relever et de connaître l'original. En l'absence de ces
-  informations, gohar suggère ce qui se déduit « en toute logique », et
-  le présente comme tel.
-- **Déterministe, sans score.** Comme l'identification des accords :
-  toutes les lectures valables sont rendues, dans un ordre fixé par des
-  règles explicites. L'ordre dit laquelle est **proposée d'abord** dans
-  ce contexte, jamais laquelle est vraie. Em7-A7 est un II-V de ré ou un
-  III-VI7 de do : deux façons valables de se représenter la même
-  progression, plus ou moins pertinentes selon le contexte, sans
-  hiérarchie de niveau. Plusieurs outils peuvent ainsi expliquer le
-  même phénomène, et chacun reste un calcul exact : l'analyse n'est pas
-  une affaire d'interprétation, elle rend toutes les lectures vraies.
-- **De droite à gauche.** Le livre le dit en toutes lettres : on repère
-  les accords réels de la tonalité, on prend l'accord d'arrivée, puis on
-  remonte ses préparations. C'est aussi l'algorithme. L'arrivée
-  départage des lectures que rien d'autre ne départage : Fm7 B♭7 est un
-  II-V de mi♭ ou un IVm7-♭VII7 de do, et c'est l'accord qui suit qui
-  choisit.
+  de relever et de connaître l'original. À défaut, gohar suggère ce qui
+  se déduit « en toute logique », et le présente comme tel.
+- **Déterministe, sans score.** Toutes les lectures valables sont
+  rendues, dans un ordre fixé par des règles explicites, qui dit
+  laquelle est proposée d'abord, jamais laquelle est vraie. Em7-A7 est
+  un II-V de ré ou un III-VI7 de do : deux représentations exactes de
+  la même progression, sans hiérarchie de niveau.
+- **De droite à gauche.** On repère les accords réels de la tonalité,
+  on prend l'accord d'arrivée, puis on remonte ses préparations. C'est
+  aussi l'algorithme, et l'arrivée départage ce que rien d'autre ne
+  départage : Fm7 B♭7 est un II-V de mi♭ ou un IVm7-♭VII7 de do selon
+  l'accord qui suit.
 - **La basse compte.** Elle distingue une cadence parfaite d'une
-  imparfaite, un I/3 d'un III, un Dm9 d'un G13sus4 (mêmes notes, seule la
-  basse change). Une lecture d'accord sans sa basse est incomplète.
+  imparfaite, un I/3 d'un III, un Dm9 d'un G13sus4.
 - **La durée compte.** Elle sépare une plage modale d'un accord de
-  passage, une modulation d'un emprunt. L'analyse travaille donc en
-  temps, pas en cases iReal (voir `chantiers.md`).
+  passage, une modulation d'une tonicisation. L'analyse travaille donc
+  en temps, pas en cases iReal.
 
 ## Les étages
 
-Une analyse se lit du plus large au plus fin.
-
 | Étage | Ce qu'il porte | Exemple |
 |---|---|---|
-| Le morceau | La structure, le rythme harmonique, la tonalité de départ et de fin | Tenderly : ABAC, 32 mesures, un accord par mesure, mi♭ majeur |
+| Le morceau | La structure, le rythme harmonique, la tonalité | Tenderly : ABAC, 32 mesures, un accord par mesure, mi♭ majeur |
 | La plage | Tonale, modale ou atonale | *One Finger Snap* : modale mesures 1 à 12, tonale ensuite |
 | La région | Une tonalité installée : la principale, ou une modulation | *Black Orpheus* : la mineur, do majeur mesures 6 à 12, la mineur |
-| Le bloc | Une cadence ou une préparation, avec la tonalité qu'elle annonce | Gm7♭5 C7(♭9), qui annonce fa mineur |
+| Le bloc | Une cadence, avec la tonalité qu'elle annonce | Gm7♭5 C7(♭9), qui annonce fa mineur |
 | L'accord | Son degré, sa fonction, sa provenance, sa couleur proposée | D♭7 : ♭VII7, emprunté à la♭ mineur mélodique |
 
 La région se lit après coup, de droite à gauche. Elle a un pendant qui
-se lit au présent, de gauche à droite : la tonique pressentie (voir
-plus bas).
+se lit au présent, de gauche à droite : la tonique pressentie, ce que
+l'oreille attend accord par accord.
 
-### Le morceau
+## Le morceau
 
-La tonalité se déduit des cadences, et d'abord de celles de la fin : le
-chez-soi est la dernière tonique du chorus, turnaround mis à part.
+### Sa tonalité
+
+La tonalité se déduit des cadences, et d'abord de celles de la fin
+(`Tune`). En remontant depuis le dernier accord, le premier indice
+trouvé décide : un accord entendu comme la tonique du fond (le do final
+de *My Way*, le Cmaj7 d'avant le turnaround de *Fly Me To The Moon*),
+le V d'une cadence qui se résout sur une tonique (E♭7 A♭maj7 à la fin
+d'*Along Came Betty*), ou, à travers la boucle, une cadence qui revient
+au fond : le dernier G7 de *Sugar* revient à Cm7, et le morceau est en
+do mineur, pas dans le fa mineur que G♭7 Fm7 tonicise en passant. Un
+turnaround vers un premier accord qui n'est pas le fond, comme E7 Am7
+dans *Fly Me To The Moon*, ne compte pas.
+
+**La tierce picarde** ne rend pas majeur un morceau mineur. Héritée de
+la musique d'église, où un accord majeur sonne avec moins de partiels
+qui frottent sous la résonance d'un grand orgue, elle majorise la
+tonique sur le dernier accord. Quand le morceau s'est tenu plus
+longtemps sur sa tonique mineure que sur la majeure, il est en mineur,
+et l'analyse signale la tierce picarde (`Picardy`) : *'Round Midnight*,
+*Black And Tan Fantasy*. Un morceau qui passe en majeur pour de bon
+(*Chega De Saudade*) est en majeur.
 
 **L'armure n'est pas lue.** C'est un attribut de la partition écrite,
 utile pour ne pas écrire des altérations partout, et au mieux le plus
 faible des indices d'une tonalité. Le livre la recommande à l'apprenant
 qui se creuse la tête sur une partition ; pour un analyste qui ne se
-fonde que sur ses propres relevés, elle n'existe pas, et c'est à lui de
-déterminer la tonalité. « Tu ne suivras pas bêtement les indications du
-Real Book. » Les fiches du livre se lisent à l'identique sans elle.
+fonde que sur ses propres relevés, elle n'existe pas. « Tu ne suivras
+pas bêtement les indications du Real Book. » Les fiches du livre se
+lisent à l'identique sans elle. Le champ de tonalité d'une grille iReal
+n'est qu'un point de comparaison, et l'analyse signale quand il se
+trompe : Tune Up, déclaré en si♭, commence et finit en ré. Il se trompe
+souvent pour de bonnes raisons : les thèmes modaux sont écrits sans
+armure, comme en do majeur, et les grilles de jeux vidéo, relevées par
+des étudiants et parfois modales, sont moins sûres.
 
-Le champ de tonalité d'une grille iReal (« Eb », « A- ») n'est donc
-qu'un point de comparaison, et l'analyse signale quand il se trompe :
-Tune Up, déclaré en si♭, commence et finit en ré. Il se trompe souvent
-pour de bonnes raisons : les thèmes modaux sont le plus souvent écrits
-sans armure, comme en do majeur, et les grilles de jeux vidéo, relevées
-le plus souvent par des étudiants et parfois modales, ne sont pas
-l'information la plus sûre.
+### Le blues
 
-**Le blues se reconnaît à sa forme.** Son I7 est une septième
-d'espèce, pas de dominante, et rien dans son son ne le dit : c'est sa
-place qui le dit. Un blues de douze mesures (joué une ou deux fois, ou
-de vingt-quatre en temps doublé) se lit à son squelette, volontairement
-lâche : un accord sur la tonique à la mesure 1, quelle que soit sa
-qualité (le I7, le Imaj7 du Bird blues, le Im7 du blues mineur), le IV
-à la mesure 5, la tonique à la mesure 11. Les mesures 7 à 10, où les
-variantes divergent, ne sont pas regardées. Le blues reconnu, sa
-tonique est le fond dès la première mesure ; sans cela, *Chasin' the
-Trane* se lisait en si♭, sa première cadence F7 B♭7 installant le IV.
-Sur le corpus, 53 grilles sont reconnues, toutes des blues ; les
-formes plus longues qui portent le squelette par hasard (*If I Loved
-You*, *I Remember You*) sont écartées.
+Son I7 est une septième d'espèce, pas une dominante, et rien dans son
+son ne le dit : c'est sa place qui le dit. Le blues se reconnaît donc à
+sa forme (`Blues`), douze mesures jouées une ou deux fois, ou
+vingt-quatre en temps doublé, et à un squelette volontairement lâche :
+un accord sur la tonique à la mesure 1, quelle que soit sa qualité (le
+I7, le Imaj7 du Bird blues, le Im7 du blues mineur), le IV à la mesure
+5, la tonique à la mesure 11. Les mesures 7 à 10, où les variantes
+divergent, ne sont pas regardées. Reconnu, le blues a sa tonique pour
+fond dès la première mesure ; sans cela, F7 B♭7 installait le IV.
+
+Sur le corpus, 53 grilles sont reconnues, toutes des blues. Les formes
+plus longues qui portent le squelette par hasard (*If I Loved You*,
+*I Remember You*) sont écartées, au prix d'un seul blues manqué, *West
+Coast Blues*, écrit sur 36 mesures en 3/4.
+
+### Sa structure et ses plages
 
 Le rythme harmonique est le nombre d'accords par mesure. La structure
 (AABA, ABAC, AB, blues, forme anatole) se lit dans les sections de la
 grille et se vérifie en comparant les progressions entre elles
 (`Progression.Compare`).
 
-### Les plages
+Une plage est **tonale** quand les accords s'enchaînent autour d'un
+centre et ont une fonction : c'est l'essentiel de ce document. Elle est
+**modale** quand un accord tenu plusieurs mesures installe un mode et
+non un centre, comme le X7sus4 « d'espèce » de *Maiden Voyage*, qui
+par sa durée, sans résolution sur son X7, n'a pas de fonction ; le
+critère est une durée sans cadence, au-delà d'un seuil. Elle est
+**atonale** quand on passe d'un mode à l'autre au gré des accords (*Pee
+Wee*) : chaque accord reçoit sa provenance, aucun ne reçoit de degré,
+et c'est la valeur zéro de `Tonality`, un état légitime. Un même
+morceau peut mêler les trois. Les plages modales ne sont pas encore
+codées : *So What* (ré dorien, mi♭ dorien, ré dorien) en sera le test,
+et son pont est aujourd'hui chiffré ♭IIm7 en ré mineur, ce qui n'a pas
+de sens.
 
-- **Tonale** : les accords s'enchaînent autour d'un centre tonal et ont
-  une fonction. C'est l'harmonie fonctionnelle, l'essentiel de ce
-  document.
-- **Modale** : un accord tenu plusieurs mesures installe un mode et non
-  un centre tonal. C'est le X7sus4 « d'espèce » de *Maiden Voyage* : par
-  sa durée, sans résolution sur le X7, il n'a pas de fonction. Critère
-  mécanique : une durée sans cadence, au-delà d'un seuil. *So What* en
-  est le test de référence : ré dorien seize mesures, mi♭ dorien huit,
-  ré dorien huit ; aujourd'hui, l'analyse chiffre le pont ♭IIm7 en ré
-  mineur, ce qui n'a pas de sens.
-- **Atonale** : pas de centre tonal, on passe d'un mode à l'autre au gré
-  des accords (*Pee Wee*). Chaque accord reçoit sa provenance, aucun ne
-  reçoit de degré. Dans `harmony`, c'est la valeur zéro de `Tonality` :
-  un état légitime, pas un échec.
+## Les cadences
 
-Un même morceau peut mêler les trois.
+### Les préparations
 
-### Emprunt ou modulation
+Préparer un accord, c'est ajouter ou modifier un ou deux accords devant
+lui. L'anglais dit *approach* : `ApproachKind` nomme le type d'une
+préparation, et `ApproachOf` dit comment un accord prépare le suivant.
+L'unité de l'analyse est une **arrivée** et ce qui la prépare.
 
-**L'emprunt** fait venir un accord ou une cadence d'une autre tonalité
-sans quitter la sienne : Dm7 G7(♭13) Cmaj7 emprunte son G7(♭13) à do
-mineur. **La modulation** change de tonalité pour de bon : une cadence
-la prépare, et il faut que l'oreille ait le temps de l'entendre.
+| Type | Chiffrage | Exemple vers Dm7 en do | Codé |
+|---|---|---|---|
+| Dominante secondaire | V7 de…, écrit V7/II ou VI7 | A7 | oui |
+| Dominante chromatique | ♭II7 de…, un X7 un demi-ton au-dessus | E♭7 | oui |
+| Accord diminué | un demi-ton sous l'arrivée | C♯dim7 | oui |
+| X7sus4 | retarde son propre X7 | A7sus4 A7 | oui |
+| Sous-dominante secondaire | II-V de…, IIm7 ou IIm7♭5 | Em7 A7 | oui |
+| Sous-dominante chromatique | ♭VIm7 ou ♭VIm7♭5 devant le ♭II7 | B♭m7 E♭7, ou B♭m7 A7 | oui |
+| Plagale | le IV de toute qualité, ou le ♭VII7, devant une tonique | Gm7 Dm, C7 Dm | oui |
+| IVm7-♭VII7 de… | la plagale préparée | Gm7 C7 Dm | oui |
+| Accord parallèle | même qualité, une seconde à côté | E♭m7 ou C♯m7 | non |
 
-Le livre n'en donne pas une règle unique, et ses exemples montrent
-trois indices qui se combinent :
+**Les relations se composent.** La sous-dominante chromatique est un II
+de… appliqué à une dominante chromatique, la sous-dominante secondaire
+un II de… appliqué à une dominante secondaire. Le modèle n'a que
+quelques relations élémentaires qu'on enchaîne, et le nom composé sert à
+l'affichage. Chez Ellington, G♭7 F7 E7 E♭7 A♭maj7 est une chaîne de V7
+de… dont un accord sur deux est remplacé par son ♭II7 pour faire
+descendre la basse. Ce qu'on en tire est une **forme sous-jacente**, pas
+une histoire : dans *I Thought About You*, chaque X7 reçoit sa cible et
+la chaîne de II-V par quintes réapparaît sous la grille écrite.
 
-1. **La cible est-elle un degré de la tonalité ?** Dans *There Will
-   Never Be Another You*, Dm7♭5 G7(♭9) mène à Cm7, le VI de mi♭ : c'est
-   une tonicisation, pas une modulation.
-2. **Combien de temps la nouvelle tonique tient-elle ?** Tune Up change
-   de tonalité toutes les quatre mesures, avec un II-V-I complet et un I
-   tenu deux mesures : le livre parle de modulations.
-3. **Combien de cadences la confirment ?** Dans *Black Orpheus*, do
-   majeur a les mêmes notes que la mineur, mais plusieurs cadences
-   l'installent sur sept mesures : c'est une modulation.
+**Chaque X7 pose une question**, que le livre formule : est-il la
+dominante de la tonalité, la dominante secondaire de l'accord suivant,
+ou sa dominante chromatique ? Il peut aussi être un X7sus4 de passage,
+une septième d'espèce (le blues), ou, tenu longtemps, une plage modale.
 
-gohar les lit au présent, accord par accord, avec la tonique
-pressentie : voir « La modulation », qui dit la règle et ses seuils.
+**Le X7sus4**, sans tierce, n'a pas de triton et n'est pas une
+dominante. En cadence, c'est une position d'attente : il prolonge ou
+remplace le II avec la fonction de sous-dominante, et se résout sur son
+X7. Sans résolution et tenu longtemps, il installe une plage modale.
+
+**La dominante chromatique** partage son triton avec la dominante un
+triton plus loin : toute cible a deux dominantes, que `Resolution`
+dérive sans table. Le livre en donne la raison par l'accord de sixte
+augmentée : en cinq étapes, G7 devient D♭7, et chaque voix rejoint
+l'accord de tonique par demi-ton, la règle de moindre mouvement de
+`voicings.md` poussée à son maximum. On dit « dominante chromatique »
+plutôt que « substitution tritonique ».
+
+**L'accord diminué** a deux emplois. Un demi-ton sous l'arrivée, c'est
+son V7(♭9) sans fondamentale : C♯dim7 prépare Dm7, et comme chaque
+diminué a quatre fondamentales, il prépare aussi toute cible un
+demi-ton au-dessus de l'une de ses notes. Entre deux accords, c'est un
+**accord de passage** sur une basse chromatique, que seule l'analyse
+d'une grille voit, puisqu'il faut trois accords et leurs basses
+(`PassingChords`) ; il est alors nommé d'après sa basse, haussé en
+montant, abaissé en descendant. En montant (I ♯Idim7 II, *Mean to Me*),
+les deux emplois coïncident et les deux lectures sont rendues ; en
+descendant (B♭/D D♭dim7 Cm7), il ne reste que le passage.
+
+**La plagale** conclut autant qu'un V-I : le F/C C final de *My Way*
+est un gros amen sur do. Mais elle attire moins : V-I peut faire
+changer de tonalité avec une force d'attraction maximale, IV-I ne le
+fait pas. Le ♭VII7-I en est le faux nez mineur : avec le IV à la
+basse, B♭7 devient Fm6 en do. Ce que la plagale fait de la tonalité en
+découle (voir « La tonique pressentie »).
 
 ### Les blocs
 
-Un bloc est une cadence : **[II] [sus4] V → cible** (`analysis.Blocks`).
-Le V est le seul accord obligatoire : il prépare la cible comme
-dominante, dominante chromatique ou diminué. Le sus4 est le X7sus4 de
-même fondamentale, le II celui qui prépare le V (ou son sus4). La cible
-n'est pas dans le bloc : le bloc la désigne.
+Un bloc est une cadence : **[II] [sus4] V → cible** (`Blocks`). Le V
+est le seul accord obligatoire, et prépare la cible comme dominante,
+dominante chromatique ou diminué ; une plagale fait aussi un bloc, sa
+sous-dominante à la place du V, avec son IVm7 pour II quand c'est le
+♭VII7. La cible n'est pas dans le bloc : il la désigne.
 
-- **Découpage, de droite à gauche.** Chaque accord appartient à un
-  seul bloc, et un bloc peut viser un accord d'un autre : A7 Dm7 G7
-  Cmaj7 donne [Dm7 G7] → Cmaj7 et [A7] → Dm7, le V7/II puis le
-  II-V-I. Le double rôle du bebop en découle : dans Em7 A7 Dm7 G7
-  Cmaj7, Dm7 est la cible d'un bloc et le II du suivant.
-- **Sans résolution.** Un II et un V qui ne prépare pas l'accord
-  suivant font un bloc sans cible, le II-V sans résolution du livre,
-  qui annonce quand même sa tonalité, une quinte sous le V. Un V seul
-  qui ne prépare rien n'est pas un bloc.
-- **La tonalité annoncée** est une tonique et des gammes, une
-  `Tonality` par gamme (`Block.Announced`) : les gammes de la
-  pratique tonale (majeure, mineure naturelle, harmonique, mélodique)
-  qui contiennent toute la préparation, le II, le sus4 et le V. Un
-  IIm7 garde ainsi le majeur et le mineur mélodique, un IIm7♭5 le mineur harmonique, un V7(♭13)
-  les mineurs. La tierce de la cible départage ensuite, et seulement
-  si la préparation le permet : Gm7 C7 → Fm7 annonce fa mineur
-  mélodique, Gm7♭5 C7 → F reste fa mineur harmonique (le cas mixte).
-  Une dominante chromatique et son II ne sont pas des degrés de la
-  tonalité : la cible décide seule. La majeure harmonique contient
-  aussi certaines préparations, mais c'est une gamme d'emprunt, pas
-  une tonalité qu'on annonce ; elle reste dans la provenance.
+Le découpage se fait de droite à gauche. Chaque accord appartient à un
+seul bloc, et un bloc peut viser un accord d'un autre : A7 Dm7 G7 Cmaj7
+donne [Dm7 G7] → Cmaj7 et [A7] → Dm7, le V7/II puis le II-V-I, et le
+double rôle du bebop en découle (Dm7 cible d'un bloc et II du suivant).
+Un II et un V qui ne préparent pas l'accord suivant font un bloc sans
+cible, le **II-V sans résolution** du livre, qui annonce quand même sa
+tonalité ; un V seul qui ne prépare rien n'en est pas un.
 
-Un bloc porte la tonalité qu'il **annonce**, et l'accord d'arrivée
-porte la sienne. Dans *What Is This Thing Called Love*, le II-V porte
-« fa mineur » et le I sur lequel il se résout porte fa majeur : c'est
-le cas mixte.
+**La tonalité annoncée** (`Block.Announced`) est une tonique et les
+gammes de la pratique tonale (majeure, mineures naturelle, harmonique,
+mélodique) qui contiennent toute la préparation : un IIm7 garde le
+majeur et le mineur mélodique, un IIm7♭5 le mineur harmonique, un
+V7(♭13) les mineurs. La tierce de la cible départage ensuite, si la
+préparation le permet : Gm7 C7 → Fm7 annonce fa mineur mélodique, Gm7♭5
+C7 → F reste fa mineur harmonique, le cas mixte de *What Is This Thing
+Called Love*, où le bloc porte fa mineur et le I porte fa majeur. Une
+dominante chromatique et son II ne sont pas des degrés de la tonalité :
+la cible décide seule. La majeure harmonique contient aussi certaines
+préparations, mais c'est une gamme d'emprunt, pas une tonalité qu'on
+annonce.
 
 Une chaîne de II-V est une suite de blocs, chacun avec sa tonalité
-annoncée, et la marche est une relation entre eux : « II-V en mi
-mineur, puis II-V en ré mineur, puis II-V en do mineur qui se résout sur
-do majeur ».
-
-**Les plagales sont des blocs aussi**, leur sous-dominante à la place
-du V : le IV avant la tonique, ou le ♭VII7 avec son IVm7. Une plagale
-conclut autant qu'un V-I (le F/C C final de *My Way* est un gros
-amen sur do), mais elle attire moins : V-I peut faire changer de
-tonalité avec une force d'attraction maximale, IV-I ne le fait pas. Ce
-qu'elle fait dans la tonique pressentie en découle (voir plus bas).
-Une plagale ne se lit pas en crochets : son IVm7 ♭VII7 se chiffre sur
-la tonique qu'il conclut.
-
-Le livre appelle **Ier degré temporaire** l'arrivée d'un bloc emprunté
-(Misty : A♭maj7 préparé par B♭m7 E♭7). C'est une **tonicisation** :
-faire jouer à un accord le rôle de tonique secondaire.
-
-## Les préparations
-
-Préparer un accord cible, c'est ajouter ou modifier un ou deux accords
-devant lui. L'anglais dit *approach* : dans le code, `ApproachKind`
-nomme le type d'une préparation, et `ApproachOf` dit comment un accord
-prépare le suivant. L'unité de l'analyse est donc une **arrivée** et
-ce qui la prépare, chaque accord de préparation ayant un type.
-
-| Type | Chiffrage | Exemple vers Dm7 en do |
-|---|---|---|
-| X7sus4 | retarde son propre X7 | A7sus4 A7 |
-| Dominante secondaire | V7 de…, écrit V7/II ou VI7 | A7 |
-| Dominante chromatique | ♭II7 de…, un X7 un demi-ton au-dessus | E♭7 |
-| Accord diminué | un demi-ton sous l'arrivée | C♯dim7 |
-| Accord parallèle | même qualité, une seconde à côté | E♭m7 ou C♯m7 |
-| Sous-dominante secondaire | II-V de…, IIm7 ou IIm7♭5 | Em7 A7 |
-| IVm7-♭VII7 de… | cadence modale préparée | Gm7 C7 |
-| Sous-dominante chromatique | ♭VIm7 ou ♭VIm7♭5 devant le ♭II7 | B♭m7 E♭7, ou B♭m7 A7 |
-
-**Les relations se composent.** La sous-dominante chromatique est un
-II de… appliqué à une dominante chromatique ; la sous-dominante
-secondaire, un II de… appliqué à une dominante secondaire. Le modèle
-n'a donc que quelques relations élémentaires, qu'on enchaîne : le nom
-composé sert à l'affichage, pas à la structure. Chez Ellington, G♭7 F7
-E7 E♭7 A♭maj7 est une chaîne de V7 de… (C7 F7 B♭7 E♭7) dont un accord
-sur deux est remplacé par son ♭II7 pour faire descendre la basse
-chromatiquement.
-
-**Ce qu'on en tire est une forme sous-jacente**, pas une histoire. Dans
-*I Thought About You*, chaque X7 reçoit sa cible et la chaîne de II-V
-par quintes réapparaît sous la grille écrite. C'est le résultat normal
-de l'analyse de droite à gauche.
-
-C'est ce que modélisent déjà `Target` et `Approach` dans `harmony` : une
-cible, et le chemin qui y mène. La liste des approches s'élargit à ces
-types. Le commentaire de `Resolution` disait que les règles sur
-« jusqu'où un chemin peut s'éloigner » viendraient d'un musicien : ce
-tableau en est la première version.
-
-### Chaque X7 pose une question
-
-Le livre la formule : est-il la dominante de la tonalité, la dominante
-secondaire de l'accord suivant, ou sa dominante chromatique ? Ce sont
-les lectures qu'une analyse rend pour un accord de septième de
-dominante. Il peut aussi être un X7sus4 de passage, ou, tenu longtemps,
-une plage modale.
-
-### Le X7sus4
-
-Sans tierce, il n'a pas de triton et n'est donc pas une dominante. En
-cadence, c'est une **position d'attente** : il prolonge ou remplace le
-II avec la fonction de sous-dominante, et se résout sur son X7 (tout X7
-peut être précédé de son sus4, selon le tempo). Sans résolution et tenu
-longtemps, il exprime une couleur et installe une plage modale.
-
-### La dominante chromatique
-
-Un X7 et celui situé un triton plus loin partagent leur triton, donc
-toute cible a deux dominantes : `Resolution` le dérive déjà sans table.
-Le livre en donne la raison profonde par l'accord de sixte augmentée de
-l'harmonie classique : en cinq étapes, G7 devient D♭7, et à l'arrivée
-**chaque voix rejoint l'accord de tonique par demi-ton**. C'est la règle
-de moindre mouvement de `voicings.md` poussée à son maximum : quatre
-conjonctions chromatiques sur quatre voix.
-
-On dit « dominante chromatique » plutôt que « substitution
-tritonique » (voir `glossaire.md`).
-
-### L'accord diminué
-
-Trois accords diminués seulement, puisque chacun a quatre fondamentales
-possibles : `harmony` le calcule par symétrie. Deux emplois :
-
-- **Dominante sans fondamentale.** Placé un demi-ton sous l'accord
-  d'arrivée, le diminué est son V7(♭9) sans fondamentale : C♯dim7 porte
-  la tierce, la quinte, la septième et la ♭9 de A7(♭9) et prépare Dm7.
-  C'est la basse suivante qui désigne la fondamentale sous-entendue.
-- **Accord de passage** entre deux accords diatoniques, pour une basse
-  chromatique. Ce ne sont pas deux bits d'un même calcul : la dominante
-  se voit sur deux accords (`ApproachOf`), le passage demande trois
-  accords et leurs basses, que seule l'analyse d'une grille a. En
-  montant (I ♯Idim7 II ♯IIdim7 III, *Mean to Me*), les deux emplois
-  coïncident et les deux lectures sont rendues. En
-  descendant, entre I/3 et II (B♭/D D♭dim7 Cm7), le diminué n'est pas la
-  dominante de sa cible : il ne reste que le passage.
+annoncée, et la **marche** est une relation entre eux : « II-V en mi
+mineur, puis en ré mineur, puis en do mineur qui se résout sur do
+majeur ». Le livre appelle **Ier degré temporaire** l'arrivée d'un bloc
+emprunté (Misty : A♭maj7 préparé par B♭m7 E♭7) : c'est une
+tonicisation.
 
 ### Les accords parallèles
 
-Sans fonction, et de deux sortes :
-
-- **Un accord qui harmonise une note de la mélodie**, bref, de même
-  qualité (ou presque) une seconde à côté de l'arrivée. Une grille iReal
-  n'a pas la mélodie : gohar le repère par sa forme et le signale comme
-  une conjecture.
-- **Une marche d'accords parallèles**, indépendante de la mélodie :
-  plusieurs accords de même qualité glissent par mouvements conjoints,
-  sous une mélodie qui ne les suit pas. *Stolen Moments* (Oliver
-  Nelson), pont : Dm D♯m | Em Fm | F♯m Fm | Em E♭m, des accords
-  doriens parallèles qui montent puis descendent par demi-tons sous un
-  ostinato sur un intervalle de tierce. Ce n'est pas une
-  harmonisation de la mélodie, c'est une couleur, et elle se lit sur la
-  grille seule : au moins trois accords de même qualité, reliés par des
-  mouvements conjoints. Les accords n'y ont pas de degré fonctionnel ;
-  chacun vient de son propre mode (dorien ici), et le fond ne bouge pas.
-  Un accord qui appartient à un bloc n'en fait pas partie : la
-  préparation l'emporte. Des X7 qui descendent par demi-tons sont des
-  dominantes chromatiques qui se préparent l'une l'autre
-  (*Sophisticated Lady* : G♭7 F7 E7 E♭7) ; dans *Along Came Betty*,
-  B♭m7 Bm7 B♭m7 Bm7 a la forme d'une marche, mais chaque Bm7 est le II
-  de E7.
+Ils n'ont pas de fonction, et sont de deux sortes. **Un accord qui
+harmonise une note de la mélodie**, bref et de même qualité une seconde
+à côté de l'arrivée, demande la mélodie pour être sûr : sans elle,
+gohar ne peut que le conjecturer. **Une marche d'accords parallèles**,
+elle, se lit sur la grille seule : au moins trois accords de même
+qualité reliés par des mouvements conjoints, sous une mélodie qui ne
+les suit pas. Le pont de *Stolen Moments* (Dm D♯m | Em Fm | F♯m Fm |
+Em E♭m) fait monter et descendre par demi-tons des accords doriens
+sous un ostinato sur un intervalle de tierce : c'est une couleur,
+chaque accord vient de son propre mode, et le fond ne bouge pas. Un
+accord qui appartient à un bloc n'en fait pas partie : les X7 de
+*Sophisticated Lady* se préparent l'une l'autre, et dans *Along Came
+Betty*, B♭m7 Bm7 B♭m7 Bm7 a la forme d'une marche mais chaque Bm7 est
+le II de E7. Pas encore codé.
 
 ## La provenance
 
-La gamme d'où vient un accord, c'est ce que le joueur improvise dessus.
-Elle se calcule, sans table, parmi **toutes les gammes nommées** qui
-contiennent l'accord, et pas seulement celles de la tonique :
-`harmony.Provenances`. Toutes les notes comptent, extensions
-comprises : C7 vient de sept gammes, C7(♭9) de trois. Tenderly le
-montre : D♭7 est emprunté à la♭ mineur mélodique, Gm7♭5 C7(♭9) à fa
-mineur harmonique, Bdim7 à do mineur harmonique.
-
-Ordre de présentation : d'abord la tonalité de la région, puis celle
-qu'annonce le bloc, puis les autres. Plusieurs provenances sont
-fréquentes et toutes sont rendues : le livre dit du F7 de Tenderly que
-c'est « un IIe degré altéré pouvant correspondre à différents modes ».
+La gamme d'où vient un accord, c'est ce que le joueur improvise dessus
+(`harmony.Provenances`). Elle se calcule sans table parmi toutes les
+gammes nommées qui contiennent l'accord, extensions comprises : C7
+vient de sept gammes, C7(♭9) de trois. Dans Tenderly, D♭7 est emprunté
+à la♭ mineur mélodique, Gm7♭5 C7(♭9) à fa mineur harmonique, Bdim7 à do
+mineur harmonique. L'ordre de présentation met d'abord la tonalité de
+la région, puis celle qu'annonce le bloc, puis les autres, toutes
+rendues : le livre dit du F7 de Tenderly que c'est « un IIe degré
+altéré pouvant correspondre à différents modes ».
 
 Une **variante** de cadence est un squelette de degrés et une
-provenance par degré. Les formes de l'anatole en fa (majeur, mineur
-harmonique, mineur mélodique, et leurs mélanges) ne sont pas des
-progressions distinctes : c'est I-VI-II-V, où chaque degré prend sa
-tétrade dans l'une des gammes permises. Le catalogue stocke le
-squelette et les gammes, `harmony` calcule les tétrades.
+provenance par degré : les formes de l'anatole en fa (majeure, mineures,
+mélangées) ne sont pas des progressions distinctes, c'est I-VI-II-V où
+chaque degré prend sa tétrade dans l'une des gammes permises.
 
 ## Le chiffrage
 
-Deux lectures, simultanées :
+Deux lectures, simultanées. **Sur la tonalité du passage**
+(`Degrees`), chaque accord par son degré dans la région où il sonne :
+en mi♭, Gm7♭5 C7♭9 avant Fm7♭5 est IIIm7♭5 VI7, le III-VI d'un
+III-VI-II-V-I. **En crochets** (`Bracketed`), comme le livre les
+imprime : un II-V se chiffre relativement à sa cible, dans la tonalité
+qu'il annonce, et la même mesure est II V de fa mineur. Sans le
+crochet, un « II V » se lirait comme un II-V de la tonique ; c'est
+pourquoi `analyse` donne la première lecture sous les accords et la
+seconde sur la ligne des blocs, qui sert de crochet, quand leurs degrés
+diffèrent. Les fiches du livre se comparent à la seconde. Une plagale
+ne se lit pas en crochets : son IVm7 ♭VII7 se chiffre sur la tonique
+qu'il conclut.
 
-- **Sur la tonique installée** (`analysis.Degrees`) : chaque accord
-  par son degré dans le fond de la tonique pressentie. En mi♭, Gm7♭5
-  C7♭9 avant Fm7♭5 est IIIm7♭5 VI7, le III-VI d'un III-VI-II-V-I.
-- **En crochets** (`analysis.Bracketed`), comme le livre les imprime :
-  un II-V se chiffre relativement à sa cible, dans la tonalité qu'il
-  annonce, avec un crochet vers elle. La même mesure est II V de fa
-  mineur. C'est cette lecture que les fiches comparent.
+Les règles communes : un degré diatonique s'écrit sans qualité, un
+degré emprunté avec (II, mais IVm7), et le degré se compte dans la gamme
+de la tonalité (en fa mineur, D♭maj7 est VI, pas ♭VI). Une fondamentale
+hors de la gamme est abaissée de préférence (♭II, ♭III, ♭VI, ♭VII) et
+haussée sous la quarte et la quinte (♯IV) ; un accord de passage suit
+sa basse. Les renversements s'écrivent I/3, I/5. Un V seul, un diminué
+seul et un accord de passage se chiffrent sur la tonalité du passage,
+avec leur qualité : VI7 pour la dominante secondaire de II, écrite
+aussi V7/II (gohar garde la relation, l'écriture est un choix
+d'affichage). Une dominante chromatique se chiffre par son degré (♭II7
+vers le I, ♯IV7 ou ♭III7 ailleurs).
 
-Sans le crochet, un « II V » se lit comme un II-V de la tonique : c'est
-pourquoi la ligne des degrés de `analyse` donne la première lecture,
-et la ligne des blocs, qui sert de crochet, la seconde (« Fm harm : II
-V »), seulement quand leurs degrés diffèrent.
+## La tonique pressentie
 
-Les règles du chiffrage, communes aux deux :
+À chaque accord, la tonique que l'oreille attend, avec ce qui a sonné
+et rien d'autre (`Sense`). Au troisième accord de Tenderly, deux
+mesures de E♭maj7 A♭7 ont installé mi♭ : E♭m7 s'entend comme la tonique
+qui change de couleur, pas comme le II de ré♭. C'est le pendant, au
+présent, de la région : la fiche montre les régions, le direct la
+tonique pressentie, et l'écart entre ce qu'elle attendait et ce qui
+arrive est la surprise.
 
-- Un degré diatonique s'écrit sans qualité, un degré emprunté avec :
-  II, mais IVm7. Le degré se compte dans la gamme de la tonalité : en
-  fa mineur, D♭maj7 est VI, pas ♭VI.
-- Une fondamentale hors de la gamme est un degré abaissé de
-  préférence (♭II, ♭III, ♭VI, ♭VII), haussé sous la quarte et la
-  quinte (♯IV) ; un accord de passage suit sa basse, haussé en montant
-  (♯Idim7, ♯Vdim7), abaissé en descendant (♭IIIdim7).
-- Les renversements s'écrivent I/3, I/5.
-- Un V seul, un diminué seul et un accord de passage se chiffrent sur
-  la tonique installée dans les deux lectures, avec leur qualité : VI7
-  pour la dominante secondaire de II.
-- La tonique installée vient du premier accord ou des premières
-  cadences, jamais de l'armure ; elle change par modulation (voir la
-  tonique pressentie).
-- Une dominante secondaire s'écrit V7/II ou VI7. gohar stocke la
-  relation (« V7 de Dm7 ») et rend l'une ou l'autre écriture : c'est un
-  choix d'affichage.
-- Une dominante chromatique se chiffre par son degré (♭II7 vers le I,
-  ♯IV7 ou ♭III7 ailleurs), et la relation « ♭II7 de… » est gardée.
+### Deux toniques
 
-## Les couleurs proposées
+**La tonique de fond** est installée : les degrés se comptent sur elle,
+même quand une cadence tonicise un autre degré (Dm7♭5 G7 Cm7 en mi♭ :
+II V VI). **La tonique locale** est celle qu'une cadence vient de
+toniciser ; elle dure tant que les accords suivants tiennent en elle ou
+préparent un accord qui y tient, et ne change pas le fond. Chacune est
+un ensemble de tonalités sur une même tonique, comme une tonalité
+annoncée, et le fond est vide au début d'un morceau, avant la première
+tonique, ou dans une plage atonale. À part, la **tonique de départ** est
+gardée en mémoire pour reconnaître le retour à la maison après un pont
+qui a modulé, si fréquent sur une forme AABA.
 
-La gamme de la cible colore sa préparation. La réalisation du livre
-suit des règles régulières, qui deviennent des propositions :
+### Ce qui fait une tonique
 
-- V7 vers un accord mineur : ♭13 ou ♭9 (A7(♭13) vers Dm7, E7(♭9) vers
-  Am7).
-- V7 vers un accord majeur ou de dominante : 9 et 13 (C13 vers Fmaj7,
-  G13 vers Cmaj7).
-- Dominante chromatique : ♯11 (F13(♯11) vers Em11 dans *But
-  Beautiful*).
-- Le I majeur : maj7 le plus souvent. Quand la mélodie est sur la
-  fondamentale, deux façons d'éviter le frottement de la septième
-  majeure : un accord 6, ou la neuvième majeure ajoutée par-dessus la
-  septième.
+Un accord de tonique est une triade, un maj7, un 6, un m6 ou un
+m(maj7), à l'état fondamental ou avec sa tierce à la basse. Avec sa
+quinte à la basse, c'est une quarte et sixte sur une pédale : dans le
+F/C C de *My Way*, le fa n'est qu'une broderie au-dessus du do. Un m7
+est presque toujours une sous-dominante, et on ne module pas pour
+s'installer en éolien. Mais les grilles écrivent la tonique mineure m7
+bien plus souvent qu'on ne la joue (m6, m(maj7), m(maj9) pour adoucir
+la septième) : un m7 est donc une tonique quand une cadence mineure se
+résout dessus et qu'il n'est pas lui-même le II d'un bloc. *Softly, As
+In A Morning Sunrise* est ainsi en do mineur. Un turnaround vers un
+premier accord en m7 n'en fait pas une tonique : l'Am7 qui ouvre *Fly
+Me To The Moon* est un VI.
 
-Ce sont des propositions « en toute logique ». L'original, quand on le
-connaît, l'emporte.
+### Ce qui l'installe
 
-## Le catalogue v0
+Une **cadence qui se résout** fait de sa cible une tonique locale. Au
+début, le **premier accord** installe le fond s'il peut être une
+tonique, sinon la première cadence résolue ; c'est l'indice le plus
+faible, beaucoup de standards commençant sur un II ou un IV, et après
+coup les accords d'avant la première tonique lui appartiennent. Un
+**blues** reconnu a sa tonique pour fond dès la première mesure.
 
-Des données, relues ligne à ligne, comme la table des qualités iReal.
+Une **plagale conclut sans ouvrir** : elle confirme une tonique déjà là
+(le fond, la tonique de départ, la tonique locale), ramène à la maison
+et compte comme une cadence qui confirme une modulation, mais n'ouvre
+jamais seule une tonique locale. Ce qu'elle annonce, l'oreille
+l'attend : après D♭7 dans Tenderly, on attend mi♭.
 
-### Les cadences
+Ne change rien au fond : les accords diatoniques, les emprunts sur la
+même tonique (Im7, IVm, ♭VII7), les préparations qui ne se résolvent
+pas. Un accord dont la fondamentale est la tonique du fond se lit comme
+un **I emprunté**, même quand il est le II d'un II-V qui ne se résout
+pas : E♭m7 A♭7 en mi♭ est Im7 IV7, et le bloc annonce toujours ré♭.
+Le livre écrit ces mesures « I IV » : il note la qualité empruntée une
+fois et plus ensuite, l'analyse l'écrit chaque fois.
 
-- **À deux accords** : parfaite (V-I, deux accords à l'état
-  fondamental), imparfaite (V-I, au moins un renversement), demi-cadence
-  (…-V), rompue (V-…, par exemple V-VI). La demi-cadence et la rompue se
-  définissent par une absence : il faut la tonalité pour les voir.
-- **Plagales** : IVmaj7-I ; IV7-I (mineur mélodique) ; IVm7-I (mineur
-  harmonique) ; IV7-Im (mineur mélodique) ; IVm(maj7)-I (majeur
-  harmonique) ; IV7-I7 (couleur « bluesy ») ; IV-IVm-I.
-- **II-V-I** : majeur IIm7-V7-Imaj7 ; mineur harmonique IIm7♭5-V7(♭9,
-  ♭13)-Im(maj7) ; mineur mélodique IIm7-V7(9, ♭13)-Im(maj7) ; mixte
-  IIm7♭5-V7(9, ♭13)-Imaj7.
-- **Modales ♭VII-I** : ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7
-  (phrygien, plus rare) ; et préparées : II-♭VII7-I, IV-♭VII7-I,
-  IVm7-♭VII7-I. Le ♭VII7-I est le faux nez d'une plagale mineure :
-  avec le IV à la basse, B♭7 devient Fm6 en do. Il est donc lu comme
-  une plagale.
+### La modulation
 
-Codées (`harmony.PlagalApproach`) : les plagales, le IV de toute
-qualité devant un accord de tonique, et le ♭VII7, avec son IVm7 pour
-II (Fm7 B♭7 Cmaj7). Pas encore : ♭VIImaj7 et ♭VIIm7, IV7-I7 (le I7
-n'est pas un accord de tonique), la demi-cadence et la rompue.
-- **Les avatars du V** : V7, ♭II7, VIIdim7.
+**L'emprunt** fait venir un accord ou une cadence d'une autre tonalité
+sans quitter la sienne : Dm7 G7(♭13) Cmaj7 emprunte son G7(♭13) à do
+mineur. **La modulation** change de tonalité pour de bon. Le livre n'en
+donne pas une règle unique, et ses exemples montrent trois indices qui
+se combinent : la cible est-elle un degré de la tonalité (Dm7♭5 G7♭9
+Cm7 dans *There Will Never Be Another You* tonicise le VI), combien de
+temps la nouvelle tonique tient (Tune Up, un I tenu deux mesures), et
+combien de cadences la confirment (*Black Orpheus*, do majeur sur sept
+mesures). gohar les lit au présent, avec un parti pris : **être
+libéral**.
+Appeler modulation une tonicisation appuyée est une analyse que
+beaucoup de musiciens feraient ; ne pas voir bouger les repères tonaux
+serait une faiblesse.
 
-### Les sous-dominantes
+Une tonique locale devient le fond quand elle tient **plus d'une mesure
+d'accords stables**, ceux qui tiennent en elle sans rien préparer
+(Dmaj7 tenu deux mesures, ou B♭maj7 Gm7 dans Tune Up), ou quand **une
+deuxième cadence** la vise tant qu'elle dure. On ne module ni vers un
+accord de sous-dominante ni pour un seul accord : le I doit pouvoir
+être une tonique et ne pas être aussitôt le II d'un autre bloc. Une
+cadence vers un degré de la tonique locale qui ne peut pas en être une
+(A7 Dm7 quand do est local, dans Black Orpheus) ne l'interrompt pas. Le
+relatif n'est pas une modulation plus faible, seulement plus facile.
 
-Le tableau récapitulatif du chapitre 9 : IIm7, IIm7♭5, II7, ♭II7 ;
-IVmaj7 ou IV6, IVm7 ou IVm6, IVm7♭5, IV7, ♯IVdim7 ; ♭VImaj7, VIm7♭5
-(lu comme le ♯VIm7♭5 du mineur mélodique), ♭VI7 ; ♭VII7.
+Le **retour à la maison** est asymétrique : une seule cadence sur la
+tonique de départ la réinstalle, parfaite ou plagale, et même son
+accord de tonique seul. Quitter demande plus de preuves que revenir.
 
-### Les cellules
+En direct, le fond bascule au moment où l'indice est rempli ; après
+coup (`Grounds`), la région commence au bloc qui y menait, et c'est sur
+elle que les degrés se comptent (Tune Up, mesure 7 : Cmaj7 est I, pas
+♭VIImaj7). Les seuils (plus d'une mesure, deux cadences) sont dans le
+code, à passer en données quand un second jeu en aura besoin. La
+modulation **confirmée**, après une phrase entière, qui distinguerait
+une modulation passagère d'une vraie région, n'est pas encore codée.
 
-Elles tournent au lieu d'aboutir, ce qui les distingue des cadences.
+### Local, avec une mémoire
 
-- **L'anatole** I-VI-II-V, en majeur, en mineur et mélangée. Cyclique,
-  elle se joue sur une durée non définie : intro, coda. À ne pas
-  confondre avec la forme anatole (les *rhythm changes*), qui est une
-  structure de morceau.
-- **III-VI-II-V-I**, variante où le III remplace le I (VI7 possible).
-- **Les chaînes de II-V** par demi-ton, par ton, par cycle des quartes.
-  Dans ce dernier cas, le I potentiel devient le II suivant (Cm7).
-- **Le turnaround** : la fin qui prépare le retour au début, sur une ou
-  deux mesures. Il traverse la barre finale, et le morceau ne commence
-  pas toujours sur le I : l'analyse doit savoir que la forme boucle.
+La contrainte du direct (chaque calcul ne regarde qu'un nombre borné
+d'accords) tient : la tonique pressentie est un état porté d'un accord
+au suivant, un résumé de ce qui a sonné. Seule la lecture d'une grille
+entière va plus loin, parce qu'elle le peut : une grille qui boucle est
+entendue comme son deuxième chorus, qui part de la fin du premier, avec
+pour chez-soi la tonalité où le morceau finit. Un turnaround en fin de
+grille prépare donc le premier accord, et Tune Up commence en ré. À la
+première écoute, une cadence à travers la boucle n'a pas encore sonné
+quand son premier accord sonne ; le direct n'a que cette première
+écoute.
 
-### Le I qui dure
+### Tenderly, au présent
 
-- Ses couleurs : triade (rare), maj7, 6, et le mouvement oblique
-  Imaj7-Imaj7(♯5)-I6.
-- Ses prolongements : IVmaj7, IVm(maj7), IVm6/I, V7sus4, ♭VII7,
-  ♭VIImaj7, I-II-III-V.
-- La ligne gospel I-I7/3-IV-♯IVdim7-I/5.
-- Les lignes chromatiques du Im : Im, Im(maj7), Im7, Im6 depuis la
-  fondamentale, au soprano ou à la basse ; Im, Im(♭6), Im6, Im7 depuis
-  la quinte.
+| Mesure | Accord | Tonique pressentie | Ce que l'oreille entend |
+|---|---|---|---|
+| 1 | E♭maj7 | mi♭ | I |
+| 2 | A♭7 | mi♭ | IV7, une plagale qui annonce mi♭ mineur mélodique |
+| 3 | E♭m7 | mi♭ | la tonique change de couleur : I emprunté |
+| 4 | A♭7 | mi♭ | IV7 encore, en parallèle avec la mesure 2 |
+| 5 | Fm7 | mi♭ | II |
+| 6 | D♭7 | mi♭ | ♭VII7, plagale mineure : on attend mi♭ |
+| 7 | E♭maj7 | mi♭ | I |
+| 8 | Gm7♭5 C7♭9 | mi♭ | II V de fa mineur : on attend Fm |
+| 9 | Fm7♭5 | mi♭, locale fa mineur | pas Fm, mais le II de mi♭ mineur |
 
-## Les lectures qui se recouvrent
-
-Cas où plusieurs lectures sont rendues, à garder comme tests :
-
-- Em7-A7 : II-V de ré, ou III-VI7 de do.
-- Fm7 B♭7 : II-V de mi♭, ou IVm7-♭VII7 de do. L'arrivée choisit.
-- Dm7 avant D♭dim7 Cm7 en si♭ : Dm7, ou B♭/D (« souvent chiffré à tort
-  Dm7 », dit le livre). De même A♭maj7/C souvent chiffré Cm7.
-- Un X7 sur la basse à la quarte augmentée : D♭7/G est aussi G7(♭9, ♭5)
-  (Debussy, *La plus que lente*).
-- G13sus4 et Dm9 sur une basse sol.
-- F♯dim7 avant Gm7 : accord de passage, ou D7(♭9) sans fondamentale.
-
-## La fiche
-
-Ce que l'analyse d'une grille produit, sur le modèle des analyses du
-chapitre 10 :
-
-- la structure et le nombre de mesures ;
-- le rythme harmonique ;
-- la tonalité de départ et de fin ;
-- les plages, et les modulations avec leurs mesures ;
-- les emprunts, chacun avec sa gamme d'origine ;
-- les cadences et les préparations repérées, en degrés relatifs à leur
-  cible ;
-- pour chaque accord, la ou les gammes à jouer.
-
-La fiche s'affiche sur la grille elle-même, annotée comme dans le
-livre : degrés sous les accords, crochets et flèches des II-V,
-tonalités au-dessus des blocs. Trois supports, dans cet ordre :
-
-1. **Le terminal**, en texte : c'est le banc d'essai, qui grandit à
-   chaque étape de l'analyse.
-2. **Une fenêtre Ebitengine**, le jour où l'analyse est validée et où
-   l'on joue en direct : une police de Real Book ou de MuseScore, du
-   marqueur noir sur fond blanc, les chiffrages avec leurs indices et
-   leurs exposants, le tout réglable. Cosmétique, donc après le cœur.
-3. **Une page web**, le moteur compilé en WASM : on donne une grille,
-   on reçoit l'analyse annotée. Pour distribuer et faire connaître le
-   travail, dans la lignée de l'ancien gohareact ; le moins pressé.
+Ce tableau sert de test, validé en attendant l'avis d'une oreille plus
+experte.
 
 ## L'attente et la surprise
 
@@ -501,365 +431,181 @@ Un musicien à l'oreille entraînée entend « on dirait qu'on est en ré
 majeur » tant que rien ne le dément, et sursaute quand une couleur belle
 et inattendue le détrompe. L'analyse en direct doit faire la même
 chose, au même instant : c'est un objectif, tant qu'on n'a pas prouvé
-qu'il est impossible.
+qu'il est impossible. Les **lectures provisoires** sont celles que ce
+qui a sonné permet, un II-V annonçant son arrivée avant qu'elle ne
+sonne. **La surprise** est l'écart entre l'arrivée attendue et ce qui
+arrive, et elle se qualifie (cadence rompue, emprunt, dominante
+chromatique qui repart ailleurs) : ce n'est pas une erreur mais une
+couleur que la théorie sait nommer, la différence entre « faux » et
+« monstrueux ». Pour un jeu, c'est la récompense idéale, qui salue une
+prise de risque réussie plutôt que la conformité.
 
-- **Les lectures provisoires** sont celles que ce qui a sonné permet :
-  un II-V annonce son arrivée avant qu'elle ne sonne.
-- **La surprise** est l'écart entre l'arrivée attendue et ce qui
-  arrive, et elle se qualifie : cadence rompue, emprunt, dominante
-  chromatique qui repart ailleurs. Ce n'est pas une erreur, c'est une
-  couleur que la théorie sait nommer, et c'est ce qui fait la
-  différence entre « faux » et « monstrueux ».
-- **Pour un jeu**, c'est la récompense idéale : elle salue une prise de
-  risque réussie, pas la conformité.
-- **La tension** monte tant que l'oreille est tenue loin d'une tonique
-  et retombe quand elle y arrive : une jauge qui se remplit. Le [B] de
-  Tenderly en est le modèle : Fm7♭5 B♭7 attend mi♭ mineur qui ne vient
-  pas, deux fois, Bdim7 et Cm7 repartent ailleurs, Cm7 F7 non plus,
-  et tout ne se résout qu'au retour à la maison du [A]. Elle se déduit
-  de la tonique pressentie, accord par accord, et reste déterministe
-  (un compte, pas une probabilité) :
-  - elle monte à chaque cadence qui ne se résout pas, à chaque attente
-    déçue, à chaque accord qui ne tient pas dans le fond ;
-  - elle retombe en partie sur une tonique locale (un I qui peut être
-    une tonique), et entièrement au retour sur la tonique de départ.
+**La surprise se gradue.** Dans Tenderly, mesure 12, B♭7 fait attendre
+mi♭ mineur ; Bdim7 (si ré fa la♭, soit Ddim7) est le VIIdim7 de mi♭
+mineur et prolonge l'attente, mais aussi celui de do, et c'est Cm7 qui
+arrive. Un tel **pivot** laisse les deux résolutions ouvertes : au
+moment du dim7, l'attente devrait porter ses quatre toniques possibles,
+et l'arrivée sur l'une d'elles est plus douce qu'une arrivée que rien
+n'annonçait. Ce mouvement très courant, bien écrit plutôt que
+monstrueux (*Someday My Prince Will Come* le fait aussi), est un test à
+l'envers : la surprise ne doit pas s'y déclencher.
 
-Une seule exigence en découle pour tout le code d'analyse : **chaque
-calcul reste local**, il ne regarde qu'un nombre borné d'accords autour
-de lui. L'analyse d'une grille et l'analyse en direct sont alors le
-même code, sur une suite complète ou sur une suite qui s'allonge. Les
-étages qui demandent de la durée (tonalité, modulation) restent
-provisoires plus longtemps. Seule la lecture d'une grille entière va
-plus loin, parce qu'elle le peut : elle entend la grille une deuxième
-fois, depuis la fin du premier chorus, et prend pour chez-soi la
-tonique où le morceau finit. Le direct n'a que la première écoute.
+**La tension** monte tant que l'oreille est tenue loin d'une tonique et
+retombe quand elle y arrive : une jauge qui se remplit. Le [B] de
+Tenderly en est le modèle, avec ses cadences qui ne se résolvent pas et
+qui ne trouvent la maison qu'au retour du [A]. Elle se déduit de la
+tonique pressentie, de façon déterministe (un compte, pas une
+probabilité) : elle monte à chaque cadence qui ne se résout pas, à
+chaque attente déçue, à chaque accord qui ne tient pas dans le fond ;
+elle retombe en partie sur une tonique locale, entièrement au retour à
+la maison.
 
-## La tonique pressentie
+## Les couleurs proposées
 
-À chaque accord, la tonique que l'oreille attend, avec ce qui a sonné
-et rien d'autre. Au troisième accord de Tenderly, deux mesures de
-E♭maj7 A♭7 ont installé mi♭ : E♭m7 s'entend comme la tonique qui a
-changé de couleur, pas comme le II de ré♭. Le II-V E♭m7 A♭7 ne
-toniciserait ré♭ que s'il y arrivait.
+La gamme de la cible colore sa préparation, selon des règles
+régulières qui deviennent des propositions : vers un accord mineur, un
+V7 avec ♭13 ou ♭9 (A7(♭13) vers Dm7) ; vers un accord majeur ou de
+dominante, 9 et 13 (C13 vers Fmaj7) ; la dominante chromatique avec
+♯11 (F13(♯11) vers Em11 dans *But Beautiful*) ; le I majeur en maj7 le
+plus souvent, ou, quand la mélodie est sur la fondamentale, en 6 ou
+avec la neuvième majeure par-dessus la septième. Ce sont des
+propositions « en toute logique » : l'original, quand on le connaît,
+l'emporte.
 
-C'est le pendant, au présent, de la région. Les deux lectures
-coexistent : la fiche montre les régions, le direct montre la tonique
-pressentie, et l'écart entre ce qu'elle attendait et ce qui arrive est
-la surprise.
+## Le catalogue v0
 
-### Deux toniques
+Des données, relues ligne à ligne comme la table des qualités iReal.
 
-- **La tonique de fond** : celle qui est installée. Les degrés se
-  comptent sur elle, comme le livre le fait même quand une cadence
-  tonicise un autre degré (Dm7♭5 G7 Cm7 en mi♭ : II V VI).
-- **La tonique locale** : celle qu'une cadence vient de toniciser, le
-  temps de cette cadence. Elle ne change pas le fond.
+| Cadences | Formes | Codées |
+|---|---|---|
+| À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-VI) | parfaite et imparfaite ; la demi-cadence et la rompue se définissent par une absence, et attendent |
+| II-V-I | majeur IIm7-V7-Imaj7 ; mineur harmonique IIm7♭5-V7(♭9, ♭13)-Im(maj7) ; mineur mélodique IIm7-V7(9, ♭13)-Im(maj7) ; mixte IIm7♭5-V7(9, ♭13)-Imaj7 | oui |
+| Plagales | IVmaj7-I ; IV7-I et IV7-Im (mineur mélodique) ; IVm7-I (mineur harmonique) ; IVm(maj7)-I (majeur harmonique) ; IV-IVm-I ; IV7-I7 (« bluesy ») | toutes, sauf IV7-I7 (le I7 n'est pas un accord de tonique) |
+| Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7 (phrygien) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I |
+| Avatars du V | V7, ♭II7, VIIdim7 | oui |
 
-Chacune est un ensemble de tonalités sur une même tonique, comme la
-tonalité annoncée d'un bloc (mi♭ majeur, ou mi♭ majeur et mineur
-mélodique quand rien ne tranche), ou vide quand rien n'est installé :
-au début d'un morceau, avant la première tonique, et dans une plage
-atonale.
+**Les sous-dominantes**, d'après le tableau du chapitre 9 : IIm7,
+IIm7♭5, II7, ♭II7 ; IVmaj7 ou IV6, IVm7 ou IVm6, IVm7♭5, IV7, ♯IVdim7 ;
+♭VImaj7, VIm7♭5 (lu comme le ♯VIm7♭5 du mineur mélodique), ♭VI7 ;
+♭VII7.
 
-### Ce qui installe une tonique
+**Les cellules** tournent au lieu d'aboutir, ce qui les distingue des
+cadences. L'anatole I-VI-II-V, en majeur, en mineur ou mélangée, se
+joue sur une durée non définie (intro, coda), à ne pas confondre avec
+la forme anatole des *rhythm changes*. III-VI-II-V-I remplace le I par
+le III. Les chaînes de II-V vont par demi-ton, par ton ou par cycle des
+quartes, où le I potentiel devient le II suivant. Le turnaround prépare
+le retour au début sur une ou deux mesures et traverse la barre
+finale. Pas encore reconnues : elles se liront sur la ligne des degrés.
 
-Du plus fort au plus faible :
+**Le I qui dure** a ses couleurs (triade, maj7, 6, le mouvement oblique
+Imaj7-Imaj7(♯5)-I6), ses prolongements (IVmaj7, IVm(maj7), IVm6/I,
+V7sus4, ♭VII7, ♭VIImaj7, I-II-III-V), la ligne gospel
+I-I7/3-IV-♯IVdim7-I/5, et les lignes chromatiques du Im (Im, Im(maj7),
+Im7, Im6 depuis la fondamentale ; Im, Im(♭6), Im6, Im7 depuis la
+quinte).
 
-1. **Une cadence qui se résout** : la cible devient tonique locale.
-2. **La durée ou la confirmation** : une tonique locale qui tient, ou
-   qu'une autre cadence confirme, devient le fond : c'est la
-   modulation (voir plus bas).
-3. **Le premier accord**, s'il peut être un accord de tonique (triade,
-   maj7, 6, m6, m(maj7), mais pas m7, presque toujours une
-   sous-dominante). C'est l'indice le plus faible : beaucoup de
-   standards commencent sur un II ou un IV. Après coup, les accords
-   entendus avant la première tonique lui appartiennent.
+## Les lectures qui se recouvrent
 
-Un m7 est aussi une tonique quand une cadence mineure se résout dessus
-(un V7♭9, un II m7♭5 : elle annonce le mineur) et qu'il n'est pas
-lui-même le II d'un bloc : les grilles écrivent la tonique mineure m7
-bien plus souvent qu'on ne la joue (m6, m(maj7)). *Softly, As In A
-Morning Sunrise* (Cm7 | Dm7♭5 G7♭9 | Cm7) est en do mineur. Une
-cadence à travers la boucle, un turnaround vers un premier accord en
-m7, n'en fait pas une tonique à l'écoute : l'Am7 qui ouvre *Fly Me To
-The Moon* est un VI.
+Cas où plusieurs lectures sont rendues, à garder comme tests : Em7-A7
+(II-V de ré, ou III-VI7 de do) ; Fm7 B♭7 (II-V de mi♭, ou IVm7-♭VII7
+de do, selon l'arrivée) ; Dm7 avant D♭dim7 Cm7 en si♭, qui est B♭/D
+(« souvent chiffré à tort Dm7 », dit le livre), comme A♭maj7/C souvent
+chiffré Cm7 ; D♭7/G, qui est aussi G7(♭9, ♭5) (Debussy, *La plus que
+lente*) ; G13sus4 et Dm9 sur une basse sol ; F♯dim7 avant Gm7, accord de
+passage ou D7(♭9) sans fondamentale.
 
-Un accord de tonique compte à l'état fondamental ou avec sa tierce à la
-basse. Avec sa quinte à la basse, c'est une quarte et sixte sur une
-pédale : F/C C à la fin de *My Way* est do, le fa n'y est qu'une
-broderie au-dessus de la basse.
+## La fiche et son affichage
 
-Un blues reconnu à sa forme a sa tonique pour fond dès la première
-mesure (voir « Le morceau »).
+Sur le modèle des analyses du chapitre 10, l'analyse d'une grille
+produit la structure et le nombre de mesures, le rythme harmonique, la
+tonalité de départ et de fin, les plages et les modulations avec leurs mesures, les
+emprunts avec leur gamme d'origine, les cadences et les préparations
+repérées, et pour chaque accord la ou les gammes à jouer. Elle
+s'affiche sur la grille elle-même, annotée comme dans le livre. Trois
+supports, dans cet ordre : **le terminal**, banc d'essai qui grandit à
+chaque étape ; **une fenêtre Ebitengine**, une fois l'analyse validée,
+avec une police de Real Book, du marqueur noir sur fond blanc et les
+chiffrages en indices et exposants ; **une page web**, le moteur
+compilé en WASM, pour distribuer et faire connaître le travail, dans
+la lignée de l'ancien gohareact.
 
-Une grille qui boucle est entendue comme son deuxième chorus, qui part
-de la fin du premier, avec pour chez-soi la dernière tonique du chorus.
-Un turnaround en fin de grille prépare donc le premier accord, et Tune
-Up commence en ré.
+## Les morceaux de référence
 
-L'armure n'y joue aucun rôle (voir « Le morceau »).
+### Les fiches du livre
 
-Ce qui ne change rien au fond : les accords diatoniques, les emprunts
-sur la même tonique (Im7, IVm, ♭VII7), et les préparations qui ne se
-résolvent pas.
+Le livre analyse des morceaux du corpus iReal ; ses fiches, transcrites
+à la main dans `charts/ireal/testdata/fiches`, sont l'oracle. Les degrés
+en crochets concordent à 79 sur 83, avec ou sans la tonalité que l'app
+déclare, qui donne Tune Up en si♭ et le joue sur 32 mesures avec deux
+fins.
 
-**Une cadence plagale conclut sans ouvrir.** Elle confirme une tonique
-déjà là (le fond, le chez-soi, la tonique locale) : elle ramène à la
-maison, et compte comme une deuxième cadence qui confirme une
-modulation. Elle n'ouvre pas à elle seule une tonique locale. Ce
-qu'elle annonce, l'oreille l'attend : après D♭7 dans *Tenderly*, on
-attend mi♭.
+| Morceau | La fiche | Ce qu'il fixe |
+|---|---|---|
+| Tune Up | AA', 16 mesures, ré majeur, modulations en do (5 à 8) et en si♭ (9 à 12) | la modulation à chaque phrase, clé de construction du morceau ; 13 sur 13 |
+| Black Orpheus | AB, 32 mesures, la mineur, do majeur 6 à 12 | la modulation par deuxième cadence, qui résiste à A7♭9 Dm7 ; 20 sur 20 |
+| There Will Never Be Another You | ABAC, 32 mesures, mi♭ majeur, sans modulation | Cm7 tenu une mesure tonicise le VI sans l'installer |
+| Tenderly | ABAC, 32 mesures, mi♭ majeur, huit emprunts, plagales | la tonique pressentie, le I emprunté, le pivot diminué ; restent Cm7 F7, lus VI II7 par le livre |
 
-### La modulation
+### Les autres cas tranchés
 
-Les trois indices du livre (cible hors de la tonalité, durée, cadences
-qui confirment), lus au présent. **Parti pris : être libéral.**
-Appeler modulation une tonicisation un peu appuyée est une analyse que
-beaucoup de musiciens feraient (« ça module, temporairement ») ; ne
-pas voir que les repères tonaux bougent serait une faiblesse.
-
-- **Installée** : une tonique locale devient le fond quand elle tient
-  plus d'une mesure d'accords stables, ceux qui tiennent en elle sans
-  rien préparer (Dmaj7 tenu deux mesures, ou B♭maj7 Gm7 dans Tune Up),
-  ou qu'une deuxième cadence résolue la vise tant qu'elle dure. On ne
-  module ni vers une sous-dominante ni pour un seul accord : le I doit
-  pouvoir être une tonique (triade, maj7, 6, m6, m(maj7)) et ne pas
-  être aussitôt le II d'un autre bloc. Fm7♭5 dans Tenderly, mesure 9,
-  n'installe rien, ni Cm7 mesure 13, déjà le II de F7.
-- **Ce qui n'interrompt pas une tonique locale** : un accord qui tient
-  en elle, une préparation vers un accord qui tient en elle, et une
-  cadence vers un de ses degrés qui ne peut pas être une tonique. Dans
-  Black Orpheus, A7♭9 Dm7 entre les deux cadences sur do garde do
-  majeur.
-- **Confirmée** : après une phrase entière dans la nouvelle tonique,
-  ou une deuxième cadence. La différence entre installée et confirmée
-  est celle entre une modulation passagère et une vraie région. Pas
-  encore codée.
-- **Le relatif** (la mineur, do majeur) n'est pas une modulation plus
-  faible qu'une autre, seulement plus facile : même règle.
-- **Le retour à la maison est asymétrique** : une seule cadence sur la
-  tonique de départ la réinstalle aussitôt, qu'elle soit parfaite ou
-  plagale (le F/C C de *My Way*, un gros amen sur do), et même son
-  accord de tonique seul. Quitter demande plus de preuves que revenir.
-- **Direct et après coup.** En direct, le fond bascule au moment où
-  l'indice est rempli. Après coup, la région commence au bloc qui y
-  menait. Les deux coexistent : la ligne de la tonique pressentie
-  montre le direct, les degrés et la fiche l'après-coup (Tune Up,
-  mesure 7 : Cmaj7 est I, pas ♭VIImaj7).
-- **Tune Up** module ainsi à chaque phrase, ce que tout jazzman
-  dirait : c'est la clé de construction du morceau. **Tenderly** ne module
-  pas. **There Will Never Be Another You**, Dm7♭5 G7 Cm7 : Cm7 tient
-  une mesure, mais n'installe rien, et le livre y lit une tonicisation
-  (VI). Un m7 est presque toujours une sous-dominante, et on ne module
-  pas pour s'installer en éolien : en jazz, une tonique mineure se joue
-  m6 ou m(maj7), m(maj9) pour adoucir la septième.
-
-Seuils : plus d'une mesure d'accords stables, une phrase de quatre
-mesures, deux cadences résolues. Ils sont dans le code pour l'instant,
-à passer en données quand un deuxième jeu de seuils en aura besoin.
-
-Codé dans `Sense` (le direct) et `Grounds` (l'après-coup, sur lequel
-les degrés se comptent) : Tune Up et Black Orpheus concordent
-entièrement avec leurs fiches (13 sur 13, 20 sur 20), et Along Came
-Betty ne module pas.
-
-### Le I emprunté
-
-Un accord dont la fondamentale est la tonique de fond se lit comme un
-I emprunté, même quand il est le II d'un II-V : E♭m7 dans E♭m7 A♭7 en
-mi♭ est I, emprunté à l'éolien, et A♭7 redevient IV7. Le II-V reste un
-bloc qui annonce ré♭ ; c'est sa lecture en degrés qui change.
-
-### Tenderly, au présent
-
-| Mesure | Accord | Tonique pressentie | Ce que l'oreille entend |
-|---|---|---|---|
-| 1 | E♭maj7 | mi♭ (premier accord, et fin du chorus) | I |
-| 2 | A♭7 | mi♭ | IV7, ou V de ré♭ : on attend peut-être ré♭ |
-| 3 | E♭m7 | mi♭ | ré♭ n'arrive pas ; la tonique change de couleur : I emprunté |
-| 4 | A♭7 | mi♭ | IV7 encore, en parallèle avec la mesure 2 |
-| 5 | Fm7 | mi♭ | II |
-| 6 | D♭7 | mi♭ | ♭VII7 : on attend mi♭ |
-| 7 | E♭maj7 | mi♭, confirmée | I, par la cadence ♭VII7-I |
-| 8 | Gm7♭5 C7♭9 | mi♭, locale fa mineur | II V de fa mineur : on attend Fm |
-| 9 | Fm7♭5 | mi♭, locale mi♭ mineur | surprise : pas Fm, mais le II de mi♭ mineur |
-
-### Le pivot diminué
-
-Tenderly, mesure 12 : B♭7 Bdim7, puis Cm7. Après B♭7, l'oreille attend
-mi♭ mineur. Bdim7 (si ré fa la♭) est enharmoniquement Ddim7 (ré fa la♭
-do♭), le VIIdim7 de mi♭ mineur harmonique : il prolonge l'attente. Il
-est aussi le VIIdim7 de do, et c'est Cm7 qui arrive. Les deux
-résolutions restent ouvertes jusqu'au dernier moment.
-
-- **Ce que gohar voit déjà** : la préparation par diminué est
-  symétrique, un dim7 prépare toute cible un demi-ton au-dessus de
-  l'une de ses quatre notes (do, mi♭, sol♭ et la pour Bdim7).
-- **Ce qui manque** : le bloc ne garde que la cible réelle (« Cm harm
-  »). Au moment du dim7, l'attente devrait porter ses quatre toniques
-  possibles, et celles qui prolongent l'attente précédente en font un
-  **pivot**.
-- **La surprise se gradue** : l'arrivée sur une tonique que le pivot
-  laissait ouverte est plus douce qu'une arrivée que rien n'annonçait.
-  Ce n'est pas un « WOOOH » : le mouvement est très courant (on le
-  trouve aussi dans *Someday My Prince Will Come*), il est surtout
-  bien écrit. C'est donc un test à l'envers : la surprise ne doit pas
-  se déclencher ici.
-
-### Local, avec une mémoire
-
-La contrainte du direct (chaque calcul ne regarde qu'un nombre borné
-d'accords) tient : la tonique pressentie est un état porté d'un accord
-au suivant, un résumé de ce qui a sonné, pas un retour en arrière. Le
-même code lit une grille complète en la parcourant de gauche à droite.
-
-La tonalité du morceau s'en déduit (`Tune`), en remontant depuis la
-fin ; le premier de ces indices décide :
-
-- un accord entendu comme la tonique du fond (le C final de *My Way*,
-  le Cmaj7 d'avant le turnaround de *Fly Me To The Moon*) ;
-- le V d'une cadence qui se résout sur une tonique (E♭7 A♭maj7 à la
-  fin d'*Along Came Betty*, avant le turnaround Bm7 E7) ;
-- à travers la boucle, une cadence qui revient au fond : le dernier G7
-  de *Sugar* revient à Cm7, et le morceau est en do mineur, pas dans
-  le fa mineur que G♭7 Fm7 tonicise mesure 11. Un turnaround vers un
-  premier accord qui n'est pas le fond (E7 Am7 dans *Fly Me To The
-  Moon*) ne compte pas.
-
-**Une tierce picarde** ne rend pas majeur un morceau mineur : quand
-l'accord de tonique qui décide est majeur mais que le morceau s'est
-tenu plus longtemps sur sa tonique mineure que sur sa tonique majeure,
-il est en mineur, et l'analyse signale la tierce picarde (`Picardy`).
-Héritée de la musique d'église, où un accord majeur sonne avec moins
-de partiels qui frottent sous la résonance d'un grand orgue.
-*'Round Midnight* et *Black And Tan Fantasy* sont ainsi en mineur.
-
-Un blues est dans sa propre tonique. À la première écoute, une cadence
-à travers la boucle n'a pas encore sonné quand son premier accord
-sonne : elle ne compte qu'à la deuxième. Rendre aussi le fond qui a
-dominé le morceau, quand ce n'est pas celui de la fin (le relatif
-majeur d'*Autumn Leaves*), reste à faire.
-
-### Tranché
-
-- **Le relatif qui tonicise d'abord.** *Autumn Leaves* en sol mineur
-  commence par Cm7 F7 B♭maj7 : la première cadence installe si♭, et sol
-  mineur n'arrive qu'après. C'est un cas ambigu notoire, et les deux
-  lectures sont acceptables de loin : en direct, le fond passe de si♭ à
-  sol mineur quand sol mineur s'installe ; après coup, les deux sont
-  rendues, et la tonalité du morceau est celle de l'accord final, sol
-  mineur.
-- **La tonique de départ est gardée en mémoire**, à part du fond, pour
-  reconnaître le retour à la maison après un pont qui a modulé : c'est
-  très souvent le cas sur une forme AABA.
-- **Le tableau de Tenderly** est validé en attendant l'avis d'une
-  oreille plus experte : il sert de test.
-- **Black Orpheus** module en do majeur mesures 6 à 12 : c'est la
-  lecture du livre, et la règle doit la retrouver.
-- **Along Came Betty ne module pas** : deux tonalités à un demi-ton (la♭
-  et la) qui ne cessent de se chevaucher, puis des toniques locales
-  toutes les deux mesures (Amaj7, Gmaj7, Fmaj7), chacune tenue une
-  seule mesure. Le thème a le cul entre deux chaises, il se décale et
-  revient d'un pied sur l'autre sans se décider, et c'est ce qui le
-  rend si beau. D'où le seuil : un I tenu une seule mesure tonicise, il
-  n'installe rien. L'analyse doit montrer cette hésitation (la ligne de
-  la tonique pressentie qui va et vient), pas la trancher.
-- **Giant Steps ne module pas** : trois centres tonals, mais des
-  tonicisations, chacune tenue une mesure, et à ce tempo moins d'une
-  seconde. Parler de modulation serait abusif ; c'est la même règle que
-  pour Betty.
-- **La tonique mineure écrite m7** : le corpus en faisait la plus
-  grande famille d'écarts avec l'app, des thèmes mineurs entendus dans
-  leur relatif majeur (*Softly*, *Summertime*). Un m7 est une tonique
-  quand une cadence mineure se résout dessus et qu'il n'est pas le II
-  d'un bloc (voir « Ce qui installe une tonique »).
-- **« Pas de modulation vers une sous-dominante » parle de la fonction
-  de l'accord**, pas de son degré : un m7 est un accord de
-  sous-dominante, une triade, un maj7, un m6 ou un m(maj7) peuvent être
-  une tonique. Dans le pont de Black Orpheus, Em7♭5 A7♭9 mène à Dm tenu
-  deux mesures : la règle installe ré mineur, puis revient en la mineur
-  par Bm7♭5 E7. Les analyses de ce thème s'accordent sur une triade
-  (Dm) ; une modulation temporaire, ou une tonicisation appuyée, est
-  une lecture juste de ce cas limite.
-
-## Les tests de référence
-
-Le livre analyse des morceaux qui sont dans le corpus iReal. Sa fiche
-devient l'oracle : on compare celle de gohar à celle des auteurs.
-
-- **Tune Up** : AA', 16 mesures, un accord par mesure, ré majeur,
-  modulations en do (5 à 8) et en si♭ (9 à 12).
-- **Black Orpheus** : AB, 32 mesures, un ou deux accords par mesure, la
-  mineur, modulation en do majeur (6 à 12) puis retour.
-- **There Will Never Be Another You** : ABAC, 32 mesures, mi♭ majeur,
-  II-V vers le VI et vers le IV, ♭VII7-I, sans modulation.
-- **Tenderly**, mesures 1 à 16 : ABAC, 32 mesures, un accord par
-  mesure, mi♭ majeur sans modulation, huit emprunts avec leur gamme,
-  plagales, ♭VII7-Imaj7, Bdim7 de passage (aussi G7(♭9) sans
-  fondamentale), II7 en marche IIm7-V7.
-
-Les fiches sont transcrites à la main dans
-`charts/ireal/testdata/fiches`, en données de test, pas dans le code.
-Les degrés en crochets concordent à 79 sur 83, avec et sans la
-tonalité déclarée par l'app, qui donne Tune Up en si♭ (le livre
-l'analyse en ré majeur) et le joue sur 32 mesures avec deux fins.
+| Morceau | Ce qu'il fixe |
+|---|---|
+| Along Came Betty | le cul entre deux chaises : deux tonalités à un demi-ton qui se chevauchent, des toniques tenues une seule mesure, pas de modulation ; l'analyse montre l'hésitation sans la trancher |
+| Giant Steps | trois centres, mais des tonicisations de moins d'une seconde à ce tempo : pas de modulation |
+| Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
+| Autumn Leaves | le relatif qui tonicise d'abord : si♭ entendu avant sol mineur, où le morceau finit |
+| My Way | la quarte et sixte F/C, et le retour par une plagale |
+| Sugar, Fly Me To The Moon | ce que vaut une cadence à travers la boucle |
+| Softly, Summertime | la tonique mineure écrite m7 |
+| 'Round Midnight | la tierce picarde |
+| Stolen Moments | la marche d'accords parallèles |
+| So What | la plage modale, à venir |
+| Sonnymoon for Two, Chasin' the Trane, Blues For Alice | le blues reconnu à sa forme |
 
 ### Le corpus
 
-`charts/cmd/corpus` passe toutes les grilles d'une ou plusieurs
-playlists et compare la tonalité que l'analyse entend à celle que l'app
-déclare, en groupant les écarts par relation (relatif, quinte, quarte,
-homonyme, autre) avec des indices pour trancher : le nombre de
-cadences résolues, la fin sur la tonique entendue, le blues, la grille
-de jeu vidéo. Sur les 1678 grilles des deux playlists, les deux
-tombent d'accord pour 1271 (76 %). Les écarts ne sont pas tous des
-erreurs de l'analyse : l'app se trompe (Tune Up), les thèmes modaux sont
-écrits comme en do, les grilles de jeux vidéo sont moins sûres. Les
-familles d'écarts pointent les questions ouvertes (voir « Ouvert »).
+`charts/cmd/corpus` compare, sur une ou plusieurs playlists, la
+tonalité que l'analyse entend à celle que l'app déclare, en groupant
+les écarts par relation (relatif, quinte, quarte, homonyme, autre) avec
+des indices pour trancher : le nombre de cadences résolues, la fin sur
+la tonique entendue, le blues, la tierce picarde, la grille de jeu
+vidéo. Sur les 1678 grilles des deux playlists, les deux tombent
+d'accord pour 1271 (76 %). Les écarts ne sont pas tous des erreurs de
+l'analyse, et leurs familles pointent les questions ouvertes.
 
 ## Hors périmètre
 
-- **Accord modifié ou ajouté.** Savoir si un A7 remplace un Am7 de la
-  grille d'origine ou s'y ajoute relève presque du travail de
-  l'historien du jazz. Les joueurs visés ont d'abord des questions
-  pratiques, et ceux qui veulent cette culture la trouveront auprès de
-  professeurs qui en sont des puits. L'analyse dit ce que fait chaque
-  accord, jamais d'où il vient ; l'édition d'une grille se contente de
-  réanalyser la nouvelle version.
-- **Ce qui demande la mélodie**, tant qu'on ne l'a pas : repérer à
-  coup sûr un accord parallèle qui harmonise une note (une marche
-  d'accords parallèles, elle, se lit sur la grille), ou refuser une
-  dominante chromatique quand la mélodie tient la ♯11 du X7 (elle
-  deviendrait la fondamentale du nouvel accord, *Midnight Sun*). Ces règles iront dans les
-  propositions de réharmonisation, le jour où une grille aura sa
-  mélodie.
-- **L'analyse rythmique**, que le livre écarte aussi.
+**Accord modifié ou ajouté.** Savoir si un A7 remplace un Am7 de la
+grille d'origine ou s'y ajoute relève presque du travail de l'historien
+du jazz ; ceux qui veulent cette culture la trouveront auprès de
+professeurs qui en sont des puits. L'analyse dit ce que fait chaque
+accord, jamais d'où il vient, et l'édition d'une grille se contente de
+réanalyser la nouvelle version.
+
+**Ce qui demande la mélodie**, tant qu'on ne l'a pas : repérer à coup
+sûr un accord parallèle qui harmonise une note, ou refuser une
+dominante chromatique quand la mélodie tient la ♯11 du X7 (elle
+deviendrait la fondamentale du nouvel accord, *Midnight Sun*). Ces
+règles iront dans les propositions de réharmonisation, le jour où une
+grille aura sa mélodie. **L'analyse rythmique**, que le livre écarte
+aussi.
 
 ## Ouvert
 
-- **Les plages modales** : *So What* (voir « Les plages »), et les
-  grilles de jeux vidéo modales.
-- Les seuils de la modulation, dans le code, à passer en données ; la
-  durée d'une plage modale, à régler sur les tests de référence, puis à
-  l'oreille.
-- La longueur d'une chaîne de préparations avant qu'elle ne soit plus
-  une préparation mais une région.
-- L'ordre exact des lectures quand plusieurs valent : à écrire règle
-  par règle, et à confronter aux fiches du livre.
-- **Le II-V sans résolution, contre le livre.** Les degrés concordent
-  avec les fiches du livre à 79 sur 83 depuis les modulations. Les
-  écarts qui restaient sont des IIm7 V7 qui ne se résolvent pas, là où
-  le livre entend autre chose. Deux cas :
-  - **Le II qui est un I emprunté**, réglé par la tonique pressentie
-    (voir « Le I emprunté ») : E♭m7 A♭7 dans Tenderly, mesures 3-4, se
-    lit Im7 IV7. Le livre écrit « I IV » : il note la qualité empruntée
-    une fois (IV7 mesure 2) et plus ensuite ; l'analyse l'écrit chaque
-    fois. Cas limite à surveiller sur d'autres fiches.
-  - **La marche IIm7-V7.** Cm7 F7 avant Fm7 (Tenderly mesures 13-14,
-    There Will Never Be Another You mesures 12-13) : le livre lit VI,
-    puis II7. Ici le II n'est pas sur la tonique ; la lecture du livre
-    viendra plutôt des cadences du catalogue ou des relations entre
-    blocs.
-  - Écartée : départager par la qualité du II (m7 contre m7♭5). Elle
-    colle aux quatre cas du corpus mais ne repose sur aucune raison
-    musicale solide.
+- **La marche IIm7-V7.** Cm7 F7 avant Fm7 (Tenderly mesures 13-14,
+  There Will Never Be Another You mesures 12-13) : le livre lit VI puis
+  II7, l'analyse un II-V de si♭ qui ne se résout pas. Ce sont les 4
+  écarts restants avec les fiches ; la lecture du livre viendra des
+  relations entre blocs. (Écartée : départager par la qualité du II, m7
+  contre m7♭5, qui collait au corpus sans raison musicale.)
+- **Le fond qui a dominé** un morceau, quand ce n'est pas celui de la
+  fin (le relatif majeur d'*Autumn Leaves*), à rendre aussi.
+- **L'attente d'un diminué**, ses quatre toniques possibles, pour le
+  pivot.
+- **Les seuils** de la modulation, en données, et la durée d'une plage
+  modale, à régler sur les morceaux de référence puis à l'oreille.
+- **La longueur d'une chaîne** de préparations avant qu'elle ne soit
+  plus une préparation mais une région.
+- **L'ordre exact des lectures** quand plusieurs valent, règle par
+  règle, confronté aux fiches.
