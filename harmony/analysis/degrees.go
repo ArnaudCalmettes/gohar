@@ -59,7 +59,11 @@ func degreeOf(ch Change, ts []harmony.Tonality, walk int) Degree {
 	if !found || walk != 0 {
 		d.Number, d.Accidental = altered(ts[0].Pattern(), s, walk)
 	}
-	if !holds(ts, ch.Chord.Set()) {
+	// A borrowed chord keeps its quality, and so does a suspension,
+	// diatonic as it is: the V7sus4 is a subdominant chord, as the Bill
+	// Evans Piano Academy teaches it, and writing V for it would make
+	// it the V.
+	if !holds(ts, ch.Chord.Set()) || isSus(ch.Chord.Pattern) {
 		d.Quality = ch.Chord.Pattern.Tetrad()
 	}
 	switch (int(ch.Bass) - int(ch.Chord.Root) + 12) % 12 {
@@ -181,7 +185,9 @@ func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
 // Nor is the first step of a march of two fives, whose V7 turns into
 // the two of the next one on the same root: Cm7 F7 Fm7 B♭7 in E flat,
 // bars 13 to 16 of Tenderly, is VI II7 II V. F7 is a two altered, as
-// En Harmonie puts it, not the V of a B flat that never comes.
+// En Harmonie puts it, not the V of a B flat that never comes. Nor one
+// whose V lands on the suspension of the next V: Dm7 G7 C7sus4 C7 in F
+// is VI II7 V7sus4 V, the suspension a two hiding.
 func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
 	out := Degrees(c, passing, sensed)
 	for _, b := range blocks {
@@ -198,22 +204,34 @@ func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degr
 	return out
 }
 
-// marches reports whether a two five that does not resolve is the first
-// step of a march: its V7 turns into the minor seventh two of the next
-// block, on the same root (F7 Fm7 B♭7).
+// marches reports whether a two five is the first step of a march: its
+// V7 turns into the minor seventh two of the next block, on the same
+// root (F7 Fm7 B♭7), or lands on the suspension of the next V, a two
+// hiding under the root of that V (Dm7 G7 C7sus4 C7 F in My Lucky
+// Star, a three six two five of F).
 func marches(c Changes, blocks []Block, b Block) bool {
-	if b.Target >= 0 || b.Five < 0 {
+	if b.Five < 0 {
 		return false
 	}
 	n := c.Next(b.Five)
-	if n < 0 || c.Chords[n].Chord.Root != c.Chords[b.Five].Chord.Root ||
-		c.Chords[n].Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
+	if n < 0 {
 		return false
 	}
+	next := c.Chords[n]
 	for _, o := range blocks {
-		if o.Two == n && o.Five >= 0 {
+		switch {
+		case b.Target < 0 && o.Two == n && next.Chord.Root == c.Chords[b.Five].Chord.Root &&
+			next.Chord.Pattern.Tetrad() == harmony.ChordMinorSeventh,
+			b.Target == n && o.Sus == n:
 			return true
 		}
 	}
 	return false
+}
+
+// isSus reports whether a chord has a fourth or a second in place of
+// its third.
+func isSus(p harmony.ChordPattern) bool {
+	return !p.HasAny(harmony.IntMajorThird, harmony.IntMinorThird) &&
+		p.HasAny(harmony.IntPerfectFourth, harmony.IntMajorSecond)
 }

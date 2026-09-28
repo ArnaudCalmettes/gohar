@@ -56,16 +56,19 @@ type Phrase struct {
 // tonality. Lullaby Of Birdland stops on A♭maj7 before Gm7♭5 C7 goes
 // back to Fm. A tonic already installed, the one the tune opened on,
 // the one the phrase before came to rest on or, with none, the one its
-// first cadence went to, needs no cadence to come back: Chega De
-// Saudade stops on D6, 'Round Midnight on E♭6. Another one comes after
+// first cadence went to, needs no cadence to come back: 'Round
+// Midnight stops on E♭6, Chega De Saudade on D6. Another one comes after
 // a two five one or a plagal cadence, not a lone V: Yesterdays goes
-// through B♭maj7 in its cycle of dominants, and stops on Dm.
+// through B♭maj7 in its cycle of dominants, and stops on Dm. And no
+// tune stops on the IV of the tonic before: Virgo goes through B♭maj7,
+// its IV, before Gm7 C7 goes back to F.
 func Phrases(c Changes, blocks []Block) []Phrase {
 	if opening(c) < 0 {
 		return nil
 	}
 	ph := &phrasing{c: c, blocks: blocks, r: rolesOf(c, blocks), bar: barOf(c)}
-	ph.opens = opensOn(c, ph.r)
+	ph.opens = opensOn(c, blocks, ph.r)
+	ph.home = ph.opens
 	ph.rests()
 	ph.stops()
 	return ph.out
@@ -83,6 +86,7 @@ type phrasing struct {
 	p      Phrase             // the phrase being cut
 	before []harmony.Tonality // the tonic the phrase before came to rest on
 	first  []harmony.Tonality // the tonic the first cadence resolves on
+	home   []harmony.Tonality // the tonic opened on, else the first rested on
 }
 
 // cadenced returns the tonic a cadence within the chorus leads change i
@@ -108,8 +112,7 @@ func (ph *phrasing) restsAt(i int) []harmony.Tonality {
 		return nil
 	case sameTonality(t, ph.opens):
 		return t
-	case tonicOf(ph.c.Chords[i]) == nil,
-		ph.before != nil && t[0].Tonic() == ph.before[0].Tonic().Transpose(5):
+	case tonicOf(ph.c.Chords[i]) == nil, ph.subdominant(t):
 		return nil
 	}
 	h := held(ph.c, i)
@@ -144,15 +147,27 @@ func (ph *phrasing) rests() {
 }
 
 // stopsAt tells the tonic the tune stops on at change i, nil when it
-// does not: see "Where the tune stops".
+// does not: see "Where the tune stops". An installed tonic comes back
+// in any position, the six-four included: B♭maj7/F before G7 Cm7 F7
+// at the end of Someday My Prince Will Come. Any other bass makes
+// another chord: Fmaj7/G at the end of Only Trust Your Heart is the V
+// of C with its fourth, not F.
 func (ph *phrasing) stopsAt(i int, installed []harmony.Tonality) []harmony.Tonality {
-	if t := tonicAt(ph.c, ph.blocks, ph.r, i); t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed)) {
+	root := ph.c.Chords[i]
+	if above := (int(root.Bass) - int(root.Chord.Root) + 12) % 12; above == 7 {
+		root.Bass = root.Chord.Root
+	}
+	if t := tonicOf(root); t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed)) {
+		return t
+	}
+	if t := minorSeventhTonic(ph.c, ph.blocks, ph.r, i); t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed)) {
 		return t
 	}
 	t, b := ph.cadenced(i)
 	switch {
 	case t == nil,
 		tonicOf(ph.c.Chords[i]) == nil && !sameTonality(t, ph.opens),
+		ph.subdominant(t),
 		b.Two < 0 && b.Sus < 0 && b.Kind != harmony.PlagalApproach:
 		return nil
 	}
@@ -186,6 +201,18 @@ func (ph *phrasing) conclude(i int, t []harmony.Tonality, stops bool) {
 	ph.p.To, ph.p.Tonic, ph.p.Stops = i, t, stops
 	ph.out = append(ph.out, ph.p)
 	ph.p, ph.before = Phrase{From: i + 1}, t
+	if ph.home == nil {
+		ph.home = t
+	}
+}
+
+// subdominant reports whether a tonic is the IV of the tonic the phrase
+// before came to rest on: a phrase neither rests nor stops there, unless
+// it is home. E♭maj7 two bars after B♭6 Fm7 B♭7 in Cherokee; B♭maj7
+// before Gm7 C7 goes back to F in Virgo. Dm after a rest on Am in Chega
+// De Saudade is its IV, and the tonic it set out from.
+func (ph *phrasing) subdominant(t []harmony.Tonality) bool {
+	return ph.before != nil && t[0].Tonic() == ph.before[0].Tonic().Transpose(5) && !sameTonic(t, ph.home)
 }
 
 // Home reads where the tune sets out from: the tonic it opens at rest
@@ -218,8 +245,10 @@ func Home(c Changes, phrases []Phrase) []harmony.Tonality {
 // A tune that opens at rest has installed its home before leaving it,
 // and is in it wherever it stops, unless it stops on the same tonic: In
 // a Sentimental Mood is in D minor though it concludes on Gm7 C7♭9
-// Fmaj7, while Chega De Saudade holds D minor for its first half, D
-// major for its second, stops on D6, and is in D major.
+// Fmaj7. Chega De Saudade holds D minor for its first half and D major
+// for its second, stops on D6, and reads as D major here: the tune is
+// in D, as much minor as major, and the reading only says where it
+// stops.
 //
 // A picardy third does not make a minor tune major (see [Picardy]). A
 // blues is in its own tonic, found by its form. A tune where nothing
@@ -247,8 +276,8 @@ func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
 // The tonic is minor where it is first heard and where it is last heard
 // before the end, and major on the last chord. 'Round Midnight closes
 // its second A on E♭6, then starts its last A again on E♭m: a picardy
-// third. Chega De Saudade holds D major for its whole second half, and
-// is in D major.
+// third. Chega De Saudade holds D major for its whole second half: not
+// a picardy third, a tune as much major as minor.
 func Picardy(c Changes, phrases []Phrase) bool {
 	if _, ok := Blues(c); ok {
 		return false

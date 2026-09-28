@@ -45,6 +45,7 @@ func TestBlocks(t *testing.T) {
 		sus, _      = harmony.NewChordPattern(0, 5, 7, 10)
 		flatNine, _ = harmony.NewChordPattern(0, 4, 7, 10, 13)
 		nine, _     = harmony.NewChordPattern(0, 4, 7, 10, 14)
+		alt, _      = harmony.NewChordPattern(0, 4, 6, 10, 13, 15, 20)
 	)
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
@@ -91,6 +92,13 @@ func TestBlocks(t *testing.T) {
 		"deceptive, or aeolian": {
 			changesOf(false, d, min7, g, dom7, a, min7),
 			"Dm7 G7 → Am7 : Am",
+		},
+		// One Finger Snap: C7alt takes its colours from outside F, and
+		// its tritone still announces it, the two keeping the harmonic
+		// minor.
+		"an altered dominant": {
+			changesOf(false, g, halfDim, c, alt, f, halfDim),
+			"Gm7♭5 C7alt → Fm7♭5 : Fm harm",
 		},
 		// A7♭9 holds only D harmonic minor, and keeps it before D major;
 		// E9 holds A major and A melodic minor, and the target decides.

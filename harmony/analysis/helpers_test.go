@@ -69,6 +69,7 @@ func changeName(ch analysis.Change) string {
 func chordName(ch harmony.Chord) string {
 	flatNine, _ := harmony.NewChordPattern(0, 4, 7, 10, 13)
 	nine, _ := harmony.NewChordPattern(0, 4, 7, 10, 14)
+	alt, _ := harmony.NewChordPattern(0, 4, 6, 10, 13, 15, 20)
 	quality, ok := map[harmony.ChordPattern]string{
 		harmony.ChordMajorTriad:          "",
 		harmony.ChordMinorSixth:          "m6",
@@ -78,9 +79,11 @@ func chordName(ch harmony.Chord) string {
 		harmony.ChordDominantSeventh:     "7",
 		harmony.ChordHalfDiminished:      "m7♭5",
 		harmony.ChordDiminishedSeventh:   "dim7",
+		harmony.ChordMinorMajorSeventh:   "m(maj7)",
 		harmony.ChordDominantSeventhSus4: "7sus4",
 		flatNine:                         "7♭9",
 		nine:                             "9",
+		alt:                              "7alt",
 	}[ch.Pattern]
 	if !ok {
 		quality = "?"

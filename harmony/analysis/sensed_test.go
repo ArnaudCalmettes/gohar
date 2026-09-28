@@ -41,6 +41,7 @@ func TestSense(t *testing.T) {
 		maj7    = harmony.ChordMajorSeventh
 		min7    = harmony.ChordMinorSeventh
 		min6    = harmony.ChordMinorSixth
+		minMaj7 = harmony.ChordMinorMajorSeventh
 		dom7    = harmony.ChordDominantSeventh
 		halfDim = harmony.ChordHalfDiminished
 	)
@@ -71,6 +72,20 @@ func TestSense(t *testing.T) {
 				"C7♭9 in E♭, awaiting Fm harm",
 				"Fm7♭5 in E♭, on Fm harm, awaiting E♭m harm",
 				"B♭7♭9 in E♭, awaiting E♭m harm",
+			},
+		},
+		// My Lucky Star: the II tonicised stays local under Gm7 and
+		// Gm(maj7) alike, G minor with a seventh that wanders.
+		"a local tonic changing colour": {
+			changesOf(false, f, maj7, a, min7, d, dom7, g, min7, g, minMaj7, g, min7, g, minMaj7),
+			[]string{
+				"Fmaj7 in F",
+				"Am7 in F, awaiting Gm mel",
+				"D7 in F, awaiting Gm mel",
+				"Gm7 in F, on Gm mel",
+				"Gm(maj7) in F, on Gm mel",
+				"Gm7 in F, on Gm mel",
+				"Gm(maj7) in F, on Gm mel",
 			},
 		},
 		// The same two five on the tonic, resolving this time: it
@@ -161,6 +176,7 @@ func TestModulation(t *testing.T) {
 		maj7    = harmony.ChordMajorSeventh
 		min7    = harmony.ChordMinorSeventh
 		minor   = harmony.ChordMinorTriad
+		minMaj7 = harmony.ChordMinorMajorSeventh
 		dom7    = harmony.ChordDominantSeventh
 		halfDim = harmony.ChordHalfDiminished
 	)
@@ -214,6 +230,42 @@ func TestModulation(t *testing.T) {
 				"Bm7♭5 in C, in Am nat/harm/mel afterwards",
 				"E7 in C, in Am nat/harm/mel afterwards",
 				"Am in Am nat/harm/mel",
+			},
+		},
+		// My Lucky Star: the II tonicised, and held four bars in the line
+		// Gm7 Gm(maj7), G minor with a seventh that wanders, is still the
+		// II of F, before Dm7 G7 C7 goes back to F6.
+		"the two tonicised, not a modulation": {
+			changesOf(false, f, maj7, a, min7, d, dom7, g, min7, c, dom7, g, min7, g, minMaj7, g, min7, g, minMaj7,
+				d, min7, g, dom7, c, dom7, f, maj7),
+			[]string{
+				"Fmaj7 in F",
+				"Am7 in F",
+				"D7 in F",
+				"Gm7 in F",
+				"C7 in F",
+				"Gm7 in F",
+				"Gm(maj7) in F",
+				"Gm7 in F",
+				"Gm(maj7) in F",
+				"Dm7 in F",
+				"G7 in F",
+				"C7 in F",
+				"Fmaj7 in F",
+			},
+		},
+		// Only Trust Your Heart: B7 Em7 tonicises the III of C, and Am7,
+		// the VI of C, does not settle E minor before Dm7 G7 Cmaj7.
+		"the three tonicised, not a modulation": {
+			changesOf(false, c, maj7, b, dom7, e, min7, a, min7, d, min7, g, dom7, c, maj7),
+			[]string{
+				"Cmaj7 in C",
+				"B7 in C",
+				"Em7 in C",
+				"Am7 in C",
+				"Dm7 in C",
+				"G7 in C",
+				"Cmaj7 in C",
 			},
 		},
 		"Along Came Betty": {
@@ -380,6 +432,25 @@ func TestHomeOnSight(t *testing.T) {
 	}
 }
 
+// The end of Only Trust Your Heart: Fmaj7/G before G7♭9 C6 is the V of
+// C with its fourth, not the F the tune opened on coming back. The
+// tune stops on the Cmaj7 that Dm7 G7 led to, and is in C.
+func TestSlashChordEnding(t *testing.T) {
+	const c, d, e, f, g, a, b harmony.PitchClass = 0, 2, 4, 5, 7, 9, 11
+	const (
+		maj7 = harmony.ChordMajorSeventh
+		min7 = harmony.ChordMinorSeventh
+		dom7 = harmony.ChordDominantSeventh
+		six  = harmony.ChordMajorSixth
+	)
+	ch := changesOf(false, f, maj7, b, dom7, e, min7, a, min7, d, min7, g, dom7, c, maj7,
+		f, maj7, g, dom7, c, six)
+	ch.Chords[7].Bass = g
+	if got := tonalityName(analysis.Tune(ch, phrasesOf(ch))); got != "C" {
+		t.Errorf("%s, want C", got)
+	}
+}
+
 // Where a tune stops, and so which tonality it is in.
 func TestTuneEndings(t *testing.T) {
 	const (
@@ -498,7 +569,8 @@ func TestPicardy(t *testing.T) {
 			"Cm nat/harm/mel", true,
 		},
 		// Chega De Saudade: D minor for its first half, D major for its
-		// second, and a stop on D6. A modulation, not a picardy third.
+		// second, and a stop on D6. Not a picardy third: the reading says
+		// where it stops, the tune being as much minor as major.
 		"a minor tune turning major": {
 			barsOf(false, bar{d, min6}, bar{e, halfDim, a, dom7}, bar{d, min6}, bar{d, min6},
 				bar{e, min7, a, dom7}, bar{d, six}, bar{d, six}, bar{e, min7, a, dom7}, bar{d, six}),

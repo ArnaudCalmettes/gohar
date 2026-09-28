@@ -35,6 +35,7 @@ func TestDegrees(t *testing.T) {
 		dom7    = harmony.ChordDominantSeventh
 		halfDim = harmony.ChordHalfDiminished
 		dim7    = harmony.ChordDiminishedSeventh
+		sus4    = harmony.ChordDominantSeventhSus4
 	)
 	flatNine, _ := harmony.NewChordPattern(0, 4, 7, 10, 13)
 	for name, tc := range map[string]struct {
@@ -91,6 +92,15 @@ func TestDegrees(t *testing.T) {
 			changesOf(false, c, maj7, a, dom7, d, min7, g, dom7, c, maj7),
 			"I VI7 II V I",
 			"I VI7 II V I",
+		},
+		// The V7sus4 keeps its quality, diatonic as it is: a subdominant
+		// chord, not the V. Dm7 G7 C7sus4 C7 F6 in My Lucky Star is a
+		// three six two five, the suspension a two hiding: not a two
+		// five of C.
+		"a suspension is not the V": {
+			changesOf(false, f, maj7, d, min7, g, dom7, c, sus4, c, dom7, f, maj7),
+			"I VI II7 V7sus4 V I",
+			"I VI II7 V7sus4 V I",
 		},
 	} {
 		ground, bracket := degreesOf(tc.changes)

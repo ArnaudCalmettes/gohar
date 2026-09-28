@@ -92,7 +92,10 @@ var announcing = []harmony.NamedScale{
 //
 // When the extensions leave no scale at all, the tetrads alone are
 // tried: a colour the tonal scales do not hold, a sharp eleven, should
-// not hide the tonality.
+// not hide the tonality. When the tetrad of the V does not fit either,
+// its tritone alone is tried: an altered dominant, C7alt or C7♭5,
+// takes its colours from outside the tonality it announces, and it is
+// still the V of F (Gm7♭5 C7alt Fm7♭5 in One Finger Snap).
 func announce(c Changes, b Block) []harmony.Tonality {
 	tonic := c.Chords[b.Five].Chord.Root.Transpose(5)
 	if b.Target >= 0 {
@@ -110,15 +113,25 @@ func announce(c Changes, b Block) []harmony.Tonality {
 		}
 	}
 
+	// reduce narrows a member for each try: as written, then its
+	// tetrad, then, for the V, its tritone alone.
+	reduce := []func(ch harmony.Chord) harmony.Chord{
+		func(ch harmony.Chord) harmony.Chord { return ch },
+		func(ch harmony.Chord) harmony.Chord { ch.Pattern = ch.Pattern.Tetrad(); return ch },
+		func(ch harmony.Chord) harmony.Chord {
+			ch.Pattern = ch.Pattern.Tetrad()
+			if ch.Root == five.Root && isDominant(ch.Pattern) {
+				ch.Pattern = tritone
+			}
+			return ch
+		},
+	}
 	var out []harmony.Tonality
-	for _, tetrads := range []bool{false, true} {
+	for _, r := range reduce {
 		for _, t := range tonalitiesOf(tonic, announcing...) {
 			fits := true
 			for _, ch := range members {
-				if tetrads {
-					ch.Pattern = ch.Pattern.Tetrad()
-				}
-				fits = fits && ch.Set().IsSubsetOf(t.Set())
+				fits = fits && r(ch).Set().IsSubsetOf(t.Set())
 			}
 			if fits {
 				out = append(out, t)
@@ -150,3 +163,6 @@ func announce(c Changes, b Block) []harmony.Tonality {
 	}
 	return out
 }
+
+// tritone is a dominant reduced to its root, third and seventh.
+var tritone, _ = harmony.NewChordPattern(0, 4, 10)

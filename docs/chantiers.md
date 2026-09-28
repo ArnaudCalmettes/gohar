@@ -33,7 +33,7 @@ et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
 Les fiches du livre concordent à 83 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app sur 80 % du corpus (1259
+d'accord avec la tonalité déclarée par l'app sur 80 % du corpus (1260
 des 1569 grilles jugées, les modales et une liste relue à la main
 mises à part), sans la lire.
 

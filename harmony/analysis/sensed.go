@@ -210,7 +210,10 @@ func (h *hearing) returns(i int) {
 // as a V-I does, and draws less: it confirms a tonic already there,
 // the ground, home or the local tonic, and opens none. A cadence toward
 // a degree of the local tonic that cannot be a tonic (A7 Dm7 while C
-// major is local) does not interrupt it.
+// major is local) does not interrupt it. Nor does a chord on the local
+// tonic itself, whatever its colour: Gm7 Gm(maj7) Gm7 Gm(maj7) in My
+// Lucky Star is G minor with a seventh that wanders, not a chord out of
+// G melodic minor.
 func (h *hearing) cadence(i int) {
 	s, ch := &h.s, h.c.Chords[i]
 	n := h.r.target[i]
@@ -220,7 +223,8 @@ func (h *hearing) cadence(i int) {
 		heard = sameTonic(t, s.Ground) || sameTonic(t, s.Start) || sameTonic(t, s.Local)
 	}
 	if !heard {
-		if s.Local != nil && !holds(s.Local, ch.Chord.Set()) && !prepares(h.c, h.blocks, h.r.member[i], s.Local) {
+		if s.Local != nil && !holds(s.Local, ch.Chord.Set()) && !onTonic(s.Local, ch) &&
+			!prepares(h.c, h.blocks, h.r.member[i], s.Local) {
 			s.Local = nil
 		}
 		return
@@ -247,21 +251,32 @@ func (h *hearing) cadence(i int) {
 }
 
 // modulation makes the local tonic the ground when it holds beyond one
-// bar of stable chords, those that hold in it without preparing
-// anything (B♭maj7 Gm7 in Tune Up), or when a second cadence resolves
-// on it while it lasts (Black Orpheus, C major). Its I must be able to
-// be a tonic: one does not modulate toward a subdominant, nor for one
+// bar of stable chords, or when a second cadence resolves on it while
+// it lasts (Black Orpheus, C major). A stable chord sits on the local
+// tonic, or holds in it and not in the ground, without preparing
+// anything: B♭maj7 Gm7 in Tune Up, coming from D. A chord the ground
+// owns says nothing for the local tonic: in Only Trust Your Heart, B7
+// Em7 tonicises the III of C, and the Am7 after it is the VI of C, not
+// the IV of E minor, before Dm7 G7 Cmaj7. Its I must be able to be a
+// tonic: one does not modulate toward a subdominant, nor for one
 // chord. A tonic held a single bar only tonicises: Along Came Betty
 // dances from A flat to A and back, and never modulates.
+//
+// Nor does one modulate to the II of the ground, the subdominant
+// degree: the II tonicised is the three six two five of the tonality,
+// however long it holds. In My Lucky Star, Am7 D7 Gm7 then four bars
+// of Gm7 Gm(maj7) are in F, before Dm7 G7 C7sus C7 goes back to F6.
 func (h *hearing) modulation(i int) {
 	s, ch := &h.s, h.c.Chords[i]
 	if s.Local == nil {
 		return
 	}
-	if h.r.member[i] < 0 && holds(s.Local, ch.Chord.Set()) {
+	own := holds(s.Local, ch.Chord.Set()) && (s.Ground == nil || !holds(s.Ground, ch.Chord.Set()))
+	if h.r.member[i] < 0 && (own || onTonic(s.Local, ch)) {
 		h.local.stable += ch.Length
 	}
-	if h.local.tonic != nil && (h.local.stable > h.bar || h.local.cadences >= 2) {
+	two := s.Ground != nil && h.local.tonic != nil && h.local.tonic[0].Tonic() == s.Ground[0].Tonic().Transpose(2)
+	if h.local.tonic != nil && !two && (h.local.stable > h.bar || h.local.cadences >= 2) {
 		s.Ground, s.Since, s.Local = h.local.tonic, h.local.since, nil
 	}
 }

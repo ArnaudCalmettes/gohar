@@ -93,12 +93,16 @@ Birdland* part de fa mineur et s'arrête sur A♭maj7, avant que Gm7♭5 C7
 ne ramène à Fm : il est en la♭. *All The Things You Are* n'est tranché
 que par son dernier A♭maj7. Une tonique déjà installée, celle de
 l'ouverture, du repos précédent ou de la première cadence, revient sans
-cadence (le D6 final de *Chega
-De Saudade*, le E♭6 de *'Round Midnight*). Une autre demande un II-V-I
-ou une plagale : un V seul ne fait que traverser (*Yesterdays* passe
-par B♭maj7 dans son cycle de dominantes, et reste en ré mineur), et un
-m7, presque toujours une sous-dominante, n'arrête rien (le F♯7 Fm7 de
-la fin de *Sugar* tonicise le IV).
+cadence et dans toute position, la quarte et sixte comprise (le D6
+final de *Chega De Saudade*, le E♭6 de *'Round Midnight*, le B♭maj7/F
+d'avant G7 Cm7 F7 dans *Someday My Prince Will Come*). Une autre
+demande un II-V-I ou une plagale : un V seul ne fait que traverser
+(*Yesterdays* passe par B♭maj7 dans son cycle de dominantes, et reste
+en ré mineur), et un m7, presque toujours une sous-dominante, n'arrête
+rien (le F♯7 Fm7 de la fin de *Sugar* tonicise le IV). Et aucun
+morceau ne s'arrête sur le IV du repos précédent, sauf si c'est la
+maison : *Virgo* traverse B♭maj7, son IV, avant que Gm7 C7 ne ramène à
+fa ; *Unforgettable* de même sur Cmaj7.
 
 **Un morceau qui s'ouvre au repos** a installé sa maison avant d'en
 partir, et il y reste où qu'il s'arrête, sauf s'il s'arrête sur la même
@@ -226,7 +230,12 @@ une septième d'espèce (le blues), ou, tenu longtemps, une plage modale.
 **Le X7sus4**, sans tierce, n'a pas de triton et n'est pas une
 dominante. En cadence, c'est une position d'attente : il prolonge ou
 remplace le II avec la fonction de sous-dominante, et se résout sur son
-X7. Sans résolution et tenu longtemps, il installe une plage modale.
+X7. C'est un accord de sous-dominante, comme la Bill Evans Piano
+Academy l'enseigne : il se chiffre V7sus4, jamais V, pour ne pas le
+confondre avec le V réel, et un II-V qui tombe dessus n'est pas mis
+entre crochets, le sus étant un II qui se cache sous la fondamentale du
+V suivant (Dm7 G7 C7sus4 C7 F6 dans *My Lucky Star*, un III-VI-II-V de
+fa). Sans résolution et tenu longtemps, il installe une plage modale.
 
 **La dominante chromatique** partage son triton avec la dominante un
 triton plus loin : toute cible a deux dominantes, que `Resolution`
@@ -281,7 +290,11 @@ Called Love*, où le bloc porte fa mineur et le I porte fa majeur. Une
 dominante chromatique et son II ne sont pas des degrés de la tonalité :
 la cible décide seule. La majeure harmonique contient aussi certaines
 préparations, mais c'est une gamme d'emprunt, pas une tonalité qu'on
-annonce.
+annonce. Quand les couleurs écrites n'entrent dans aucune gamme, les
+tétrades seules sont essayées, puis, pour le V, son seul triton : une
+dominante altérée (C7alt, C7♭5) prend ses couleurs hors de la tonalité
+qu'elle annonce, et reste le V de fa (Gm7♭5 C7alt Fm7♭5 dans *One
+Finger Snap*).
 
 Une chaîne de II-V est une suite de blocs, chacun avec sa tonalité
 annoncée, et la **marche** est une relation entre eux : « II-V en mi
@@ -351,7 +364,8 @@ degré emprunté avec (II, mais IVm7), et le degré se compte dans la gamme
 de la tonalité (en fa mineur, D♭maj7 est VI, pas ♭VI). Une fondamentale
 hors de la gamme est abaissée de préférence (♭II, ♭III, ♭VI, ♭VII) et
 haussée sous la quarte et la quinte (♯IV) ; un accord de passage suit
-sa basse. Les renversements s'écrivent I/3, I/5. Un V seul, un diminué
+sa basse ; un sus4 garde sa qualité, diatonique ou non (V7sus4). Les
+renversements s'écrivent I/3, I/5. Un V seul, un diminué
 seul et un accord de passage se chiffrent sur la tonalité du passage,
 avec leur qualité : VI7 pour la dominante secondaire de II, écrite
 aussi V7/II (gohar garde la relation, l'écriture est un choix
@@ -373,8 +387,10 @@ arrive est la surprise.
 **La tonique de fond** est installée : les degrés se comptent sur elle,
 même quand une cadence tonicise un autre degré (Dm7♭5 G7 Cm7 en mi♭ :
 II V VI). **La tonique locale** est celle qu'une cadence vient de
-toniciser ; elle dure tant que les accords suivants tiennent en elle ou
-préparent un accord qui y tient, et ne change pas le fond. Chacune est
+toniciser ; elle dure tant que les accords suivants tiennent en elle,
+sont sur sa tonique avec sa tierce (Gm7 et Gm(maj7) sur sol mineur,
+une septième qui se promène) ou préparent un accord qui y tient, et ne
+change pas le fond. Chacune est
 un ensemble de tonalités sur une même tonique, comme une tonalité
 annoncée, et le fond est vide au début d'un morceau, avant la première
 tonique, ou dans une plage atonale. À part, la **tonique de départ** est
@@ -386,15 +402,19 @@ qui a modulé, si fréquent sur une forme AABA.
 Un accord de tonique est une triade, un maj7, un 6, un m6 ou un
 m(maj7), à l'état fondamental ou avec sa tierce à la basse. Avec sa
 quinte à la basse, c'est une quarte et sixte sur une pédale : dans le
-F/C C de *My Way*, le fa n'est qu'une broderie au-dessus du do. Un m7
-est presque toujours une sous-dominante, et on ne module pas pour
-s'installer en éolien. Mais les grilles écrivent la tonique mineure m7
-bien plus souvent qu'on ne la joue (m6, m(maj7), m(maj9) pour adoucir
-la septième) : un m7 est donc une tonique quand une cadence mineure se
-résout dessus et qu'il n'est pas lui-même le II d'un bloc. *Softly, As
-In A Morning Sunrise* est ainsi en do mineur. Un turnaround vers un
-premier accord en m7 n'en fait pas une tonique : l'Am7 qui ouvre *Fly
-Me To The Moon* est un VI.
+F/C C de *My Way*, le fa n'est qu'une broderie au-dessus du do. Avec
+toute autre basse, c'est la basse qui tient : le E♭maj7/F de *The Look
+Of Love* est une pédale de fa. Un m7 est presque toujours une
+sous-dominante, et on ne module pas pour s'installer en éolien. Mais
+les grilles écrivent la tonique mineure m7 bien plus souvent qu'on ne
+la joue (m6, m(maj7), m(maj9) pour adoucir la septième) : un m7 est
+donc une tonique quand une cadence mineure se résout dessus par son V
+et qu'il n'est pas lui-même le II d'un bloc. *Softly, As In A Morning
+Sunrise* est ainsi en do mineur ; le C7 Gm7 de *Honeysuckle Rose*, un
+IV7 plagal, n'en fait pas une tonique : c'est un V qui revient à son
+II. Un turnaround vers un premier accord en m7 n'en fait pas une
+tonique non plus : l'Am7 qui ouvre *Fly Me To The Moon* est un VI,
+tant que E7 n'y revient pas à la mesure 8.
 
 ### Ce qui l'installe
 
@@ -442,10 +462,15 @@ d'accords stables**, ceux qui tiennent en elle sans rien préparer
 (Dmaj7 tenu deux mesures, ou B♭maj7 Gm7 dans Tune Up), ou quand **une
 deuxième cadence** la vise tant qu'elle dure. On ne module ni vers un
 accord de sous-dominante ni pour un seul accord : le I doit pouvoir
-être une tonique et ne pas être aussitôt le II d'un autre bloc. Une
-cadence vers un degré de la tonique locale qui ne peut pas en être une
-(A7 Dm7 quand do est local, dans Black Orpheus) ne l'interrompt pas. Le
-relatif n'est pas une modulation plus faible, seulement plus facile.
+être une tonique et ne pas être aussitôt le II d'un autre bloc. On ne
+module pas non plus vers le II du fond, le degré de sous-dominante : le
+II tonicisé est le III-VI-II-V de la tonalité, si longtemps qu'il
+tienne. Dans *My Lucky Star*, Am7 D7 Gm7 puis quatre mesures de Gm7
+Gm(maj7) restent en fa, avant que Dm7 G7 C7sus C7 ne ramène à F6, le
+C7sus étant un II qui se cache. Une cadence vers un degré de la tonique
+locale qui ne peut pas en être une (A7 Dm7 quand do est local, dans
+Black Orpheus) ne l'interrompt pas. Le relatif n'est pas une modulation
+plus faible, seulement plus facile.
 
 Le **retour à la maison** est asymétrique : une seule cadence sur la
 tonique de départ la réinstalle, parfaite ou plagale, et même son
@@ -623,9 +648,11 @@ fins.
 | Just Friends | un morceau qui s'ouvre sur son IV, et se pose sur son I par une plagale |
 | Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
 | In a Sentimental Mood, Blue Skies | la maison installée avant de partir, et ce qui la distingue d'une simple ouverture |
-| Yesterdays | une tonique traversée par un V seul |
+| Yesterdays, Virgo, Unforgettable | une tonique traversée par un V seul ; le IV où la grille s'arrête avant le turnaround |
+| Someday My Prince Will Come | la tonique installée qui revient en quarte et sixte |
 | My Way | la quarte et sixte F/C, et le retour par une plagale |
 | Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; Fly Me part de la mineur et s'arrête en do |
+| My Lucky Star | le II tonicisé quatre mesures, sans modulation |
 | Softly, Summertime | la tonique mineure écrite m7 |
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
 | Chega De Saudade | le majeur homonyme installé pour de bon : une modulation, le morceau est en ré |
@@ -656,7 +683,7 @@ l'information : on travaille sur de vraies données, et cette liste est
 celle des grilles à réécrire dans un format qui porte l'information.
 
 Sur les 1678 grilles des deux playlists, 1569 sont jugées, et les deux
-tombent d'accord pour 1259 (80 %), l'app se trompant parfois (Chega De
+tombent d'accord pour 1269 (81 %), l'app se trompant parfois (Chega De
 Saudade, déclaré en ré mineur). Les écarts ne sont pas tous des erreurs
 de l'analyse, et leurs familles pointent les questions ouvertes.
 
@@ -681,11 +708,6 @@ aussi.
 
 - **Les thèmes ambigus entre relatifs**, *Corcovado* (la mineur ou do)
   en tête : la tradition tranche parfois là où l'oreille hésite.
-- **La grille qui n'écrit pas sa dernière tonique** et s'arrête sur le
-  IV de la maison, avant un turnaround qui y revient : *Unforgettable*
-  s'arrête sur Cmaj7 avant Am7 D7 ; *Someday My Prince Will Come*,
-  *Wave*. Une règle le sauvait, retirée pour garder le code simple :
-  à reprendre quand les phrases auront convergé.
 - **L'attente d'un diminué**, ses quatre toniques possibles, pour le
   pivot.
 - **Les seuils** de la modulation et de la plage modale, en données, à

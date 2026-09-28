@@ -33,10 +33,15 @@ func rolesOf(c Changes, blocks []Block) roles {
 // cannot be one: a chord that can be a tonic (a triad, maj7, 6, m6,
 // m(maj7), not m7 nor a seventh), in root position or with its third in
 // the bass. With its fifth in the bass, it is a six-four over a pedal:
-// F/C C in My Way is C, the F a neighbour over the bass.
+// F/C C in My Way is C, the F a neighbour over the bass. With any other
+// bass, E♭maj7/F over the pedal of The Look Of Love, the bass is what
+// holds.
 func tonicOf(change Change) []harmony.Tonality {
 	ch := change.Chord
-	if change.Silent || change.Inverted() && (int(change.Bass)-int(ch.Root)+12)%12 == 7 {
+	if change.Silent {
+		return nil
+	}
+	if above := (int(change.Bass) - int(ch.Root) + 12) % 12; change.Inverted() && above != 3 && above != 4 {
 		return nil
 	}
 	switch ch.Pattern.Tetrad() {
@@ -49,14 +54,16 @@ func tonicOf(change Change) []harmony.Tonality {
 }
 
 // minorSeventhTonic returns the minor tonalities of a m7 that a minor
-// cadence resolves on, when it is not itself the two of a block: nil
-// otherwise. Charts write the minor tonic m7 far more often than it is
-// played (m6, m(maj7)): Cm7 | Dm7♭5 G7♭9 | Cm7 in Softly, As In A
-// Morning Sunrise.
+// cadence resolves on by its V, when it is not itself the two of a
+// block: nil otherwise. Charts write the minor tonic m7 far more often
+// than it is played (m6, m(maj7)): Cm7 | Dm7♭5 G7♭9 | Cm7 in Softly, As
+// In A Morning Sunrise. A plagal IV7 does not make a m7 a tonic: C7
+// Gm7 in Honeysuckle Rose is a V going back to its two.
 func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	ch := c.Chords[i]
 	n := r.target[i]
 	if n < 0 || r.member[i] >= 0 || ch.Silent || ch.Inverted() ||
+		blocks[n].Kind == harmony.PlagalApproach ||
 		ch.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
 		return nil
 	}
@@ -83,9 +90,11 @@ func tonicAt(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 
 // opensOn returns the tonic the sequence opens on, the one a phrase can
 // come back to, nil when the first chord cannot be a tonic. A m7 opens
-// on a tonic unless it is a two, whether or not a block claims it: Gm7
-// C7 in Honeysuckle Rose, Dm7 G7 in Satin Doll.
-func opensOn(c Changes, r roles) []harmony.Tonality {
+// on a tonic when a minor cadence resolves on that chord somewhere in
+// the chorus: the Am7 of Fly Me To The Moon, which E7 comes back to at
+// bar 8; not the Gm7 of Honeysuckle Rose or the Dm7 of Satin Doll, a
+// two that nothing ever resolves on.
+func opensOn(c Changes, blocks []Block, r roles) []harmony.Tonality {
 	o := opening(c)
 	if o < 0 {
 		return nil
@@ -97,11 +106,12 @@ func opensOn(c Changes, r roles) []harmony.Tonality {
 	if open.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh || r.member[o] >= 0 {
 		return nil
 	}
-	if n := c.Next(o); n >= 0 && c.Chords[n].Chord.Root == open.Chord.Root.Transpose(5) &&
-		c.Chords[n].Chord.Pattern.Tetrad() == harmony.ChordDominantSeventh {
-		return nil
+	for i, ch := range c.Chords {
+		if ch.Chord == open.Chord && minorSeventhTonic(c, blocks, r, i) != nil {
+			return MinorTonalities(open.Chord.Root)
+		}
 	}
-	return MinorTonalities(open.Chord.Root)
+	return nil
 }
 
 // heldTo returns the last change of the tonic held from change i: the
@@ -168,4 +178,11 @@ func sameTonic(a, b []harmony.Tonality) bool {
 // tonic and the same mode.
 func sameTonality(a, b []harmony.Tonality) bool {
 	return sameTonic(a, b) && (a == nil || ModesOf(a) == ModesOf(b))
+}
+
+// onTonic reports whether a change sits on the tonic of tonalities with
+// their third: the tonic changing colour, Gm7 or Gm(maj7) on G minor.
+func onTonic(ts []harmony.Tonality, ch Change) bool {
+	return ts != nil && !ch.Silent && ch.Chord.Root == ts[0].Tonic() &&
+		isMinor(ch.Chord.Pattern) == (ModesOf(ts) == Minor)
 }
