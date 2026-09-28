@@ -304,7 +304,7 @@ var catalogue = []Mode{
 	},
 	{
 		System: harmony.DoubleHarmonicMajor, Degree: 3, Base: Phrygian,
-		Altered: []Alteration{{4, Flat}, {7, DoubleFlat}},
+		Altered:  []Alteration{{4, Flat}, {7, DoubleFlat}},
 		Function: harmony.NoFunction,
 	},
 	{

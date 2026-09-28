@@ -27,15 +27,15 @@ func TestPitchSetHighBitsStayClear(t *testing.T) {
 	other := mustSet(t, 1, 5, 8, 11)
 
 	ops := map[string]harmony.PitchSet{
-		"union":                   s.Union(other),
-		"intersect":               s.Intersect(other),
-		"difference":              s.Difference(other),
-		"with":                    s.With(11),
-		"without":                 s.Without(0),
-		"transpose up":            s.Transpose(5),
-		"transpose down":          s.Transpose(-5),
+		"union":                    s.Union(other),
+		"intersect":                s.Intersect(other),
+		"difference":               s.Difference(other),
+		"with":                     s.With(11),
+		"without":                  s.Without(0),
+		"transpose up":             s.Transpose(5),
+		"transpose down":           s.Transpose(-5),
 		"transpose past an octave": s.Transpose(25),
-		"chromatic":               harmony.ChromaticPitchSet,
+		"chromatic":                harmony.ChromaticPitchSet,
 	}
 
 	for name, got := range ops {

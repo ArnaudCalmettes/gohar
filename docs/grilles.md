@@ -449,6 +449,17 @@ qu'il est impossible.
   différence entre « faux » et « monstrueux ».
 - **Pour un jeu**, c'est la récompense idéale : elle salue une prise de
   risque réussie, pas la conformité.
+- **La tension** monte tant que l'oreille est tenue loin d'une tonique
+  et retombe quand elle y arrive : une jauge qui se remplit. Le [B] de
+  Tenderly en est le modèle : Fm7♭5 B♭7 attend mi♭ mineur qui ne vient
+  pas, deux fois, Bdim7 et Cm7 repartent ailleurs, Cm7 F7 non plus,
+  et tout ne se résout qu'au retour à la maison du [A]. Elle se déduit
+  de la tonique pressentie, accord par accord, et reste déterministe
+  (un compte, pas une probabilité) :
+  - elle monte à chaque cadence qui ne se résout pas, à chaque attente
+    déçue, à chaque accord qui ne tient pas dans le fond ;
+  - elle retombe en partie sur une tonique locale (un I qui peut être
+    une tonique), et entièrement au retour sur la tonique de départ.
 
 Une seule exigence en découle pour tout le code d'analyse : **chaque
 calcul reste local**, il ne regarde qu'un nombre borné d'accords autour
@@ -488,10 +499,9 @@ au début d'un morceau sans armure, dans une plage atonale.
 Du plus fort au plus faible :
 
 1. **Une cadence qui se résout** : la cible devient tonique locale.
-2. **La durée** : une tonique locale qui tient, confirmée par d'autres
-   cadences, devient le fond. Ce sont les trois indices du livre
-   (cible hors de la tonalité, durée, cadences qui confirment), lus au
-   présent au lieu d'après coup ; leurs seuils sont en données.
+2. **La durée ou la confirmation** : une tonique locale qui tient, ou
+   qu'une autre cadence confirme, devient le fond : c'est la
+   modulation (voir plus bas).
 3. **L'armure** : pour une grille iReal, le champ de tonalité de l'app
    donne un fond de départ, que la suite confirme ou dément.
 4. **Le premier accord**, faute d'armure, s'il peut être un accord de
@@ -502,6 +512,44 @@ Du plus fort au plus faible :
 Ce qui ne change rien au fond : les accords diatoniques, les emprunts
 sur la même tonique (Im7, IVm, ♭VII7), et les préparations qui ne se
 résolvent pas.
+
+### La modulation
+
+Les trois indices du livre (cible hors de la tonalité, durée, cadences
+qui confirment), lus au présent. **Parti pris : être libéral.**
+Appeler modulation une tonicisation un peu appuyée est une analyse que
+beaucoup de musiciens feraient (« ça module, temporairement ») ; ne
+pas voir que les repères tonaux bougent serait une faiblesse.
+
+- **Installée** : une tonique locale devient le fond quand son I tient
+  une mesure après la cadence, ou qu'une deuxième cadence la vise. On
+  ne module ni vers une sous-dominante ni pour un seul accord : le I
+  doit pouvoir être une tonique (triade, maj7, 6, m6, m(maj7)) et ne
+  pas être aussitôt le II d'un autre bloc. Fm7♭5 dans Tenderly,
+  mesure 9, n'installe rien, ni Cm7 mesure 13, déjà le II de F7.
+- **Confirmée** : après une phrase entière dans la nouvelle tonique,
+  ou une deuxième cadence. La différence entre installée et confirmée
+  est celle entre une modulation passagère et une vraie région.
+- **Le relatif** (la mineur, do majeur) n'est pas une modulation plus
+  faible qu'une autre, seulement plus facile : même règle.
+- **Le retour à la maison est asymétrique** : une seule cadence sur la
+  tonique de départ la réinstalle aussitôt. Quitter demande plus de
+  preuves que revenir.
+- **Direct et après coup.** En direct, le fond bascule au moment où
+  l'indice est rempli. Après coup, la région commence au bloc qui y
+  menait. Les deux coexistent : la ligne de la tonique pressentie
+  montre le direct, les degrés et la fiche l'après-coup (Tune Up,
+  mesure 7 : Cmaj7 est I, pas ♭VIImaj7).
+- **Tune Up** module ainsi à chaque phrase, ce que tout jazzman
+  dirait : c'est la clé de construction du morceau. **Tenderly** ne module
+  pas. **There Will Never Be Another You**, Dm7♭5 G7 Cm7 : Cm7 tient
+  une mesure, mais n'installe rien, et le livre y lit une tonicisation
+  (VI). Un m7 est presque toujours une sous-dominante, et on ne module
+  pas pour s'installer en éolien : en jazz, une tonique mineure se joue
+  m6 ou m(maj7), m(maj9) pour adoucir la septième.
+
+Seuils en données : la durée du I (une mesure), celle d'une phrase
+(quatre mesures), le nombre de cadences (deux).
 
 ### Le I emprunté
 
@@ -571,11 +619,8 @@ d'*Autumn Leaves*), les deux sont rendus.
   très souvent le cas sur une forme AABA.
 - **Le tableau de Tenderly** est validé en attendant l'avis d'une
   oreille plus experte : il sert de test.
-
-### À trancher
-
-- Quand une tonique locale tient-elle assez pour devenir le fond ?
-  Tune Up et Black Orpheus serviront à régler les seuils.
+- **Black Orpheus** module en do majeur mesures 6 à 12 : c'est la
+  lecture du livre, et la règle doit la retrouver.
 
 ## Les tests de référence
 
