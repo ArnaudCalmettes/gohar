@@ -190,12 +190,28 @@ faible des indices d'une tonalité. *En Harmonie* la recommande à l'apprenant
 qui se creuse la tête sur une partition ; pour un analyste qui ne se
 fonde que sur ses propres relevés, elle n'existe pas. « Tu ne suivras
 pas bêtement les indications du Real Book. » Les fiches du livre se
-lisent à l'identique sans elle. Le champ de tonalité d'une grille iReal
-n'est qu'un point de comparaison, et l'analyse signale quand il se
-trompe : Tune Up, déclaré en si♭, commence et finit en ré. Il se trompe
-souvent pour de bonnes raisons : les thèmes modaux sont écrits sans
-armure, comme en do majeur, et les grilles de jeux vidéo, relevées par
-des étudiants et parfois modales, sont moins sûres.
+lisent à l'identique sans elle. L'oreille qui avance dans la grille ne
+la lit donc pas, et la tonalité que l'analyse conclut n'en dépend pas :
+elle signale quand la tonalité déclarée par une grille iReal diffère,
+Tune Up, déclaré en si♭, commence et finit en ré.
+
+**Dans quelle tonalité compter les degrés** est pourtant une décision
+à prendre, et les accords seuls ne suffisent pas toujours (voir « Le
+plafond des grilles seules »). C'est donc à qui lit la grille de la
+prendre : `Sense` reçoit la tonalité du morceau au lieu de la déduire.
+`analyse` compte par défaut dans la tonalité que l'analyse conclut :
+elle juge comme un analyste, en connaissance de l'harmonie, et l'en-tête
+dit quand l'app en déclare une autre. `-key declared` compte dans la
+tonalité déclarée, un indice parmi d'autres mais celui qu'a choisi
+l'auteur de la grille, `-key F` ou `-key A-` dans celle qu'on impose.
+Une fois la tonalité fixée, on ne la corrige pas : *Lullaby Of
+Birdland*, en la♭, part de fa mineur, et ses premières mesures
+tonicisent fa mineur, que le morceau pourra installer plus tard. La tonalité
+déclarée se trompe parfois, et pour de bonnes raisons : les thèmes
+modaux sont écrits sans armure, comme en do majeur, un morceau mineur
+est déclaré dans le relatif majeur qui a la même armure (*It Don't Mean
+A Thing*, en si♭), et les grilles de jeux vidéo, relevées par des
+étudiants et parfois modales, sont moins sûres.
 
 ### Le blues
 

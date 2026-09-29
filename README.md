@@ -131,6 +131,11 @@ cd charts
 go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
 ```
 
+The degrees are counted in the tonality the analysis hears, and the
+heading says when the chart declares another; `-key declared` counts
+them in the key the chart declares, `-key F` or `-key A-` in the one
+you choose.
+
 And over whole playlists, where the tonality it hears differs from the
 one the app declares, or the one checked by ear when a chart is listed
 in `keys.txt`, grouped by how the two relate, the charts that lack what

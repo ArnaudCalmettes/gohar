@@ -61,10 +61,9 @@ type Sensed struct {
 //   - modulation: the local tonic becomes the ground.
 //   - return: coming home is easier than leaving.
 //
-// A key signature plays no part: it belongs to the written score, the
-// weakest clue to a tonality, and an analyst who reads the chords
-// finds the tonality for himself. The fiches of En Harmonie read the
-// same without it.
+// A key signature plays no part in what the ear hears: it belongs to
+// the written score, the weakest clue to a tonality. The fiches of En
+// Harmonie read the same without it.
 //
 // Each change sees the state left by those before it and the blocks,
 // whose tonalities a target decides between: one change ahead, as the
@@ -76,10 +75,19 @@ type Sensed struct {
 // the hearing to render. The second hearing goes on from the end of the
 // first (or from the bar before the coda), so that a turnaround
 // prepares the first chord, and knows the tune: its start tonic is the
-// tonality of the tune (see [Tune]). On the first hearing, a cadence
-// across the loop has not sounded yet when its target, the first
-// chord, does.
-func Sense(c Changes, blocks []Block, phrases []Phrase) []Sensed {
+// tonality of the tune. On the first hearing, a cadence across the
+// loop has not sounded yet when its target, the first chord, does.
+//
+// # The tonality of the tune
+//
+// Which tonality the tune is in is the caller's to say, as tune: the
+// one the analysis concludes ([Tune]), or one it is told, the key the
+// chart declares or one the reader forces. The chords alone cannot
+// always tell (see docs/grilles.md, "Le plafond des grilles seules"):
+// In a Sentimental Mood and Lullaby Of Birdland give the same evidence,
+// and the melody puts one in D minor, the other in A flat. Nil leaves
+// the second hearing to go on as the first ended.
+func Sense(c Changes, blocks []Block, phrases []Phrase, tune []harmony.Tonality) []Sensed {
 	h := newHearing(c, blocks, phrases)
 	seed := Sensed{}
 	if t, ok := Blues(c); ok {
@@ -94,8 +102,8 @@ func Sense(c Changes, blocks []Block, phrases []Phrase) []Sensed {
 		end = c.Coda - 1
 	}
 	again := out[end]
-	if t := Tune(c, phrases); t != nil {
-		again.Start, again.Ground, again.Local = t, t, nil
+	if tune != nil {
+		again.Start, again.Ground, again.Local = tune, tune, nil
 	}
 	return h.pass(again, false)
 }

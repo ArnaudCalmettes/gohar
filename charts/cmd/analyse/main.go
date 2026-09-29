@@ -1,17 +1,33 @@
 // Command analyse prints a chart of an iReal Pro playlist with what the
 // analysis sees in it, bar by bar, in the terminal.
 //
-//	analyse playlist.html "tenderly"
+//	analyse [-key heard|declared|F|A-] playlist.html "tenderly"
 //
 // The playlist is an export of the app: an HTML file holding irealb://
 // links, or a text file holding one. The title is matched without case,
 // on any part of it; when several songs match, they are listed.
+//
+// # The tonality of the tune
+//
+// The degrees are counted in the tonality of the tune, and the chords
+// alone cannot always tell it (see docs/grilles.md, "Le plafond des
+// grilles seules"), but the analysis judges as an analyst does: by
+// default the chart is analysed in the tonality it concludes (see
+// analysis.Tune), and the heading says when the app declares another.
+//
+// -key declared analyses it in the key the app declares instead, the
+// tonality heard when it declares none, and -key F or -key A- in the
+// one the reader forces, in the app's spelling. A tune that opens on
+// the relative of its key, Lullaby Of Birdland on F minor in A flat,
+// is not counted from there: its first bars tonicise F minor, which
+// the tune may install later.
 //
 // It is the test bench of the analysis (see docs/grilles.md), and grows
 // with it: for now each chord says how it prepares the next one.
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"regexp"
@@ -26,16 +42,41 @@ import (
 const barsPerRow = 4
 
 func main() {
-	if len(os.Args) != 3 {
-		fmt.Fprintln(os.Stderr, "usage: analyse <playlist> <title>")
+	key := flag.String("key", "heard", `the tonality to analyse the tune in: "heard" by the analysis, "declared" by the app, or a key as the app spells it (F, A-)`)
+	flag.Parse()
+	if flag.NArg() != 2 {
+		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] <playlist> <title>")
 		os.Exit(2)
 	}
-	song, err := find(os.Args[1], os.Args[2])
+	if _, ok := (ireal.Song{Key: *key}).DeclaredTonalities(); !ok && *key != "declared" && *key != "heard" {
+		fmt.Fprintf(os.Stderr, "-key %s: not a key, nor declared or heard\n", *key)
+		os.Exit(2)
+	}
+	song, err := find(flag.Arg(0), flag.Arg(1))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Print(render(song))
+	fmt.Print(render(song, *key))
+}
+
+// tuneOf returns the tonality to analyse a song in, as -key asks, and
+// why: the one the app declares, the one the analysis hears, or the one
+// the reader forces.
+func tuneOf(s ireal.Song, key string, heard []harmony.Tonality) ([]harmony.Tonality, string) {
+	switch key {
+	case "heard":
+		return heard, "as heard"
+	case "declared":
+		t, ok := s.DeclaredTonalities()
+		switch {
+		case !ok:
+			return heard, "as heard, the app declaring none"
+		}
+		return t, "as the app declares"
+	}
+	t, _ := (ireal.Song{Key: key}).DeclaredTonalities()
+	return t, "as asked"
 }
 
 var link = regexp.MustCompile(`irealb://[^"\s<]*`)
@@ -85,7 +126,7 @@ func find(path, title string) (ireal.Song, error) {
 // brackets it. Under the chords, their degrees on the installed tonic,
 // and under the degrees the sensed tonic where it changes, from the
 // tonality the app gives the tune.
-func render(s ireal.Song) string {
+func render(s ireal.Song, key string) string {
 	chart := ireal.Structure(ireal.Lex(s.Chart))
 	tl := chart.Timeline()
 	changes, err := tl.Changes()
@@ -94,7 +135,9 @@ func render(s ireal.Song) string {
 	blocks := analysis.Blocks(changes, kinds)
 	phrases := analysis.Phrases(changes, blocks)
 	plages := analysis.Modal(changes, blocks)
-	sensed := analysis.Sense(changes, blocks, phrases)
+	cands := analysis.Candidates(changes, blocks, phrases)
+	tune, why := tuneOf(s, key, analysis.Tune(changes, phrases))
+	sensed := analysis.Sense(changes, blocks, phrases, tune)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 
@@ -139,8 +182,11 @@ func render(s ireal.Song) string {
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
+	if tune != nil {
+		fmt.Fprintf(&b, "analysed in %s, %s\n", short(flats[tune[0].Tonic()], tune), why)
+	}
 	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
-	fmt.Fprint(&b, evidence(analysis.Candidates(changes, blocks, phrases)))
+	fmt.Fprint(&b, evidence(cands))
 	fmt.Fprint(&b, legend)
 	for start := 0; start < len(cells); {
 		end := start + 1

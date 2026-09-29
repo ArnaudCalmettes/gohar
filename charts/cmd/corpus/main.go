@@ -212,7 +212,7 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 	}
 	blocks := analysis.Blocks(changes, analysis.Approaches(changes))
 	phrases := analysis.Phrases(changes, blocks)
-	for _, s := range analysis.Sense(changes, blocks, phrases) {
+	for _, s := range analysis.Sense(changes, blocks, phrases, analysis.Tune(changes, phrases)) {
 		if s.Resolves != nil && !s.Across {
 			r.cadences++
 		}

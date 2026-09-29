@@ -145,5 +145,6 @@ func phrasesOf(c analysis.Changes) []analysis.Phrase {
 // phrases.
 func sense(c analysis.Changes) []analysis.Sensed {
 	blocks := analysis.Blocks(c, analysis.Approaches(c))
-	return analysis.Sense(c, blocks, analysis.Phrases(c, blocks))
+	phrases := analysis.Phrases(c, blocks)
+	return analysis.Sense(c, blocks, phrases, analysis.Tune(c, phrases))
 }

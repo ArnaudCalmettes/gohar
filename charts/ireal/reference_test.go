@@ -269,7 +269,7 @@ func TestFichesDegrees(t *testing.T) {
 	for name, f := range fiches(t) {
 		c := fromFiche(t, f)
 		blocks := analysis.Blocks(c, analysis.Approaches(c))
-		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), analysis.Sense(c, blocks, analysis.Phrases(c, blocks)))
+		got := analysis.Bracketed(c, blocks, analysis.PassingChords(c), sensed(c, blocks))
 		var want []string
 		for _, d := range f.Degrees {
 			if d != "%" {
@@ -309,4 +309,11 @@ func numeral(d string) string {
 		return d
 	}
 	return m[1] + m[2]
+}
+
+// sensed hears changes in the tonality the analysis concludes: the
+// fiches of En Harmonie read without the key the chart declares.
+func sensed(c analysis.Changes, blocks []analysis.Block) []analysis.Sensed {
+	phrases := analysis.Phrases(c, blocks)
+	return analysis.Sense(c, blocks, phrases, analysis.Tune(c, phrases))
 }
