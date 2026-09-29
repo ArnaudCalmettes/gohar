@@ -565,7 +565,7 @@ over each chord, how it prepares the next:
 
 above, the blocks ([II] [sus4] V) and the tonality each announces:
   Fm harm ──       F harmonic minor
-  D♭ M/m mel… ──   D♭ major or melodic minor, not resolved
+  D♭ M/m mel… ──   D♭ major or melodic minor, not resolved (deceptive)
   Fm harm : II V   the block read in that tonality, as En Harmonie
                    brackets it, when it differs from the degrees below
 
@@ -582,7 +582,7 @@ under the degrees, the tonic the ear hears, where it changes:
 under the tonics, the cells, formulas heard as one:
   anatole ───      I VI II V, in any colour
   III-VI-II-V ─    the same, the III standing for the I
-  anatole… ─       its V avoiding the I it promises
+  anatole… ─       its V avoiding the I it promises (deceptive)
 `
 
 // walk marks a passing chord by the way its bass goes.

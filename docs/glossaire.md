@@ -245,7 +245,8 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |
 | Sous-dominante secondaire | Le II d'une dominante secondaire : II-V de… | |
 | Sous-dominante chromatique | Le II d'une dominante chromatique, ♭VIm7 ou ♭VIm7♭5 | |
-| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V fait tenir au III la place du I ; « … » quand le V évite le I promis | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
+| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V fait tenir au III la place du I ; « … » quand le V évite le I promis, une cadence rompue | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
+| Cadence rompue | Le V enchaîné sur un autre accord que la tonique attendue, « V – … » (*En Harmonie*, t. 1, ch. 8) : V-VI, et V-III, la médiante tenant lieu du I sans que le V y résolve. `analyse` la note « … » | Une résolution, qui ne va que sur le I |
 | Cadence, cellule | Une cadence aboutit, une cellule tourne | |
 
 ## Mots proscrits

@@ -118,20 +118,19 @@ connaît.
       caractéristiques d'un mode sur une fenêtre de jeu. Choix à faire
       sur la taille de la fenêtre et l'ambiguïté entre modes voisins.
       C'est ce qui fera exister les silhouettes et `FactChosen`.
-- [ ] passe ligne à ligne sur `Mode.Function`. La règle est tranchée :
-      la fonction d'un mode se dérive de sa tétrade, plus les fonctions
-      qu'un expert ajoute. Le premier degré du mineur harmonique
-      (éolien ♮7) et celui du majeur harmonique (ionien ♭6) portent
-      ainsi `Tonic | Dominant` : ce sont aussi des avatars de dominante
-      sur pédale de tonique. Reste à relire les ajouts d'expert mode par
-      mode.
+- [ ] passe ligne à ligne sur `Mode.Function`, le jour où les modes
+      serviront à autre chose qu'à la reconnaissance à l'oreille. La
+      fonction d'un mode dit comment on l'emploie, et peut différer de
+      celle de sa tétrade : le dorien est une tonique, son m7 seul un
+      II. Le premier degré du mineur harmonique (éolien ♮7) et celui du
+      majeur harmonique (ionien ♭6) portent `Tonic | Dominant` : ce sont
+      aussi des avatars de dominante sur pédale de tonique. Pas de test
+      qui la verrouille d'ici là.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
       doit pas parser une chaîne quand il a une représentation exacte
       sous la main.
-- [ ] test « un mode ne porte jamais moins de fonctions que sa tétrade ».
-      Les ajouts d'expert n'enlèvent jamais un rôle.
 - [ ] rendre un chiffrage depuis une lecture : `C7♯9` à partir d'une
       `Reading`. Écrit en lettres américaines dans toutes les langues,
       dit dans la langue (« do mineur majeur 7 add 9 ») : deux rendus,
@@ -280,6 +279,14 @@ La suite, dans l'ordre :
 - [ ] la marche d'accords parallèles (*Stolen Moments*).
 - [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V, d'après
   *En Harmonie* (tome 1, chapitres 8 et 9).
+- [ ] la cadence rompue V-VI (G7 Am7 en do) est lue comme un ♭VII7-Im,
+  une plagale de la mineur, et n'est donc pas notée « … ». La tonique
+  entendue devrait primer sur la lecture du bloc seul.
+- [ ] la demi-cadence, une phrase qui s'arrête sur le V (le D7 de la
+  mesure 8 d'*It Don't Mean A Thing*, qui se résout pourtant au retour
+  du A). Demande de reconnaître la structure, sans la lire dans les
+  marques de la grille : les sections par la récurrence de la séquence
+  harmonique, par exemple.
 - [ ] la suite du catalogue des cellules (le turnaround, l'anatole
   réharmonisé par substitutions tritoniques, I ♭III7 ♭VI7 ♭II7).
 - [ ] la modulation « confirmée », et les seuils en données.

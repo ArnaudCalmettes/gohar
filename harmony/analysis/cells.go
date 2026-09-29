@@ -10,9 +10,11 @@ type Cell struct {
 	From, To int // its first and last changes
 	Kind     CellKind
 
-	// Resolves tells whether the V goes on to its I, or to the III
-	// standing for it: Dm7 after B♭ G7 Cm7 F7 in Anthropology. False
-	// when the I promised is avoided.
+	// Resolves tells whether the V goes on to its I. False when the I
+	// promised is avoided, a deceptive cadence ("cadence rompue", V – …
+	// in En Harmonie), the III included: in Anthropology, F7 goes to
+	// Dm7, the mediant, which stands for the I in the III VI II V that
+	// follows but is no resolution of the V.
 	Resolves bool
 }
 
@@ -55,8 +57,8 @@ func (k CellKind) String() string {
 //
 // A cell is heard by its shape, whether or not its V resolves: Fm7 B♭7
 // E♭7 A♭7 in Anthropology is a III VI II V of D flat, and the D flat it
-// promises is avoided, A♭7 going to Dm7. The cell says so (Resolves);
-// the surprise itself belongs to the expectation.
+// promises is avoided, A♭7 going to Dm7: a deceptive cadence, which the
+// cell notes (Resolves).
 func Cells(c Changes) []Cell {
 	var out []Cell
 	for i := 0; i+3 < len(c.Chords); i++ {
@@ -85,14 +87,8 @@ func Cells(c Changes) []Cell {
 	return out
 }
 
-// resolves reports whether the V at change five goes on to the tonic,
-// or to its III, the minor chord that stands for it.
+// resolves reports whether the V at change five goes on to the tonic.
 func resolves(c Changes, five int, tonic harmony.PitchClass) bool {
 	next := c.Next(five)
-	if next < 0 || c.Chords[next].Silent {
-		return false
-	}
-	ch := c.Chords[next].Chord
-	third := (int(ch.Root) - int(tonic) + 12) % 12
-	return ch.Root == tonic || (third == 3 || third == 4) && isMinor(ch.Pattern)
+	return next >= 0 && !c.Chords[next].Silent && c.Chords[next].Chord.Root == tonic
 }

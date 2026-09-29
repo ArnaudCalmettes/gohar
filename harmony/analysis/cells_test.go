@@ -11,7 +11,7 @@ import (
 // The anatole and the III VI II V, in the forms En Harmonie gives
 // (tome 1, chapter 8 §3.3, and chapter 9 for the secondary dominants),
 // looping back to their first chord; "…" marks a cell whose V avoids
-// the I it promises.
+// the I it promises, a deceptive cadence (the book's "V – …").
 func TestCells(t *testing.T) {
 	const (
 		c, db, d, eb, e, f, g, ab, a, bb harmony.PitchClass = 0, 1, 2, 3, 4, 5, 7, 8, 9, 10
@@ -46,9 +46,11 @@ func TestCells(t *testing.T) {
 		"and on the II": {
 			changesOf(true, c, maj7, a, dom7, d, dom7, g, dom7), "anatole",
 		},
+		// The first V goes on to the III, the mediant: it stands for the
+		// I in the cell that follows, but the V does not resolve there.
 		"Have You Met Miss Jones": {
 			changesOf(true, f, maj7, d, min7, g, min7, c, dom7, a, min7, d, min7, g, min7, c, dom7),
-			"anatole III-VI-II-V",
+			"anatole… III-VI-II-V",
 		},
 		// Anthropology, bars 5-6: a III VI II V of D flat, heard as
 		// such, its resolution avoided.

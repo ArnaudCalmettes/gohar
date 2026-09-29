@@ -77,6 +77,8 @@ type Mode struct {
 	// a tetrad to hang them on.
 	Extensions string
 
+	// Function is how the mode is used, which may differ from what its
+	// tetrad alone does: the dorian is a tonic, its m7 alone a II.
 	Function harmony.Function
 }
 
@@ -304,7 +306,7 @@ var catalogue = []Mode{
 	},
 	{
 		System: harmony.DoubleHarmonicMajor, Degree: 3, Base: Phrygian,
-		Altered:  []Alteration{{4, Flat}, {7, DoubleFlat}},
+		Altered: []Alteration{{4, Flat}, {7, DoubleFlat}},
 		Function: harmony.NoFunction,
 	},
 	{
