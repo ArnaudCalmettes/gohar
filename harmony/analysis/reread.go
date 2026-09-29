@@ -34,12 +34,12 @@ import (
 // The ground is the one of the first hearing, which reads each change
 // in turn, or before it installs one, the tonality the tune is analysed
 // in, as Sense has it: a second hearing on the blocks re-read is as
-// live as the first.
+// live as the first. [Hear] runs both.
 func Reread(c Changes, kinds []harmony.ApproachKind, blocks []Block, sensed []Sensed, tune []harmony.Tonality) ([]harmony.ApproachKind, []Block) {
 	kinds, blocks = slices.Clone(kinds), slices.Clone(blocks)
 	for n, b := range blocks {
-		if b.Kind != harmony.PlagalApproach || b.Target < 0 {
-			continue
+		if b.Kind != harmony.PlagalApproach || b.Target < 0 || !isDominant(c.Chords[b.Five].Chord.Pattern) {
+			continue // a IVm7 is no V
 		}
 		ground := sensed[b.Five].Ground
 		if ground == nil {

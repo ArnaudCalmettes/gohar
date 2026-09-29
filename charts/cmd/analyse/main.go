@@ -131,20 +131,16 @@ func render(s ireal.Song, key string, withLegend bool) string {
 	chart := ireal.Structure(ireal.Lex(s.Chart))
 	tl := chart.Timeline()
 	changes, err := tl.Changes()
-	kinds := analysis.Approaches(changes)
 	passing := analysis.PassingChords(changes)
-	blocks := analysis.Blocks(changes, kinds)
-	phrases := analysis.Phrases(changes, blocks)
-	tune, why := tuneOf(s, key, analysis.Tune(changes, phrases))
-
-	// A second hearing, once the blocks are read again on the ground the
-	// first one installed: Dm7 G7 Dm7 in C is a two five played again,
-	// not a plagal cadence in D minor.
-	kinds, blocks = analysis.Reread(changes, kinds, blocks, analysis.Sense(changes, blocks, phrases, tune), tune)
-	phrases = analysis.Phrases(changes, blocks)
+	var why string
+	h := analysis.Hear(changes, func(heard []harmony.Tonality) []harmony.Tonality {
+		tune, reason := tuneOf(s, key, heard)
+		why = reason
+		return tune
+	})
+	kinds, blocks, phrases, tune, sensed := h.Kinds, h.Blocks, h.Phrases, h.Tune, h.Sensed
 	plages := analysis.Modal(changes, blocks)
 	cands := analysis.Candidates(changes, blocks, phrases)
-	sensed := analysis.Sense(changes, blocks, phrases, tune)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 	formulas := analysis.Cells(changes)

@@ -210,14 +210,14 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 		r.declared = nil
 		return r
 	}
-	blocks := analysis.Blocks(changes, analysis.Approaches(changes))
-	phrases := analysis.Phrases(changes, blocks)
-	for _, s := range analysis.Sense(changes, blocks, phrases, analysis.Tune(changes, phrases)) {
+	h := analysis.Hear(changes, nil)
+	blocks, phrases := h.Blocks, h.Phrases
+	for _, s := range h.Sensed {
 		if s.Resolves != nil && !s.Across {
 			r.cadences++
 		}
 	}
-	r.heard = analysis.Tune(changes, phrases)
+	r.heard = h.Heard
 	var counts []string
 	cands := analysis.Candidates(changes, blocks, phrases)
 	for _, cd := range cands {

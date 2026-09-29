@@ -61,6 +61,9 @@ l'oreille attend accord par accord.
 
 ### Sa tonalité
 
+> « The most difficult thing in jazz is to find the one. »
+> (Hal Galper)
+
 Deux questions, que l'analyse sépare : d'où le morceau part, et où il
 s'arrête. Toutes deux se lisent sur les **phrases** (`Phrases`) : la
 première, et la dernière.
@@ -219,15 +222,16 @@ G7 Dm7 le IV7 Im de ré mineur mélodique, deux plagales. Là où l'on
 entend do, G7 est son V : il va sur son VI (la cadence rompue) ou
 revient vers son II (le II-V rejoué de *Satin Doll*, Dm7 G7 | Dm7 G7).
 `Reread` relit ces blocs sur la tonique installée par une première
-écoute, ou à défaut sur la tonalité du morceau, et `analyse` écoute une
-seconde fois avec les blocs relus. Un V qui revient vers le II d'où il
-vient se relit aussi hors de la tonique (Em7 A7 | Em7 A7, le II-V de
-ré rejoué dans *Satin Doll*), sauf quand l'alternance dure plus de
-quatre mesures, un vamp. Là où le mineur est la tonique, la plagale
-reste : Fm7 B♭7 dans *Mas Que Nada* est le I IV7 dorien de fa mineur.
-La tonalité du morceau ne change pas, et la seconde écoute est aussi
-directe que la première : elle ne demande que la tonalité donnée au
-départ et ce qui a sonné.
+écoute, ou à défaut sur la tonalité du morceau, et `Hear` écoute une
+seconde fois avec les blocs relus, pour `analyse` comme pour le
+rapport du corpus. Un V qui revient vers le II d'où il vient se relit
+aussi hors de la tonique (Em7 A7 | Em7 A7, le II-V de ré rejoué dans
+*Satin Doll*), sauf quand l'alternance dure plus de quatre mesures, un
+vamp. Là où le mineur est la tonique, la plagale reste : Fm7 B♭7 dans
+*Mas Que Nada* est le I IV7 dorien de fa mineur. La tonalité du
+morceau ne change pas, et la seconde écoute est aussi directe que la
+première : elle ne demande que la tonalité donnée au départ et ce qui
+a sonné.
 
 ### Le blues
 

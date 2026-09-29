@@ -53,6 +53,12 @@ func TestReread(t *testing.T) {
 				bar{a, min7, d, dom7}, bar{a, min7}, bar{d, min7, g, dom7}, bar{c, maj7}),
 			"D7 → Am7 : Am mel   D7 → Am7 : Am mel   D7 → Am7 : Am mel   D7 → Am7 : Am mel   D7 → Am7 : Am mel   Dm7 G7 → Cmaj7 : C",
 		},
+		// Last Train Home: Gm7 Dm7 in B flat is a plagal IVm7 Im7, and
+		// Gm7 no V going back to its two.
+		"a IVm7 is no V": {
+			barsOf(false, bar{bb, maj7}, bar{d, min7}, bar{g, min7}, bar{d, min7}, bar{g, min7}, bar{f, dom7}, bar{bb, maj7}),
+			"Gm7 → Dm7 : Dm nat/harm   F7 → B♭maj7 : B♭",
+		},
 		// Mas Que Nada: in F minor, B♭7 is the dorian IV7 of Fm7.
 		"the dorian IV7 stands": {
 			barsOf(false, bar{f, min7, bb, dom7}, bar{f, min7, bb, dom7}, bar{f, min7}, bar{g, halfDim, c, dom7}, bar{f, min7}),

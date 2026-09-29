@@ -263,10 +263,10 @@ La suite, dans l'ordre :
       tonique. L'analyse entend do, sur les arrêts et les retours à
       Cmaj7.
 - [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
-      manque : la demi-cadence (les fins de section), la rompue (la
-      surprise), le V seul et ce qu'il fait attendre (la surprise), le
-      ♭VIImaj7-I et le ♭VIIm7-I (les modes de la grille), IV7-I7 (le
-      blues).
+      manque : la demi-cadence (la structure), le ♭VIImaj7-I et le
+      ♭VIIm7-I (les modes de la grille). Le V seul, sans II, qui va
+      ailleurs que sur sa tonique n'est pas un bloc : les degrés disent
+      déjà V III ou V IV7, et rien ne demande plus.
 - [x] les II-V consécutifs (`Links`) : ½ ton, ton, cycle des quintes,
   d'après *En Harmonie* (tome 1, chapitre 8 §3.3), et les chaînes de
   dominantes (par quintes ou par demi-tons). Les relations entre blocs
@@ -276,7 +276,7 @@ La suite, dans l'ordre :
   (`Reread`, une seconde écoute) : un II-V rejoué, sauf quand le mineur
   est la tonique (le I IV7 dorien de *Mas Que Nada*, de *It Ain't
   Necessarily So*) ou que l'alternance dure plus de quatre mesures (un
-  vamp). 633 blocs relus dans 259 standards, sans changer la tonalité
+  vamp). 564 blocs relus dans 237 standards, sans changer la tonalité
   d'aucun.
 - [ ] les accords parallèles (*Stolen Moments*) : au moins trois
   accords de même tétrade, à intervalle variable ; à intervalle
@@ -291,8 +291,6 @@ La suite, dans l'ordre :
 - [x] la cadence rompue V-VI (G7 Am7 en do), lue seule comme un
   ♭VII7-Im de la mineur, se relit de même sur la tonique entendue au V
   (`Reread`).
-- [ ] le V seul, sans II, qui ne prépare pas l'accord suivant, n'est
-  pas un bloc, et sa rompue n'est donc pas notée.
 - [ ] la demi-cadence, une phrase qui s'arrête sur le V (le D7 de la
   mesure 8 d'*It Don't Mean A Thing*, qui se résout pourtant au retour
   du A). Demande de reconnaître la structure, sans la lire dans les
