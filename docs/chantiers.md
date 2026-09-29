@@ -423,7 +423,19 @@ La suite, dans l'ordre :
 - [x] la tonalité du morceau par accumulation de preuves (`Candidates`),
   lues et affichées, sans décider : le comptage confirme `Tune` plus
   qu'il ne le dépasse (voir « Le verdict et ses preuves » dans
-  `grilles.md`). Sur des grilles seules, on ne fera guère mieux.
+  `grilles.md`). Sur des grilles seules, on ne fera guère mieux. Sur
+  les 1547 grilles jugées du corpus, ce que vaut chaque façon de
+  classer les candidats (le premier est-il la tonalité de référence ?) :
+
+  | Classement | D'accord | Égalités |
+  |---|---|---|
+  | retours seuls | 570 | 117 |
+  | ouvertures seules | 1073 | 209 |
+  | repos seuls | 1114 | 203 |
+  | toutes les preuves à égalité | 1210 | 109 |
+  | ouvertures, repos et fins, puis retours | 1253 | 25 |
+  | la fin, puis ouverture, repos, retours | 1257 | 2 |
+  | `Tune` | 1272 (82 %) | |
 - [ ] la mélodie comme preuve : ce qui sépare *In a Sentimental Mood*
   (ré mineur) de *Lullaby Of Birdland* (la♭), au même profil de
   preuves, et pose d'entrée sol mineur dans *It Don't Mean A Thing*.
@@ -460,6 +472,21 @@ trancher sans source.
   reporté dans `voicings.md` sans en reprendre le contenu (un cours
   payant, cité comme exemple). Ses limites d'intervalles servent à
   vérifier la table de tessiture, à l'oreille.
+- [x] Les dix commandements de l'harmoniste de la BEPA, dus à Étienne
+  Guéreau, à citer librement là où ils appuient une décision :
+  1. Tu partiras de la mélodie.
+  2. Tu ne suivras pas bêtement les indications du Real Book.
+  3. Tu alterneras les positions et les renversements.
+  4. Tu varieras les nuances et les registres.
+  5. Tu veilleras au toucher et à l'équilibre sonore.
+  6. Tu ne réharmoniseras pas comme un sauvage.
+  7. Tu utiliseras différentes techniques de réharmonisation.
+  8. Tu ne feras pas étalage de ton savoir au détriment du thème.
+  9. Tu seras attentif à la cohérence de l'ensemble.
+  10. Tu transposeras.
+
+  Le premier, le deuxième, le sixième et le huitième sont cités dans
+  `grilles.md`, le troisième et le dixième dans `voicings.md`.
 - [ ] Jacques Chailley, *40 000 ans de musique* (dans le projet) :
   l'histoire, à citer pour la tierce picarde et ce que la doc en dit.
 - [x] *En Harmonie*, tome 2, chapitre 5, « Les pédales » jusqu'à

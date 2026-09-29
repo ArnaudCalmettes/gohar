@@ -109,12 +109,16 @@ II-V-I. En do :
 Seule la basse saute. Sur une basse qui descend par quintes, la tierce
 d'un accord devient la septième du suivant, et la septième glisse d'un
 demi-ton pour devenir la tierce : la position alterne d'elle-même.
+« Tu alterneras les positions et les renversements », dit l'un des dix
+commandements de l'harmoniste de la BEPA, dus à Étienne Guéreau : sur
+un II-V-I, le moindre mouvement y conduit tout seul.
 
 Le cours de Guéreau est un **exemple** de curriculum : il part des
-positions, fait travailler chaque couple dans les douze tonalités, puis
-l'applique à un standard. gohar n'en reprend pas le contenu, qui n'est
-pas le sien : ses niveaux se construiront sur le même principe, avec
-leurs propres couples, leur propre ordre et leurs propres morceaux.
+positions, fait travailler chaque couple dans les douze tonalités (« Tu
+transposeras », dit le dernier commandement), puis l'applique à un
+standard. gohar n'en reprend pas le contenu, qui n'est pas le sien :
+ses niveaux se construiront sur le même principe, avec leurs propres
+couples, leur propre ordre et leurs propres morceaux.
 
 gohar sait donc **dériver** les couples par le calcul, et le dex
 **retient** ceux que le joueur connaît. Le calcul dit pourquoi, le dex
