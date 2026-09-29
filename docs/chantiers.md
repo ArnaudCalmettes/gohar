@@ -258,6 +258,10 @@ La suite, dans l'ordre :
 - [ ] la modalité, sur de vraies grilles modales qui portent leurs
       couleurs : ce que devient un accord dans une plage, et le format
       de grille qui les écrit.
+      *Nardis* en est un cas : mi phrygien à l'oreille, le Fmaj7 en
+      donnant la ♭2 (son degré caractéristique) et le B7 posant mi comme
+      tonique. L'analyse entend do, sur les arrêts et les retours à
+      Cmaj7.
 - [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
       manque : la demi-cadence (les fins de section), la rompue (la
       surprise), le V seul et ce qu'il fait attendre (la surprise), le
@@ -267,28 +271,46 @@ La suite, dans l'ordre :
   d'après *En Harmonie* (tome 1, chapitre 8 §3.3), et les chaînes de
   dominantes (par quintes ou par demi-tons). Les relations entre blocs
   sont faites.
-- [ ] le V qui revient sur son II (Dm7 G7 | Dm7 G7 dans *Satin Doll*)
-  est lu comme une plagale IV7 → m, et annonce ré mineur : c'est un
-  II-V rejoué. Mais la même ligne est le vamp dorien Im7 IV7 quand le
-  m7 est la tonique (Fm7 B♭7 dans *Mas Que Nada*, Gm7 C7 dans *It
-  Ain't Necessarily So*), et les accords seuls ne les séparent pas.
-  Essayé : « un V entre deux fois son II n'est pas une plagale » gagne
-  4 grilles et perd ces 2 ; exiger en plus que le V se résolve ailleurs
-  fait pire. En attente des cadences modales du tome 2 d'*En Harmonie*
-  (chapitre 2 §5.2).
-- [ ] la marche d'accords parallèles (*Stolen Moments*).
+- [x] le V qui revient sur son II (Dm7 G7 | Dm7 G7 dans *Satin Doll*),
+  lu seul comme une plagale IV7 → m, se relit sur la tonique entendue
+  (`Reread`, une seconde écoute) : un II-V rejoué, sauf quand le mineur
+  est la tonique (le I IV7 dorien de *Mas Que Nada*, de *It Ain't
+  Necessarily So*) ou que l'alternance dure plus de quatre mesures (un
+  vamp). 633 blocs relus dans 259 standards, sans changer la tonalité
+  d'aucun.
+- [ ] les accords parallèles (*Stolen Moments*) : au moins trois
+  accords de même tétrade, à intervalle variable ; à intervalle
+  constant, une marche d'accords parallèles. Reste à décider ce qu'on
+  en montre quand les blocs lisent déjà les accords (voir
+  `grilles.md`).
+- [ ] distinguer la cadence évitée, où la tonalité change, de la
+  rompue. Sans urgence : « … » suffit pour l'instant, la ligne des
+  toniques montrant si la nouvelle tonique s'installe.
 - [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V, d'après
   *En Harmonie* (tome 1, chapitres 8 et 9).
-- [ ] la cadence rompue V-VI (G7 Am7 en do) est lue comme un ♭VII7-Im,
-  une plagale de la mineur, et n'est donc pas notée « … ». La tonique
-  entendue devrait primer sur la lecture du bloc seul.
+- [x] la cadence rompue V-VI (G7 Am7 en do), lue seule comme un
+  ♭VII7-Im de la mineur, se relit de même sur la tonique entendue au V
+  (`Reread`).
+- [ ] le V seul, sans II, qui ne prépare pas l'accord suivant, n'est
+  pas un bloc, et sa rompue n'est donc pas notée.
 - [ ] la demi-cadence, une phrase qui s'arrête sur le V (le D7 de la
   mesure 8 d'*It Don't Mean A Thing*, qui se résout pourtant au retour
   du A). Demande de reconnaître la structure, sans la lire dans les
   marques de la grille : les sections par la récurrence de la séquence
-  harmonique, par exemple.
-- [ ] la suite du catalogue des cellules (le turnaround, l'anatole
-  réharmonisé par substitutions tritoniques, I ♭III7 ♭VI7 ♭II7).
+  harmonique, par exemple. Elle s'entend au contraste entre deux fins
+  d'une même section, la première sur le V, la seconde sur le I, la
+  question et sa réponse. Un II-V en dernière mesure qui renvoie au
+  début de la section suivante n'en est pas une : c'est une
+  préparation. Le turnaround se reconnaît de même à sa place dans la
+  structure, où il fait repartir pour un tour ; ce n'est pas une
+  cellule (une anatole, souvent, ou un turnaround sur pédale en
+  introduction).
+- [x] les cellules par substitutions tritoniques, lues sur les accords
+  qu'elles remplacent, comme *En Harmonie* retrouve les cadences
+  initiales (tome 1, chapitre 9) : « anatole ♭II », nom retenu en
+  attendant mieux. Au passage, un accord majeur n'est plus un II : Em7
+  A7 Dmaj7 G7 est un II-V-I de ré (327 fausses cellules en moins sur
+  le corpus).
 - [ ] la modulation « confirmée », et les seuils en données.
 - [ ] l'ouverture sur un maj7 qui n'est pas la tonique : *Only Trust
   Your Heart* s'ouvre sur Fmaj7♯11, le IV lydien de do, et l'analyse

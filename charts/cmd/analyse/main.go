@@ -135,9 +135,15 @@ func render(s ireal.Song, key string, withLegend bool) string {
 	passing := analysis.PassingChords(changes)
 	blocks := analysis.Blocks(changes, kinds)
 	phrases := analysis.Phrases(changes, blocks)
+	tune, why := tuneOf(s, key, analysis.Tune(changes, phrases))
+
+	// A second hearing, once the blocks are read again on the ground the
+	// first one installed: Dm7 G7 Dm7 in C is a two five played again,
+	// not a plagal cadence in D minor.
+	kinds, blocks = analysis.Reread(changes, kinds, blocks, analysis.Sense(changes, blocks, phrases, tune), tune)
+	phrases = analysis.Phrases(changes, blocks)
 	plages := analysis.Modal(changes, blocks)
 	cands := analysis.Candidates(changes, blocks, phrases)
-	tune, why := tuneOf(s, key, analysis.Tune(changes, phrases))
 	sensed := analysis.Sense(changes, blocks, phrases, tune)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
@@ -361,6 +367,9 @@ func drawCells(formulas []analysis.Cell, words []word, first, end, width int) st
 			to = column(z.bar, first, width) + z.off + z.width
 		}
 		text := cl.Kind.String()
+		if cl.Substituted {
+			text += " ♭II"
+		}
 		if !cl.Resolves {
 			text += "…"
 		}
@@ -582,6 +591,7 @@ under the degrees, the tonic the ear hears, where it changes:
 under the tonics, the cells, formulas heard as one:
   anatole ───      I VI II V, in any colour
   III-VI-II-V ─    the same, the III standing for the I
+  anatole ♭II ─    with some X7 standing for their tritone twin
   anatole… ─       its V avoiding the I it promises (deceptive)
 `
 

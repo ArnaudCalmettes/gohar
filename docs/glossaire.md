@@ -245,9 +245,11 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |
 | Sous-dominante secondaire | Le II d'une dominante secondaire : II-V de… | |
 | Sous-dominante chromatique | Le II d'une dominante chromatique, ♭VIm7 ou ♭VIm7♭5 | |
-| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V fait tenir au III la place du I ; « … » quand le V évite le I promis, une cadence rompue | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
+| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V fait tenir au III la place du I ; « … » quand le V évite le I promis, une cadence rompue ; « ♭II » quand des X7 y sont des substitutions tritoniques | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
 | Cadence rompue | Le V enchaîné sur un autre accord que la tonique attendue, « V – … » (*En Harmonie*, t. 1, ch. 8) : V-VI, et V-III, la médiante tenant lieu du I sans que le V y résolve. `analyse` la note « … » | Une résolution, qui ne va que sur le I |
 | Cadence, cellule | Une cadence aboutit, une cellule tourne | |
+| Turnaround | La place d'une préparation en fin de grille ou de section, qui fait repartir pour un tour : souvent une anatole, parfois sur pédale, en introduction | Une cellule, que sa forme suffit à reconnaître où qu'elle soit |
+| Accords parallèles | Au moins trois accords de même tétrade, à intervalle variable : le pont de *Stolen Moments* | Une marche harmonique, un motif répété à intervalle constant (les II-V consécutifs) ; les deux ensemble font une marche d'accords parallèles, les X7 par quintes par exemple |
 
 ## Mots proscrits
 

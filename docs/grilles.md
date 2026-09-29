@@ -187,7 +187,7 @@ long que sa préparation ».
 **L'armure n'est pas lue.** C'est un attribut de la partition écrite,
 utile pour ne pas écrire des altérations partout, et au mieux le plus
 faible des indices d'une tonalité. *En Harmonie* la recommande à l'apprenant
-qui se creuse la tête sur une partition ; pour un analyste qui ne se
+qui « se creuse la tête » sur une partition ; pour un analyste qui ne se
 fonde que sur ses propres relevés, elle n'existe pas. « Tu ne suivras
 pas bêtement les indications du Real Book. » Les fiches du livre se
 lisent à l'identique sans elle. L'oreille qui avance dans la grille ne
@@ -212,6 +212,22 @@ modaux sont écrits sans armure, comme en do majeur, un morceau mineur
 est déclaré dans le relatif majeur qui a la même armure (*It Don't Mean
 A Thing*, en si♭), et les grilles de jeux vidéo, relevées par des
 étudiants et parfois modales, sont moins sûres.
+
+**Une seconde écoute.** Certains blocs ne se lisent bien qu'une fois
+la tonique entendue. Lus seuls, G7 Am7 est le ♭VII7 Im de la mineur et
+G7 Dm7 le IV7 Im de ré mineur mélodique, deux plagales. Là où l'on
+entend do, G7 est son V : il va sur son VI (la cadence rompue) ou
+revient vers son II (le II-V rejoué de *Satin Doll*, Dm7 G7 | Dm7 G7).
+`Reread` relit ces blocs sur la tonique installée par une première
+écoute, ou à défaut sur la tonalité du morceau, et `analyse` écoute une
+seconde fois avec les blocs relus. Un V qui revient vers le II d'où il
+vient se relit aussi hors de la tonique (Em7 A7 | Em7 A7, le II-V de
+ré rejoué dans *Satin Doll*), sauf quand l'alternance dure plus de
+quatre mesures, un vamp. Là où le mineur est la tonique, la plagale
+reste : Fm7 B♭7 dans *Mas Que Nada* est le I IV7 dorien de fa mineur.
+La tonalité du morceau ne change pas, et la seconde écoute est aussi
+directe que la première : elle ne demande que la tonalité donnée au
+départ et ce qui a sonné.
 
 ### Le blues
 
@@ -447,9 +463,27 @@ Les règles de lecture sont les nôtres. Une cellule se lit sur les
 fondamentales, depuis la tonique que pointe le V : I (ou III), VI (sur
 la sixte majeure, ou mineure en mineur), II, V. Le premier accord est
 un accord de tonique pour l'anatole, un accord mineur pour le
-III-VI-II-V ; le VI et le II ont une tierce, de n'importe quelle
-qualité ; le dernier est une dominante. Un accord tenu plus longtemps
+III-VI-II-V ; le VI a une tierce, de n'importe quelle qualité ; le II
+est mineur ou de dominante, un accord majeur y étant l'arrivée d'une
+cadence (Em7 A7 Dmaj7 G7 est un II-V-I de ré, pas un III-VI-II-V de
+do) ; le dernier est une dominante. Un accord tenu plus longtemps
 compte une fois.
+
+Les X7 d'une cellule peuvent être des substitutions tritoniques :
+« tout accord X7 peut être substitué à un autre accord X7, quelle que
+soit sa fonction » (chapitre 9, p. 141). Le livre analyse un tel
+passage « de la droite vers la gauche », pour « retrouver les cadences
+initiales » (p. 142-143, *Sophisticated Lady*, *I Thought About You*).
+`Cells` fait de même : elle lit les quatre accords tels qu'écrits,
+puis avec un X7 remplacé par son jumeau, puis deux, puis trois, et
+garde la première lecture qui fait une cellule. Un VI restitué doit
+être le V du II. C E♭7 A♭7 D♭7 est l'anatole C A7 D7 G7, et Em7 E♭7
+Dm7 G7 (*Blue In Green*, *Too Young*) un III-VI-II-V ; C D7 Dm7 G7
+(*Take The A Train*) n'en est pas un, D7 y étant le II7 et non le
+jumeau d'un VI. Les quintes y deviennent des demi-tons : dans *Body
+And Soul*, Dm7 G7 C7 B7 B♭7 est un III-VI-II-V de si♭ qui descend
+chromatiquement, B7 pour F7. `analyse` écrit « anatole ♭II », nom retenu en attendant
+mieux.
 
 Le livre nomme la variante avec son I, que le V promet. Une cellule
 s'entend pourtant à sa forme, que le V tienne sa promesse ou non : dans
@@ -466,20 +500,30 @@ promis : « III-VI-II-V… ───── ».
 
 ### Les accords parallèles
 
-Ils n'ont pas de fonction, et sont de deux sortes. **Un accord qui
-harmonise une note de la mélodie**, bref et de même qualité une seconde
-à côté de l'arrivée, demande la mélodie pour être sûr : sans elle,
-gohar ne peut que le conjecturer. **Une marche d'accords parallèles**,
-elle, se lit sur la grille seule : au moins trois accords de même
-qualité reliés par des mouvements conjoints, sous une mélodie qui ne
-les suit pas. Le pont de *Stolen Moments* (Dm D♯m | Em Fm | F♯m Fm |
+Deux notions se croisent ici. **Des accords parallèles** sont au
+moins trois accords de même tétrade, séparés par un intervalle qui
+peut varier. **Une marche harmonique** répète un motif, un accord ou un
+II-V, à intervalle constant : les II-V consécutifs en sont. Les deux
+ensemble font **une marche d'accords parallèles**, dont les X7 qui
+descendent par quintes sont le cas le plus trivial, puisqu'ils suivent
+la résolution qu'appelle le triton.
+
+Les accords parallèles se lisent sur la grille seule, sous une mélodie
+qui ne les suit pas. Les mouvements conjoints sont les plus courants ;
+un accord mineur plaqué sur chaque note d'une même tétrade en est un
+autre cas. Le pont de *Stolen Moments* (Dm D♯m | Em Fm | F♯m Fm |
 Em E♭m) fait monter et descendre par demi-tons des accords doriens
 sous un ostinato sur un intervalle de tierce : c'est une couleur,
-chaque accord vient de son propre mode, et le fond ne bouge pas. Un
-accord qui appartient à un bloc n'en fait pas partie : les X7 de
-*Sophisticated Lady* se préparent l'une l'autre, et dans *Along Came
-Betty*, B♭m7 Bm7 B♭m7 Bm7 a la forme d'une marche mais chaque Bm7 est
-le II de E7. Pas encore codé.
+chaque accord vient de son propre mode, et le fond ne bouge pas.
+**Un accord qui harmonise une note de la mélodie**, bref et de même
+qualité une seconde à côté de l'arrivée, est un autre cas, qui demande
+la mélodie pour être sûr : sans elle, gohar ne peut que le conjecturer.
+
+Des accords parallèles peuvent aussi se préparer l'un l'autre : les X7
+de *Sophisticated Lady*, les B♭m7 Bm7 B♭m7 Bm7 d'*Along Came Betty*,
+où chaque Bm7 est le II de E7. Les blocs et les chaînes de dominantes
+les lisent déjà ; reste à décider ce que l'analyse montre de la
+marche par-dessus. Pas encore codé.
 
 ## La provenance
 
@@ -730,9 +774,9 @@ Des données, relues ligne à ligne comme la table des qualités iReal.
 
 | Cadences | Formes | Codées |
 |---|---|---|
-| À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-…, V-VI par exemple) | parfaite et imparfaite ; la rompue, notée « … » sur les blocs qui ont leur II et sur les cellules, sauf le V-VI : lu seul, Dm7 G7 Am7 est la cadence éolienne de la mineur, IVm7 ♭VII7 Im7, un bloc plagal. La demi-cadence, une phrase qui s'arrête sur le V, demande de reconnaître la structure du morceau |
+| À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-…, V-VI par exemple) | parfaite et imparfaite ; la rompue, notée « … » sur les blocs qui ont leur II et sur les cellules ; le V-VI aussi, qu'il ait son II ou non : lu seul, Dm7 G7 Am7 est la cadence éolienne de la mineur, IVm7 ♭VII7 Im7, un bloc plagal, et c'est la tonique entendue au V, do, qui en fait un V allant sur son VI (`Reread`, voir « Une seconde écoute »). La demi-cadence, une phrase qui s'arrête sur le V, demande de reconnaître la structure du morceau |
 | II-V-I | majeur IIm7-V7-Imaj7 ; mineur harmonique IIm7♭5-V7(♭9, ♭13)-Im(maj7) ; mineur mélodique IIm7-V7(9, ♭13)-Im(maj7) ; mixte IIm7♭5-V7(9, ♭13)-Imaj7 | oui |
-| Plagales | IVmaj7-I ; IV7-I et IV7-Im (mineur mélodique) ; IVm7-I (mineur harmonique) ; IVm(maj7)-I (majeur harmonique) ; IV-IVm-I ; IV7-I7 (« bluesy ») | toutes, sauf IV7-I7 (le I7 n'est pas un accord de tonique) |
+| Plagales | IVmaj7-I ; IV7-I et IV7-Im (mineur mélodique) ; IVm7-I (mineur harmonique) ; IVm(maj7)-I (majeur harmonique) ; IV-IVm-I ; IV7-I7 (« bluesy ») | toutes, sauf IV7-I7 : le livre l'illustre par *Black Coffee*, où le Imaj7 « peut être modifié en I7 afin de donner une couleur "bluesy" », mais dans un blues, le IV7 et le I7 ne font pas une plagale |
 | Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7 (phrygien) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I. Le ♭VIImaj7 et le ♭VIIm7 ne se lisent pas sur deux accords : sans leur mode, ce sont les mouvements conjoints de n'importe quelle grille tonale (Em7 Fmaj7 en do, Dm7 Em7). Ils attendent une grille qui porte ses modes |
 | Avatars du V | V7, ♭II7, VIIdim7 | oui |
 
@@ -803,7 +847,7 @@ fins.
 
 | Morceau | Ce qu'il fixe |
 |---|---|
-| Along Came Betty | le cul entre deux chaises : deux tonalités à un demi-ton qui se chevauchent, des toniques tenues une seule mesure, pas de modulation ; l'analyse montre l'hésitation sans la trancher |
+| Along Came Betty | « le cul entre deux chaises » : deux tonalités à un demi-ton qui se chevauchent, des toniques tenues une seule mesure, pas de modulation ; l'analyse montre l'hésitation sans la trancher |
 | Giant Steps | trois centres, mais des tonicisations de moins d'une seconde à ce tempo : pas de modulation |
 | Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
 | Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur où se pose la première phrase |

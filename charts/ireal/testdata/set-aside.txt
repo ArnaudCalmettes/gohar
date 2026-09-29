@@ -15,7 +15,7 @@ Pinocchio | modal, the chart not writing its colours
 E.S.P. | modal, the chart not writing its colours
 Black Narcissus | modal, the chart not writing its colours
 Recordame | modal, the chart not writing its colours
-Nardis | modal, the chart not writing its colours
+Nardis | modal, E phrygian by ear: Fmaj7 is its ♭2, B7 poses E; heard in C
 Afro Blue | modal, the chart not writing its colours
 Eighty One | modal, the chart not writing its colours
 Sidewinder | modal, the chart not writing its colours
@@ -23,6 +23,10 @@ Limbo | modal, the chart not writing its colours
 Straight Life | modal, the chart not writing its colours
 Song For My Lady | modal, the chart not writing its colours
 Epistrophy | Monk, a mode a chord at a time
+#
+# Neither major nor minor, or both at once: D minor for two parts, D
+# major for two, a fifty-fifty no one need settle.
+Chega De Saudade (No More Blues) | in D, major and minor at once
 #
 # Blues of a form Blues does not know: a riff over the changes, or a
 # chorus longer than twelve bars.

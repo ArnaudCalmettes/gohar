@@ -37,9 +37,8 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // The deceptive cadence (cadence rompue), the V going to the VI of its
 // tonality, is not a block's to tell: Dm7 G7 Am7 read alone is the
 // aeolian IVm7 ♭VII7 Im7 of A minor, a plagal block, and it is the
-// tonic of the passage, C, that makes it a V going to its VI. The
-// degrees say so (II V VI), and the surprise, once the analysis
-// expects, will name it.
+// tonic of the passage, C, that makes it a V going to its VI. See
+// [Reread], which reads the blocks again once that tonic is heard.
 type Block struct {
 	Two, Sus int // indices of the changes, -1 when absent
 	Five     int

@@ -13,8 +13,13 @@ import (
 // when it lands nowhere), then the tonality it announces, named as the
 // analyse command does: see tonalityName.
 func blocksOf(c analysis.Changes) string {
+	return blocksName(c, analysis.Blocks(c, analysis.Approaches(c)))
+}
+
+// blocksName renders blocks as blocksOf does.
+func blocksName(c analysis.Changes, blocks []analysis.Block) string {
 	var out []string
-	for _, b := range analysis.Blocks(c, analysis.Approaches(c)) {
+	for _, b := range blocks {
 		var chords []string
 		for _, i := range []int{b.Two, b.Sus, b.Five} {
 			if i >= 0 {
