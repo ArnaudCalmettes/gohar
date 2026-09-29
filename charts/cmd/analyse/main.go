@@ -1,7 +1,7 @@
 // Command analyse prints a chart of an iReal Pro playlist with what the
 // analysis sees in it, bar by bar, in the terminal.
 //
-//	analyse [-key heard|declared|F|A-] playlist.html "tenderly"
+//	analyse [-key heard|declared|F|A-] [-legend=false] playlist.html "tenderly"
 //
 // The playlist is an export of the app: an HTML file holding irealb://
 // links, or a text file holding one. The title is matched without case,
@@ -42,10 +42,11 @@ import (
 const barsPerRow = 4
 
 func main() {
+	withLegend := flag.Bool("legend", true, "explain the marks before the chart")
 	key := flag.String("key", "heard", `the tonality to analyse the tune in: "heard" by the analysis, "declared" by the app, or a key as the app spells it (F, A-)`)
 	flag.Parse()
 	if flag.NArg() != 2 {
-		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] <playlist> <title>")
+		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] [-legend=false] <playlist> <title>")
 		os.Exit(2)
 	}
 	if _, ok := (ireal.Song{Key: *key}).DeclaredTonalities(); !ok && *key != "declared" && *key != "heard" {
@@ -57,7 +58,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
-	fmt.Print(render(song, *key))
+	fmt.Print(render(song, *key, *withLegend))
 }
 
 // tuneOf returns the tonality to analyse a song in, as -key asks, and
@@ -126,7 +127,7 @@ func find(path, title string) (ireal.Song, error) {
 // brackets it. Under the chords, their degrees on the installed tonic,
 // and under the degrees the sensed tonic where it changes, from the
 // tonality the app gives the tune.
-func render(s ireal.Song, key string) string {
+func render(s ireal.Song, key string, withLegend bool) string {
 	chart := ireal.Structure(ireal.Lex(s.Chart))
 	tl := chart.Timeline()
 	changes, err := tl.Changes()
@@ -140,6 +141,11 @@ func render(s ireal.Song, key string) string {
 	sensed := analysis.Sense(changes, blocks, phrases, tune)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
+	formulas := analysis.Cells(changes)
+	steps := make([]string, len(changes.Chords)) // how a II-V, or a V, follows the one before it
+	for _, l := range analysis.Links(changes, kinds) {
+		steps[l.To] = l.Step.String() + " "
+	}
 
 	// Each bar is two lines that line up word for word: the analysis
 	// above, the chords below. A bar holds "%" when the chord before
@@ -156,7 +162,7 @@ func render(s ireal.Song, key string) string {
 		if inPlage(plages, i) {
 			degree, tonic = "modal", ""
 		}
-		off, w := cells[sp.Bar].add(walk(passing[i])+label(kinds[i]), name, degree, tonic)
+		off, w := cells[sp.Bar].add(steps[i]+walk(passing[i])+label(kinds[i]), name, degree, tonic)
 		words[i] = word{sp.Bar, off, w}
 		started[sp.Bar] = true
 	}
@@ -187,7 +193,9 @@ func render(s ireal.Song, key string) string {
 	}
 	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
 	fmt.Fprint(&b, evidence(cands))
-	fmt.Fprint(&b, legend)
+	if withLegend {
+		fmt.Fprint(&b, legend)
+	}
 	for start := 0; start < len(cells); {
 		end := start + 1
 		for end < len(cells) && end-start < barsPerRow && marks[end] == "" {
@@ -212,6 +220,9 @@ func render(s ireal.Song, key string) string {
 		}
 		if strings.TrimSpace(tonics.String()) != "" {
 			fmt.Fprintf(&b, "\n%4s  %s", "", strings.TrimRight(tonics.String(), " "))
+		}
+		if line := drawCells(formulas, words, start, end, width); line != "" {
+			fmt.Fprintf(&b, "\n%s", line)
 		}
 		fmt.Fprintln(&b)
 		start = end
@@ -331,6 +342,40 @@ const margin = 6
 
 func column(bar, first, width int) int {
 	return margin + (bar-first)*(width+3) + 1
+}
+
+// drawCells writes the cells of a row under its tonics, each named at
+// its first chord and ruled to the end of its last: "anatole ─────".
+func drawCells(formulas []analysis.Cell, words []word, first, end, width int) string {
+	line := []rune(strings.Repeat(" ", column(end, first, width)))
+	for _, cl := range formulas {
+		a, z := words[cl.From], words[cl.To]
+		if z.bar < first || a.bar >= end {
+			continue
+		}
+		from, to := column(first, first, width), column(end, first, width)
+		if a.bar >= first {
+			from = column(a.bar, first, width) + a.off
+		}
+		if z.bar < end {
+			to = column(z.bar, first, width) + z.off + z.width
+		}
+		text := cl.Kind.String()
+		if !cl.Resolves {
+			text += "…"
+		}
+		name := []rune(text + " ")
+		if a.bar < first {
+			name = nil
+		}
+		for i := from; i < to && i < len(line); i++ {
+			line[i] = '─'
+			if k := i - from; k < len(name) {
+				line[i] = name[k]
+			}
+		}
+	}
+	return strings.TrimRight(string(line), " ")
 }
 
 // drawBlocks draws the line of blocks over a row of bars: from the
@@ -508,9 +553,15 @@ over each chord, how it prepares the next:
   ♭II→             as its chromatic dominant
   °→               as its diminished chord, a dominant without its root
   sus→             as its suspension
-  II→              as the two of a dominant
+  II→              as the two of a dominant, a fifth above it, or a
+                   half tone above a chromatic dominant, as the two of
+                   its tritone twin: Fm7 E7 (the two of B♭7)
   IV→              as its subdominant, in a plagal cadence (IV or ♭VII7)
   ↗ ↘              a passing chord, its bass walking up or down
+  ½ step 5th II→   a II-V following the one before it by a half tone,
+                   a tone, or down the cycle of fifths
+  5th V→  ½ V→     a dominant following the one it resolves, down the
+                   cycle of fifths, or a half tone below (chromatic)
 
 above, the blocks ([II] [sus4] V) and the tonality each announces:
   Fm harm ──       F harmonic minor
@@ -527,6 +578,11 @@ under each chord, its degree in the tonality of the passage:
 under the degrees, the tonic the ear hears, where it changes:
   E♭               E♭ is the tonic
   E♭ (Fm)          E♭ is the tonic, and a cadence has just led to F minor
+
+under the tonics, the cells, formulas heard as one:
+  anatole ───      I VI II V, in any colour
+  III-VI-II-V ─    the same, the III standing for the I
+  anatole… ─       its V avoiding the I it promises
 `
 
 // walk marks a passing chord by the way its bass goes.

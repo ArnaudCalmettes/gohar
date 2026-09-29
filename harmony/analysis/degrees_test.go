@@ -38,6 +38,7 @@ func TestDegrees(t *testing.T) {
 		dim7    = harmony.ChordDiminishedSeventh
 		sus4    = harmony.ChordDominantSeventhSus4
 	)
+	alt, _ := harmony.NewChordPattern(0, 4, 6, 10, 13, 15, 20)
 	flatNine, _ := harmony.NewChordPattern(0, 4, 7, 10, 13)
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
@@ -70,11 +71,24 @@ func TestDegrees(t *testing.T) {
 			"II ♭VIm7 ♭II7 I",
 			"II ♭VIm7 ♭II7 I",
 		},
-		// In F minor, D♭maj7 is VI, not ♭VI.
+		// In F minor, D♭maj7 is VI, as En Harmonie counts in the minor.
 		"a degree of the minor": {
 			changesOf(false, f, harmony.ChordMinorTriad, db, maj7, g, halfDim, c, flatNine),
 			"I VI II V",
 			"I VI II V",
+		},
+		// In A minor, G7 is diatonic, and still not the dominant of the
+		// key: VII7.
+		"a dominant off the V": {
+			changesOf(false, a, harmony.ChordMinorTriad, g, dom7, a, harmony.ChordMinorTriad),
+			"I VII7 I",
+			"I VII7 I",
+		},
+		// A7alt before Dm7 in C, locrian ♭4: VI7alt, not VI7♭5.
+		"an altered dominant": {
+			changesOf(false, c, maj7, a, alt, d, min7, g, dom7, c, maj7),
+			"I VI7alt II V I",
+			"I VI7alt II V I",
 		},
 		// Someday My Prince Will Come: B♭/D D♭dim7 Cm7, a passing chord
 		// written flat, going down; and the I in first inversion.

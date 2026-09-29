@@ -55,8 +55,18 @@ do2-mi3 l'une des dixièmes les plus graves.
   réalisation hors tessiture est **annotée**, jamais refusée : c'est le
   même principe que le dex, qui constate et ne juge pas.
 - **La table de départ** est celle que Berklee appelle *low interval
-  limits*, à corriger d'après le premier chapitre du cours « Les bases
-  de l'harmonisation » d'Étienne Guéreau.
+  limits*, à corriger d'après le cours « Les bases de l'harmonisation »
+  d'Étienne Guéreau (2023), qui donne ses propres limites pour les
+  intervalles simples et composés, jusqu'aux dixièmes. Ses hauteurs
+  servent à vérifier la table, pas à la recopier : la table de gohar
+  est celle que l'oreille valide.
+- **Il y a aussi des limites dans l'aigu**, que Berklee ne donne pas :
+  « les limites inférieures peuvent être excédées dans le cas d'un
+  assombrissement intentionnel ; les limites supérieures suggèrent
+  uniquement l'usage d'une position plus adaptée ». La sixte, la seconde
+  et la quarte n'ont pas de limite supérieure. Une réalisation trop
+  haute s'annote donc comme une trop basse, avec une autre suggestion :
+  changer de position, pas éclaircir.
 
 Les octaves se comptent avec do4 pour le do du milieu et la4 = 440 Hz
 (voir `glossaire.md`).
@@ -64,8 +74,11 @@ Les octaves se comptent avec do4 pour le do du milieu et la4 = 440 Hz
 ## Le noyau des positions
 
 Les positions serrées (1-3-5-7 et ses renversements serrés) sont
-« sans intérêt » : on les fait d'instinct, et apprendre à changer de
-position, c'est justement en sortir.
+celles qu'on fait d'instinct, et apprendre à changer de position,
+c'est en sortir. Elles ne sont pas sans intérêt pour autant : un cours
+d'harmonisation les fait travailler d'abord, sur toutes les tétrades
+et toutes les fondamentales, et elles restent des positions du dex
+comme les autres.
 
 Le noyau, dans l'ordre où on l'apprend :
 
@@ -73,9 +86,12 @@ Le noyau, dans l'ordre où on l'apprend :
 2. **1-3-7-5 et 1-7-3-5**, les mêmes avec la quinte ajoutée.
 
 Les positions des accords 6 et m6 sont distinctes de celles des
-tétrades. Le II-V-I mineur se termine sans doute sur un m6 en 1-3-6-5,
-à vérifier dans le cours de Guéreau (qui inclut la quinte sur les
-accords de tonique).
+tétrades : à l'état fondamental, une tétrade en a six (la basse, puis
+les trois autres sons dans tous les ordres), un accord 6 aussi.
+
+Le II-V-I mineur se termine sur un m(maj7) ou un m6 : le cours
+introduit les deux tétrades avec lui (§13, Dm7♭5 G7♭9 Cm(maj7) et
+Dm7♭5 G7♭9 Cm6), et 1-3-6-5 est l'une de ses positions de m6.
 
 ## Les enchaînements
 
@@ -93,6 +109,12 @@ II-V-I. En do :
 Seule la basse saute. Sur une basse qui descend par quintes, la tierce
 d'un accord devient la septième du suivant, et la septième glisse d'un
 demi-ton pour devenir la tierce : la position alterne d'elle-même.
+
+Le cours de Guéreau est un **exemple** de curriculum : il part des
+positions, fait travailler chaque couple dans les douze tonalités, puis
+l'applique à un standard. gohar n'en reprend pas le contenu, qui n'est
+pas le sien : ses niveaux se construiront sur le même principe, avec
+leurs propres couples, leur propre ordre et leurs propres morceaux.
 
 gohar sait donc **dériver** les couples par le calcul, et le dex
 **retient** ceux que le joueur connaît. Le calcul dit pourquoi, le dex

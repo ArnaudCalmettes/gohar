@@ -231,6 +231,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Tierce picarde | La tonique, mineure là où on l'entend d'abord et en dernier avant la fin, majorisée sur l'accord de fin (*'Round Midnight*). Le morceau reste mineur (`Picardy`) | Une seconde moitié dans le majeur homonyme (*Chega De Saudade*, en ré, mineur et majeur à la fois) |
 | Phrase | Ce qui va d'un repos au suivant, sans longueur fixe : elle se termine quand elle se pose sur une tonique, ou quand le morceau s'arrête (`analysis.Phrase`, à ne pas confondre avec `harmony.Phrase`, la forme mélodique) | Une section de la grille |
 | Maison | Là où se pose la première phrase, d'où le morceau part (`Home`). Elle devient la tonalité du morceau quand il s'ouvre au repos et que sa première cadence y revient | La tonalité du morceau, là où s'arrête la dernière phrase (`Tune`) |
+| II-V consécutifs | Des II-V qui s'enchaînent sans se résoudre, liés par un pas d'une mesure à l'autre : ½ ton, ton, cycle des quintes (`Links`, *En Harmonie* t. 1, ch. 8 §3.3). Les dominantes s'enchaînent de même, par quintes ou par demi-tons | Un II-V rejoué, qui ne fait pas de lien |
 | Candidat | Une tonique que le morceau donne, avec ses preuves (`Candidates`) : ré mineur et ré majeur sont deux candidats | La tonalité du morceau, qui reste le verdict de `Tune` |
 | Preuve | Un événement qui fait entendre une tonique comme la référence : elle ouvre le morceau, une phrase s'y pose, le morceau s'y arrête, une cadence y revient, ou la forme d'un blues. Une par événement | Un retour sur un m7, le plus souvent un degré tonicisé par son V, et le turnaround vers le premier accord, qui ne comptent pas |
 | Septième d'espèce | Un X7 qui n'est pas une dominante : il ne prépare rien, il est la couleur de son degré. Le I7 et le IV7 du blues, le X7sus4 de *Maiden Voyage* | Une dominante, qui a le même son mais prépare un accord |
@@ -244,7 +245,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |
 | Sous-dominante secondaire | Le II d'une dominante secondaire : II-V de… | |
 | Sous-dominante chromatique | Le II d'une dominante chromatique, ♭VIm7 ou ♭VIm7♭5 | |
-| Cellule anatole | L'enchaînement I-VI-II-V, qui boucle | La forme anatole, structure de morceau (*rhythm changes*) |
+| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V fait tenir au III la place du I ; « … » quand le V évite le I promis | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
 | Cadence, cellule | Une cadence aboutit, une cellule tourne | |
 
 ## Mots proscrits

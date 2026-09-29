@@ -11,14 +11,22 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // degree alone: II, not IIm7, the quality being the tonality's. A chord that
 // borrows is written with its quality, which is what tells the reader
 // it came from elsewhere: IVm7, ♭II7, ♯IVdim7. Quality is then the
-// chord's tetrad, and zero for a diatonic chord.
+// chord's tetrad, the whole 7alt for an altered chord (VI7alt, not the
+// VI7♭5 its tetrad would say), and zero for a diatonic chord. A
+// dominant seventh on another degree than V keeps its quality, diatonic
+// as it may be: in A minor, G7 is VII7, not the dominant of the key.
 //
-// The degree counts in the tonality's own scale: in F minor, D♭maj7 is VI,
-// not ♭VI. A root outside every scale of the tonality is a degree raised or
-// lowered, lowered by preference (♭II, ♭III, ♭VI, ♭VII) but raised
-// below the fourth and the fifth (♯IV, ♯III in minor), as En Harmonie
-// writes them. A passing chord follows its bass instead: raised going
-// up (♯Idim7, ♯Vdim7), lowered going down (♭IIIdim7).
+// The degree counts in the tonality's own scale: in F minor, D♭maj7 is
+// VI, not ♭VI, as En Harmonie's tables of VI V I write it (tome 1,
+// chapter 8, "Fonctions des accords": G∆9 is the VI of B harmonic
+// minor). A root outside every scale of the tonality is a degree raised
+// or lowered, lowered by preference (♭II, ♭III, ♭VI, ♭VII) but raised
+// below the fourth and the fifth (♯IV, ♯III in minor). A passing chord
+// follows its bass instead: raised going up (♯Idim7, ♯Vdim7), lowered
+// going down (♭IIIdim7).
+//
+// Writing 7alt is a choice no source settles, open to correction by an
+// expert.
 type Degree struct {
 	Number     harmony.Degree // 1 to 7, 0 for a silence or no tonality
 	Accidental int            // -1 lowered, +1 raised
@@ -63,8 +71,13 @@ func degreeOf(ch Change, ts []harmony.Tonality, walk int) Degree {
 	// diatonic as it is: the V7sus4 is a subdominant chord, as the Bill
 	// Evans Piano Academy teaches it, and writing V for it would make
 	// it the V.
-	if !holds(ts, ch.Chord.Set()) || isSus(ch.Chord.Pattern) {
-		d.Quality = ch.Chord.Pattern.Tetrad()
+	p := ch.Chord.Pattern
+	dominant := p.HasOffset(4) && p.HasOffset(10) && d.Number != 5
+	switch {
+	case p == sevenAlt:
+		d.Quality = sevenAlt
+	case !holds(ts, ch.Chord.Set()), isSus(p), dominant:
+		d.Quality = p.Tetrad()
 	}
 	switch (int(ch.Bass) - int(ch.Chord.Root) + 12) % 12 {
 	case 3, 4:
@@ -126,7 +139,12 @@ func (d Degree) String() string {
 	return s
 }
 
+// sevenAlt is the chord of the altered mode, locrian ♭4: C7(♭5, ♭9,
+// ♭10, ♭13), its ♭4 heard as the major third.
+var sevenAlt, _ = harmony.NewChordPattern(0, 4, 6, 10, 13, 15, 20)
+
 var qualities = map[harmony.ChordPattern]string{
+	sevenAlt:                           "7alt",
 	harmony.ChordMajorTriad:            "",
 	harmony.ChordMinorTriad:            "m",
 	harmony.ChordDiminishedTriad:       "dim",

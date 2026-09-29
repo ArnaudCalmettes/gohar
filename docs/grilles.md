@@ -382,6 +382,84 @@ Another You mesures 12 à 16) se lit VI II7 II V, comme le livre. F7 est
 un « IIe degré altéré », pas le V d'un si♭ qui ne vient jamais ; le bloc
 annonce quand même si♭ au-dessus des accords.
 
+### Les II-V consécutifs
+
+Des II-V qui s'enchaînent sans se résoudre sur la tonique annoncée :
+enchaîner la sous-dominante et la dominante d'une tonalité sans en
+donner la résolution crée une rupture, et la conclusion en est d'autant
+plus attendue, un « rebond » d'une cadence à l'autre, cher au be-bop
+(*En Harmonie*, tome 1, chapitre 8 §3.3). Le livre nomme le lien par le
+pas qu'on trouve d'une mesure à l'autre entre un accord de chacun
+(`Links`) :
+
+| Pas | Exemple | Thème |
+|---|---|---|
+| ½ ton | Dm7 G7 \| E♭m7 A♭7, Dm7 G7 \| D♭m7 G♭7 | *Butch And Butch* : C♯m7 F♯7 Cm7 F7 Bm7 E7 |
+| ton | Dm7 G7 \| Em7 A7, et du V au II suivant : Dm7 G7 \| Am7 D7, Dm7 G7 \| Fm7 B♭7 | *Satin Doll* |
+| cycle des quintes | Dm7 G7 \| Cm7 F7 : Cm7 est le I que la première cadence aurait pu conclure, et le II de la suivante | *Confirmation* : Em7♭5 A7 Dm7 G7 Cm7 F7 |
+
+Les II-V se lisent sur les préparations (II→ puis son V), pas sur les
+blocs : dans *Satin Doll*, Dm7 G7 | Dm7 G7 | Em7 A7 monte d'un ton,
+quoi qu'on entende du G7 qui revient sur Dm7. Un II-V rejoué ne fait
+pas de lien mais ne rompt pas la chaîne, et un pas que le livre ne
+nomme pas n'en fait pas non plus. `analyse` écrit le pas devant le II :
+« ½ II→ », « step II→ » (un ton), « 5th II→ » (le cycle des quintes).
+
+Le II peut être celui d'une dominante chromatique, un demi-ton au-dessus
+d'elle : dans *Autumn Leaves*, Gm7 G♭7 | Fm7 E7 descend d'un ton. Le
+second maillon est détourné, E7 allant sur Am7♭5 dont il est le V, et
+Fm7 est alors, par rapport à la, un ♭VIm7 plutôt qu'un II. L'analyse
+garde « II », la lecture de la chaîne que l'oreille suit : c'est le
+rebond d'un II-V qui ne conclut pas.
+
+Les dominantes s'enchaînent de même sans leurs II, chacune V de la
+suivante : D7 G7 C7 F7, le pont des rhythm changes (*Anthropology*),
+par le cycle des quintes, ou E7 E♭7 D7 D♭7 par demi-tons, chacune
+dominante chromatique de la suivante. `analyse` écrit « 5th V→ » ou
+« ½ V→ » devant la dominante qui continue la chaîne. Un V qui va sur un
+II (G7 Cm7) ne continue pas une chaîne de dominantes : c'est le cycle
+des II-V.
+
+### Les cellules
+
+Des formules de quelques accords que les standards reprennent, et
+qu'un musicien entend d'un bloc (`Cells`). *En Harmonie* les présente
+avec les enchaînements fréquents (tome 1, chapitre 8 §3.3) :
+
+- **l'anatole**, I VI II V, « connu en France sous le nom d'"anatole" »
+  (la cellule, à ne pas confondre avec la forme anatole) « et dans les
+  pays anglo-saxons "rhythm changes" » : B♭ Gm7 Cm7 F7 dans *I Got
+  Rhythm*. Il forme « un enchaînement cyclique suivant le cycle des
+  quintes », qu'on joue là où la durée n'est pas définie, une
+  introduction ou une coda. « Rencontrée en majeur et en mineur, cette
+  progression harmonique existe sous de nombreuses formes grâce à
+  divers emprunts et substitutions » : Fm D♭maj7 Gm7♭5 C7 en fa mineur
+  harmonique, Cm Am7♭5 Dm7♭5 G7 dans *Softly, As In A Morning
+  Sunrise*, et avec des dominantes secondaires, Cmaj7 A7 Dm7 G7 ou
+  Cmaj7 A7 D7 G7 (chapitre 9) ;
+- **le III-VI-II-V-I**, « simple variante de l'anatole, fréquemment
+  rencontrée en début ou fin de morceau lorsque l'on veut jouer deux
+  fois de suite l'anatole sans pour autant rejouer le degré I. Le IIIe
+  degré est substitué au Ier » : Fmaj7 Dm7 Gm7 C7 Am7 Dm7 Gm7 C7 dans
+  *Have You Met Miss Jones*.
+
+Les règles de lecture sont les nôtres. Une cellule se lit sur les
+fondamentales, depuis la tonique que pointe le V : I (ou III), VI (sur
+la sixte majeure, ou mineure en mineur), II, V. Le premier accord est
+un accord de tonique pour l'anatole, un accord mineur pour le
+III-VI-II-V ; le VI et le II ont une tierce, de n'importe quelle
+qualité ; le dernier est une dominante. Un accord tenu plus longtemps
+compte une fois.
+
+Le livre nomme la variante avec son I, que le V promet. Une cellule
+s'entend pourtant à sa forme, que le V tienne sa promesse ou non : dans
+*Anthropology*, Fm7 B♭7 E♭7 A♭7 est un III-VI-II-V de ré♭, et A♭7 va
+sur Dm7. La cellule le note (`Resolves`), la surprise relevant de
+l'attente, et aller au III qui tient lieu du I, c'est résoudre.
+`analyse` écrit les cellules sous les toniques, « anatole ───── », avec
+des points de suspension quand le V évite le I promis :
+« III-VI-II-V… ───── ».
+
 ### Les accords parallèles
 
 Ils n'ont pas de fonction, et sont de deux sortes. **Un accord qui
@@ -432,10 +510,16 @@ ne se lit pas en crochets : son IVm7 ♭VII7 se chiffre sur la tonique
 qu'il conclut.
 
 Les règles communes : un degré diatonique s'écrit sans qualité, un
-degré emprunté avec (II, mais IVm7), et le degré se compte dans la gamme
-de la tonalité (en fa mineur, D♭maj7 est VI, pas ♭VI). Une fondamentale
-hors de la gamme est abaissée de préférence (♭II, ♭III, ♭VI, ♭VII) et
-haussée sous la quarte et la quinte (♯IV) ; un accord de passage suit
+degré emprunté avec (II, mais IVm7), sauf un accord de septième de
+dominante ailleurs que sur le V, qui garde la sienne même diatonique :
+ce n'est pas *la* dominante de la gamme (en la mineur, G7 est VII7).
+Un 7alt s'écrit 7alt, le locrien ♭4 dit en toutes lettres (VI7alt,
+pas VI7♭5). Le degré se compte dans la gamme de la tonalité (en fa
+mineur, D♭maj7 est VI, pas ♭VI), comme *En Harmonie* le fait dans ses
+tableaux VI V I (tome 1, chapitre 8, « Fonctions des accords » : G∆9
+est le VI de si mineur harmonique). Une fondamentale hors de la gamme
+est abaissée de préférence (♭II, ♭III, ♭VI, ♭VII) et haussée sous la
+quarte et la quinte (♯IV) ; un accord de passage suit
 sa basse ; un sus4 garde sa qualité, diatonique ou non (V7sus4). Les
 renversements s'écrivent I/3, I/5. Un V seul, un diminué
 seul et un accord de passage se chiffrent sur la tonalité du passage,
@@ -443,6 +527,9 @@ avec leur qualité : VI7 pour la dominante secondaire de II, écrite
 aussi V7/II (gohar garde la relation, l'écriture est un choix
 d'affichage). Une dominante chromatique se chiffre par son degré (♭II7
 vers le I, ♯IV7 ou ♭III7 ailleurs).
+
+Écrire 7alt est un choix fait faute de source qui le tranche, à
+corriger par un expert.
 
 ## La tonique pressentie
 

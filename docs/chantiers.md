@@ -264,10 +264,24 @@ La suite, dans l'ordre :
       surprise), le V seul et ce qu'il fait attendre (la surprise), le
       ♭VIImaj7-I et le ♭VIIm7-I (les modes de la grille), IV7-I7 (le
       blues).
-- [ ] les relations entre blocs : marches de II-V, cycle des quartes.
+- [x] les II-V consécutifs (`Links`) : ½ ton, ton, cycle des quintes,
+  d'après *En Harmonie* (tome 1, chapitre 8 §3.3), et les chaînes de
+  dominantes (par quintes ou par demi-tons). Les relations entre blocs
+  sont faites.
+- [ ] le V qui revient sur son II (Dm7 G7 | Dm7 G7 dans *Satin Doll*)
+  est lu comme une plagale IV7 → m, et annonce ré mineur : c'est un
+  II-V rejoué. Mais la même ligne est le vamp dorien Im7 IV7 quand le
+  m7 est la tonique (Fm7 B♭7 dans *Mas Que Nada*, Gm7 C7 dans *It
+  Ain't Necessarily So*), et les accords seuls ne les séparent pas.
+  Essayé : « un V entre deux fois son II n'est pas une plagale » gagne
+  4 grilles et perd ces 2 ; exiger en plus que le V se résolve ailleurs
+  fait pire. En attente des cadences modales du tome 2 d'*En Harmonie*
+  (chapitre 2 §5.2).
 - [ ] la marche d'accords parallèles (*Stolen Moments*).
-- [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),
-      reconnues sur la ligne des degrés.
+- [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V, d'après
+  *En Harmonie* (tome 1, chapitres 8 et 9).
+- [ ] la suite du catalogue des cellules (le turnaround, l'anatole
+  réharmonisé par substitutions tritoniques, I ♭III7 ♭VI7 ♭II7).
 - [ ] la modulation « confirmée », et les seuils en données.
 - [ ] l'ouverture sur un maj7 qui n'est pas la tonique : *Only Trust
   Your Heart* s'ouvre sur Fmaj7♯11, le IV lydien de do, et l'analyse
@@ -275,7 +289,13 @@ La suite, dans l'ordre :
   tôt pour ne pas casser d'autres grilles : le ♯11 écrit dit lydien,
   pas de tonique ; ou un retour à l'ouverture ne fait un repos que si
   elle est tenue plus d'une mesure. À vérifier sur les familles quarte
-  et relatif du corpus.
+  et relatif du corpus. Sur les 1350 standards, neuf s'ouvrent sur un
+  maj7♯11 : trois l'ont pour tonique (*Jackie-ing*, *Zoltan*, *Afro
+  Centric*), trois pour IV (*Only Trust Your Heart*, *Jinrikisha*,
+  *Leaving*), trois autre chose (*Spain*, où c'est le ♭VI de si
+  mineur). Le ♯11 ne tranche donc pas. Le rythme harmonique non plus :
+  le turnaround Gm7 C7, deux temps chacun, prépare le Fmaj7♯11 d'une
+  mesure, deux fois plus long. Reste la mélodie.
 - [ ] le rythme harmonique : « posé » est relatif à la densité des
   changements. Une mesure de Fmaj7 suivie d'une mesure d'autre chose
   n'est pas posée là où les accords durent une mesure ; elle l'est
@@ -289,6 +309,12 @@ La suite, dans l'ordre :
   la carrure pèse trop : elle pose l'E♭maj7 de la mesure 4 de *Jordu*,
   alors que c'est Cm6, dès la mesure 2, qui fait référence. En
   attente : ni l'un ni l'autre ne fait mieux que le seuil actuel.
+- [x] la tonalité d'analyse au choix : `Sense` la reçoit, `analyse`
+  compte par défaut dans celle qu'il entend, `-key declared` dans
+  celle de l'app, `-key F` dans celle qu'on impose.
+- [x] le chiffrage en mineur, compté dans la gamme mineure comme le
+  fait *En Harmonie* (tome 1, chapitre 8), une septième de dominante
+  hors du V écrite avec son 7 (VII7), et le 7alt écrit 7alt.
 - [x] la tonalité du morceau par accumulation de preuves (`Candidates`),
   lues et affichées, sans décider : le comptage confirme `Tune` plus
   qu'il ne le dépasse (voir « Le verdict et ses preuves » dans
@@ -309,6 +335,45 @@ La suite, dans l'ordre :
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
 - [ ] une grille iReal comme niveau du shoot'em up.
+
+## Les sources à dépouiller
+
+Sources à consulter quand une question les touche, plutôt que de
+trancher sans source.
+
+- [x] *En Harmonie*, tome 1, chapitres 8 à 10 : Le chiffrage en
+  mineur y est tranché (chapitre 8), et le X7sus4 comme accord de
+  sous-dominante (chapitre 9, « Modifier un enchaînement »).
+- [x] *En Harmonie*, tome 1, chapitre 8 §3.3, « Les enchaînements
+  harmoniques fréquents » : les II-V consécutifs, codés (`Links`). La
+  suite du chapitre (anatole, III-VI-II-V-I, p. 116 et 117) aussi
+  (`Cells`).
+- [x] Étienne Guéreau, cours « Les bases de l'harmonisation » : relu,
+  reporté dans `voicings.md` sans en reprendre le contenu (un cours
+  payant, cité comme exemple). Ses limites d'intervalles servent à
+  vérifier la table de tessiture, à l'oreille.
+- [ ] Jacques Chailley, *40 000 ans de musique* (dans le projet) :
+  l'histoire, à citer pour la tierce picarde et ce que la doc en dit.
+- [ ] *En Harmonie*, tome 2, chapitre 5, les pédales : la quarte et
+  sixte, les X/Y sur pédale (Fmaj7/G, E♭maj7/F) traités au cas par cas,
+  le sus4 et sa fonction (§1.5, §1.6), le turnaround sur pédale (§2.5).
+- [ ] *En Harmonie*, tome 2, chapitre 2 §5 : cadences modales (le
+  ♭VIImaj7-I écarté, Dm7 G7 Am7 lu éolien), plages modales, rencontre
+  des cadences modales et tonales. La base sourcée du chantier modal.
+- [ ] *En Harmonie*, tome 2, « Analyses modales » (p. 91) : des fiches
+  de référence pour les thèmes modaux, comme celles du tome 1 pour le
+  tonal.
+- [ ] *En Harmonie*, tome 2, chapitre 6, l'accord de dominante sur
+  tonique (la double fonction de l'ionien ♭6 et de l'éolien ♮7) et
+  l'accord appoggiaturé : reconnaissance et chiffrage.
+- [ ] Jacques Siron, *La partition intérieure* : le rythme harmonique
+  et la carrure (ce qui fait qu'une harmonie est posée), les formes et
+  leurs sections (la demi-cadence en fin de section), le rapport de la
+  mélodie aux accords, le blues et ses variantes. À vérifier sur le
+  livre, d'après ce qu'on en connaît.
+- [ ] Philippe Baudoin, *Jazz mode d'emploi* : les blues que `Blues`
+  ne connaît pas encore (*Freddie Freeloader*, *Doxy*, *Watermelon
+  Man*), et les réharmonisations, pour le catalogue des cellules.
 
 ## L'audio
 
