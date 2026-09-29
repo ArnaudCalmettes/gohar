@@ -45,10 +45,13 @@ gohar/
                              des intervalles et des gammes nommées
     analysis/                identification déterministe, moteur,
                              et l'analyse d'une grille : suite
-                             d'accords (Changes), préparations et
-                             chaînes, passages, blocs et tonalités
-                             annoncées, degrés, tonique pressentie et
-                             modulations (Sensed), blues
+                             d'accords (Changes), préparations,
+                             passages, blocs et tonalités annoncées,
+                             phrases, maison et tonalité du morceau,
+                             candidats et leurs preuves, tierce
+                             picarde, plages modales, blues, degrés,
+                             tonique pressentie et modulations
+                             (Sensed)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée

@@ -11,8 +11,11 @@ type Phrase struct {
 	From, To int // its first and last changes
 
 	// Tonic is the tonic it concludes on, nil for the tail after the
-	// last conclusion: the turnaround back to the first chord.
-	Tonic []harmony.Tonality
+	// last conclusion: the turnaround back to the first chord. Arrives
+	// is the change where the tonic is reached, To being where it stops
+	// holding; -1 for the tail.
+	Tonic   []harmony.Tonality
+	Arrives int
 
 	// Rest is, for the first phrase, the tonic it opens at rest on: a
 	// tonic chord held longer than a bar, that its first cadence comes
@@ -90,17 +93,9 @@ type phrasing struct {
 }
 
 // cadenced returns the tonic a cadence within the chorus leads change i
-// to, and that cadence.
+// to, and that cadence: see [cadencedAt].
 func (ph *phrasing) cadenced(i int) ([]harmony.Tonality, *Block) {
-	n := ph.r.target[i]
-	if n < 0 || ph.blocks[n].Five > i || len(ph.blocks[n].Announced) == 0 {
-		return nil, nil
-	}
-	t := tonicAt(ph.c, ph.blocks, ph.r, i)
-	if t == nil || !sameTonic(ph.blocks[n].Announced, t) {
-		return nil, nil
-	}
-	return t, &ph.blocks[n]
+	return cadencedAt(ph.c, ph.blocks, ph.r, i)
 }
 
 // restsAt tells the tonic a phrase comes to rest on at change i, nil
@@ -115,16 +110,25 @@ func (ph *phrasing) restsAt(i int) []harmony.Tonality {
 	case tonicOf(ph.c.Chords[i]) == nil, ph.subdominant(t):
 		return nil
 	}
+	if !ph.holds(i, b) {
+		return nil
+	}
+	return t
+}
+
+// holds reports whether the tonic at change i, that block b leads to,
+// holds longer than a bar and longer than each chord of b.
+func (ph *phrasing) holds(i int, b *Block) bool {
 	h := held(ph.c, i)
 	if h <= ph.bar {
-		return nil
+		return false
 	}
 	for _, k := range []int{b.Two, b.Sus, b.Five} {
 		if k >= 0 && ph.c.Chords[k].Length >= h {
-			return nil
+			return false
 		}
 	}
-	return t
+	return true
 }
 
 // rests cuts the phrases that come to rest, from the opening on.
@@ -140,8 +144,9 @@ func (ph *phrasing) rests() {
 			}
 		}
 		if t := ph.restsAt(i); t != nil {
-			i = heldTo(ph.c, i)
-			ph.conclude(i, t, false)
+			to := heldTo(ph.c, i)
+			ph.conclude(i, to, t, false)
+			i = to
 		}
 	}
 }
@@ -157,10 +162,13 @@ func (ph *phrasing) stopsAt(i int, installed []harmony.Tonality) []harmony.Tonal
 	if above := (int(root.Bass) - int(root.Chord.Root) + 12) % 12; above == 7 {
 		root.Bass = root.Chord.Root
 	}
-	if t := tonicOf(root); t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed)) {
+	comesBack := func(t []harmony.Tonality) bool {
+		return t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed))
+	}
+	if t := tonicOf(root); comesBack(t) {
 		return t
 	}
-	if t := minorSeventhTonic(ph.c, ph.blocks, ph.r, i); t != nil && (sameTonic(t, ph.opens) || sameTonic(t, installed)) {
+	if t := minorSeventhTonic(ph.c, ph.blocks, ph.r, i); comesBack(t) {
 		return t
 	}
 	t, b := ph.cadenced(i)
@@ -186,21 +194,22 @@ func (ph *phrasing) stops() {
 	}
 	for i := len(ph.c.Chords) - 1; i >= ph.p.From; i-- {
 		if t := ph.stopsAt(i, installed); t != nil {
-			ph.conclude(i, t, true)
+			ph.conclude(i, i, t, true)
 			break
 		}
 	}
 	if ph.p.From < len(ph.c.Chords) {
-		ph.p.To = len(ph.c.Chords) - 1
+		ph.p.To, ph.p.Arrives = len(ph.c.Chords)-1, -1
 		ph.out = append(ph.out, ph.p)
 	}
 }
 
-// conclude ends the phrase being cut at change i, on tonic t.
-func (ph *phrasing) conclude(i int, t []harmony.Tonality, stops bool) {
-	ph.p.To, ph.p.Tonic, ph.p.Stops = i, t, stops
+// conclude ends the phrase being cut on tonic t, reached at change
+// arrives and held to change to.
+func (ph *phrasing) conclude(arrives, to int, t []harmony.Tonality, stops bool) {
+	ph.p.Arrives, ph.p.To, ph.p.Tonic, ph.p.Stops = arrives, to, t, stops
 	ph.out = append(ph.out, ph.p)
-	ph.p, ph.before = Phrase{From: i + 1}, t
+	ph.p, ph.before = Phrase{From: to + 1}, t
 	if ph.home == nil {
 		ph.home = t
 	}

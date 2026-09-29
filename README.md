@@ -132,13 +132,18 @@ go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
 ```
 
 And over whole playlists, where the tonality it hears differs from the
-one the app declares, grouped by how the two relate, the charts that
-lack what tells a tonality set aside:
+one the app declares, or the one checked by ear when a chart is listed
+in `keys.txt`, grouped by how the two relate, the charts that lack what
+tells a tonality set aside:
 
 ```sh
 cd charts
-go run ./cmd/corpus -aside ireal/testdata/set-aside.txt ireal/testdata/local/*.html
+go run ./cmd/corpus -aside ireal/testdata/set-aside.txt -keys ireal/testdata/keys.txt ireal/testdata/local/*.html
 ```
+
+With `-evidence`, the report also lists the charts where the tonic with
+the most evidence, the openings, rests, stops and returns that
+`analyse` shows under its heading, is not the tonality heard.
 
 ## History
 

@@ -33,9 +33,11 @@ et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
 Les fiches du livre concordent à 83 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app sur 80 % du corpus (1260
-des 1569 grilles jugées, les modales et une liste relue à la main
-mises à part), sans la lire.
+d'accord avec la tonalité déclarée par l'app, ou vérifiée à l'oreille,
+sur 82 % du corpus (1272 des 1547 grilles jugées, les modales et une
+liste relue à la main mises à part), sans la lire. Chaque tonique que
+le morceau donne est un candidat avec ses preuves, que `analyse`
+affiche : le verdict s'explique.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
 `Cooling` et `Discoverable`.
@@ -267,6 +269,34 @@ La suite, dans l'ordre :
 - [ ] le catalogue des cellules (III-VI-II-V-I, anatole, turnaround),
       reconnues sur la ligne des degrés.
 - [ ] la modulation « confirmée », et les seuils en données.
+- [ ] l'ouverture sur un maj7 qui n'est pas la tonique : *Only Trust
+  Your Heart* s'ouvre sur Fmaj7♯11, le IV lydien de do, et l'analyse
+  part de fa avant d'entendre do. Deux pistes, à ne pas trancher trop
+  tôt pour ne pas casser d'autres grilles : le ♯11 écrit dit lydien,
+  pas de tonique ; ou un retour à l'ouverture ne fait un repos que si
+  elle est tenue plus d'une mesure. À vérifier sur les familles quarte
+  et relatif du corpus.
+- [ ] le rythme harmonique : « posé » est relatif à la densité des
+  changements. Une mesure de Fmaj7 suivie d'une mesure d'autre chose
+  n'est pas posée là où les accords durent une mesure ; elle l'est
+  là où ils changent à chaque temps. Les seuils d'`held` et de la
+  modulation (« plus d'une mesure ») comptent en mesures absolues, et
+  devraient se mesurer au pas harmonique du passage.
+  Essayé : « deux fois plus long que la préparation » seul pose le
+  Fmaj7 d'une mesure de *Stella By Starlight* (mesure 13, après B♭m7
+  E♭7) et perd 12 grilles. Conjugué à la carrure (fin d'un groupe de
+  quatre depuis le début de la section), il n'en perd plus que 5, mais
+  la carrure pèse trop : elle pose l'E♭maj7 de la mesure 4 de *Jordu*,
+  alors que c'est Cm6, dès la mesure 2, qui fait référence. En
+  attente : ni l'un ni l'autre ne fait mieux que le seuil actuel.
+- [x] la tonalité du morceau par accumulation de preuves (`Candidates`),
+  lues et affichées, sans décider : le comptage confirme `Tune` plus
+  qu'il ne le dépasse (voir « Le verdict et ses preuves » dans
+  `grilles.md`). Sur des grilles seules, on ne fera guère mieux.
+- [ ] la mélodie comme preuve : ce qui sépare *In a Sentimental Mood*
+  (ré mineur) de *Lullaby Of Birdland* (la♭), au même profil de
+  preuves, et pose d'entrée sol mineur dans *It Don't Mean A Thing*.
+  Demande un format de grille qui porte la mélodie.
 - [ ] la jauge de tension, puis le direct avec l'attente et la
       surprise (voir `grilles.md`), dont le pivot diminué de Tenderly
       comme test à l'envers.

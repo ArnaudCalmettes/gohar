@@ -2,7 +2,7 @@
 // playlists and reports where the tonality it hears differs from the
 // one the app declares.
 //
-//	corpus [-aside set-aside.txt] playlist.html [more.html ...]
+//	corpus [-aside set-aside.txt] [-keys keys.txt] [-evidence] playlist.html [more.html ...]
 //
 // The analysis does not read the app's key (see docs/grilles.md): it
 // finds the tonality from the cadences. The app is often wrong, and so
@@ -12,6 +12,16 @@
 // and each chart comes with the clues that help decide: how many
 // cadences resolve, whether the tune ends on the tonic heard, whether it
 // is a blues.
+//
+// The tonality to compare with is the app's, unless the -keys file
+// gives one checked by ear, "My Lucky Star | F", in the app's spelling:
+// the app is wrong at times, and what we have checked is the data
+// worth judging against. The charts checked are counted apart.
+//
+// With -evidence, the report ends with the charts where the candidate
+// with the most evidence (see analysis.Candidates) is not the tonality
+// heard: where a proof weighs more than the others, or where the count
+// goes wrong.
 //
 // Some charts lack what tells a tonality, and are set apart rather than
 // judged: a modal tune, plages for half of it or more, or one where no
@@ -38,12 +48,19 @@ import (
 
 func main() {
 	asideFile := flag.String("aside", "", "titles to set aside, one per line, with their reason after \" | \"")
+	withEvidence := flag.Bool("evidence", false, "also list the charts where the evidence counted leads to another tonality than the one heard")
+	keysFile := flag.String("keys", "", "tonalities checked by ear, one title per line, the key after \" | \" as the app spells it (F, A-)")
 	flag.Parse()
 	if flag.NArg() < 1 {
 		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] <playlist> [more ...]")
 		os.Exit(2)
 	}
-	aside, err := readAside(*asideFile)
+	aside, err := readList(*asideFile)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+	keys, err := readList(*keysFile)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -57,13 +74,13 @@ func main() {
 		}
 		songs = append(songs, s...)
 	}
-	fmt.Print(report(songs, aside))
+	fmt.Print(report(songs, aside, keys, *withEvidence))
 }
 
-// readAside reads the titles to set aside and their reasons: "Speak No
-// Evil | modal, the chart not writing its colours". Blank lines and
-// lines starting with # are skipped.
-func readAside(path string) (map[string]string, error) {
+// readList reads a list of titles, each with a value after " | ": the
+// reason a chart is set aside, or its tonality checked by ear. Blank
+// lines and lines starting with # are skipped.
+func readList(path string) (map[string]string, error) {
 	out := map[string]string{}
 	if path == "" {
 		return out, nil
@@ -119,6 +136,12 @@ type reading struct {
 	plages                      int    // modal plages
 	modal                       bool   // a modal tune, plages for half of it
 	aside                       string // why the chart is set aside, listed
+	checked                     bool   // the tonality compared with was checked by ear
+
+	// The candidates with the most evidence, and all the candidates
+	// with their count, "Cm 9, E♭ 4" (see analysis.Candidates).
+	leaders  [][]harmony.Tonality
+	evidence string
 }
 
 // The relations between the tonality declared and the one heard, in
@@ -134,9 +157,10 @@ const (
 	unread   = "no key declared, or chords unread"
 	modal    = "set aside: modal, or no cadence resolving on a tonic"
 	listed   = "set aside: listed, with the reason"
+	checked  = "same tonality, checked by ear"
 )
 
-var order = []string{relative, fifth, fourth, parallel, other, nothing, unread, modal, listed, same}
+var order = []string{relative, fifth, fourth, parallel, other, nothing, unread, modal, listed, checked, same}
 
 func relation(r reading) string {
 	switch {
@@ -153,6 +177,8 @@ func relation(r reading) string {
 	dm, hm := minor(r.declared), minor(r.heard)
 	up := (int(h) - int(d) + 12) % 12
 	switch {
+	case up == 0 && dm == hm && r.checked:
+		return checked
 	case up == 0 && dm == hm:
 		return same
 	case up == 0:
@@ -171,8 +197,11 @@ func minor(ts []harmony.Tonality) bool {
 	return analysis.ModesOf(ts[:1]) == analysis.Minor
 }
 
-func analyse(s ireal.Song, aside map[string]string) reading {
+func analyse(s ireal.Song, aside, keys map[string]string) reading {
 	r := reading{title: s.Title, aside: aside[strings.TrimSpace(s.Title)]}
+	if key, ok := keys[strings.TrimSpace(s.Title)]; ok {
+		s.Key, r.checked = key, true
+	}
 	if d, ok := s.DeclaredTonalities(); ok {
 		r.declared = d
 	}
@@ -189,6 +218,15 @@ func analyse(s ireal.Song, aside map[string]string) reading {
 		}
 	}
 	r.heard = analysis.Tune(changes, phrases)
+	var counts []string
+	cands := analysis.Candidates(changes, blocks, phrases)
+	for _, cd := range cands {
+		if len(cd.Evidence) == len(cands[0].Evidence) {
+			r.leaders = append(r.leaders, cd.Tonic)
+		}
+		counts = append(counts, fmt.Sprintf("%s %d", name(cd.Tonic), len(cd.Evidence)))
+	}
+	r.evidence = strings.Join(counts, ", ")
 	r.picardy = analysis.Picardy(changes, phrases)
 	_, r.blues = analysis.Blues(changes)
 	plages := analysis.Modal(changes, blocks)
@@ -204,10 +242,10 @@ func analyse(s ireal.Song, aside map[string]string) reading {
 	return r
 }
 
-func report(songs []ireal.Song, aside map[string]string) string {
+func report(songs []ireal.Song, aside, keys map[string]string, withEvidence bool) string {
 	groups := map[string][]reading{}
 	for _, s := range songs {
-		r := analyse(s, aside)
+		r := analyse(s, aside, keys)
 		rel := relation(r)
 		groups[rel] = append(groups[rel], r)
 	}
@@ -219,7 +257,7 @@ func report(songs []ireal.Song, aside map[string]string) string {
 	}
 	for _, rel := range order {
 		rs := groups[rel]
-		if rel == same || len(rs) == 0 {
+		if rel == same || rel == checked || len(rs) == 0 {
 			continue
 		}
 		slices.SortFunc(rs, func(a, b reading) int { return strings.Compare(a.title, b.title) })
@@ -229,7 +267,53 @@ func report(songs []ireal.Song, aside map[string]string) string {
 			fmt.Fprintf(&b, "  %s %s %s %s\n", pad(cut(r.title, 44), 44), pad(name(r.declared), 9), pad(name(r.heard), 9), clues(r))
 		}
 	}
+	if withEvidence {
+		b.WriteString(elsewhere(groups))
+	}
 	return b.String()
+}
+
+// elsewhere lists the charts judged where the evidence gathered does
+// not lead to the tonality heard: the candidate with the most evidence,
+// or those tied for it, is another. Either a proof is more decisive than
+// the others there, or the count is wrong: the charts to look at before
+// the count decides anything. How often each agrees with the tonality
+// compared with comes first.
+func elsewhere(groups map[string][]reading) string {
+	var rs []reading
+	heardAgrees, leaderAgrees, judged := 0, 0, 0
+	for rel, g := range groups {
+		if rel == modal || rel == listed {
+			continue
+		}
+		for _, r := range g {
+			judged++
+			if r.declared != nil && sameTonality(r.heard, r.declared) {
+				heardAgrees++
+			}
+			if r.declared != nil && len(r.leaders) == 1 && sameTonality(r.leaders[0], r.declared) {
+				leaderAgrees++
+			}
+			if !slices.ContainsFunc(r.leaders, func(t []harmony.Tonality) bool { return sameTonality(t, r.heard) }) {
+				rs = append(rs, r)
+			}
+		}
+	}
+	slices.SortFunc(rs, func(a, b reading) int { return strings.Compare(a.title, b.title) })
+	var b strings.Builder
+	fmt.Fprintf(&b, "\nthe evidence counted: of %d charts judged, %d agree with the tonality heard, %d with the most evidence, ties excluded\n", judged, heardAgrees, leaderAgrees)
+	fmt.Fprintf(&b, "\nthe evidence leads elsewhere (%d)\n\n", len(rs))
+	fmt.Fprintf(&b, "  %s %s %s %s\n", pad("chart", 44), pad("declared", 9), pad("heard", 9), "evidence")
+	for _, r := range rs {
+		fmt.Fprintf(&b, "  %s %s %s %s\n", pad(cut(r.title, 44), 44), pad(name(r.declared), 9), pad(name(r.heard), 9), r.evidence)
+	}
+	return b.String()
+}
+
+// sameTonality reports whether two sets of tonalities name the same
+// tonic in the same mode, as name writes them.
+func sameTonality(a, b []harmony.Tonality) bool {
+	return a != nil && b != nil && name(a) == name(b)
 }
 
 // clues lists what helps tell whether the app or the analysis is
@@ -241,6 +325,9 @@ func clues(r reading) string {
 	var out []string
 	if r.aside != "" {
 		out = append(out, r.aside)
+	}
+	if r.checked {
+		out = append(out, "checked by ear")
 	}
 	out = append(out, fmt.Sprintf("%d cadences", r.cadences))
 	if r.heard != nil && !r.endsOnTonic {

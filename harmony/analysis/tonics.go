@@ -88,6 +88,21 @@ func tonicAt(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	return minorSeventhTonic(c, blocks, r, i)
 }
 
+// cadencedAt returns the tonic a cadence within the chorus leads change
+// i to, and that cadence; nil when none does. A turnaround across the
+// loop leads nowhere: going round again is no new arrival.
+func cadencedAt(c Changes, blocks []Block, r roles, i int) ([]harmony.Tonality, *Block) {
+	n := r.target[i]
+	if n < 0 || blocks[n].Five > i || len(blocks[n].Announced) == 0 {
+		return nil, nil
+	}
+	t := tonicAt(c, blocks, r, i)
+	if t == nil || !sameTonic(blocks[n].Announced, t) {
+		return nil, nil
+	}
+	return t, &blocks[n]
+}
+
 // opensOn returns the tonic the sequence opens on, the one a phrase can
 // come back to, nil when the first chord cannot be a tonic. A m7 opens
 // on a tonic when a minor cadence resolves on that chord somewhere in

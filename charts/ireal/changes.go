@@ -19,10 +19,10 @@ import (
 // the caller decides whether to report it.
 func (t Timeline) Changes() (analysis.Changes, error) {
 	c := analysis.Changes{
-		Chords: make([]analysis.Change, len(t.Spans)),
-		Loops:  true,
-		Coda:   t.Coda,
-		Bars:   t.Bars,
+		Chords:   make([]analysis.Change, len(t.Spans)),
+		Loops:    true,
+		Coda:     t.Coda,
+		Bars:     t.Bars,
 	}
 	var errs []error
 	for i, s := range t.Spans {

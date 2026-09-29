@@ -93,8 +93,8 @@ Birdland* part de fa mineur et s'arrête sur A♭maj7, avant que Gm7♭5 C7
 ne ramène à Fm : il est en la♭. *All The Things You Are* n'est tranché
 que par son dernier A♭maj7. Une tonique déjà installée, celle de
 l'ouverture, du repos précédent ou de la première cadence, revient sans
-cadence et dans toute position, la quarte et sixte comprise (le D6
-final de *Chega De Saudade*, le E♭6 de *'Round Midnight*, le B♭maj7/F
+cadence et dans toute position, la quarte et sixte comprise (le E♭6
+final de *'Round Midnight*, le D6 de *Chega De Saudade*, le B♭maj7/F
 d'avant G7 Cm7 F7 dans *Someday My Prince Will Come*). Une autre
 demande un II-V-I ou une plagale : un V seul ne fait que traverser
 (*Yesterdays* passe par B♭maj7 dans son cycle de dominantes, et reste
@@ -109,7 +109,9 @@ partir, et il y reste où qu'il s'arrête, sauf s'il s'arrête sur la même
 tonique : *In a Sentimental Mood* reste en ré mineur bien qu'il conclue
 par Gm7 C7♭9 Fmaj7, dans son relatif majeur, ce que dit aussi la
 tradition ; *Chega De Saudade* s'ouvre sur ré mineur et s'arrête sur D6,
-en ré majeur.
+et l'analyse lit ré majeur : c'est là qu'il s'arrête, mais le morceau
+est en ré, autant mineur que majeur, un cinquante-cinquante que rien
+n'oblige à trancher.
 
 Quand la maison et la fin diffèrent, `analyse` donne les deux : *Fly Me
 To The Moon* part de la mineur et s'arrête en do, *Lullaby Of Birdland*
@@ -123,14 +125,68 @@ l'entend d'abord et là où on l'entend en dernier avant la fin, et
 majeure sur l'accord final. Le morceau reste mineur, et l'analyse la
 signale (`Picardy`). *'Round Midnight* clôt son deuxième A sur E♭6,
 puis son dernier A repart sur E♭m : tierce picarde. *Chega De Saudade*
-tient ré majeur toute sa seconde moitié : il est en ré majeur. De même
-*I Love Paris* et *Black And Tan Fantasy*, dont la seconde partie est
-en majeur. Un morceau qui finit sur sa propre tonique garde le mode où
-il finit, même s'il s'est ouvert au repos dans l'autre.
+tient ré majeur toute sa seconde moitié : pas une tierce picarde, un
+morceau autant majeur que mineur. De même *I Love Paris* et *Black And
+Tan Fantasy*, dont la seconde partie est en majeur. Un morceau qui
+finit sur sa propre tonique garde le mode où il finit, même s'il s'est
+ouvert au repos dans l'autre.
+
+**Le verdict et ses preuves.** La tonalité d'un morceau n'est pas un
+fait mais un verdict, et chaque tonique que le morceau donne est un
+**candidat** qui accumule des **preuves** (`Candidates`) : il ouvre le
+morceau, une phrase s'y pose, le morceau s'y arrête, une cadence y
+revient ; un blues a la sienne, sa forme. Une preuve par événement :
+une cadence qui pose une phrase est un repos, pas un repos et un
+retour, et une tonique tenue huit mesures est un seul événement. Le
+turnaround qui ramène au premier accord ne compte pas, ni une cadence
+vers un m7, le
+plus souvent un degré tonicisé par son V (A7 Dm7 en do, le V de II).
+La tonalité pressentie du morceau à un instant est celle qui a le plus
+de preuves à cet instant. `analyse` affiche les candidats sous
+l'en-tête (« Cm 6 : stops, 5 returns ») : le verdict s'explique.
+
+Sur les 1547 grilles jugées du corpus, voici ce que vaut chaque façon
+de classer les candidats (le premier est-il la tonalité de
+référence ?) :
+
+| Classement | D'accord | Égalités |
+|---|---|---|
+| retours seuls | 570 | 117 |
+| ouvertures seules | 1073 | 209 |
+| repos seuls | 1114 | 203 |
+| toutes les preuves à égalité | 1210 | 109 |
+| ouvertures, repos et fins, puis retours | 1253 | 25 |
+| la fin, puis ouverture, repos, retours | 1257 | 2 |
+| `Tune` | 1272 (82 %) | |
+
+Les retours désignent les degrés tonicisés plus souvent que la tonique
+(le VI de *Georgia On My Mind* y revient huit fois) ; les repos sont le
+meilleur témoin pris seul, mais redisent surtout l'ouverture et la
+fin ; la fin en tête fait le meilleur classement, et c'est ce que fait
+`Tune`, corrigé par l'ouverture au repos. Le comptage confirme donc la
+règle plus qu'il ne la dépasse, et `Tune` reste le verdict.
+
+**Le plafond des grilles seules.** *In a Sentimental Mood* et *Lullaby
+Of Birdland* ont le même profil de preuves, une tonique mineure posée
+d'entrée et reposée souvent, une fin sur le relatif majeur, et des
+verdicts opposés : ré mineur pour le premier, la♭ pour le second. Rien
+dans les accords ne les sépare : c'est la mélodie qui tranche, comme
+elle pose d'entrée 1 3 5 de sol mineur dans *It Don't Mean A Thing*.
+Sur des grilles seules, on ne fera guère mieux ; la mélodie sera une
+preuve de plus, quand un format la portera.
+
+**Ce qui est posé** dépend du rythme harmonique : une mesure de Fmaj7
+suivie d'une mesure d'autre chose n'est pas posée là où les accords
+durent une mesure. On a essayé de mesurer « posé » à la préparation
+(deux fois plus long qu'elle) et à la carrure (la fin d'un groupe de
+quatre mesures) : la carrure pèse trop, elle pose l'E♭maj7 de la
+mesure 4 de *Jordu*, qui fait de do mineur sa référence dès la mesure
+2 et y revient sans cesse. Le seuil reste « plus d'une mesure et plus
+long que sa préparation ».
 
 **L'armure n'est pas lue.** C'est un attribut de la partition écrite,
 utile pour ne pas écrire des altérations partout, et au mieux le plus
-faible des indices d'une tonalité. Le livre la recommande à l'apprenant
+faible des indices d'une tonalité. *En Harmonie* la recommande à l'apprenant
 qui se creuse la tête sur une partition ; pour un analyste qui ne se
 fonde que sur ses propres relevés, elle n'existe pas. « Tu ne suivras
 pas bêtement les indications du Real Book. » Les fiches du livre se
@@ -655,7 +711,7 @@ fins.
 | My Lucky Star | le II tonicisé quatre mesures, sans modulation |
 | Softly, Summertime | la tonique mineure écrite m7 |
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
-| Chega De Saudade | le majeur homonyme installé pour de bon : une modulation, le morceau est en ré |
+| Chega De Saudade | le majeur homonyme installé pour de bon : pas une tierce picarde ; le morceau est en ré, mineur et majeur à la fois, mis à part du corpus |
 | Stolen Moments | la marche d'accords parallèles |
 | So What, Maiden Voyage | la plage modale reconnue, son mode laissé à la grille qui ne le dit pas |
 | Sonnymoon for Two, Chasin' the Trane, Blues For Alice | le blues reconnu à sa forme |
@@ -669,6 +725,15 @@ des indices pour trancher : le nombre de cadences résolues sur une
 tonique, la fin sur la tonique entendue, le blues, la tierce picarde,
 les plages modales, la grille de jeu vidéo.
 
+La tonalité de référence est celle de l'app, sauf pour les grilles
+d'une liste **vérifiée à l'oreille**, `charts/ireal/testdata/keys.txt`
+(`My Lucky Star | F`, dans l'orthographe de l'app, `F-` pour fa
+mineur) : l'app se trompe parfois, et ce qu'on a vérifié est la donnée
+qui vaut. Le rapport compte ces grilles à part. Une erreur courante
+vient de l'armure : sol mineur et si♭ majeur s'écrivent tous deux avec
+deux bémols à la clef, et *It Don't Mean A Thing*, que la mélodie pose
+d'entrée sur 1 3 5 de sol mineur, est déclaré en si♭.
+
 Les grilles auxquelles il manque ce qui dit une tonalité sont **mises à
 part**, pas jugées : les morceaux modaux et ceux où aucune cadence ne
 se résout sur une tonique, que le rapport reconnaît, et une liste
@@ -676,16 +741,22 @@ relue à la main, `charts/ireal/testdata/set-aside.txt`, avec la raison
 de chaque titre : les thèmes modaux à accords courts dont la grille
 n'écrit pas les couleurs (*Speak No Evil*, *Infant Eyes*, *Nefertiti*,
 *Afro Blue*), et les blues d'une forme que `Blues` ne connaît pas
-(*Freddie Freeloader*, *Doxy*, *Watermelon Man*), et les thèmes que
-ni l'un ni l'autre ne connaissons, sans rien pour vérifier l'analyse.
+(*Freddie Freeloader*, *Doxy*, *Watermelon Man*), un morceau que rien
+n'oblige à trancher (*Chega De Saudade*, en ré, mineur et majeur à la
+fois), et les thèmes que ni l'un ni l'autre ne connaissons, sans rien
+pour vérifier l'analyse.
 On résiste à la tentation de gérer des grilles auxquelles il manque
 l'information : on travaille sur de vraies données, et cette liste est
 celle des grilles à réécrire dans un format qui porte l'information.
 
-Sur les 1678 grilles des deux playlists, 1569 sont jugées, et les deux
-tombent d'accord pour 1269 (81 %), l'app se trompant parfois (Chega De
-Saudade, déclaré en ré mineur). Les écarts ne sont pas tous des erreurs
-de l'analyse, et leurs familles pointent les questions ouvertes.
+Sur les 1678 grilles des deux playlists, 1547 sont jugées, et
+l'analyse tombe d'accord pour 1272 (82 %) avec la tonalité de
+référence, celle de l'app ou celle vérifiée à l'oreille. Les écarts ne
+sont pas tous des erreurs de l'analyse : sur les deux grilles vérifiées,
+c'est l'app qui se trompait. Leurs familles pointent les questions
+ouvertes. Avec `-evidence`, le rapport liste en plus les grilles où le
+candidat qui a le plus de preuves n'est pas la tonalité entendue (voir
+« Le verdict et ses preuves »).
 
 ## Hors périmètre
 

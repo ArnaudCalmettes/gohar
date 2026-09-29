@@ -1,0 +1,6 @@
+# Tonalities checked by ear, where the app's key is wrong or absent.
+# One title per line, as the app's playlists write it, then " | " and
+# the key as the app spells it: F for F major, A- for A minor. The
+# corpus report compares with these before the app's.
+My Lucky Star | F
+It Don't Mean A Thing | G-

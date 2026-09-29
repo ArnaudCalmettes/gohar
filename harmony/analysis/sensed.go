@@ -110,12 +110,12 @@ type hearing struct {
 	first  bool // the first hearing
 	s      Sensed
 
-	// Where the first phrase opens at rest and where it concludes, -1
-	// when it does not, and the home it gives.
-	rest, settle int
-	home         []harmony.Tonality
-	restTonic    []harmony.Tonality
-	settleTonic  []harmony.Tonality
+	// The first phrase, which may open at rest, the first one that
+	// concludes before the tune stops, nil when none does, and the home
+	// they give (see [Home]).
+	opens     Phrase
+	concludes *Phrase
+	home      []harmony.Tonality
 
 	// What the local tonic has gathered toward becoming the ground.
 	local struct {
@@ -127,13 +127,13 @@ type hearing struct {
 }
 
 func newHearing(c Changes, blocks []Block, phrases []Phrase) *hearing {
-	h := &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), bar: barOf(c), rest: -1, settle: -1}
+	h := &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), bar: barOf(c), opens: Phrase{From: -1}}
 	h.home = Home(c, phrases)
-	if first, _ := concluding(phrases); first != nil && !first.Stops {
-		h.settle, h.settleTonic = first.To, first.Tonic
+	if len(phrases) > 0 {
+		h.opens = phrases[0]
 	}
-	if len(phrases) > 0 && phrases[0].Rest != nil {
-		h.rest, h.restTonic = phrases[0].From, phrases[0].Rest
+	if first, _ := concluding(phrases); first != nil && !first.Stops {
+		h.concludes = first
 	}
 	return h
 }
@@ -167,21 +167,18 @@ func (h *hearing) pass(seed Sensed, first bool) []Sensed {
 	return out
 }
 
-// homeAt installs home where the first phrase gives it: at the opening
-// when it opens at rest, then where it concludes, when it concludes at
-// home. Just Friends opens at rest on Cmaj7, and concludes on its home,
-// Gmaj7.
+// homeAt installs home where the first phrases give it: at the opening
+// when the tune opens at rest, In a Sentimental Mood on Dm; else where
+// the first phrase concludes, when it concludes at home: Just Friends,
+// which opens on Cmaj7, its IV, on Gmaj7.
 func (h *hearing) homeAt(i int) {
 	switch {
-	case i == h.rest:
-		h.s.Start, h.s.Ground = h.restTonic, h.restTonic
-	case i == h.settle && sameTonic(h.settleTonic, h.home):
+	case i == h.opens.From && h.opens.Rest != nil:
+		h.s.Start, h.s.Ground = h.opens.Rest, h.opens.Rest
+	case h.concludes != nil && i == h.concludes.To && sameTonic(h.concludes.Tonic, h.home):
 		h.s.Start, h.s.Local = h.home, nil
 		if !sameTonic(h.s.Ground, h.home) {
-			h.s.Ground, h.s.Since = h.home, i
-			if n := h.r.target[i]; n >= 0 {
-				h.s.Since = firstOf(h.blocks[n])
-			}
+			h.s.Ground, h.s.Since = h.home, h.since(i)
 		}
 	}
 }
@@ -195,10 +192,16 @@ func (h *hearing) returns(i int) {
 		!sameTonic(t, s.Start) || sameTonic(s.Ground, s.Start) {
 		return
 	}
-	s.Ground, s.Since, s.Local = s.Start, i, nil
+	s.Ground, s.Since, s.Local = s.Start, h.since(i), nil
+}
+
+// since returns where a ground reached at change i holds from: the
+// first chord of the cadence that led to it, else the change itself.
+func (h *hearing) since(i int) int {
 	if n := h.r.target[i]; n >= 0 {
-		s.Since = firstOf(h.blocks[n])
+		return firstOf(h.blocks[n])
 	}
+	return i
 }
 
 // cadence hears the cadence that resolves on change i, if any: it

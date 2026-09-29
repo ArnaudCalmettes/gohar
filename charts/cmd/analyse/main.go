@@ -140,6 +140,7 @@ func render(s ireal.Song) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
 	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
+	fmt.Fprint(&b, evidence(analysis.Candidates(changes, blocks, phrases)))
 	fmt.Fprint(&b, legend)
 	for start := 0; start < len(cells); {
 		end := start + 1
@@ -225,6 +226,33 @@ func heardIn(s ireal.Song, changes analysis.Changes, phrases []analysis.Phrase, 
 		}
 	}
 	return line + "\n"
+}
+
+// evidence lists the tonics the tune gives, with how many times each
+// is heard as the reference, and how: "Cm  6: opens, 5 returns".
+func evidence(cands []analysis.Candidate) string {
+	if len(cands) == 0 {
+		return ""
+	}
+	var b strings.Builder
+	b.WriteString("the tonics it gives, and what makes each the reference:\n")
+	for _, cd := range cands {
+		var n [analysis.Form + 1]int
+		for _, e := range cd.Evidence {
+			n[e.Proof]++
+		}
+		var proofs []string
+		for _, p := range []analysis.Proof{analysis.Form, analysis.Opens, analysis.Rests, analysis.Stops, analysis.Returns} {
+			switch {
+			case n[p] == 1:
+				proofs = append(proofs, p.String())
+			case n[p] > 1:
+				proofs = append(proofs, fmt.Sprintf("%d %s", n[p], p))
+			}
+		}
+		fmt.Fprintf(&b, "  %-6s %d: %s\n", short(flats[cd.Tonic[0].Tonic()], cd.Tonic), len(cd.Evidence), strings.Join(proofs, ", "))
+	}
+	return b.String()
 }
 
 // heard names the sensed tonic at a change when it differs from the
