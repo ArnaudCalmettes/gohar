@@ -406,7 +406,7 @@ func TestSenseBlues(t *testing.T) {
 }
 
 // The end of My Way. The first phrase lands on C, held two bars after
-// G7. After a modulation to F, F/C is a six-four over the tonic pedal,
+// G7. After a modulation to F, F/C is the IV of C over a tonic pedal,
 // not a tonic: with C it makes a plagal cadence, an amen that brings
 // home back, and heard afterwards C starts with it.
 func TestHomeOnSight(t *testing.T) {

@@ -96,7 +96,7 @@ Birdland* part de fa mineur et s'arrête sur A♭maj7, avant que Gm7♭5 C7
 ne ramène à Fm : il est en la♭. *All The Things You Are* n'est tranché
 que par son dernier A♭maj7. Une tonique déjà installée, celle de
 l'ouverture, du repos précédent ou de la première cadence, revient sans
-cadence et dans toute position, la quarte et sixte comprise (le E♭6
+cadence et dans toute position, le second renversement compris (le E♭6
 final de *'Round Midnight*, le D6 de *Chega De Saudade*, le B♭maj7/F
 d'avant G7 Cm7 F7 dans *Someday My Prince Will Come*). Une autre
 demande un II-V-I ou une plagale : un V seul ne fait que traverser
@@ -231,7 +231,10 @@ vamp. Là où le mineur est la tonique, la plagale reste : Fm7 B♭7 dans
 *Mas Que Nada* est le I IV7 dorien de fa mineur. La tonalité du
 morceau ne change pas, et la seconde écoute est aussi directe que la
 première : elle ne demande que la tonalité donnée au départ et ce qui
-a sonné.
+a sonné. *En Harmonie* met en garde dans le même sens : « une analyse
+modale peut parfois être utilisée à tort, lorsqu'il s'agit d'harmonie
+tonale », et Dm7 G7 Cmaj7 n'est pas ré dorien, sol mixolydien et do
+ionien, mais une cadence parfaite en do (tome 2, p. 40).
 
 ### Le blues
 
@@ -612,20 +615,22 @@ qui a modulé, si fréquent sur une forme AABA.
 
 Un accord de tonique est une triade, un maj7, un 6, un m6 ou un
 m(maj7), à l'état fondamental ou avec sa tierce à la basse. Avec sa
-quinte à la basse, c'est une quarte et sixte sur une pédale : dans le
-F/C C de *My Way*, le fa n'est qu'une broderie au-dessus du do. Avec
-toute autre basse, c'est la basse qui tient : le E♭maj7/F de *The Look
-Of Love* est une pédale de fa. Un m7 est presque toujours une
-sous-dominante, et on ne module pas pour s'installer en éolien. Mais
-les grilles écrivent la tonique mineure m7 bien plus souvent qu'on ne
-la joue (m6, m(maj7), m(maj9) pour adoucir la septième) : un m7 est
-donc une tonique quand une cadence mineure se résout dessus par son V
-et qu'il n'est pas lui-même le II d'un bloc. *Softly, As In A Morning
-Sunrise* est ainsi en do mineur ; le C7 Gm7 de *Honeysuckle Rose*, un
-IV7 plagal, n'en fait pas une tonique : c'est un V qui revient à son
-II. Un turnaround vers un premier accord en m7 n'en fait pas une
-tonique non plus : l'Am7 qui ouvre *Fly Me To The Moon* est un VI,
-tant que E7 n'y revient pas à la mesure 8.
+quinte à la basse, l'accord est renversé sur sa quinte, et l'analyse
+le lit pour l'instant comme un accord sur une pédale : dans le F/C C
+de *My Way*, F/C est le IV de do au-dessus d'une pédale de tonique.
+Mais le I sur lequel un V se résout reste le I, renversé ou non (voir
+les chantiers). Avec toute autre basse, c'est la basse qui tient : le
+E♭maj7/F de *The Look Of Love* est une pédale de fa. Un m7 est presque
+toujours une sous-dominante, et on ne module pas pour s'installer en
+éolien. Mais les grilles écrivent la tonique mineure m7 bien plus
+souvent qu'on ne la joue (m6, m(maj7), m(maj9) pour adoucir la
+septième) : un m7 est donc une tonique quand une cadence mineure se
+résout dessus par son V et qu'il n'est pas lui-même le II d'un bloc.
+*Softly, As In A Morning Sunrise* est ainsi en do mineur ; le C7 Gm7
+de *Honeysuckle Rose*, un IV7 plagal, n'en fait pas une tonique :
+c'est un V qui revient à son II. Un turnaround vers un premier accord
+en m7 n'en fait pas une tonique non plus : l'Am7 qui ouvre *Fly Me To
+The Moon* est un VI, tant que E7 n'y revient pas à la mesure 8.
 
 ### Ce qui l'installe
 
@@ -781,7 +786,7 @@ Des données, relues ligne à ligne comme la table des qualités iReal.
 | À deux accords | parfaite (V-I à l'état fondamental), imparfaite (un renversement), demi-cadence (…-V), rompue (V-…, V-VI par exemple) | parfaite et imparfaite ; la rompue, notée « … » sur les blocs qui ont leur II et sur les cellules ; le V-VI aussi, qu'il ait son II ou non : lu seul, Dm7 G7 Am7 est la cadence éolienne de la mineur, IVm7 ♭VII7 Im7, un bloc plagal, et c'est la tonique entendue au V, do, qui en fait un V allant sur son VI (`Reread`, voir « Une seconde écoute »). La demi-cadence, une phrase qui s'arrête sur le V, demande de reconnaître la structure du morceau |
 | II-V-I | majeur IIm7-V7-Imaj7 ; mineur harmonique IIm7♭5-V7(♭9, ♭13)-Im(maj7) ; mineur mélodique IIm7-V7(9, ♭13)-Im(maj7) ; mixte IIm7♭5-V7(9, ♭13)-Imaj7 | oui |
 | Plagales | IVmaj7-I ; IV7-I et IV7-Im (mineur mélodique) ; IVm7-I (mineur harmonique) ; IVm(maj7)-I (majeur harmonique) ; IV-IVm-I ; IV7-I7 (« bluesy ») | toutes, sauf IV7-I7 : le livre l'illustre par *Black Coffee*, où le Imaj7 « peut être modifié en I7 afin de donner une couleur "bluesy" », mais dans un blues, le IV7 et le I7 ne font pas une plagale |
-| Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (mixolydien), ♭VIIm7 (phrygien) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I. Le ♭VIImaj7 et le ♭VIIm7 ne se lisent pas sur deux accords : sans leur mode, ce sont les mouvements conjoints de n'importe quelle grille tonale (Em7 Fmaj7 en do, Dm7 Em7). Ils attendent une grille qui porte ses modes |
+| Modales ♭VII-I | ♭VII7 (éolien), ♭VIImaj7 (dorien vers Im7, mixolydien vers I7), ♭VIIm7 (phrygien), d'après le tome 2 (p. 35 et 43) ; préparées II-♭VII7-I, IV-♭VII7-I, IVm7-♭VII7-I | ♭VII7, lu comme une plagale mineure, et IVm7-♭VII7-I. Le ♭VIImaj7 et le ♭VIIm7 ne se lisent pas sur deux accords : sans leur mode, ce sont les mouvements conjoints de n'importe quelle grille tonale (Em7 Fmaj7 en do, Dm7 Em7). Ils attendent une grille qui porte ses modes |
 | Avatars du V | V7, ♭II7, VIIdim7 | oui |
 
 **Les sous-dominantes**, d'après le tableau du chapitre 9 : IIm7,
@@ -852,6 +857,7 @@ fins.
 | Morceau | Ce qu'il fixe |
 |---|---|
 | Along Came Betty | « le cul entre deux chaises » : deux tonalités à un demi-ton qui se chevauchent, des toniques tenues une seule mesure, pas de modulation ; l'analyse montre l'hésitation sans la trancher |
+| Body And Soul | ré♭ majeur, le début entendu en mi♭ mineur : *En Harmonie* le nomme mi♭ dorien, « la sensation de Mi♭ mineur » l'emportant au début (tome 2), et l'analyse l'entend partir de mi♭ mineur |
 | Giant Steps | trois centres, mais des tonicisations de moins d'une seconde à ce tempo : pas de modulation |
 | Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
 | Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur où se pose la première phrase |
@@ -860,8 +866,8 @@ fins.
 | Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
 | In a Sentimental Mood, Blue Skies | la maison installée avant de partir, et ce qui la distingue d'une simple ouverture |
 | Yesterdays, Virgo, Unforgettable | une tonique traversée par un V seul ; le IV où la grille s'arrête avant le turnaround |
-| Someday My Prince Will Come | la tonique installée qui revient en quarte et sixte |
-| My Way | la quarte et sixte F/C, et le retour par une plagale |
+| Someday My Prince Will Come | la tonique installée qui revient renversée sur sa quinte |
+| My Way | F/C, le IV sur pédale de tonique, et le retour par une plagale |
 | Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; Fly Me part de la mineur et s'arrête en do |
 | My Lucky Star | le II tonicisé quatre mesures, sans modulation |
 | Softly, Summertime | la tonique mineure écrite m7 |

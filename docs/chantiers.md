@@ -126,6 +126,24 @@ connaît.
       majeur harmonique (ionien ♭6) portent `Tonic | Dominant` : ce sont
       aussi des avatars de dominante sur pédale de tonique. Pas de test
       qui la verrouille d'ici là.
+      Le livre donne au Ier degré du majeur double harmonique (ionien
+      ♭2 ♭6) le même double emploi, « Xmaj7 ou ♭II7/I », la ♯6 entendue
+      comme une septième mineure : il porterait aussi `Tonic |
+      Dominant`, là où le catalogue ne lui donne que `Tonic`.
+- [ ] nommer les dix tétracordes d'*En Harmonie* (tome 2,
+      « Récapitulatif des modes ») plutôt que cinq : diminué `1 2 1`
+      (quarte diminuée, mineur mélodique), lydien ♯2 `3 1 2` et mineur
+      ♯4 `2 1 3` (quarte augmentée, mineur harmonique), phrygien ♮3
+      `1 1 3` et majeur ♯2 `3 1 1` (quarte juste, majeur double
+      harmonique). La règle du glossaire (« seuls cinq ont un nom »)
+      tombe : le nom vient de la source. Touche `naming` et ses deux
+      registres, le glossaire et le jeu des tétracordes.
+- [ ] le IIIe degré du majeur double harmonique (phrygien ♭4 𝄫7) n'a
+      pas de tétrade, mais le livre lui donne des extensions, ♭9, ♭11,
+      ♭13, que le catalogue n'a pas : il n'en donne qu'au VIIe.
+- [ ] fixer en test les paires du rétrograde inversé que donne le
+      livre pour les 35 modes : elles sont toutes celles de
+      `ScalePattern.Mirror`, et le livre en fait l'oracle.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
@@ -262,6 +280,38 @@ La suite, dans l'ordre :
       donnant la ♭2 (son degré caractéristique) et le B7 posant mi comme
       tonique. L'analyse entend do, sur les arrêts et les retours à
       Cmaj7.
+      Le livre en pose les repères (tome 2, chapitre 2 §5) : « la
+      cadence modale a pour but d'installer la couleur d'un mode, alors
+      que la cadence tonale va installer ou confirmer une tonalité », et
+      une plage modale est un passage où « aucun mouvement harmonique
+      n'est rencontré », de longueur libre (*So What*, *Flamenco
+      Sketches*). D'autres cas à regarder : la modulation parallèle,
+      qui change de mode sans changer de tonique (*On Green Dolphin
+      Street*, E♭maj7 E♭m7 F7/E♭ Emaj7/E♭), et l'ostinato dorien de
+      l'introduction de *Stolen Moments* (Cm7 Dm7/C E♭maj7/C sur une
+      pédale de do).
+- [ ] les cadences modales du tableau du livre (tome 2, p. 43), à deux
+      accords, II-I et VII-I pour chaque mode, en do : D7 Cmaj7 et Bm7
+      Cmaj7 (lydien), D♭maj7 Cm7 et B♭m7 Cm7 (phrygien), Dm7 Cm7 et
+      B♭maj7 Cm7 (dorien), Dm7 C7 et B♭maj7 C7 (mixolydien), Dm7♭5 Cm7
+      et B♭7 Cm7 (éolien). Aujourd'hui seul le ♭VII7-I se lit, comme
+      une plagale. Le Fmaj7 Em7 de *Nardis* est le ♭IImaj7-Im7
+      phrygien. Une cadence modale « doit obligatoirement faire
+      entendre les DCN et DCA du mode », ce que les deux accords font
+      d'eux-mêmes (le fa♯ de D7 sur Cmaj7). Reste à savoir quand deux
+      accords sont une cadence modale plutôt qu'un mouvement conjoint
+      de grille tonale (Dm7 Cm7 dans un II-V de si♭).
+- [ ] la cadence modale de do éolien, ♭VImaj7 ♭VII7 Imaj7, qui monte
+      depuis le ♭VI (tome 2, p. 36), dite aussi « cadence Mario », par
+      la fanfare de fin de niveau des jeux *Super Mario* : à reconnaître
+      comme telle. Le ♭VII7-I seul, avec ou sans son IVm7, reste lu
+      comme une plagale mineure déguisée (« IV→ »). Tranché : les deux
+      lectures existent, et c'est le ♭VImaj7 qui fait la cadence
+      modale.
+- [ ] le IIm7♭5 → I : dans *I'm Old Fashioned*, Gm7♭5 Fmaj7 « peut
+      être perçu comme une cadence plagale mineure, cet accord se
+      confondant avec un B♭m6 (IVm) » (tome 2, p. 34). Vérifier ce que
+      les préparations en font.
 - [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
       manque : la demi-cadence (la structure), le ♭VIImaj7-I et le
       ♭VIIm7-I (les modes de la grille). Le V seul, sans II, qui va
@@ -309,6 +359,30 @@ La suite, dans l'ordre :
   attendant mieux. Au passage, un accord majeur n'est plus un II : Em7
   A7 Dmaj7 G7 est un II-V-I de ré (327 fausses cellules en moins sur
   le corpus).
+- [ ] *Peace* (Horace Silver) : le livre lui donne un « centre tonal
+  autour de Si♭ », l'analyse entend ré♭. Les autres fiches du tome 2
+  concordent (*Body And Soul* compris, voir « Les autres cas tranchés »
+  dans `grilles.md`), et *Fall*, sans centre tonal, est écarté.
+- [ ] les pédales, à reconnaître et à afficher comme le livre les note
+  (« B♭ ped. ») : une même basse sous des accords de fondamentales
+  différentes, de tonique, de dominante ou double, générale ou
+  passagère. *En Harmonie* analyse « toujours en deux temps : on
+  considère d'abord le type de pédale, puis les accords présents », la
+  basse étant alors « une note étrangère » (tome 2, chapitre 5 §1.6).
+  Les accords se lisent déjà sur leur fondamentale, et leur fonction
+  est préservée sur la pédale (le B13/B♭ d'*I Fall In Love Too
+  Easily* est une dominante chromatique, l'anatole d'*Emily* reste une
+  anatole) : reste à nommer la pédale elle-même.
+- [ ] le I renversé sur sa quinte sur lequel un V se résout reste le I
+  (tranché, d'après *En Harmonie*) : le livre prolonge la pédale de
+  dominante sur l'accord de tonique « entendu renversé sur sa 5te »,
+  Fm9/B♭ B♭7 E♭maj9/B♭ (tome 2, §1.5), Dm9/G G7 C6/9/G dans *My
+  Romance*. L'analyse n'y entend pas encore de tonique. Essayé :
+  admettre tout accord renversé sur sa quinte comme tonique gagne 8
+  grilles du corpus (*The Look Of Love*, *Sail Away*, *Re: Person I
+  Knew*…) et en perd 6 : un IVm sur pédale de tonique devient une
+  tonique (A♭m/E♭ dans *I See Your Face Before Me*). Il faut s'en
+  tenir au I sur lequel le V se résout.
 - [ ] la modulation « confirmée », et les seuils en données.
 - [ ] l'ouverture sur un maj7 qui n'est pas la tonique : *Only Trust
   Your Heart* s'ouvre sur Fmaj7♯11, le IV lydien de do, et l'analyse
@@ -323,6 +397,10 @@ La suite, dans l'ordre :
   mineur). Le ♯11 ne tranche donc pas. Le rythme harmonique non plus :
   le turnaround Gm7 C7, deux temps chacun, prépare le Fmaj7♯11 d'une
   mesure, deux fois plus long. Reste la mélodie.
+  Le livre le confirme : le lydien « peut tout à fait être utilisé sur
+  l'accord du Ier degré » et « est fréquemment utilisé pour conclure un
+  thème » (tome 2, p. 33 et 42 : *Make Someone Happy*, *Night and
+  Day*).
 - [ ] le rythme harmonique : « posé » est relatif à la densité des
   changements. Une mesure de Fmaj7 suivie d'une mesure d'autre chose
   n'est pas posée là où les accords durent une mesure ; elle l'est
@@ -353,6 +431,9 @@ La suite, dans l'ordre :
 - [ ] la jauge de tension, puis le direct avec l'attente et la
       surprise (voir `grilles.md`), dont le pivot diminué de Tenderly
       comme test à l'envers.
+      La pédale de dominante en est une source : elle « crée une
+      tension qui ne trouvera sa résolution » qu'au retour de la
+      tonique (*En Harmonie*, tome 2, chapitre 5).
 - [ ] la grille annotée dans une fenêtre Ebitengine (police de Real
       Book, chiffrages en indices et exposants, réglable), une fois le
       cœur validé.
@@ -381,15 +462,26 @@ trancher sans source.
   vérifier la table de tessiture, à l'oreille.
 - [ ] Jacques Chailley, *40 000 ans de musique* (dans le projet) :
   l'histoire, à citer pour la tierce picarde et ce que la doc en dit.
-- [ ] *En Harmonie*, tome 2, chapitre 5, les pédales : la quarte et
-  sixte, les X/Y sur pédale (Fmaj7/G, E♭maj7/F) traités au cas par cas,
-  le sus4 et sa fonction (§1.5, §1.6), le turnaround sur pédale (§2.5).
-- [ ] *En Harmonie*, tome 2, chapitre 2 §5 : cadences modales (le
-  ♭VIImaj7-I écarté, Dm7 G7 Am7 lu éolien), plages modales, rencontre
-  des cadences modales et tonales. La base sourcée du chantier modal.
-- [ ] *En Harmonie*, tome 2, « Analyses modales » (p. 91) : des fiches
-  de référence pour les thèmes modaux, comme celles du tome 1 pour le
-  tonal.
+- [x] *En Harmonie*, tome 2, chapitre 5, « Les pédales » jusqu'à
+  l'ostinato : la pédale simple et double, de tonique et de dominante,
+  générale ou passagère, sa notation (« X ped. » plutôt que la barre
+  oblique), le sus4 comme sous-dominante sur pédale de dominante
+  (§1.5), la fonction des accords préservée sur la pédale (§1.6), le
+  turnaround sur pédale (§2.5), l'ostinato distingué de la pédale. Ce
+  qu'on en tire est reporté dans les chantiers de l'analyse.
+- [x] *En Harmonie*, tome 2, chapitre 2 §5, « Les modes naturels dans
+  les thèmes » : chaque mode dans des thèmes, les cadences modales
+  (§5.2), les plages modales (§5.3), les deux approches de la modalité
+  (§5.4), la rencontre des cadences modales et tonales (§5.5). Ce
+  qu'on en tire est reporté dans les chantiers de l'analyse.
+- [x] *En Harmonie*, tome 2, « Récapitulatif des modes » et « Analyses
+  modales » : les tétracordes, le rétrograde inversé de chaque mode,
+  le tableau des cinq systèmes (tétrade, extensions, degrés
+  caractéristiques), et des fiches (tonalité, forme, un mode par
+  accord) pour *Someday My Prince Will Come*, *The Days Of Wine And
+  Roses*, *Body And Soul*, *Fall*, *Very Early*, *Peace* et *Re:
+  Person I Knew*. Le catalogue des modes concorde avec le tableau, à
+  deux écarts près, notés dans « L'harmonie ».
 - [ ] *En Harmonie*, tome 2, chapitre 6, l'accord de dominante sur
   tonique (la double fonction de l'ionien ♭6 et de l'éolien ♮7) et
   l'accord appoggiaturé : reconnaissance et chiffrage.

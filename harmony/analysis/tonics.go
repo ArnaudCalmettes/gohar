@@ -32,10 +32,10 @@ func rolesOf(c Changes, blocks []Block) roles {
 // tonicOf returns the tonalities a change is the tonic of, nil when it
 // cannot be one: a chord that can be a tonic (a triad, maj7, 6, m6,
 // m(maj7), not m7 nor a seventh), in root position or with its third in
-// the bass. With its fifth in the bass, it is a six-four over a pedal:
-// F/C C in My Way is C, the F a neighbour over the bass. With any other
-// bass, E♭maj7/F over the pedal of The Look Of Love, the bass is what
-// holds.
+// the bass. With its fifth in the bass, it is read for now as a chord
+// over a pedal: F/C C in My Way is the IV of C over a tonic pedal. With
+// any other bass, E♭maj7/F over the pedal of The Look Of Love, the bass
+// is what holds.
 func tonicOf(change Change) []harmony.Tonality {
 	ch := change.Chord
 	if change.Silent {

@@ -153,8 +153,8 @@ func (ph *phrasing) rests() {
 
 // stopsAt tells the tonic the tune stops on at change i, nil when it
 // does not: see "Where the tune stops". An installed tonic comes back
-// in any position, the six-four included: B♭maj7/F before G7 Cm7 F7
-// at the end of Someday My Prince Will Come. Any other bass makes
+// in any position, its second inversion included: B♭maj7/F before G7
+// Cm7 F7 at the end of Someday My Prince Will Come. Any other bass makes
 // another chord: Fmaj7/G at the end of Only Trust Your Heart is the V
 // of C with its fourth, not F.
 func (ph *phrasing) stopsAt(i int, installed []harmony.Tonality) []harmony.Tonality {
