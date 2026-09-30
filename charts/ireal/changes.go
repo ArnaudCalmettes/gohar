@@ -22,6 +22,7 @@ func (t Timeline) Changes() (analysis.Changes, error) {
 		Chords: make([]analysis.Change, len(t.Spans)),
 		Loops:  true,
 		Coda:   t.Coda,
+		End:    t.End,
 		Bars:   t.Bars,
 	}
 	var errs []error

@@ -190,11 +190,13 @@ func render(s ireal.Song, key string, withLegend bool) string {
 
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
+	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
 	if tune != nil {
 		fmt.Fprintf(&b, "analysed in %s, %s\n", short(flats[tune[0].Tonic()], tune), why)
 	}
-	fmt.Fprint(&b, heardIn(s, changes, phrases, plages))
 	fmt.Fprint(&b, evidence(cands))
+	fmt.Fprint(&b, form(changes, tl, blocks))
+	fmt.Fprint(&b, areas(changes, tl, blocks, sensed))
 	if withLegend {
 		fmt.Fprint(&b, legend)
 	}
@@ -287,6 +289,48 @@ func heardIn(s ireal.Song, changes analysis.Changes, phrases []analysis.Phrase, 
 	return line + "\n"
 }
 
+// form writes the sections the analysis finds from the chords, the
+// marks of the chart left aside, and how each ends: the tonic its
+// conclusive cadence lands on, at which bar, strong or weak, and the
+// chord its turnaround starts on (see analysis.Conclusion).
+//
+//	the form it finds: A8 A8 B8 A8
+//	  A   bars 1-8     C at bar 7, strong, turnaround from A7
+func form(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block) string {
+	sections := analysis.Sections(changes)
+	if len(sections) == 0 {
+		return ""
+	}
+	var b, lengths strings.Builder
+	for i, s := range sections {
+		if i > 0 {
+			lengths.WriteString(" ")
+		}
+		fmt.Fprintf(&lengths, "%s%d", s.Label, s.Bars)
+		if s.Shift != 0 {
+			fmt.Fprintf(&lengths, "+%d", s.Shift)
+		}
+	}
+	fmt.Fprintf(&b, "the form it finds: %s\n", lengths.String())
+	for i, k := range analysis.Conclusions(changes, sections, blocks) {
+		s := sections[i]
+		line := "no conclusive cadence"
+		if k.Arrives >= 0 {
+			line = fmt.Sprintf("%s at bar %d", short(flats[k.Tonic[0].Tonic()], k.Tonic), tl.Spans[k.Arrives].Bar+1)
+			if k.Strong {
+				line += ", strong"
+			} else {
+				line += ", weak"
+			}
+			if k.Loop >= 0 {
+				line += ", turnaround from " + symbol(tl.Spans[k.Loop].Chord)
+			}
+		}
+		fmt.Fprintf(&b, "  %-3s %-12s %s\n", s.Label, fmt.Sprintf("bars %d-%d", s.From+1, s.From+s.Bars), line)
+	}
+	return b.String()
+}
+
 // evidence lists the tonics the tune gives, with how many times each
 // is heard as the reference, and how: "Cm  6: opens, 5 returns".
 func evidence(cands []analysis.Candidate) string {
@@ -314,17 +358,62 @@ func evidence(cands []analysis.Candidate) string {
 	return b.String()
 }
 
+// areas lists the stretches heard around another tonic than the first,
+// with what Siron weighs to tell a true modulation from a transitory
+// one (see analysis.TonalArea):
+//
+//	the tonal areas it hears, and what would make each a true modulation:
+//	  C      bars 5-8      4 bars, leaving D, the first tonality, 2 steps
+func areas(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block, sensed []analysis.Sensed) string {
+	found := analysis.TonalAreas(changes, blocks, sensed, analysis.Sections(changes))
+	if len(found) == 0 {
+		return ""
+	}
+	var b strings.Builder
+	b.WriteString("the tonal areas it hears, and what would make each a true modulation:\n")
+	for _, a := range found {
+		last := changes.Chords[a.To]
+		bars := fmt.Sprintf("bars %d-%d", tl.Spans[a.From].Bar+1, changes.Bar(last.Start+last.Length-1)+1)
+		line := fmt.Sprintf("%g bars, leaving %s", a.Bars, short(flats[a.Leaves[0].Tonic()], a.Leaves))
+		if a.First {
+			line += ", the first tonality"
+		}
+		if a.Opens {
+			line += ", opening a section"
+		}
+		if a.Closes {
+			line += ", closing a section"
+		}
+		line += ", " + steps(a.Distance)
+		fmt.Fprintf(&b, "  %-6s %-12s %s\n", short(flats[a.Tonic[0].Tonic()], a.Tonic), bars, line)
+	}
+	return b.String()
+}
+
+// steps writes a distance on the cycle of fifths: "1 step", "2 steps".
+func steps(n int) string {
+	if n == 1 {
+		return "1 step"
+	}
+	return fmt.Sprintf("%d steps", n)
+}
+
 // heard names the sensed tonic at a change when it differs from the
-// change before: its ground, then in brackets the local tonic a
-// cadence has just tonicised. Nothing when nothing changed.
+// change before: its ground, then in parentheses the region a cadence
+// has opened, and in square brackets the tonic a dominant makes of the
+// chord, for that chord only, when it is not the region's. Nothing when
+// nothing changed.
 func heard(sensed []analysis.Sensed, i int) string {
 	name := func(s analysis.Sensed) string {
 		if s.Ground == nil {
 			return "?"
 		}
 		n := short(flats[s.Ground[0].Tonic()], s.Ground)
-		if s.Local != nil {
-			n += " (" + short(flats[s.Local[0].Tonic()], s.Local) + ")"
+		if s.Region != nil {
+			n += " (" + short(flats[s.Region[0].Tonic()], s.Region) + ")"
+		}
+		if s.Tonicised != nil && (s.Region == nil || s.Tonicised[0].Tonic() != s.Region[0].Tonic()) {
+			n += " [" + short(flats[s.Tonicised[0].Tonic()], s.Tonicised) + "]"
 		}
 		return n
 	}
@@ -582,7 +671,10 @@ under each chord, its degree in the tonality of the passage:
 
 under the degrees, the tonic the ear hears, where it changes:
   E♭               E♭ is the tonic
-  E♭ (Fm)          E♭ is the tonic, and a cadence has just led to F minor
+  E♭ (Fm)          E♭ is the tonic, and a cadence has opened a region
+                   in F minor, a transitory modulation
+  E♭ [Fm]          E♭ is the tonic, and a dominant makes of this chord
+                   a I of F minor, for this chord only: a tonicisation
 
 under the tonics, the cells, formulas heard as one:
   anatole ───      I VI II V, in any colour

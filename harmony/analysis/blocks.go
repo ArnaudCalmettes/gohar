@@ -118,3 +118,9 @@ func isTwoOf(two, five Change) bool {
 func isDominant(p harmony.ChordPattern) bool {
 	return p.HasOffset(4) && p.HasOffset(10)
 }
+
+// isFiveOrSus reports whether a pattern can end a block before its
+// target: a dominant, or the Vsus, the 7sus4 on the same root.
+func isFiveOrSus(p harmony.ChordPattern) bool {
+	return isDominant(p) || p.Tetrad() == harmony.ChordDominantSeventhSus4
+}

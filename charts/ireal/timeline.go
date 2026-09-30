@@ -1,6 +1,10 @@
 package ireal
 
-import "github.com/ArnaudCalmettes/gohar/harmony/analysis"
+import (
+	"strings"
+
+	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
+)
 
 // Ticks measure time in a chart, as in the changes the analysis reads:
 // the same unit, so that a timeline becomes changes without a
@@ -34,6 +38,15 @@ type Span struct {
 // A coda is the conclusion, played on the last chorus only: the chorus
 // loops back from the bar before it, and after the coda the tune is
 // over.
+//
+// # The end
+//
+// On its last chorus, the app stops where the chart says: after a coda,
+// at a "Fine", or on the first chord of the bar marked with the
+// player's end, "U", held under a fermata. A chart that says nothing
+// ends on its last bar, and the app adds a final chord of its own, the
+// tonic of the key it declares: the analysis does not read it (see
+// DeclaredTonalities), and finds the end from the chords.
 type Timeline struct {
 	Spans  []Span
 	Bars   []Ticks // where each played measure starts
@@ -43,6 +56,11 @@ type Timeline struct {
 	// chord held into the coda is split there, so that the coda starts
 	// a span of its own.
 	Coda int
+
+	// End is the span the last chorus ends on, when the chart marks
+	// it: the last span after a coda or a "Fine", the one sounding at
+	// the start of the bar marked "U". 0 when the chart marks no end.
+	End int
 }
 
 // Next returns the index of the span that follows span i when the
@@ -92,9 +110,19 @@ func (t Timeline) Next(i int) int {
 func (c Chart) Timeline() Timeline {
 	var t Timeline
 	var now Ticks
-	for bar, p := range c.Unfold() {
+	played := c.Unfold()
+	stop, fine := -1, false // the bar marked "U", and a last bar marked "Fine"
+	for bar, p := range played {
 		m := c.Measures[p.Index]
 		cells := c.Measures[p.From].Cells
+		for _, mark := range m.Marks {
+			switch {
+			case mark.Kind == PlayerEnd:
+				stop = bar
+			case bar == len(played)-1 && mark.Kind == Comment && strings.EqualFold(strings.TrimSpace(mark.Comment.Text), "fine"):
+				fine = true
+			}
+		}
 		t.Bars = append(t.Bars, now)
 		if p.Coda && len(t.Spans) > 0 {
 			last := &t.Spans[len(t.Spans)-1]
@@ -116,8 +144,19 @@ func (c Chart) Timeline() Timeline {
 		now += Ticks(pulses(m.Time)) * TicksPerBeat
 	}
 	t.Length = now
-	if n := len(t.Spans); n > 0 {
+	n := len(t.Spans)
+	if n > 0 {
 		t.Spans[n-1].Length = now - t.Spans[n-1].Start
+	}
+	switch {
+	case stop >= 0:
+		for i, s := range t.Spans {
+			if s.Start <= t.Bars[stop] {
+				t.End = i
+			}
+		}
+	case t.Coda > 0, fine:
+		t.End = n - 1
 	}
 	return t
 }

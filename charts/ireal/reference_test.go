@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -316,4 +317,66 @@ func numeral(d string) string {
 func sensed(c analysis.Changes, blocks []analysis.Block) []analysis.Sensed {
 	phrases := analysis.Phrases(c, blocks)
 	return analysis.Sense(c, blocks, phrases, analysis.Tune(c, phrases))
+}
+
+// The book tells a modulation from a tonicisation: « Une cadence
+// prépare généralement la modulation, celle-ci étant confirmée si la
+// durée est assez longue pour que la nouvelle tonalité soit installée »
+// (En Harmonie, tome 1, chapter 10 §1.8, p. 159). Each modulation a
+// fiche prints must be a tonal area the analysis hears, on the same
+// tonic and the same bars; a two five the book brackets toward its
+// target, outside a modulation, only tonicises it, and must open none.
+func TestFichesModulations(t *testing.T) {
+	for name, f := range fiches(t) {
+		c := fromFiche(t, f)
+		blocks := analysis.Blocks(c, analysis.Approaches(c))
+		areas := analysis.TonalAreas(c, blocks, sensed(c, blocks), analysis.Sections(c))
+		barsOf := func(a analysis.TonalArea) [2]int {
+			last := c.Chords[a.To]
+			return [2]int{c.Bar(c.Chords[a.From].Start) + 1, c.Bar(last.Start+last.Length-1) + 1}
+		}
+		var heard []string
+		for _, a := range areas {
+			heard = append(heard, fmt.Sprintf("%s %v", noteName(a.Tonic), barsOf(a)))
+		}
+		for _, m := range f.Modulations {
+			key, _ := Song{Key: m.Key}.DeclaredTonalities()
+			want := fmt.Sprintf("%s %v", noteName(key), m.Bars)
+			if !slices.Contains(heard, want) {
+				t.Errorf("%s: the book modulates to %s, the analysis hears %v", name, want, heard)
+			}
+		}
+		for _, br := range f.Toward {
+			if inside(br, f) {
+				continue
+			}
+			for _, a := range areas {
+				if b := barsOf(a); b[0] <= br[1] && b[1] >= br[0] {
+					t.Errorf("%s: the book brackets bars %d to %d, a tonicisation, the analysis hears an area %s %v",
+						name, br[0], br[1], noteName(a.Tonic), b)
+				}
+			}
+		}
+	}
+}
+
+// inside reports whether bars br lie within a modulation of the fiche.
+func inside(br [2]int, f fiche) bool {
+	for _, m := range f.Modulations {
+		if br[0] >= m.Bars[0] && br[1] <= m.Bars[1] {
+			return true
+		}
+	}
+	return false
+}
+
+// noteName names the tonic of tonalities, with "m" for a minor one:
+// "B♭", "Fm".
+func noteName(ts []harmony.Tonality) string {
+	names := [12]string{"C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"}
+	n := names[ts[0].Tonic()]
+	if analysis.ModesOf(ts) == analysis.Minor {
+		n += "m"
+	}
+	return n
 }

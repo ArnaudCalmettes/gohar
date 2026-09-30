@@ -2,7 +2,7 @@
 // playlists and reports where the tonality it hears differs from the
 // one the app declares.
 //
-//	corpus [-aside set-aside.txt] [-keys keys.txt] [-evidence] [-forms] playlist.html [more.html ...]
+//	corpus [-aside set-aside.txt] [-keys keys.txt] [-evidence] [-forms] [-phrases] playlist.html [more.html ...]
 //
 // The analysis does not read the app's key (see docs/grilles.md): it
 // finds the tonality from the cadences. The app is often wrong, and so
@@ -28,6 +28,11 @@
 // of the chart, [A] [B], which the analysis does not read. As the key,
 // the marks are often missing or loose. With -forms, the charts that
 // disagree are listed, the form marked above the form found.
+//
+// Then the phrases: where the analysis comes to rest (see
+// analysis.Phrases), compared with where the sections found conclude
+// (see analysis.Conclusions), the rule of Siron that is to replace ours.
+// With -phrases, the charts where they part are listed.
 //
 // Some charts lack what tells a tonality, and are set apart rather than
 // judged: a modal tune, plages for half of it or more, or one where no
@@ -57,9 +62,10 @@ func main() {
 	withEvidence := flag.Bool("evidence", false, "also list the charts where the evidence counted leads to another tonality than the one heard")
 	keysFile := flag.String("keys", "", "tonalities checked by ear, one title per line, the key after \" | \" as the app spells it (F, A-)")
 	withForms := flag.Bool("forms", false, "also list the charts whose form found disagrees with the marks of the chart")
+	withPhrases := flag.Bool("phrases", false, "also list the charts where the phrases do not rest where the sections conclude")
 	flag.Parse()
 	if flag.NArg() < 1 {
-		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] [-keys file] [-evidence] [-forms] <playlist> [more ...]")
+		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] [-keys file] [-evidence] [-forms] [-phrases] <playlist> [more ...]")
 		os.Exit(2)
 	}
 	aside, err := readList(*asideFile)
@@ -81,7 +87,7 @@ func main() {
 		}
 		songs = append(songs, s...)
 	}
-	fmt.Print(report(songs, aside, keys, *withEvidence, *withForms))
+	fmt.Print(report(songs, aside, keys, *withEvidence, *withForms, *withPhrases))
 }
 
 // readList reads a list of titles, each with a value after " | ": the
@@ -148,6 +154,11 @@ type reading struct {
 	// The sections the analysis finds from the chords, and those the
 	// chart marks (see forms).
 	found, marked []analysis.Section
+
+	// The bars where the phrases come to rest, and those where the
+	// sections found conclude, -1 for a section that concludes on none
+	// (see phrases).
+	rests, conclusions []int
 
 	// The candidates with the most evidence, and all the candidates
 	// with their count, "Cm 9, E♭ 4" (see analysis.Candidates).
@@ -234,6 +245,18 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 		}
 	}
 	r.heard = h.Heard
+	for _, p := range phrases {
+		if p.Tonic != nil && p.Arrives >= 0 {
+			r.rests = append(r.rests, changes.Bar(changes.Chords[p.Arrives].Start))
+		}
+	}
+	for _, k := range analysis.Conclusions(changes, r.found, blocks) {
+		bar := -1
+		if k.Arrives >= 0 {
+			bar = changes.Bar(changes.Chords[k.Arrives].Start)
+		}
+		r.conclusions = append(r.conclusions, bar)
+	}
 	var counts []string
 	cands := analysis.Candidates(changes, blocks, phrases)
 	for _, cd := range cands {
@@ -258,7 +281,7 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 	return r
 }
 
-func report(songs []ireal.Song, aside, keys map[string]string, withEvidence, withForms bool) string {
+func report(songs []ireal.Song, aside, keys map[string]string, withEvidence, withForms, withPhrases bool) string {
 	groups := map[string][]reading{}
 	var all []reading
 	for _, s := range songs {
@@ -289,6 +312,7 @@ func report(songs []ireal.Song, aside, keys map[string]string, withEvidence, wit
 		b.WriteString(elsewhere(groups))
 	}
 	b.WriteString(forms(all, withForms))
+	b.WriteString(phrasing(all, withPhrases))
 	return b.String()
 }
 

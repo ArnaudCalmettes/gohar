@@ -75,3 +75,28 @@ func TestTimelineCoda(t *testing.T) {
 		}
 	}
 }
+
+// Where the last chorus ends, when the chart says: the fermata of the
+// player's end on the first chord of its bar, the last chord of a coda
+// or of a D.C. al Fine. A chart that says nothing marks no end.
+func TestTimelineEnd(t *testing.T) {
+	for name, c := range map[string]struct {
+		chart string
+		want  string
+	}{
+		"nothing said":      {"[CXyQ|DXyQ|EXyQ|FXyQZ", "none"},
+		"the player's end":  {"[CXyQ|DXyQ|UE G7LZFXyQZ", "E"},
+		"U on a held chord": {"[CXyQ|D E|UXyQ|FXyQZ", "E"},
+		"a coda":            {"[CXyQ|SDXyQ|E Q XyQ|F<D.S. al Coda>XyQ][QXyQ|GXyQZ", "G"},
+		"D.C. al Fine":      {"[CXyQ|D<Fine>XyQ|EXyQ|F<D.C. al Fine>XyQZ", "D"},
+	} {
+		tl := Structure(Lex(c.chart)).Timeline()
+		got := "none"
+		if tl.End > 0 {
+			got = tl.Spans[tl.End].Chord.Root
+		}
+		if got != c.want {
+			t.Errorf("%s: ends on %s, want %s", name, got, c.want)
+		}
+	}
+}

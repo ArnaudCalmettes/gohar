@@ -64,9 +64,10 @@ func tonicOf(change Change) []harmony.Tonality {
 // cadence does, a plagal one included, since every cadence defines the
 // tonality (p. 103): Amaj7 B7 C♯m7, the aeolian cadence of Guile's
 // Theme, installs C♯ minor. What keeps a m7 from being a tonic is being
-// a two, the two of a block or going on to its V: in the Gm7 C7 | Gm7
-// C7 that opens Honeysuckle Rose, C7 Gm7 is a IV7 Im7 for the blocks,
-// and Gm7 goes on to C7 each time, the two five of F played again.
+// a two, the two of a block or going on to its V or its Vsus: in
+// the Gm7 C7 | Gm7 C7 that opens Honeysuckle Rose, C7 Gm7 is a IV7 Im7
+// for the blocks, and Gm7 goes on to C7 each time, the two five of F
+// played again. The Fm7 B♭7sus of Star Eyes, at bar 35, goes on to E♭6.
 func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	ch := c.Chords[i]
 	n := r.target[i]
@@ -74,7 +75,7 @@ func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tona
 		ch.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
 		return nil
 	}
-	if next := c.Next(i); next >= 0 && isDominant(c.Chords[next].Chord.Pattern) && isTwoOf(ch, c.Chords[next]) {
+	if next := c.Next(i); next >= 0 && isFiveOrSus(c.Chords[next].Chord.Pattern) && isTwoOf(ch, c.Chords[next]) {
 		return nil
 	}
 	if a := blocks[n].Announced; len(a) > 0 && a[0].Tonic() == ch.Chord.Root && ModesOf(a)&Minor != 0 {

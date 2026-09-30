@@ -293,8 +293,9 @@ Fait :
   avec leurs fiches.
 - **Les phrases** (`Phrases`), qui vont d'un repos au suivant ; **la
   maison** (`Home`), là où se pose la première, et **la tonalité du
-  morceau** (`Tune`), là où s'arrête la dernière, turnaround exclu, sauf quand le morceau s'ouvre au repos et que sa
-  première cadence y revient ; jamais l'armure ; une grille qui boucle
+  morceau** (`Tune`), là où il s'arrête à son dernier chorus : la fin
+  que marque la grille, sinon la conclusion de sa dernière section,
+  turnaround exclu, sinon à travers la boucle ; jamais l'armure ; une grille qui boucle
   entendue comme son deuxième chorus ; la tonique mineure écrite m7 ;
   la tierce picarde (`Picardy`).
 - **Les cadences plagales** : le IV de toute qualité, et le ♭VII7 avec

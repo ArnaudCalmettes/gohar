@@ -610,12 +610,15 @@ coup. Au troisième accord de Tenderly, deux mesures de E♭maj7 A♭7 ont
 installé mi♭ : E♭m7 s'entend comme la tonique qui change de couleur,
 pas comme le II de ré♭.
 
-#### Deux toniques, et une mémoire
+#### Trois toniques, et une mémoire
 
 **La tonique de fond** est celle qui est installée : les degrés se
 comptent sur elle, même quand une cadence tonicise un autre degré (Dm7♭5
-G7 Cm7 en mi♭ se lit II V VI). **La tonique locale** est celle qu'une
-cadence vient de toniciser ; elle dure tant que les accords suivants
+G7 Cm7 en mi♭ se lit II V VI). **La tonicisation** fait de l'accord où
+une dominante se résout un « degré I temporaire » (Siron, *La partition
+intérieure*, p. 341), le temps de cet accord. **La région** est une
+tonique secondaire qu'une cadence a installée pour plus longtemps (voir
+« Ce qui l'installe ») ; elle dure tant que les accords suivants
 tiennent en elle, ou sont sur sa tonique avec sa tierce (Gm7 puis
 Gm(maj7) sur sol mineur, une septième qui se promène), ou préparent un
 accord qui y tient ; et elle ne change pas le fond. Chacune est un
@@ -667,8 +670,43 @@ Look Of Love* est une pédale de fa.
 
 #### Ce qui l'installe
 
-Une **cadence qui se résout** fait de sa cible une tonique locale. Au
-début, le **premier accord** installe le fond s'il peut être une
+Une **cadence qui se résout** tonicise sa cible. Elle n'ouvre une
+région, une modulation au sens d'*En Harmonie*, que si elle a sa
+sous-dominante et que son I termine un groupe de deux ou quatre mesures
+de la section, ou en ouvre une. La sous-dominante, c'est celle d'un
+II-V-I ou d'un Vsus V I ; une plagale est une sous-dominante suivie de
+sa tonique, et toute cadence définit la tonalité ; un V seul est la
+dominante secondaire de Siron, qui tonicise (p. 341).
+
+La place est un réglage à nous, calibré sur les fiches du livre. Siron
+ne donne ici qu'un exemple, la halte d'une modulation transitoire
+« à l'aide d'une cadence complète à la fin d'un groupe de deux ou quatre
+mesures » (p. 379). gohar retient la seconde mesure de chaque paire et
+la troisième de chaque groupe de quatre, là où une phrase de huit
+mesures conclut en cadence forte, sur sa septième (p. 390), et là où
+arrivent les modulations de *Tune Up* et de *Black Orpheus* ; pas la
+première mesure d'un groupe de quatre à l'intérieur d'une section, où
+tombent les crochets de *There Will Never Be Another You* (mesures 21 et
+25). La première mesure d'une section ouvre en revanche une région,
+d'après le critère de place que Siron donne pour la modulation vraie :
+elle est « plus volontiers située au début ou à la fin d'un cycle de
+mesures ou d'une phrase mélodique » (p. 380). Le E♭maj7 qui ouvre le
+pont de *My Funny Valentine* ouvre ainsi mi♭ majeur, dans le mode de
+l'accord d'arrivée même quand le II-V était mineur (Fm7♭5 B♭7). Et le I d'une cadence qui
+repart aussitôt comme le II de la suivante n'ouvre rien : Cm7♭5 F7♭9
+B♭m7 E♭7 A♭maj7, au pont de *Lullaby Of Birdland*, est un III-VI-II-V
+de la♭, qui tonicise le cycle des quintes. Sans mesures, en direct,
+toute cadence qui a sa sous-dominante ouvre une région.
+
+Seul un accord qui a une triade majeure ou mineure peut être tonicisé.
+Hors d'un contexte modal, un m7♭5 est un II mineur : c'est ainsi que
+s'enseigne le II-V-I, m7♭5 sur le II en mineur là où le majeur joue m7,
+et Siron ne donne pour tonalités d'emprunt d'une dominante secondaire
+que celles des degrés II à VI, jamais le VII, le m7♭5 du majeur
+(p. 342). Le Fm7♭5 de la mesure 9 de *Tenderly*, où mène Gm7♭5 C7♭9,
+est le II de mi♭ mineur.
+
+Au début, le **premier accord** installe le fond s'il peut être une
 tonique, sinon la première cadence résolue. C'est l'indice le plus
 faible, beaucoup de standards commençant sur un II ou un IV, et ce
 fond n'est qu'une hypothèse tant que la première phrase ne s'est pas
@@ -677,12 +715,12 @@ mesure.
 
 Une **plagale fait tout ce que fait un V-I** : IV puis I, ou ♭VII7
 puis I, elle confirme une tonique déjà là, ramène à la maison, ou ouvre
-une tonique locale. *En Harmonie* ne réserve ce rôle à aucune cadence :
+une région. *En Harmonie* ne réserve ce rôle à aucune cadence :
 une cadence est « un enchaînement d'accords caractéristiques tendant à
 marquer le passage d'une phrase à l'autre, tout en définissant la
 tonalité » (tome 1, chapitre 8 §3, p. 103). Ce qui sépare un Dm7 Am7 de
-passage d'un IV-I qui installe la mineur, c'est la durée, pas le type
-de cadence (voir « La modulation »). Ce qu'elle annonce, l'oreille
+passage d'un IV-I qui installe la mineur, c'est la durée (voir « La
+modulation »). Ce qu'elle annonce, l'oreille
 l'attend : après le D♭7 de Tenderly, on attend mi♭.
 
 La **cadence éolienne**, ♭VImaj7 ♭VII7 I, est une cadence modale, qui
@@ -711,7 +749,7 @@ chapitre 10 §1.8, p. 159). gohar la lit au présent, avec un parti pris :
 appuyée est une analyse que beaucoup de musiciens feraient ; ne pas
 voir bouger les repères tonaux serait une faiblesse.
 
-Une tonique locale devient le fond quand elle tient **plus d'une mesure
+Une région devient le fond quand elle tient **plus d'une mesure
 d'accords stables**, ceux qui tiennent en elle sans rien préparer (le
 Dmaj7 tenu deux mesures de Tune Up, ou son B♭maj7 Gm7) : c'est notre
 chiffrage du « assez longue » du livre. Ou quand **une deuxième
@@ -722,13 +760,74 @@ accord de sous-dominante, ni pour un seul accord : le I doit pouvoir
 module pas non plus vers le II du fond : le II tonicisé est le
 III-VI-II-V de la tonalité, si longtemps qu'il tienne. Dans *My Lucky
 Star*, Am7 D7 Gm7 puis quatre mesures de Gm7 Gm(maj7) restent en fa,
-avant que Dm7 G7 C7sus C7 ne ramène à F6. Une cadence vers un degré de
-la tonique locale qui ne peut pas en être une (A7 Dm7 quand do est
-local, dans *Black Orpheus*) ne l'interrompt pas. Les cadences vers
+avant que Dm7 G7 C7sus C7 ne ramène à F6. Une cadence qui n'ouvre pas
+de région ne fait que toniciser, et laisse la région en place (A7 Dm7
+dans la région de do, dans *Black Orpheus*). Les cadences vers
 les tons voisins et leurs relatifs « sont fréquemment utilisées comme
 modulations transitoires » (Siron, *La partition intérieure*, p. 385) :
 une région secondaire qui ne met pas la tonalité du morceau en danger,
 une notion que gohar ne distingue pas encore de la modulation.
+
+**Trois niveaux.** Siron en distingue trois (*La partition intérieure*,
+p. 341, 342 et 378 à 380). La **tonicisation** « ne porte que sur un
+accord » : une dominante fait de l'accord où elle se résout un « degré
+I temporaire », et les degrés restent comptés dans la tonalité (le Dm7
+qui suit A7 en do). La **modulation transitoire** « introduit de
+manière plus prolongée les altérations d'une autre tonalité », sans que
+la tonalité du morceau soit en danger : « l'oreille ne cesse de garder
+un œil sur son parfum ». Elle sert de halte, comme le do d'*All The
+Things You Are*, ou de tension, quand s'enchaînent des cadences
+incomplètes : dans Em7 A7 | E♭m7 A♭7 | Dm7 G7 | CΔ, chaque II-V est une
+modulation transitoire. La **modulation vraie** : un nouveau centre,
+installé.
+
+*En Harmonie* découpe autrement : sa modulation (une cadence, et une
+durée « assez longue ») est plus large que la tonicisation de Siron et
+plus étroite que sa transitoire. Il met entre crochets un II-V-I tenu
+deux mesures, là où Siron appellerait transitoire un II-V qui ne se
+résout pas. gohar suit le livre, dont les fiches sont l'oracle : la
+tonicisation de chaque accord (`Tonicised`), la région (`Region`,
+l'ancienne tonique locale), qui est une modulation au sens d'*En
+Harmonie*, et le fond (`Ground`). `analyse` écrit la région entre
+parenthèses et la tonicisation entre crochets : « Am (C) [Dm] ». Le
+passage de la région au fond, la modulation vraie, reste pour l'instant
+la règle décrite plus haut, et sera repris à son tour.
+
+**Ce qui fait une modulation vraie.** Siron la juge à quatre critères
+(p. 380) : la durée, « importante pour distinguer la sensation de
+modulation vraie d'une modulation transitoire » ; la mémoire auditive,
+« la première tonalité entendue a toujours un énorme poids » ; la forme,
+une modulation vraie étant « plus volontiers située au début ou à la fin
+d'un cycle de mesures ou d'une phrase mélodique. Au milieu d'une phrase
+harmonique, l'oreille entend plutôt une modulation transitoire » ; la
+proximité, « la sensation de modulation est plus forte si les tonalités
+sont éloignées », alors que « l'enchaînement rapproché de centres tonaux
+éloignés détruit la sensation d'une véritable modulation ». La distance
+se compte en crans sur le cycle des quintes, un relatif partageant
+l'armure de sa tonalité (p. 383). gohar les
+mesure pour chaque **zone tonale**, un passage entendu autour d'une
+autre tonique que la première, région ou fond installé, compté depuis
+la cadence qui y mène (`TonalAreas`). Aucune source ne les pondère, et
+gohar ne décide encore rien avec : `analyse` les affiche. *Tune Up* :
+do mesures 5 à 8, quatre mesures, quittant ré, la première tonalité, à
+deux crans ; si♭ mesures 9 à 16, huit mesures, fermant la section, à
+deux crans de do.
+
+Une zone ne compte que si elle dure : « une cadence prépare
+généralement la modulation, celle-ci étant confirmée si la durée est
+assez longue pour que la nouvelle tonalité soit installée » (*En
+Harmonie*, tome 1, chapitre 10 §1.8, p. 159). Le livre ne donne pas de
+longueur ; gohar retient deux mesures au moins, la cadence comprise.
+Les fiches du livre sont l'oracle de ce seuil : ses modulations (do et
+si♭ dans *Tune Up*, do dans *Black Orpheus*) doivent être des zones,
+sur les mêmes mesures, et ses crochets hors modulation (*Tenderly*,
+*There Will Never Be Another You*) n'en ouvrir aucune. Gm7 C7 | Fm7,
+aux mesures 30 et 31 de *There Will Never Be Another You*, le livre le
+met entre crochets : une tonicisation, qui dure moins de deux mesures.
+Le pont d'*All The Things You Are*, F♯m7 | B7 | Emaj7, que Siron range
+parmi les modulations (p. 387), en dure trois. Une zone est donc une
+modulation au sens d'*En Harmonie* ; la transitoire de Siron, qui
+commence dès un II-V, en compte davantage.
 
 Le **retour à la maison** est asymétrique : une seule cadence sur la
 tonique de départ la réinstalle, parfaite ou plagale, et même son
@@ -764,7 +863,7 @@ boucle n'a pas encore sonné.
 | 6 | D♭7 | mi♭ | ♭VII7, plagale mineure : on attend mi♭ |
 | 7 | E♭maj7 | mi♭ | I |
 | 8 | Gm7♭5 C7♭9 | mi♭ | II V de fa mineur : on attend Fm |
-| 9 | Fm7♭5 | mi♭, locale fa mineur | pas Fm, mais le II de mi♭ mineur |
+| 9 | Fm7♭5 | mi♭ | pas Fm, mais le II de mi♭ mineur |
 
 Ce tableau sert de test, validé en attendant l'avis d'une oreille plus
 experte.
@@ -777,56 +876,165 @@ lisent sur les **phrases** : la première, et la dernière.
 
 #### Les phrases
 
-Une phrase va d'un repos au suivant, et n'a pas de longueur fixe. Elle
-se termine quand elle se pose, ou quand le morceau s'arrête. Elle se
-pose sur un accord de tonique qu'une cadence amène, et qui revient sur
-l'accord d'ouverture (*How Insensitive*, un long soupir de Dm à Dm,
-quatorze mesures plus loin) ou tient plus d'une mesure et plus longtemps
-que les accords qui y mènent (le Gm6 d'*Autumn Leaves*). Une tonique de
-passage ne pose rien (le B♭maj7 d'*Autumn Leaves*), ni un IV, si long
-soit-il (le E♭maj7 de *Cherokee*), ni un m7 après l'ouverture (le Cm7
-de *There Will Never Be Another You*, son VI). Le repos dure autant que
-la tonique tient.
+Une phrase va d'un repos au suivant. Elle se termine quand elle se
+pose, ou quand le morceau s'arrête.
+
+« La cadence conclusive est le point d'arrivée d'une phrase
+harmonique », et dans une musique carrée, les cadences conclusives
+marquent les groupes de mesures (Siron, *La partition intérieure*,
+p. 390). Quand la grille a des mesures, une phrase ne se pose donc que
+là où une section de la forme conclut (voir « La structure ») :
+
+- **une tonique atteinte en milieu de section** confirme la tonique en
+  cours, et ne termine aucune phrase : le E♭maj7 de la mesure 3 de
+  *Let's Cool One* ;
+- **une section qui finit sur son II-V**, son I tombant sur la première
+  mesure de la section suivante, se termine ouverte sur son V : c'est
+  la demi-cadence d'*En Harmonie* (tome 1, chapitre 8), le point
+  d'interrogation. Le I ouvre la phrase suivante, et à l'écoute d'*A
+  Fine Romance*, les paroles le confirment.
+
+Cette règle remplace la nôtre, qui posait une phrase sur toute tonique
+amenée par une cadence et qui revenait sur l'ouverture, ou tenait plus
+d'une mesure et plus longtemps que sa préparation. Sur le corpus, la
+moitié de ses repos tombaient en plein milieu d'une section, et un
+quart sur le premier temps de la suivante.
+
+Sans mesures, pour un morceau joué en direct dont la forme n'est pas
+encore lue, l'ancienne règle reste en repli : une phrase se pose sur un
+accord de tonique qu'une cadence amène, et qui revient sur l'accord
+d'ouverture (*How Insensitive*, un long soupir de Dm à Dm, quatorze
+mesures plus loin) ou tient plus d'une mesure et plus longtemps que les
+accords qui y mènent (le Gm6 d'*Autumn Leaves*). Une tonique de passage
+ne pose rien (le B♭maj7 d'*Autumn Leaves*), ni un IV, si long soit-il
+(le E♭maj7 de *Cherokee*), ni un m7 après l'ouverture (le Cm7 de *There
+Will Never Be Another You*, son VI). Le repos dure autant que la
+tonique tient.
 
 #### La maison, là où se pose la première phrase
 
-Un morceau peut aussi **s'ouvrir au repos** : sa tonique est tenue plus
-d'une mesure, et sa première cadence y revient. Il part alors de là.
-*In a Sentimental Mood* tient Dm deux mesures et y revient par A7.
-*Just Friends* s'ouvre sur Cmaj7, son IV, mais sa première cadence va à
-Gmaj7, où il se pose ; et *Blue Skies* s'ouvre sur la même ligne que
-Sentimental Mood depuis Am, mais sa première cadence va à C6. Tant que
-rien ne s'est posé, le premier accord n'est qu'une hypothèse.
+Le morceau part de là où sa première phrase conclut. *Autumn Leaves*
+part de sol mineur, *Fly Me To The Moon* de la mineur. *Just Friends*
+s'ouvre sur Cmaj7, son IV ; ses Gmaj7 des mesures 5 et 11 confirment
+sol au milieu d'une section, et il ne se pose qu'à sa dernière, sur le
+G6 de la mesure 31. Tant que rien ne s'est posé, le premier accord
+n'est qu'une hypothèse.
 
-#### La tonalité, là où s'arrête la dernière
+Une règle de plus a longtemps tenu ici : un morceau qui « s'ouvre au
+repos », sa tonique tenue plus d'une mesure et sa première cadence y
+revenant, y restait où qu'il s'arrête. Elle faisait lire *In a
+Sentimental Mood* en ré mineur. Le livre dit autre chose : le thème
+« est en Ré mineur pour se terminer dans la tonalité de son relatif Fa
+majeur » (*En Harmonie*, tome 1, chapitre 8, p. 159). La règle est
+tombée ; ce que le début installe relève de la tonalité prédominante,
+celle qu'on entend le plus longtemps, qui reste à construire.
 
-La tonalité du morceau est la dernière tonique entendue. On joue un
-standard jusqu'à elle, et pas au-delà : le turnaround qui suit ramène
-au premier accord, vers lequel il pointe forcément, et ne dit rien de
-la tonalité. *Lullaby Of Birdland* part de fa mineur et s'arrête sur
-A♭maj7, avant que Gm7♭5 C7 ne ramène à Fm : il est en la♭. *All The
-Things You Are* n'est tranché que par son dernier A♭maj7.
+#### La tonalité, par le premier et le dernier accord
 
-Une tonique déjà installée, celle de l'ouverture, du repos précédent ou
-de la première cadence, revient sans cadence et dans toute position,
-son second renversement compris (le E♭6 final de *'Round Midnight*, le
-D6 de *Chega De Saudade*, le B♭maj7/F d'avant G7 Cm7 F7 dans *Someday
-My Prince Will Come*). Une autre demande un II-V-I ou une plagale : un
-V seul ne fait que traverser (*Yesterdays* passe par B♭maj7 dans son
-cycle de dominantes, et reste en ré mineur), et un m7 n'arrête rien (le
-F♯7 Fm7 de la fin de *Sugar* tonicise le IV). Et aucun morceau ne
-s'arrête sur le IV du repos précédent, sauf si c'est la maison : *Virgo*
-traverse B♭maj7, son IV, avant que Gm7 C7 ne ramène à fa ;
-*Unforgettable* de même sur Cmaj7.
+*En Harmonie* la lit ainsi (tome 1, chapitre 8 §1.2, p. 99 et 100) :
+le premier et le dernier accord, turnaround exclu, la confirment quand
+ils désignent la même tonalité (*Blame It On My Youth*, *Angel Eyes*).
+Quand ils diffèrent, c'est « la prédominance de l'une ou l'autre des
+deux tonalités durant le morceau » qui tranche : *My Funny Valentine*
+commence sur Cm, finit sur E♭6, et il est en do mineur. Ni le livre ni
+Siron ne disent ce qu'est la prédominance ; gohar prend celle qu'on
+entend le plus longtemps : le temps des zones tonales pour la leur, le
+reste du morceau pour la tonalité où il commence. Une tonicisation,
+plus courte qu'une zone, compte pour la tonique qui l'entoure.
 
-Un morceau qui s'est ouvert au repos a installé sa maison avant d'en
-partir, et il y reste où qu'il s'arrête, sauf s'il s'arrête sur la même
-tonique dans l'autre mode : *In a Sentimental Mood* reste en ré mineur
-bien qu'il conclue par Gm7 C7♭9 Fmaj7, dans son relatif majeur, ce que
-dit aussi la tradition ; *Chega De Saudade* s'ouvre sur ré mineur et
-s'arrête sur D6, et l'analyse lit ré majeur, là où il s'arrête. Quand
-la maison et la fin diffèrent, `analyse` donne les deux : *Fly Me To The
-Moon* part de la mineur et s'arrête en do.
+Le premier accord ne vaut que s'il est la tonique là où il est, et le
+livre n'en dit pas plus. gohar le tient pour tonique quand la première
+cadence du morceau se résout sur lui : *My Funny Valentine* s'ouvre sur
+Cm6, et Dm7♭5 G7♭9 revient à Cm7. *Just Friends* s'ouvre sur Cmaj7,
+mais sa première cadence va à sol : do est son IV, et seul le dernier
+accord parle. De même l'Am de *Blue Skies*, le Fm7 d'*All The Things
+You Are*, le Em7 de *Tune Up*.
+
+*In a Sentimental Mood* « est en Ré mineur pour se terminer dans la
+tonalité de son relatif Fa majeur » (tome 1, chapitre 10 §1.8,
+p. 159) : premier et dernier accord diffèrent, et ré mineur, entendu
+le plus longtemps, est la tonalité du morceau. *It Don't Mean A Thing*
+s'ouvre et s'entend en sol mineur, et s'arrête sur B♭6 : sol mineur.
+*Lullaby Of Birdland* s'ouvre en fa mineur et conclut ses sections sur
+A♭maj7 : la règle le lit en fa mineur, là où l'app déclare la♭, et
+l'écoute le confirme, ses A sombres en fa mineur, son pont lumineux en
+la♭.
+
+#### Le dernier accord, là où s'arrête le morceau
+
+Le dernier accord est celui où le morceau s'arrête, à son dernier
+chorus. Quand la grille le dit, on la suit : après la coda, au « Fine », ou sur
+l'accord que marque le symbole de fin du lecteur (le `U` des grilles
+iReal), tenu sous un point d'orgue. Sans rien de tout cela, l'app
+ajoute à la fin un accord de son cru, la tonique de la tonalité qu'elle
+déclare : c'est l'armure jouée à l'oreille, et l'analyse ne la lit pas.
+La fin marquée l'emporte sur la forme : *Somewhere* conclut sa dernière
+section sur A♭, mais la grille l'arrête deux mesures plus tôt, sur E♭.
+Elle ne vaut que sur un accord de tonique, ou sur une tonique qu'une
+cadence installe : une douzaine de grilles finissent sur un accord 7
+(le B♭7 de *Manteca*, le F7♯11 de *Bud Powell*), et un m7 final est
+aussi souvent un II laissé en suspens (*Wave*, *Triste*) qu'une tonique.
+
+Une grille muette s'arrête comme finit sa dernière section :
+
+- **sur sa conclusion**, quand elle en a une. Le turnaround qui suit
+  ramène au premier accord et ne se joue pas à la fin : *Lullaby Of
+  Birdland* s'ouvre sur fa mineur et s'arrête sur A♭maj7, avant que
+  Gm7♭5 C7 ne ramène à Fm ; il est en la♭. *All The Things You Are*
+  n'est tranché que par son dernier A♭maj7 ;
+- **à travers la boucle**, quand elle finit ouverte sur son V : la
+  dernière fois, ce V se résout sur le premier accord, et le morceau
+  s'arrête là. C'est la demi-cadence d'*A Fine Romance*, prise à la fin
+  du morceau : il n'y a plus de phrase suivante, et le I qui l'aurait
+  ouverte devient la fin. *Yesterdays* finit sur A7 et s'arrête sur le
+  Dm de la première mesure ; *Sugar* finit sur G7 et s'arrête sur Cm7.
+
+Quand la dernière section ne fait ni l'un ni l'autre, et pour un
+morceau joué en direct, sans forme lue, l'ancienne règle reste en
+repli : le morceau s'arrête sur la dernière tonique entendue. Une
+tonique déjà installée, celle de l'ouverture, du repos précédent ou de
+la première cadence, revient sans cadence et dans toute position, son
+second renversement compris (le E♭6 final de *'Round Midnight*, le D6
+de *Chega De Saudade*, le B♭maj7/F d'avant G7 Cm7 F7 dans *Someday My
+Prince Will Come*). Une autre demande un II-V-I ou une plagale, et
+aucun morceau ne s'arrête sur le IV du repos précédent.
+
+Une section conclut sur une tonique qui sonne dans ses trois dernières
+mesures, même atteinte avant : *Sweet Sue* arrive sur G6 à la mesure 5
+et le tient jusqu'au bout de la section. Il faut que ce soit l'accord
+de tonique qui tienne : dans *Yesterdays*, le Dm Dm(maj7) de la
+mesure 5 devient Dm7 à la mesure 6, une ligne qui descend vers Bm7♭5
+E7, et la tonique est finie avant les dernières mesures. Un m7 suivi
+de son V, ou de son Vsus, reste un II : le Fm7 B♭7sus de la mesure 35
+de *Star Eyes* mène au E♭6 final.
+
+Le B♭maj7 de la seconde section de *Yesterdays* tombe dans ses trois
+dernières mesures, à la mesure 14 de ses 16. L'oreille n'y entend
+pourtant aucune fin de phrase : après sa longue descente de quinte en
+quinte, le morceau s'appuie un instant sur ce VI, et la section finit
+ouverte sur A7, qui ramène au Dm de la première mesure. D'où une
+exception, qui vient de l'écoute et non d'une source : ne conclut pas
+un accord amené par un V seul, sur un temps faible de la section
+(ailleurs que sur l'avant-dernière mesure), et qui est le VI de la
+tonique mineure où s'ouvre la section suivante. Chaque condition
+compte : *Rosetta* descend le même genre de cycle jusqu'à F6, mais sur
+la mesure 15, la forte, et y conclut avant que Bm7♭5 E7 ne mène au Am
+de son pont ; et *Lover Man* se pose sur Fmaj7 à la mesure 16, VI du Am
+de son pont, mais par Gm7 C7, un II-V.
+
+Aucune phrase ne se pose sur le IV de la tonique d'ouverture, quand une
+cadence revient à celle-ci dans le chorus, et aucun morceau ne s'y
+arrête, même quand la grille y marque sa fin. *Unforgettable* passe de
+sol à Cmaj7 comme un blues passe du I au IV : c'est sa phrase redite à
+la quarte, pas une modulation. Sa grille s'arrête sur le Cmaj7 de la
+mesure 31, puis Am7 D7 ramène à sol, où le morceau s'arrête. La
+condition sur la cadence compte : *Somewhere* s'ouvre sur B♭, mais ce
+B♭ devient B♭7 et aucune cadence n'y revient ; son E♭ n'est pas un IV.
+
+*Chega De Saudade* s'ouvre sur ré mineur et s'arrête sur D6, et
+l'analyse lit ré majeur, là où il s'arrête. Quand la maison et la fin
+diffèrent, `analyse` donne les deux : *Fly Me To The Moon* part de la
+mineur et s'arrête en do.
 
 #### La tierce picarde
 
@@ -840,6 +1048,14 @@ picarde, le morceau reste mineur et l'analyse le signale. *Chega De
 Saudade* tient ré majeur toute sa seconde moitié : pas une tierce
 picarde, un morceau autant majeur que mineur. De même *I Love Paris* et
 *Black And Tan Fantasy*, dont la seconde partie est en majeur.
+
+Pas de tierce picarde non plus quand une cadence du majeur a installé
+la tonique majeure avant la fin : un II-V dont le II est un m7. Un IIm7
+s'entend comme le II du majeur, un IIm7♭5 comme celui du mineur.
+*Somewhere* passe par E♭m au milieu d'une phrase, par un IV-I, et va
+à E♭ par Fm7 B♭7 : ce n'est pas un morceau mineur. *Once Upon A
+Summertime* et *Maybe September* tiennent de même une section entière
+en majeur, et se lisent comme *Chega De Saudade*.
 
 #### Le verdict et ses preuves
 
@@ -855,8 +1071,7 @@ souvent un degré tonicisé par son V (A7 Dm7 en do, le V du II).
 returns ») : le verdict s'explique.
 
 Ces preuves sont affichées, elles ne décident pas. On a vérifié sur le
-corpus que les compter ne fait pas mieux que la règle : la fin, puis
-l'ouverture au repos. Les retours désignent les degrés tonicisés plus
+corpus que les compter ne fait pas mieux que la règle : la fin. Les retours désignent les degrés tonicisés plus
 souvent que la tonique (le VI de *Georgia On My Mind* y revient huit
 fois), et les repos redisent surtout l'ouverture et la fin. Le comptage
 confirme la règle plus qu'il ne la dépasse.
@@ -865,11 +1080,11 @@ confirme la règle plus qu'il ne la dépasse.
 
 **Le plafond des grilles seules.** *In a Sentimental Mood* et *Lullaby
 Of Birdland* ont le même profil : une tonique mineure posée d'entrée et
-reposée souvent, une fin sur le relatif majeur. Et des verdicts
-opposés, ré mineur pour le premier, la♭ pour le second. Rien dans les
-accords ne les sépare : c'est la mélodie qui tranche, comme elle pose
-d'entrée 1 3 5 de sol mineur dans *It Don't Mean A Thing*, que l'app
-déclare en si♭. Sur des grilles seules, on ne fera guère mieux ; la
+reposée souvent, une fin sur le relatif majeur. La prédominance les lit
+tous deux en mineur ; l'app déclare le second en la♭. *It Don't Mean A
+Thing* s'arrête sur B♭6, et la mélodie pose d'entrée 1 3 5 de sol
+mineur, où la prédominance le lit aussi. Sur des grilles seules, on ne
+fera guère mieux ; la
 mélodie sera une preuve de plus, quand un format la portera. C'est
 d'ailleurs le premier des dix commandements : « Tu partiras de la
 mélodie. »
@@ -1142,12 +1357,20 @@ et un ABAC dans un sur sept. Restent :
   début de la section suivante n'est pas une demi-cadence, c'est une
   cadence-boucle.
 
+**Comment finit une section.** `Conclusions` donne, pour chaque
+section, sa cadence conclusive : la dernière cadence qui se résout sur
+une tonique dans ses trois dernières mesures, forte si elle aboutit sur
+l'avant-dernière mesure, faible sinon, et l'accord où commence la
+cadence-boucle qui la suit. Une section qui s'arrête sur son V, une
+demi-cadence, ou qui traverse ses dernières mesures sans se résoudre,
+n'en a pas. `analyse` l'affiche en tête de grille, avec la forme.
+
 L'analyse de la tonalité n'utilise pas encore la forme : elle en fera
 ses phrases, et la place des cadences conclusives dira où la musique se
 pose. `charts/cmd/forms` lit la forme de playlists entières, comme
 `corpus` la tonalité.
 
-Repères : `Sections`, `SectionsWith`, `Blues`, `Modal`, `IsModal`.
+Repères : `Sections`, `SectionsWith`, `Conclusions`, `Blues`, `Modal`, `IsModal`.
 
 ## 7. Ce que l'analyse rend
 
@@ -1291,13 +1514,13 @@ Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
 | Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
 | Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur où se pose la première phrase |
 | How Insensitive | une première phrase de quatorze mesures, qui revient sur son accord d'ouverture |
-| Just Friends | un morceau qui s'ouvre sur son IV, et se pose sur son I par une plagale |
+| Just Friends | un morceau qui s'ouvre sur son IV, confirme son I au milieu des sections, et ne se pose qu'à la dernière |
 | Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
-| In a Sentimental Mood, Blue Skies | la maison installée avant de partir, et ce qui la distingue d'une simple ouverture |
-| Yesterdays, Virgo, Unforgettable | une tonique traversée par un V seul ; le IV où la grille s'arrête avant le turnaround |
+| In a Sentimental Mood, Blue Skies | commencer sur le relatif mineur et finir sur le majeur : en fa (*En Harmonie*, p. 159), en do |
+| Yesterdays, Virgo, Unforgettable | le VI où *Yesterdays* s'appuie sans conclure, et sa fin à travers la boucle ; le IV où la grille s'arrête avant le turnaround |
 | Someday My Prince Will Come | la tonique installée qui revient renversée sur sa quinte |
 | My Way | F/C, le IV sur pédale de tonique, et le retour par une plagale |
-| Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; Fly Me part de la mineur et s'arrête en do |
+| Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; *Sugar* finit ouvert sur G7 et s'arrête à travers la boucle, Fly Me part de la mineur et s'arrête en do |
 | My Lucky Star | le II tonicisé quatre mesures, sans modulation |
 | Softly, Summertime | la tonique mineure écrite m7 |
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
@@ -1364,7 +1587,13 @@ près (une levée, une cadence-boucle), même forme à un autre niveau
 (A16 B16 marqué, ABAC trouvé : les moitiés d'un côté, les phrases de
 l'autre), autre forme, ou pas de marques. Une levée est mise de côté
 avant de comparer : la grille de *I Should Care* compte sa levée dans
-son premier A, la détection la met à part. Comme
+son premier A, la détection la met à part.
+
+Il se termine par **les phrases** : là où l'analyse se repose
+aujourd'hui (`Phrases`), comparé à là où les sections trouvées
+concluent (`Conclusions`), la règle de Siron appelée à remplacer la
+nôtre. Avec `-phrases`, il liste les grilles où les deux divergent,
+mesure par mesure. Comme
 l'armure, les marques sont souvent absentes ou approximatives : un
 désaccord ne dit pas qui a tort. Avec `-forms`, le rapport liste les
 grilles en désaccord, la forme marquée au-dessus de la forme trouvée.

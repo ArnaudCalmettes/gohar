@@ -51,7 +51,8 @@ gohar/
                              candidats et leurs preuves, tierce
                              picarde, plages modales, blues, degrés,
                              tonique pressentie et modulations
-                             (Sensed), forme par récurrences (Sections)
+                             (Sensed), zones tonales (TonalAreas), forme par récurrences (Sections)
+                             et cadences conclusives (Conclusions)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée

@@ -50,20 +50,21 @@ func TestPhrases(t *testing.T) {
 		want    []string
 	}{
 		// B♭maj7 is passed through; Gm6, held two bars, is where the
-		// phrase rests.
+		// section concludes, and where the tune stops.
 		"Autumn Leaves": {
 			barsOf(true, bar{c, min7}, bar{f, dom7}, bar{bb, maj7}, bar{eb, maj7},
 				bar{a, halfDim}, bar{d, dom7}, bar{g, min6}, bar{g, min6}),
-			[]string{"Cm7 F7 B♭maj7 E♭maj7 Am7♭5 D7 Gm6 Gm6 → Gm nat/harm/mel"},
+			[]string{"Cm7 F7 B♭maj7 E♭maj7 Am7♭5 D7 Gm6 Gm6, stops on Gm nat/harm/mel"},
 		},
-		// Back to its opening Fm at bar 3; it stops on A♭maj7, and Gm7♭5
-		// C7 after it is the tail, back to the first chord.
+		// One section of 8 bars, one phrase: Fm at bar 3 confirms the
+		// opening in the middle of the section, and the tune stops on
+		// A♭maj7 at bar 7, the strong conclusive cadence. Gm7♭5 C7 after
+		// it is the tail, back to the first chord.
 		"Lullaby Of Birdland": {
 			barsOf(true, bar{f, min, d, halfDim}, bar{g, dom7, c, dom7}, bar{f, min}, bar{bb, min7, eb, dom7},
 				bar{c, min7, f, min7}, bar{bb, min7, eb, dom7}, bar{ab, maj7}, bar{g, halfDim, c, dom7}),
 			[]string{
-				"Fm Dm7♭5 G7 C7 Fm → Fm nat/harm/mel",
-				"B♭m7 E♭7 Cm7 Fm7 B♭m7 E♭7 A♭maj7, stops on A♭",
+				"Fm Dm7♭5 G7 C7 Fm B♭m7 E♭7 Cm7 Fm7 B♭m7 E♭7 A♭maj7, stops on A♭",
 				"Gm7♭5 C7 (tail)",
 			},
 		},

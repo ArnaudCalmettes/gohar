@@ -138,7 +138,7 @@ func aeolianCadences(c Changes) []Cell {
 
 // aeolian reports whether three changes are the ♭VImaj7 ♭VII7 I of an
 // [AeolianCadence]. Cells names the formula; Blocks marks its ♭VII7 I,
-// which concludes on a tonic where a ♭VII7 I alone only confirms one.
+// which the second hearing never reads as a V going to its VI.
 func aeolian(six, seven, one Change) bool {
 	if six.Silent || seven.Silent || one.Silent {
 		return false

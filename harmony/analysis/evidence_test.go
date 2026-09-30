@@ -10,7 +10,10 @@ import (
 )
 
 // The evidence a tune gives for each tonic, at which chords: Jordu
-// comes back to C minor more often than it goes to E flat.
+// comes back to C minor more often than it goes to E flat, and each of
+// its sections of 8 bars concludes on Cm6 at bar 6, the weak conclusive
+// cadence Siron finds in it (La partition intérieure, p. 390). Played
+// once, without going round, it stops on the second.
 func TestCandidates(t *testing.T) {
 	const c, d, eb, f, g, ab, bb harmony.PitchClass = 0, 2, 3, 5, 7, 8, 10
 	const (
@@ -33,7 +36,7 @@ func TestCandidates(t *testing.T) {
 		got = append(got, tonalityName(cd.Tonic)+": "+strings.Join(proofs, ", "))
 	}
 	want := []string{
-		"Cm nat/harm/mel: returns Cm6, returns Cm6, returns Cm6, stops Cm6",
+		"Cm nat/harm/mel: returns Cm6, rests Cm6, returns Cm6, stops Cm6",
 		"E♭: returns E♭maj7, returns E♭maj7",
 	}
 	if g, w := strings.Join(got, "\n"), strings.Join(want, "\n"); g != w {

@@ -51,10 +51,18 @@ func (c Change) Inverted() bool {
 // A coda concludes a tune and is played on the last chorus only: the
 // chorus loops back from the change before it, and after the coda
 // nothing follows.
+//
+// # The end
+//
+// A chart may say where its last chorus ends: after its coda, at its
+// "Fine", or on a chord held under a fermata. End is that change, 0
+// when the source says nothing: the analysis then finds the end from
+// the form (see [Phrases]).
 type Changes struct {
 	Chords []Change
 	Loops  bool
 	Coda   int     // the first change of the coda, 0 when there is none
+	End    int     // the change the last chorus ends on, 0 when unsaid
 	Bars   []Ticks // where each bar starts, when the source has bars
 }
 
