@@ -16,27 +16,28 @@ func TestTetrachordReadsAsItsSteps(t *testing.T) {
 		steps string
 		span  harmony.Semitones
 	}{
+		// The table of En Harmonie, tome 2, with its ambitus: five
+		// semitones a perfect fourth, six augmented, four diminished.
 		{"major", harmony.TetrachordMajor, "2 2 1", 5},
 		{"minor", harmony.TetrachordMinor, "2 1 2", 5},
 		{"phrygian", harmony.TetrachordPhrygian, "1 2 2", 5},
-		{"harmonic", harmony.TetrachordHarmonic, "1 3 1", 5},
 		{"lydian", harmony.TetrachordLydian, "2 2 2", 6},
+		{"diminished", harmony.TetrachordDiminished, "1 2 1", 4},
+		{"harmonic", harmony.TetrachordHarmonic, "1 3 1", 5},
+		{"lydian ♯2", harmony.TetrachordLydianSharp2, "3 1 2", 6},
+		{"minor ♯4", harmony.TetrachordMinorSharp4, "2 1 3", 6},
+		{"phrygian 𝄫3", harmony.TetrachordPhrygianDoubleFlat3, "1 1 3", 5},
+		{"major ♯2", harmony.TetrachordMajorSharp2, "3 1 1", 5},
 	}
 
 	for _, tc := range tests {
 		t.Run("the "+tc.name+" tetrachord is "+tc.steps, func(t *testing.T) {
 			assert.Equal(t, tc.steps, tc.t.String())
 			assert.Equal(t, tc.span, tc.t.Span())
+			assert.Equal(t, tc.span == 5, tc.t.IsFourth())
 			assert.True(t, tc.t.IsValid())
 		})
 	}
-
-	t.Run("the lydian is the only named one wider than a fourth", func(t *testing.T) {
-		assert.False(t, harmony.TetrachordLydian.IsFourth())
-		for _, tc := range tests[:4] {
-			assert.True(t, tc.t.IsFourth(), tc.name)
-		}
-	})
 
 	t.Run("building from steps gives the same value as the literal", func(t *testing.T) {
 		got, err := harmony.NewTetrachord(1, 3, 1)
@@ -121,17 +122,48 @@ func TestGapShrinksAroundTheLydianTetrachord(t *testing.T) {
 }
 
 // Seven notes force the split, so the reading always succeeds on a
-// heptatonic pattern. In the altered systems it often produces a shape
-// with no name, and it must say so by designating it by its steps.
-func TestTetrachordsAreMechanicalOutsideTheNaturalSystem(t *testing.T) {
-	t.Run("the seventh mode of the harmonic minor starts on 1 2 1", func(t *testing.T) {
+// heptatonic pattern. On the 35 modes it always lands on one of the ten
+// tetrachords of the book, whose table is nothing else.
+func TestEveryModeSplitsIntoTheTenTetrachords(t *testing.T) {
+	ten := []harmony.Tetrachord{
+		harmony.TetrachordMajor, harmony.TetrachordMinor,
+		harmony.TetrachordPhrygian, harmony.TetrachordLydian,
+		harmony.TetrachordDiminished, harmony.TetrachordHarmonic,
+		harmony.TetrachordLydianSharp2, harmony.TetrachordMinorSharp4,
+		harmony.TetrachordPhrygianDoubleFlat3, harmony.TetrachordMajorSharp2,
+	}
+
+	t.Run("the seventh mode of the harmonic minor starts on the diminished", func(t *testing.T) {
 		p, ok := harmony.HarmonicMinor.Mode(7)
 		require.True(t, ok)
 
 		got, ok := p.Tetrachords()
 		require.True(t, ok)
-		assert.Equal(t, "1 2 1", got.Lower.String())
-		assert.False(t, got.Lower.IsFourth(), "it spans only a major third")
+		assert.Equal(t, harmony.TetrachordDiminished, got.Lower)
+		assert.False(t, got.Lower.IsFourth(), "it spans only a diminished fourth")
+	})
+
+	t.Run("the double harmonic holds the last two", func(t *testing.T) {
+		third, _ := harmony.DoubleHarmonicMajor.Mode(3)
+		sixth, _ := harmony.DoubleHarmonicMajor.Mode(6)
+		a, _ := third.Tetrachords()
+		b, _ := sixth.Tetrachords()
+		assert.Equal(t, harmony.TetrachordPhrygianDoubleFlat3, a.Upper)
+		assert.Equal(t, harmony.TetrachordMajorSharp2, b.Lower)
+	})
+
+	t.Run("every half of every mode is one of the ten", func(t *testing.T) {
+		for s := harmony.System(0); s < harmony.SystemCount; s++ {
+			for d := harmony.Degree(1); d <= 7; d++ {
+				p, ok := s.Mode(d)
+				require.True(t, ok)
+
+				got, ok := p.Tetrachords()
+				require.True(t, ok)
+				assert.Contains(t, ten, got.Lower, "system %d degree %d", s, d)
+				assert.Contains(t, ten, got.Upper, "system %d degree %d", s, d)
+			}
+		}
 	})
 
 	t.Run("every mode of every system splits into an octave", func(t *testing.T) {

@@ -130,14 +130,6 @@ connaît.
       ♭2 ♭6) le même double emploi, « Xmaj7 ou ♭II7/I », la ♯6 entendue
       comme une septième mineure : il porterait aussi `Tonic |
       Dominant`, là où le catalogue ne lui donne que `Tonic`.
-- [ ] nommer les dix tétracordes d'*En Harmonie* (tome 2,
-      « Récapitulatif des modes ») plutôt que cinq : diminué `1 2 1`
-      (quarte diminuée, mineur mélodique), lydien ♯2 `3 1 2` et mineur
-      ♯4 `2 1 3` (quarte augmentée, mineur harmonique), phrygien ♮3
-      `1 1 3` et majeur ♯2 `3 1 1` (quarte juste, majeur double
-      harmonique). La règle du glossaire (« seuls cinq ont un nom »)
-      tombe : le nom vient de la source. Touche `naming` et ses deux
-      registres, le glossaire et le jeu des tétracordes.
 - [ ] le IIIe degré du majeur double harmonique (phrygien ♭4 𝄫7) n'a
       pas de tétrade, mais le livre lui donne des extensions, ♭9, ♭11,
       ♭13, que le catalogue n'a pas : il n'en donne qu'au VIIe.

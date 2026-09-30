@@ -121,7 +121,7 @@ func (l language) notion(n dex.Notion) string {
 			return l.namer.ModeNameOf(m)
 		}
 	case dex.KindTetrachord:
-		return fmt.Sprintf(l.words.tetrachord, l.locale.TetrachordName(n.Tetrachord))
+		return fmt.Sprintf(l.words.tetrachord, l.namer.TetrachordName(n.Tetrachord))
 	case dex.KindInterval:
 		if name, ok := l.locale.IntervalName(n.Interval); ok {
 			return name
@@ -139,7 +139,7 @@ func (l language) notion(n dex.Notion) string {
 func (l language) label(n dex.Notion) string {
 	switch n.Kind {
 	case dex.KindTetrachord:
-		return l.locale.TetrachordName(n.Tetrachord)
+		return l.namer.TetrachordName(n.Tetrachord)
 	case dex.KindInterval:
 		return ""
 	}

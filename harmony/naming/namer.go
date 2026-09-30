@@ -184,6 +184,12 @@ func (n *Namer) ModeNameOf(m Mode) string {
 	return n.locale.ModeName(m, n.notation)
 }
 
+// TetrachordName names a tetrachord in the namer's notation: see
+// [Locale.TetrachordName].
+func (n *Namer) TetrachordName(t harmony.Tetrachord) string {
+	return n.locale.TetrachordName(t, n.notation)
+}
+
 // ModeAlternatives renders the other names of a catalogue entry: see
 // [Locale.ModeAlternatives].
 func (n *Namer) ModeAlternatives(m Mode) []string {

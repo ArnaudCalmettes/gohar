@@ -302,12 +302,16 @@ documentation comme dans les messages du jeu.
   de l'orthographe, et `Target` doit pouvoir l'interroger.
 - `System` vit dans `harmony` : désigner un mode par sa gamme mère et
   son degré est une opération de structure, pas de nommage.
-- Les tétracordes se **désignent par leurs pas** : « le tétracorde
-  1 1 3 ». Seuls cinq ont un nom, ceux que la pratique utilise : majeur
-  `2 2 1`, mineur `2 1 2`, phrygien `1 2 2`, lydien `2 2 2`, harmonique
-  `1 3 1`. On résiste à la tentation de nommer le reste, plutôt que
-  d'emprunter un vocabulaire à une autre culture ou à une filiation
-  douteuse.
+- Les tétracordes **prennent le nom que leur donne *En Harmonie*** (tome
+  2, « Récapitulatif des modes ») : majeur `2 2 1`, mineur `2 1 2`,
+  phrygien `1 2 2`, lydien `2 2 2`, diminué `1 2 1`, harmonique
+  `1 3 1`, lydien ♯2 `3 1 2`, mineur ♯4 `2 1 3`, phrygien 𝄫3 `1 1 3`,
+  majeur ♯2 `3 1 1`. Ce sont exactement les moitiés des 35 modes des
+  cinq systèmes. Les quatre derniers portent un degré altéré, compté
+  depuis la gamme majeure comme dans les noms de modes. Tout autre
+  tétracorde se **désigne par ses pas** : « le tétracorde 1 3 2 ». On
+  ne nomme pas au-delà de la source, plutôt que d'emprunter un
+  vocabulaire à une autre culture ou à une filiation douteuse.
 - Une **gamme nommée** n'est pas un mode, et `harmony.NamedScale` la
   désigne comme `System` et un degré désignent un mode. Cinq gammes
   ont un nom sur leur tonique (« ré majeur », « fa♯ mineur

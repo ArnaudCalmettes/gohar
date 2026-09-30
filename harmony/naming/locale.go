@@ -124,10 +124,12 @@ type Locale struct {
 	// editing French or English in place.
 	Aliases map[ModeKey][]string
 
-	// Tetrachords names the tetrachords practice gives a name to, in
-	// the order of [namedTetrachords]. Only those five: any other
-	// tetrachord is designated by its steps in every language.
-	Tetrachords [5]string
+	// Tetrachords names the six tetrachords the other four are named
+	// after, in this order: major, minor, phrygian, lydian, diminished,
+	// harmonic. The altered ones add a degree to one of these words, so
+	// a locale has nothing more to supply. Any tetrachord En Harmonie
+	// does not name is designated by its steps in every language.
+	Tetrachords [6]string
 
 	// Scales names the scales practice gives a name to, indexed by
 	// [harmony.NamedScale], as the words that follow the tonic: majeur,
@@ -198,7 +200,7 @@ var French = Locale{
 	DegreeWords:     [5]string{"double bémol", "bémol", "bécarre", "dièse", "double dièse"},
 	NaturalModes:    [7]string{"ionien", "dorien", "phrygien", "lydien", "mixolydien", "éolien", "locrien"},
 	Functions:       [4]string{"", "tonique", "sous-dominante", "dominante"},
-	Tetrachords:     [5]string{"majeur", "mineur", "phrygien", "lydien", "harmonique"},
+	Tetrachords:     [6]string{"majeur", "mineur", "phrygien", "lydien", "diminué", "harmonique"},
 	Scales:          [5]string{"majeur", "mineur", "mineur harmonique", "mineur mélodique", "majeur harmonique"},
 
 	Spoken:        true,
@@ -235,7 +237,7 @@ var English = Locale{
 		{harmony.HarmonicMinor, 5}: {"phrygian dominant"},
 	},
 	Functions:   [4]string{"", "tonic", "subdominant", "dominant"},
-	Tetrachords: [5]string{"major", "minor", "phrygian", "lydian", "harmonic"},
+	Tetrachords: [6]string{"major", "minor", "phrygian", "lydian", "diminished", "harmonic"},
 	Scales:      [5]string{"major", "minor", "harmonic minor", "melodic minor", "harmonic major"},
 
 	Intervals: [7]string{
@@ -401,33 +403,53 @@ func (l Locale) FunctionName(f harmony.Function) string {
 	return strings.Join(parts, ", ")
 }
 
-// namedTetrachords lists the tetrachords that practice gives a name to,
-// in the order a Locale's Tetrachords table follows.
-//
-// Which tetrachords are named is a fact about the practice, not about a
-// language, so it is decided here once. A locale supplies words for
-// these five and cannot name a sixth: a shape that has no name in one
-// language has none in any.
-var namedTetrachords = [5]harmony.Tetrachord{
-	harmony.TetrachordMajor,
-	harmony.TetrachordMinor,
-	harmony.TetrachordPhrygian,
-	harmony.TetrachordLydian,
-	harmony.TetrachordHarmonic,
+// A namedTetrachord is one entry of the table of En Harmonie: a word
+// of the locale's Tetrachords, and the altered degree that follows it,
+// if any.
+type namedTetrachord struct {
+	tetrachord harmony.Tetrachord
+	word       int
+	altered    Alteration
 }
 
-// TetrachordName returns the word this locale uses for a tetrachord, or
-// its steps when it has none.
+// namedTetrachords is the table of the ten tetrachords En Harmonie
+// names (tome 2, « Récapitulatif des modes »), in its order.
+//
+// Which tetrachords are named is a fact about the source, not about a
+// language, so it is decided here once. A locale supplies six words and
+// cannot name an eleventh shape: a shape that has no name in one
+// language has none in any.
+var namedTetrachords = [10]namedTetrachord{
+	{harmony.TetrachordMajor, 0, Alteration{}},
+	{harmony.TetrachordMinor, 1, Alteration{}},
+	{harmony.TetrachordPhrygian, 2, Alteration{}},
+	{harmony.TetrachordLydian, 3, Alteration{}},
+	{harmony.TetrachordDiminished, 4, Alteration{}},
+	{harmony.TetrachordHarmonic, 5, Alteration{}},
+	{harmony.TetrachordLydianSharp2, 3, Alteration{2, Sharp}},
+	{harmony.TetrachordMinorSharp4, 1, Alteration{4, Sharp}},
+	{harmony.TetrachordPhrygianDoubleFlat3, 2, Alteration{3, DoubleFlat}},
+	{harmony.TetrachordMajorSharp2, 0, Alteration{2, Sharp}},
+}
+
+// TetrachordName returns the name this locale gives a tetrachord, or
+// its steps when En Harmonie does not name it. The altered degree of
+// the last four follows the notation: lydien ♯2, lydien dièse 2.
 //
 // The result is a qualifier, meant to follow the word for tetrachord in
-// the sentence: « le tétracorde harmonique », « le tétracorde 1 1 3 ».
+// the sentence: « le tétracorde harmonique », « le tétracorde 1 3 2 ».
 // Both read naturally, which is the point of designating the unnamed
 // ones by their steps rather than leaving a gap.
-func (l Locale) TetrachordName(t harmony.Tetrachord) string {
-	for i, named := range namedTetrachords {
-		if named == t && l.Tetrachords[i] != "" {
-			return l.Tetrachords[i]
+func (l Locale) TetrachordName(t harmony.Tetrachord, notation Notation) string {
+	for _, named := range namedTetrachords {
+		word := l.Tetrachords[named.word]
+		if named.tetrachord != t || word == "" {
+			continue
 		}
+		if named.altered.Degree == 0 {
+			return word
+		}
+		return word + " " + l.degree(named.altered, notation)
 	}
 	return t.String()
 }

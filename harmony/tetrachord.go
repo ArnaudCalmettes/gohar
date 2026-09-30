@@ -5,15 +5,17 @@ import "fmt"
 // A Tetrachord is a cell of four notes, designated by the three steps
 // that separate them.
 //
-// # Designated by its steps
+// # Named by the source, designated by its steps otherwise
 //
-// Five tetrachords have a name in current practice, declared below.
-// Every other one is designated by its steps and nothing else: the
-// tetrachord 1 1 3, the tetrachord 3 1 2. This is deliberate. Naming
-// the rest would mean borrowing a vocabulary from another musical
-// culture, or leaning on a lineage that does not hold up, and a shape
-// that has no name in the practice this library serves is better left
-// without one than given a false one.
+// Ten tetrachords have a name, the ten that En Harmonie (tome 2,
+// « Récapitulatif des modes ») finds in the five systems, declared
+// below. Every other one is designated by its steps and nothing else:
+// the tetrachord 1 3 2, the tetrachord 4 1 1. The name comes from the
+// source, never from this library. Naming the rest would mean borrowing
+// a vocabulary from another musical culture, or leaning on a lineage
+// that does not hold up, and a shape that has no name in the practice
+// this library serves is better left without one than given a false
+// one.
 //
 // # Why the literal reads as the steps
 //
@@ -33,15 +35,33 @@ import "fmt"
 // tetrachord.
 type Tetrachord uint16
 
-// The five tetrachords that carry a name in practice. Their words, in
-// any language, belong to the naming package; these identifiers only
-// designate them in code, as the scale constants do.
+// The ten tetrachords En Harmonie names, in the order of its table.
+// Their words, in any language, belong to the naming package; these
+// identifiers only designate them in code, as the scale constants do.
+//
+// The last four are named after one of the first six with an altered
+// degree, counted from the major scale as mode names are: the phrygian
+// 𝄫3 lowers the E♭ of the phrygian tetrachord of C to E𝄫.
 const (
+	// The natural system, and the only ones the ear game asks for yet.
 	TetrachordMajor    Tetrachord = 0x221
 	TetrachordMinor    Tetrachord = 0x212
 	TetrachordPhrygian Tetrachord = 0x122
 	TetrachordLydian   Tetrachord = 0x222
+
+	// Spans a diminished fourth: melodic minor.
+	TetrachordDiminished Tetrachord = 0x121
+
+	// Spans a perfect fourth: harmonic minor and harmonic major.
 	TetrachordHarmonic Tetrachord = 0x131
+
+	// Span an augmented fourth: harmonic minor.
+	TetrachordLydianSharp2 Tetrachord = 0x312
+	TetrachordMinorSharp4  Tetrachord = 0x213
+
+	// Span a perfect fourth: double harmonic major.
+	TetrachordPhrygianDoubleFlat3 Tetrachord = 0x113
+	TetrachordMajorSharp2         Tetrachord = 0x311
 )
 
 // NewTetrachord builds a tetrachord from its three steps.
@@ -124,15 +144,16 @@ type TetrachordSplit struct {
 //
 // Seven notes leave no choice: four go to the lower tetrachord and
 // three, with the octave, to the upper. So the reading always succeeds
-// on a heptatonic pattern, but it is not always meaningful.
+// on a heptatonic pattern.
 //
-// It is for the natural system, all seven modes of which split into
-// named tetrachords, and for most of the melodic minor. It is also what
-// names three of the mother scales, the harmonic minor being a minor
-// tetrachord under a harmonic one. For most modes of the altered
-// systems it is mechanical: the shapes it produces have no name, and
-// some do not even span a fourth. They come back designated by their
-// steps, which is all this reading can honestly say about them.
+// On the 35 modes of the five systems, it always lands on one of the
+// ten tetrachords En Harmonie names: that is where its table comes
+// from. The harmonic minor is a minor tetrachord under a harmonic one,
+// the locrian a phrygian under a lydian. Not every half spans a fourth,
+// which is why the gap between them varies. On any other heptatonic
+// pattern, the shapes it produces may have no name, and come back
+// designated by their steps, which is all this reading can honestly say
+// about them.
 func (p ScalePattern) Tetrachords() (TetrachordSplit, bool) {
 	if !p.IsHeptatonic() || !p.Contains(0) {
 		return TetrachordSplit{}, false
