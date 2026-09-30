@@ -268,6 +268,21 @@ func TestModulation(t *testing.T) {
 				"Cmaj7 in C",
 			},
 		},
+		// Every cadence defines the tonality, a plagal one included (En
+		// Harmonie, tome 1, chapter 8 §3, p. 103): A♭maj7 E♭maj7, the IV
+		// then the I, opens E flat, and two bars of it install it.
+		"a plagal cadence opens a tonic": {
+			changesOf(false, c, maj7, d, min7, g, dom7, c, maj7, ab, maj7, eb, maj7, eb, maj7),
+			[]string{
+				"Cmaj7 in C",
+				"Dm7 in C",
+				"G7 in C",
+				"Cmaj7 in C",
+				"A♭maj7 in C, in E♭ afterwards",
+				"E♭maj7 in C, in E♭ afterwards",
+				"E♭maj7 in E♭",
+			},
+		},
 		"Along Came Betty": {
 			changesOf(true, bb, min7, b, min7, e, dom7, bb, min7, b, min7, e, dom7, a, maj7, ab, dom7,
 				g, maj7, gb, dom7, gb, min7, g, min7, c, dom7, gb, min7, g, min7, c, dom7,
@@ -429,6 +444,24 @@ func TestHomeOnSight(t *testing.T) {
 	}
 	if got := groundsOf(ch); got != strings.Join(want, "\n") {
 		t.Errorf("got\n%s\nwant\n%s", got, strings.Join(want, "\n"))
+	}
+}
+
+// The imperfect cadence reaches the tonic on its fifth: C7 Fmaj7/C
+// (En Harmonie, tome 1, chapter 8 §3.1, p. 103). Without a V before
+// it, the same chord over the same bass is the IV of C over a tonic
+// pedal, as at the end of My Way.
+func TestTonicOnItsFifth(t *testing.T) {
+	const c, f, g harmony.PitchClass = 0, 5, 7
+	imperfect := changesOf(false, g, harmony.ChordMinorSeventh, c, harmony.ChordDominantSeventh, f, harmony.ChordMajorSeventh)
+	imperfect.Chords[2].Bass = c
+	if got := sense(imperfect)[2].Tonic; got == nil || tonalityName(got) != "F" {
+		t.Errorf("Fmaj7/C after C7: tonic of %v, want F", got)
+	}
+	pedal := changesOf(false, c, harmony.ChordMajorSeventh, f, harmony.ChordMajorSeventh)
+	pedal.Chords[1].Bass = c
+	if got := sense(pedal)[1].Tonic; got != nil {
+		t.Errorf("Fmaj7/C after Cmaj7: tonic of %s, want none", tonalityName(got))
 	}
 }
 

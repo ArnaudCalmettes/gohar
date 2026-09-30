@@ -217,11 +217,11 @@ func (h *hearing) since(i int) int {
 // tonic, or opens a new one. Without one, the local tonic ends when the
 // chord neither holds in it nor prepares a chord that does.
 //
-// A plagal cadence (the IV, or the ♭VII7, before the tonic) concludes
-// as a V-I does, and draws less: it confirms a tonic already there,
-// the ground, home or the local tonic, and opens none. The aeolian
-// cadence is the exception, a modal cadence that installs its mode
-// (Block.Aeolian). A cadence toward
+// A plagal cadence (the IV, or the ♭VII7, before the tonic) does all a
+// V-I does: every cadence defines the tonality (En Harmonie, tome 1,
+// chapter 8 §3, p. 103). What tells a tonicisation from a modulation
+// is how long the tonic holds, not the kind of cadence that reached it
+// (see [hearing.modulation]). A cadence toward
 // a degree of the local tonic that cannot be a tonic (A7 Dm7 while C
 // major is local) does not interrupt it. Nor does a chord on the local
 // tonic itself, whatever its colour: Gm7 Gm(maj7) Gm7 Gm(maj7) in My
@@ -231,10 +231,6 @@ func (h *hearing) cadence(i int) {
 	s, ch := &h.s, h.c.Chords[i]
 	n := h.r.target[i]
 	heard := n >= 0 && len(h.blocks[n].Announced) > 0 && !(h.first && h.blocks[n].Five > i)
-	if heard && h.blocks[n].Kind == harmony.PlagalApproach && !h.blocks[n].Aeolian {
-		t := h.blocks[n].Announced
-		heard = sameTonic(t, s.Ground) || sameTonic(t, s.Start) || sameTonic(t, s.Local)
-	}
 	if !heard {
 		if s.Local != nil && !holds(s.Local, ch.Chord.Set()) && !onTonic(s.Local, ch) &&
 			!prepares(h.c, h.blocks, h.r.member[i], s.Local) {

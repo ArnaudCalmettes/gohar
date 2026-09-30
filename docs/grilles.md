@@ -629,23 +629,41 @@ forme AABA.
 
 #### Ce qui fait une tonique
 
-Un accord de tonique est une triade, un maj7, un 6, un m6 ou un
-m(maj7), à l'état fondamental ou avec sa tierce à la basse. Renversé
-sur sa quinte, l'analyse le lit pour l'instant comme un accord sur une
-pédale : dans le F/C C qui clôt *My Way*, F/C est le IV de do au-dessus
-d'une pédale de tonique. Avec toute autre basse, c'est la basse qui
-tient : le E♭maj7/F de *The Look Of Love* est une pédale de fa.
+*En Harmonie* le dit en une phrase : l'accord de tonique « peut tout
+aussi bien être Xmaj7 que Xm7 », mais « ne comportera jamais le IVe
+degré en tant que note dans l'accord » (tome 1, chapitre 8 §2.1,
+p. 101). C'est sa tierce qui dit son mode, majeur ou mineur, et ses
+extensions n'y changent rien : un Cmaj7(♯11) ou un Fm6/9(♯11) sont des
+toniques, leurs extensions se confondant avec des appoggiatures des
+notes réelles (tome 2, chapitre 6 §3). Il peut être renversé.
 
-Un m7 est presque toujours une sous-dominante, et on ne module pas pour
-s'installer en éolien. Mais les grilles écrivent la tonique mineure m7
-bien plus souvent qu'on ne la joue (m6, m(maj7), m(maj9), pour adoucir
-la septième) : un m7 est donc une tonique quand une cadence mineure se
-résout dessus par son V et qu'il n'est pas lui-même le II d'un bloc.
-*Softly, As In A Morning Sunrise* est ainsi en do mineur. Le C7 Gm7 de
-*Honeysuckle Rose* n'en fait pas une tonique, c'est un V qui revient
-sur son II ; et un turnaround vers un premier accord en m7 non plus :
-l'Am7 qui ouvre *Fly Me To The Moon* est un VI, tant que E7 n'y revient
-pas à la mesure 8.
+Pouvoir être une tonique n'est pas l'être, et gohar distingue deux cas.
+Une triade, un maj7, un 6, un m6 ou un m(maj7), à l'état fondamental ou
+avec sa tierce à la basse, sont des toniques partout. Un m7, ou une
+tonique renversée sur sa quinte, ne le sont que là où une cadence se
+résout sur eux, parce que hors de ce contexte ils sont d'abord autre
+chose :
+
+- **Le m7** est le plus souvent un II. Les grilles écrivent pourtant la
+  tonique mineure m7 bien plus souvent qu'on ne la joue (m6, m(maj7),
+  m(maj9), pour adoucir la septième). Un m7 est une tonique quand une
+  cadence se résout dessus, plagale comprise, et qu'il n'est pas
+  lui-même le II d'un bloc. *Softly, As In A Morning Sunrise* est ainsi
+  en do mineur, et la cadence éolienne Amaj7 B7 C♯m7 installe do♯
+  mineur dans le *Guile's Theme*. Le C7 Gm7 de *Honeysuckle Rose* n'en
+  fait pas une tonique : Gm7 est aussitôt le II de Gm7 C7 F. Un
+  turnaround vers un premier accord en m7 non plus : l'Am7 qui ouvre
+  *Fly Me To The Moon* est un VI, tant que E7 n'y revient pas à la
+  mesure 8.
+- **La tonique renversée sur sa quinte** est une tonique quand un V se
+  résout sur elle : c'est la cadence imparfaite, C7 Fmaj7/C (tome 1,
+  p. 103), sa basse étant un « retard de la dominante » (tome 2,
+  p. 139). Sans V devant elle, elle se lit comme un accord sur une
+  pédale : dans le F/C C qui clôt *My Way*, F/C est le IV de do
+  au-dessus d'une pédale de tonique.
+
+Avec toute autre basse, c'est la basse qui tient : le E♭maj7/F de *The
+Look Of Love* est une pédale de fa.
 
 #### Ce qui l'installe
 
@@ -657,18 +675,23 @@ fond n'est qu'une hypothèse tant que la première phrase ne s'est pas
 posée. Un **blues** reconnu a sa tonique pour fond dès la première
 mesure.
 
-Une **plagale conclut sans ouvrir** : IV puis I, ou ♭VII7 puis I, elle
-confirme une tonique déjà là (le fond, la tonique de départ, la tonique
-locale), ramène à la maison, et compte comme une cadence qui confirme
-une modulation. Mais elle n'ouvre jamais seule une tonique locale. Ce
-qu'elle annonce, l'oreille l'attend : après le D♭7 de Tenderly, on
-attend mi♭. La **cadence éolienne** fait exception : avec son ♭VImaj7,
-le ♭VII7-I est une cadence modale, qui « doit obligatoirement faire
-entendre les DCN et DCA du mode » (tome 2) et installe donc sa tonique,
-comme un V-I, un m7 compris. Dans le *Guile's Theme* de *Street Fighter
-II*, Amaj7 B7 C♯m7 revient quatre fois, suivi chaque fois d'une mesure
-de repos sur C♯m7 : le morceau est en do♯ mineur, et le seul II-V-I, en
-mi, tonicise le relatif majeur dans la troisième section.
+Une **plagale fait tout ce que fait un V-I** : IV puis I, ou ♭VII7
+puis I, elle confirme une tonique déjà là, ramène à la maison, ou ouvre
+une tonique locale. *En Harmonie* ne réserve ce rôle à aucune cadence :
+une cadence est « un enchaînement d'accords caractéristiques tendant à
+marquer le passage d'une phrase à l'autre, tout en définissant la
+tonalité » (tome 1, chapitre 8 §3, p. 103). Ce qui sépare un Dm7 Am7 de
+passage d'un IV-I qui installe la mineur, c'est la durée, pas le type
+de cadence (voir « La modulation »). Ce qu'elle annonce, l'oreille
+l'attend : après le D♭7 de Tenderly, on attend mi♭.
+
+La **cadence éolienne**, ♭VImaj7 ♭VII7 I, est une cadence modale, qui
+« doit obligatoirement faire entendre les DCN et DCA du mode » (tome 2).
+Dans le *Guile's Theme* de *Street Fighter II*, Amaj7 B7 C♯m7 revient
+quatre fois, suivi chaque fois d'une mesure de repos sur C♯m7 : le
+morceau est en do♯ mineur, et le seul II-V-I, en mi, tonicise le
+relatif majeur dans la troisième section. Elle n'est jamais relue comme
+un V qui va sur son VI (voir « Une seconde écoute », plus bas).
 
 Ne change rien au fond : un accord diatonique, un emprunt sur la même
 tonique (Im7, IVm, ♭VII7), une préparation qui ne se résout pas. Un
@@ -680,15 +703,20 @@ ensuite ; l'analyse l'écrit chaque fois.
 
 #### La modulation
 
-gohar lit la modulation au présent, avec les trois indices du livre et
-un parti pris : **être libéral**. Appeler modulation une tonicisation
+*En Harmonie* la définit en deux conditions : « Une cadence prépare
+généralement la modulation, celle-ci étant confirmée si la durée est
+assez longue pour que la nouvelle tonalité soit installée » (tome 1,
+chapitre 10 §1.8, p. 159). gohar la lit au présent, avec un parti pris :
+**être libéral**. Appeler modulation une tonicisation
 appuyée est une analyse que beaucoup de musiciens feraient ; ne pas
 voir bouger les repères tonaux serait une faiblesse.
 
 Une tonique locale devient le fond quand elle tient **plus d'une mesure
 d'accords stables**, ceux qui tiennent en elle sans rien préparer (le
-Dmaj7 tenu deux mesures de Tune Up, ou son B♭maj7 Gm7), ou quand **une
-deuxième cadence** la vise tant qu'elle dure. On ne module pas vers un
+Dmaj7 tenu deux mesures de Tune Up, ou son B♭maj7 Gm7) : c'est notre
+chiffrage du « assez longue » du livre. Ou quand **une deuxième
+cadence** la vise tant qu'elle dure, un critère qui est à nous et que
+le livre ne donne pas. On ne module pas vers un
 accord de sous-dominante, ni pour un seul accord : le I doit pouvoir
 être une tonique, et ne pas être aussitôt le II d'un autre bloc. On ne
 module pas non plus vers le II du fond : le II tonicisé est le
@@ -696,8 +724,11 @@ III-VI-II-V de la tonalité, si longtemps qu'il tienne. Dans *My Lucky
 Star*, Am7 D7 Gm7 puis quatre mesures de Gm7 Gm(maj7) restent en fa,
 avant que Dm7 G7 C7sus C7 ne ramène à F6. Une cadence vers un degré de
 la tonique locale qui ne peut pas en être une (A7 Dm7 quand do est
-local, dans *Black Orpheus*) ne l'interrompt pas. Le relatif n'est pas
-une modulation plus faible, seulement plus facile.
+local, dans *Black Orpheus*) ne l'interrompt pas. Les cadences vers
+les tons voisins et leurs relatifs « sont fréquemment utilisées comme
+modulations transitoires » (Siron, *La partition intérieure*, p. 385) :
+une région secondaire qui ne met pas la tonalité du morceau en danger,
+une notion que gohar ne distingue pas encore de la modulation.
 
 Le **retour à la maison** est asymétrique : une seule cadence sur la
 tonique de départ la réinstalle, parfaite ou plagale, et même son
@@ -867,7 +898,8 @@ l'oreille hésite.
 **L'accord renversé sur sa quinte.** Le F/C de *My Way* n'est pas une
 tonique, mais le I sur lequel un V se résout en reste une, renversé ou
 non, comme le livre le montre avec ses pédales de dominante (Dm9/G G7
-C6/9/G dans *My Romance*). L'analyse ne fait pas encore la différence.
+C6/9/G dans *My Romance*). L'analyse fait la différence : voir « Ce qui
+fait une tonique ».
 
 **Le m7 d'ouverture.** L'Am7 de *Fly Me To The Moon*, le Dm7 de *Satin
 Doll* : un II ou un VI, pas une tonique, tant qu'aucune cadence mineure

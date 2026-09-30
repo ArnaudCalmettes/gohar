@@ -32,10 +32,12 @@ func rolesOf(c Changes, blocks []Block) roles {
 // tonicOf returns the tonalities a change is the tonic of, nil when it
 // cannot be one: a chord that can be a tonic (a triad, maj7, 6, m6,
 // m(maj7), not m7 nor a seventh), in root position or with its third in
-// the bass. With its fifth in the bass, it is read for now as a chord
-// over a pedal: F/C C in My Way is the IV of C over a tonic pedal. With
-// any other bass, E♭maj7/F over the pedal of The Look Of Love, the bass
-// is what holds.
+// the bass. Its extensions do not matter: the third tells its mode (En
+// Harmonie, tome 2, chapter 6 §3). A m7 and a tonic chord with its
+// fifth in the bass are tonics too, but only where a cadence resolves
+// on them (see [tonicAt]): alone, F/C C in My Way is the IV of C over a
+// tonic pedal. With any other bass, E♭maj7/F over the pedal of The Look
+// Of Love, the bass is what holds.
 func tonicOf(change Change) []harmony.Tonality {
 	ch := change.Chord
 	if change.Silent {
@@ -54,17 +56,19 @@ func tonicOf(change Change) []harmony.Tonality {
 }
 
 // minorSeventhTonic returns the minor tonalities of a m7 that a minor
-// cadence resolves on by its V, when it is not itself the two of a
-// block: nil otherwise. Charts write the minor tonic m7 far more often
-// than it is played (m6, m(maj7)): Cm7 | Dm7♭5 G7♭9 | Cm7 in Softly, As
-// In A Morning Sunrise. A plagal IV7 does not make a m7 a tonic: C7
-// Gm7 in Honeysuckle Rose is a V going back to its two. An aeolian
-// cadence does: Amaj7 B7 C♯m7 in Guile's Theme installs C♯ minor.
+// cadence resolves on, when it is not itself the two of a block: nil
+// otherwise. « Un accord de tonique peut tout aussi bien être Xmaj7 que
+// Xm7 » (En Harmonie, tome 1, chapter 8 §2.1, p. 101), and charts write
+// the minor tonic m7 far more often than it is played (m6, m(maj7)):
+// Cm7 | Dm7♭5 G7♭9 | Cm7 in Softly, As In A Morning Sunrise. Any
+// cadence does, a plagal one included, since every cadence defines the
+// tonality (p. 103): Amaj7 B7 C♯m7, the aeolian cadence of Guile's
+// Theme, installs C♯ minor. What keeps a m7 from being a tonic is being
+// a two: C7 Gm7 in Honeysuckle Rose goes back to the two of Gm7 C7 F.
 func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	ch := c.Chords[i]
 	n := r.target[i]
 	if n < 0 || r.member[i] >= 0 || ch.Silent || ch.Inverted() ||
-		blocks[n].Kind == harmony.PlagalApproach && !blocks[n].Aeolian ||
 		ch.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
 		return nil
 	}
@@ -75,10 +79,11 @@ func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tona
 }
 
 // tonicAt tells what change i is heard as the tonic of: a tonic chord,
-// or a m7 that a minor cadence within the chorus resolves on. A cadence
-// across the loop, a turnaround toward a first chord in m7, does not
-// count: as the chord heard, the first chord of Fly Me To The Moon or
-// All The Things You Are is a VI or a II, not a tonic.
+// a tonic chord on its fifth that a V resolves on, or a m7 that a
+// minor cadence resolves on, within the chorus. A cadence across the
+// loop, a turnaround toward a first chord in m7, does not count: as the
+// chord heard, the first chord of Fly Me To The Moon or All The Things
+// You Are is a VI or a II, not a tonic.
 func tonicAt(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	if t := tonicOf(c.Chords[i]); t != nil {
 		return t
@@ -86,7 +91,25 @@ func tonicAt(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	if n := r.target[i]; n >= 0 && blocks[n].Five > i {
 		return nil
 	}
+	if t := fifthTonic(c, blocks, r, i); t != nil {
+		return t
+	}
 	return minorSeventhTonic(c, blocks, r, i)
+}
+
+// fifthTonic returns the tonalities of a tonic chord with its fifth in
+// the bass that a V resolves on, nil otherwise: the imperfect cadence,
+// C7 Fmaj7/C (En Harmonie, tome 1, chapter 8 §3.1, p. 103), its bass
+// « retard de la dominante » (tome 2, chapter 6, p. 139).
+func fifthTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
+	ch := c.Chords[i]
+	n := r.target[i]
+	if n < 0 || blocks[n].Kind == harmony.PlagalApproach || ch.Silent ||
+		(int(ch.Bass)-int(ch.Chord.Root)+12)%12 != 7 {
+		return nil
+	}
+	ch.Bass = ch.Chord.Root
+	return tonicOf(ch)
 }
 
 // cadencedAt returns the tonic a cadence within the chorus leads change
