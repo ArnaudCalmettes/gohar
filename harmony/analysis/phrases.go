@@ -292,6 +292,12 @@ func (ph *phrasing) ends(last Section) {
 // ends on that Cmaj7 at bar 31: Am7 D7 after it goes back to G, where
 // the tune stops. Somewhere opens on B♭, but B♭ turns into B♭7 and no
 // cadence comes back to it: its E♭ is no IV.
+//
+// Siron gives the IV its place: a « deuxième tonique », a « détente
+// secondaire qui peut parfois entrer en conflit avec le degré I », and
+// the fifth bar of a blues « une sorte de modulation transitoire à la
+// sous-dominante » (La partition intérieure, p. 384). A region to rest
+// in on the way, not a tonality to arrive at.
 func (ph *phrasing) onTheFourth(t []harmony.Tonality) bool {
 	if ph.opens == nil || t[0].Tonic() != ph.opens[0].Tonic().Transpose(5) {
 		return false
@@ -412,43 +418,85 @@ func Home(c Changes, phrases []Phrase) []harmony.Tonality {
 	return nil
 }
 
-// Tune reads the tonality of the tune as En Harmonie does (tome 1,
+// Tune reads the tonality of the tune: see [ReadTune].
+func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
+	return ReadTune(c, phrases).Tonality
+}
+
+// A TuneReading is what the tonality of a tune rests on, as [ReadTune]
+// weighs it.
+type TuneReading struct {
+	// Tonality is the tonality of the tune, nil when none is heard.
+	Tonality []harmony.Tonality
+
+	// Blues tells a blues, in its own tonic, found by its form: nothing
+	// else is weighed.
+	Blues bool
+
+	// Opens is the first chord that sounds, -1 when none does; First
+	// the tonic it gives, nil when the first cadence of the tune
+	// resolves elsewhere or on nothing (see [FirstTonic]); and Cadence
+	// the tonic that cadence resolves on, nil when none resolves.
+	Opens   int
+	First   []harmony.Tonality
+	Cadence []harmony.Tonality
+
+	// Stops is the change the tune stops on, -1 when it stops nowhere,
+	// and Last its tonic, in the minor when the last chord is a picardy
+	// third (see [Picardy]).
+	Stops   int
+	Last    []harmony.Tonality
+	Picardy bool
+
+	// Heard is how long, in bars, the first and the last tonics are
+	// heard, when they part (see heardFor); nil when they do not.
+	Heard map[harmony.PitchClass]float64
+}
+
+// ReadTune reads the tonality of the tune as En Harmonie does (tome 1,
 // chapter 8 §1.2, p. 99 and 100): its first and its last chord,
 // turnaround left out, confirm it when they give the same tonality,
 // Blame It On My Youth and Angel Eyes. When they part, « la
 // prédominance de l'une ou l'autre des deux tonalités durant le
 // morceau » decides: My Funny Valentine starts on Cm, ends on E♭6, and
 // is in C minor. Neither the book nor Siron says what predominance is:
-// here, the one heard the longer (see [heardFor]).
+// here, the one heard the longer (see heardFor).
 //
 // The first chord counts when it is the tonic where it stands (see
 // [FirstTonic]); the last one is where the tune stops (see
 // [Phrases]), in the major or the three minors as its tonic's third
 // says. A picardy third does not make a minor tune major (see
 // [Picardy]). A blues is in its own tonic, found by its form. A tune
-// that stops nowhere is in its home.
-func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
+// that stops nowhere is in its home (see [Home]).
+func ReadTune(c Changes, phrases []Phrase) TuneReading {
+	r := TuneReading{Opens: opening(c), Stops: -1}
 	if t, ok := Blues(c); ok {
-		return t
-	}
-	end := stopping(phrases)
-	if end == nil {
-		return Home(c, phrases)
-	}
-	last := end.Tonic
-	if Picardy(c, phrases) {
-		last = MinorTonalities(last[0].Tonic())
+		r.Tonality, r.Blues = t, true
+		return r
 	}
 	blocks := Blocks(c, Approaches(c))
-	first := FirstTonic(c, blocks)
-	if first == nil || sameTonic(first, last) {
-		return last
+	r.First, r.Cadence = FirstTonic(c, blocks), firstCadence(c, blocks)
+	end := stopping(phrases)
+	if end == nil {
+		r.Tonality = Home(c, phrases)
+		return r
+	}
+	r.Stops, r.Last = end.Arrives, end.Tonic
+	if r.Picardy = Picardy(c, phrases); r.Picardy {
+		r.Last = MinorTonalities(r.Last[0].Tonic())
+	}
+	r.Tonality = r.Last
+	if r.First == nil || sameTonic(r.First, r.Last) {
+		return r
 	}
 	heard := heardFor(c, blocks)
-	if heard[first[0].Tonic()] > heard[last[0].Tonic()] {
-		return first
+	bar := float64(barOf(c))
+	f, l := r.First[0].Tonic(), r.Last[0].Tonic()
+	r.Heard = map[harmony.PitchClass]float64{f: float64(heard[f]) / bar, l: float64(heard[l]) / bar}
+	if heard[f] > heard[l] {
+		r.Tonality = r.First
 	}
-	return last
+	return r
 }
 
 // FirstTonic returns the tonic of the first chord, when it is the tonic
@@ -462,17 +510,20 @@ func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
 // on Am, and its first cadence goes to C. The Fm7 that opens All The
 // Things You Are is a VI, the Em7 of Tune Up a II.
 func FirstTonic(c Changes, blocks []Block) []harmony.Tonality {
-	r := rolesOf(c, blocks)
-	first := opensOn(c, blocks, r)
-	if first == nil {
+	first := opensOn(c, blocks, rolesOf(c, blocks))
+	if first == nil || !sameTonic(first, firstCadence(c, blocks)) {
 		return nil
 	}
+	return first
+}
+
+// firstCadence returns the tonic the first cadence of the tune resolves
+// on, nil when none does.
+func firstCadence(c Changes, blocks []Block) []harmony.Tonality {
+	r := rolesOf(c, blocks)
 	for i := range c.Chords {
 		if t, _ := cadencedAt(c, blocks, r, i); t != nil {
-			if sameTonic(t, first) {
-				return first
-			}
-			return nil
+			return t
 		}
 	}
 	return nil
@@ -520,21 +571,12 @@ func heardFor(c Changes, blocks []Block) map[harmony.PitchClass]Ticks {
 // its second A on E♭6, then starts its last A again on E♭m: a picardy
 // third. Chega De Saudade holds D major for its whole second half: not
 // a picardy third, a tune as much major as minor.
-//
-// Nor is it one when a cadence of the major has installed the major
-// tonic before the end: a two five whose two is a m7, heard as the II
-// of the major where a m7♭5 is the II of the minor. Somewhere passes
-// through E♭m by a IV-I in the middle of a phrase, and goes to E♭ by
-// Fm7 B♭7: it is not a minor tune.
 func Picardy(c Changes, phrases []Phrase) bool {
 	if _, ok := Blues(c); ok {
 		return false
 	}
 	end := stopping(phrases)
 	if end == nil || ModesOf(end.Tonic) != Major {
-		return false
-	}
-	if majorInstalled(c, end) {
 		return false
 	}
 	var first, last []harmony.Tonality
@@ -549,20 +591,6 @@ func Picardy(c Changes, phrases []Phrase) bool {
 		last = t
 	}
 	return first != nil && ModesOf(first) != Major && ModesOf(last) != Major
-}
-
-// majorInstalled reports whether a cadence announcing the major leads
-// to the major tonic chord of `end` before the tune stops there.
-func majorInstalled(c Changes, end *Phrase) bool {
-	blocks := Blocks(c, Approaches(c))
-	r := rolesOf(c, blocks)
-	for i := range c.Chords[:end.Arrives] {
-		t, b := cadencedAt(c, blocks, r, i)
-		if t != nil && sameTonic(t, end.Tonic) && ModesOf(t) == Major && ModesOf(b.Announced)&Major != 0 {
-			return true
-		}
-	}
-	return false
 }
 
 // stopping returns the phrase the tune stops on, else the last that

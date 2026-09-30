@@ -431,6 +431,13 @@ pas de lien mais ne rompt pas la chaîne, et un pas que le livre ne
 nomme pas n'en fait pas non plus. `analyse` écrit le pas devant le II :
 « ½ II→ », « step II→ » (un ton), « 5th II→ » (le cycle des quintes).
 
+Le cycle des quintes l'emporte quand les fondamentales continuent de
+tomber de quinte en quinte à travers les deux II-V : E A D G C F dans
+*Confirmation*. Quand le second II-V rompt la chaîne, le lien se lit
+entre les II : dans *Autumn Leaves*, D7 tombe d'une quinte sur Gm7,
+mais G♭7 rompt le cycle, et Am7♭5 D7 | Gm7 G♭7 descend d'un ton. Règle
+à nous, tirée de l'écoute.
+
 Le II peut être celui d'une dominante chromatique, un demi-ton au-dessus
 d'elle : dans *Autumn Leaves*, Gm7 G♭7 | Fm7 E7 descend d'un ton. Le
 second maillon est détourné, E7 allant sur Am7♭5 dont il est le V, et
@@ -511,10 +518,28 @@ garde la première lecture qui fait une cellule. Un VI restitué doit
 être le V du II. C E♭7 A♭7 D♭7 est l'anatole C A7 D7 G7, et Em7 E♭7
 Dm7 G7 (*Blue In Green*, *Too Young*) un III-VI-II-V ; C D7 Dm7 G7
 (*Take The A Train*) n'en est pas un, D7 y étant le II7 et non le
-jumeau d'un VI. Les quintes y deviennent des demi-tons : dans *Body
-And Soul*, Dm7 G7 C7 B7 B♭7 est un III-VI-II-V de si♭ qui descend
-chromatiquement, B7 pour F7. `analyse` écrit « anatole ♭II », nom retenu en attendant
-mieux.
+jumeau d'un VI. `analyse` écrit « anatole ♭II », nom retenu en
+attendant mieux.
+
+Pas de cellule, en revanche, quand son V mène à une dominante au
+milieu d'une mesure : la formule se dissout dans une chaîne de
+dominantes, où « chaque accord est emprunté à une tonalité différente »
+(Siron, p. 357). Dans *Body And Soul*, Dm7 G7 | C7 B7 B♭7 descend de
+dominante en dominante jusqu'à E♭m, et dans *'Round Midnight*, Fm7♭5
+B♭7 | E♭m7 A♭7 D♭7 continue sur G♭7. Une dominante sur le premier
+temps d'une mesure est une arrivée : le I7 d'un blues. Que le milieu de
+la mesure les distingue est une règle à nous, tirée de l'écoute ; elle
+écarte 21 cellules du corpus.
+
+Une cellule demande aussi un rythme harmonique constant : ses quatre
+accords durent autant les uns que les autres. Dans *Autumn Leaves*,
+Am7♭5 | D7 | Gm7 G♭7 est un II-V-I suivi d'un I qui s'en va ; le
+III-VI-II-V est le suivant, Gm7 G♭7 | Fm7 E7. Règle à nous, elle aussi
+tirée de l'écoute : sans rythme constant, ce n'est pas une formule mais
+une simple descente de quintes, et une cellule ne ralentit pas. Elle
+écarte près d'un quart des cellules du corpus, le plus souvent un II-V
+par mesure suivi d'un II et d'un V d'une mesure chacun (Em7 A7 | Dm7 |
+G7).
 
 Le livre nomme la variante avec son I, que le V promet. Une cellule
 s'entend pourtant à sa forme, que le V tienne sa promesse ou non : dans
@@ -895,8 +920,8 @@ G♭maj7 de *Joy Spring*) : la modulation abrupte de Siron se lit ici
 comme une modulation par cadence, et gohar n'a pas besoin d'un autre
 mécanisme pour l'entendre. Le pont de *Lullaby Of Birdland* et celui de
 *My Funny Valentine* sortent aussi en modulations vraies, ce que
-l'écoute confirme. `analyse` l'écrit au bout de chaque zone : « a true
-modulation » ou « transitory ».
+l'écoute confirme. `analyse` l'écrit au bout de chaque zone :
+« true modulation » ou « transitory ».
 
 **Les centres éloignés.** Les tonalités qu'une dominante emprunte sont,
 « dans une harmonie peu chromatique », les voisines de la tonalité
@@ -918,7 +943,7 @@ vraie : l'écoute y entend bien le centre bouger.
 Le **retour à la maison** est asymétrique : une seule cadence sur la
 tonique de départ la réinstalle, parfaite ou plagale, et même son
 accord de tonique seul (le F/C C de *My Way*). Quitter demande plus de
-preuves que revenir.
+d'indices que revenir.
 
 En direct, le fond bascule au moment où l'indice est rempli ; après
 coup, la région commence au bloc qui y menait, et c'est sur elle que
@@ -1098,15 +1123,26 @@ Le B♭maj7 de la seconde section de *Yesterdays* tombe dans ses trois
 dernières mesures, à la mesure 14 de ses 16. L'oreille n'y entend
 pourtant aucune fin de phrase : après sa longue descente de quinte en
 quinte, le morceau s'appuie un instant sur ce VI, et la section finit
-ouverte sur A7, qui ramène au Dm de la première mesure. D'où une
-exception, qui vient de l'écoute et non d'une source : ne conclut pas
-un accord amené par un V seul, sur un temps faible de la section
-(ailleurs que sur l'avant-dernière mesure), et qui est le VI de la
-tonique mineure où s'ouvre la section suivante. Chaque condition
-compte : *Rosetta* descend le même genre de cycle jusqu'à F6, mais sur
-la mesure 15, la forte, et y conclut avant que Bm7♭5 E7 ne mène au Am
-de son pont ; et *Lover Man* se pose sur Fmaj7 à la mesure 16, VI du Am
-de son pont, mais par Gm7 C7, un II-V.
+ouverte sur A7, qui ramène au Dm de la première mesure. Siron en donne
+la raison. Une dominante secondaire fait de sa destination un « degré I
+temporaire » (p. 341). Dans une harmonie peu chromatique, les tonalités
+qu'elle emprunte sont les voisines : le relatif, la dominante, la
+sous-dominante et leurs relatifs (p. 342). Et une tonicisation « ne
+porte que sur un accord » (p. 379). Ne conclut donc pas un accord amené
+par un V seul, sur un temps faible de la section (ailleurs que sur
+l'avant-dernière mesure), tenu une mesure au plus, et voisin de la
+tonique où s'ouvre la section suivante : un cran au plus sur le cycle
+des quintes, relatifs compris. La mesure est un réglage à nous.
+
+Chaque condition compte : *Rosetta* descend le même genre de cycle
+jusqu'à F6, mais sur la mesure 15, la forte, et y conclut avant que
+Bm7♭5 E7 ne mène au Am de son pont ; *Lover Man* se pose sur Fmaj7 à la
+mesure 16, VI du Am de son pont, mais par Gm7 C7, un II-V ; *Spain* se
+pose deux mesures sur Bm7, par F♯7 seul, avant de revenir à Gmaj7 :
+si mineur est voisin de sol, relatif de sa dominante, mais tenu trop
+longtemps pour n'être qu'un appui. La règle ne s'appliquait d'abord qu'au VI d'une
+tonique mineure ; étendue aux tonalités voisines, elle rend *Alfie* à
+si♭, et le corpus ne perd rien.
 
 Aucune phrase ne se pose sur le IV de la tonique d'ouverture, quand une
 cadence revient à celle-ci dans le chorus, et aucun morceau ne s'y
@@ -1115,7 +1151,12 @@ sol à Cmaj7 comme un blues passe du I au IV : c'est sa phrase redite à
 la quarte, pas une modulation. Sa grille s'arrête sur le Cmaj7 de la
 mesure 31, puis Am7 D7 ramène à sol, où le morceau s'arrête. La
 condition sur la cadence compte : *Somewhere* s'ouvre sur B♭, mais ce
-B♭ devient B♭7 et aucune cadence n'y revient ; son E♭ n'est pas un IV.
+B♭ devient B♭7 et aucune cadence n'y revient ; son E♭ n'est pas un IV. Siron
+donne au IV ce statut : une « deuxième tonique », une « détente
+secondaire qui peut parfois entrer en conflit avec le degré I », et la
+cinquième mesure du blues est « une sorte de modulation transitoire à
+la sous-dominante » (*La partition intérieure*, p. 384). Une région où
+l'on se repose en chemin, pas une tonalité d'arrivée.
 
 *Chega De Saudade* s'ouvre sur ré mineur et s'arrête sur D6, et
 l'analyse lit ré majeur, là où il s'arrête.
@@ -1142,32 +1183,34 @@ Saudade* tient ré majeur toute sa seconde moitié : pas une tierce
 picarde, un morceau autant majeur que mineur. De même *I Love Paris* et
 *Black And Tan Fantasy*, dont la seconde partie est en majeur.
 
-Pas de tierce picarde non plus quand une cadence du majeur a installé
-la tonique majeure avant la fin : un II-V dont le II est un m7. Un IIm7
-s'entend comme le II du majeur, un IIm7♭5 comme celui du mineur.
-*Somewhere* passe par E♭m au milieu d'une phrase, par un IV-I, et va
-à E♭ par Fm7 B♭7 : ce n'est pas un morceau mineur. *Once Upon A
-Summertime* et *Maybe September* tiennent de même une section entière
-en majeur, et se lisent comme *Chega De Saudade*.
+*Once Upon A Summertime* et *Maybe September* tiennent une section
+entière en majeur, mais reviennent au mineur avant leur dernier accord :
+tierce picarde, et des morceaux mineurs, comme la grille les déclare.
+*Somewhere* est un cas ouvert : sa grille ne donne la tonique qu'en
+E♭m au pont et en E♭ sur la fin, et l'analyse y entend une tierce
+picarde.
 
-#### Le verdict et ses preuves
+#### Ce que le verdict pèse
 
 La tonalité d'un morceau n'est pas un fait mais un verdict, et
-l'analyse montre sur quoi il repose. Chaque tonique que le morceau donne
-est un **candidat** qui accumule des **preuves** : il ouvre le morceau,
-une phrase s'y pose, le morceau s'y arrête, une cadence y revient ; un
-blues a la sienne, sa forme. Une preuve par événement : une tonique
-tenue huit mesures est un seul événement. Le turnaround qui ramène au
-premier accord ne compte pas, ni une cadence vers un m7, le plus
-souvent un degré tonicisé par son V (A7 Dm7 en do, le V du II).
-`analyse` affiche les candidats sous l'en-tête (« Cm 6 : stops, 5
-returns ») : le verdict s'explique.
+l'analyse montre sur quoi il repose : exactement ce que la règle
+d'*En Harmonie* pèse (tome 1, chapitre 8 §1.2), et rien d'autre.
+`analyse` l'écrit sous l'en-tête :
 
-Ces preuves sont affichées, elles ne décident pas. On a vérifié sur le
-corpus que les compter ne fait pas mieux que la règle : la fin. Les retours désignent les degrés tonicisés plus
-souvent que la tonique (le VI de *Georgia On My Mind* y revient huit
-fois), et les repos redisent surtout l'ouverture et la fin. Le comptage
-confirme la règle plus qu'il ne la dépasse.
+```
+how the tonality is heard:
+  first chord    Cm6, bar 1: Cm, its first cadence resolves on it
+  last chord     E♭6, bar 35: E♭, the turnaround left out
+  heard longest  Cm 27 bars, E♭ 9 bars
+```
+
+Le premier accord, et s'il est la tonique là où il sonne ; le dernier,
+turnaround exclu, avec sa tierce picarde s'il en a une ; et quand ils
+divergent, combien de mesures chacune de leurs deux toniques est
+entendue. *My Funny Valentine* se lit ainsi en do mineur, et *Love Me
+Or Leave Me* en fa mineur, 14 mesures contre 7 à la♭, là où l'oreille
+entend la♭ l'emporter en chemin : ce que la durée seule ne rend pas.
+Un blues n'a qu'une ligne, sa forme.
 
 ### Ce qui est difficile
 
@@ -1178,7 +1221,7 @@ tous deux en mineur ; l'app déclare le second en la♭. *It Don't Mean A
 Thing* s'arrête sur B♭6, et la mélodie pose d'entrée 1 3 5 de sol
 mineur, où la prédominance le lit aussi. Sur des grilles seules, on ne
 fera guère mieux ; la
-mélodie sera une preuve de plus, quand un format la portera. C'est
+mélodie pèsera en plus, quand un format la portera. C'est
 d'ailleurs le premier des dix commandements : « Tu partiras de la
 mélodie. »
 
@@ -1260,12 +1303,12 @@ La modulation confirmée, après une phrase entière, qui distinguerait
 une modulation passagère d'une vraie région, n'est pas codée.
 
 Repères : `Sense` (la tonique pressentie), `Grounds` (les régions après
-coup), `Phrases`, `Home`, `Tune`, `Picardy`, `Candidates`, `Reread` et
+coup), `Phrases`, `Home`, `ReadTune` et `Tune`, `Picardy`, `Reread` et
 `Hear` (la seconde écoute). Le drapeau `-key` d'`analyse` choisit la
 tonalité où compter les degrés : `heard` par défaut, `declared`, ou une
 tonalité comme l'app l'écrit (`F`, `A-`). Sur le corpus, l'analyse
-tombe d'accord avec la référence pour 82 % des grilles jugées ; le
-détail du comptage des preuves est dans `chantiers.md`.
+tombe d'accord avec la référence pour l'essentiel des grilles jugées :
+le rapport de `corpus` donne le compte du jour.
 
 ## 6. Le morceau : blues, plages, structure
 
@@ -1492,8 +1535,7 @@ Dans le terminal, la grille se lit ligne par ligne : au-dessus des
 accords, ce que chacun fait au suivant (V→, II→, IV→) et les blocs avec
 la tonalité qu'ils annoncent ; sous les accords, leur degré ; sous les
 degrés, la tonique que l'oreille entend là où elle change ; et
-dessous, les cellules. La légende s'affiche en tête, et se masque d'un
-drapeau quand on la connaît.
+dessous, les cellules. La légende s'affiche avec le drapeau `-legend`.
 
 ### Les couleurs proposées
 
@@ -1660,13 +1702,13 @@ auxquelles il manque l'information : on travaille sur de vraies
 données, et cette liste est celle des grilles à réécrire dans un format
 qui porte l'information.
 
-Sur les 1678 grilles des deux playlists, 1546 sont jugées, et
-l'analyse tombe d'accord pour 1271 (82 %) avec la tonalité de
-référence, celle de l'app ou celle vérifiée à l'oreille. Les écarts ne
-sont pas tous des erreurs de l'analyse : sur les deux grilles vérifiées,
-c'est l'app qui se trompait. Leurs familles pointent les questions
-ouvertes. Avec `-evidence`, le rapport liste en plus les grilles où le
-candidat qui a le plus de preuves n'est pas la tonalité entendue.
+Le rapport compte les grilles où l'analyse tombe d'accord avec la
+tonalité de référence, celle de l'app ou celle vérifiée à l'oreille,
+et range les écarts par familles, qui pointent les questions ouvertes.
+Les écarts ne sont pas tous des erreurs de l'analyse : sur plusieurs
+grilles vérifiées, c'est l'app qui se trompait. Le chiffre du jour est
+celui du rapport, pas de cette page, qui serait fausse dès la livraison
+suivante.
 
 Le rapport se termine par **la forme** : les sections que `Sections`
 trouve par les accords, comparées aux marques de section de la grille

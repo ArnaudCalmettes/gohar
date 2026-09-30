@@ -2,7 +2,7 @@
 // playlists and reports where the tonality it hears differs from the
 // one the app declares.
 //
-//	corpus [-aside set-aside.txt] [-keys keys.txt] [-evidence] [-forms] [-phrases] playlist.html [more.html ...]
+//	corpus [-aside set-aside.txt] [-keys keys.txt] [-forms] [-phrases] playlist.html [more.html ...]
 //
 // The analysis does not read the app's key (see docs/grilles.md): it
 // finds the tonality from the cadences. The app is often wrong, and so
@@ -17,11 +17,6 @@
 // gives one checked by ear, "My Lucky Star | F", in the app's spelling:
 // the app is wrong at times, and what we have checked is the data
 // worth judging against. The charts checked are counted apart.
-//
-// With -evidence, the report ends with the charts where the candidate
-// with the most evidence (see analysis.Candidates) is not the tonality
-// heard: where a proof weighs more than the others, or where the count
-// goes wrong.
 //
 // The report ends with the form: the sections the analysis finds from
 // the chords (see analysis.Sections), compared with the rehearsal marks
@@ -59,13 +54,12 @@ import (
 
 func main() {
 	asideFile := flag.String("aside", "", "titles to set aside, one per line, with their reason after \" | \"")
-	withEvidence := flag.Bool("evidence", false, "also list the charts where the evidence counted leads to another tonality than the one heard")
 	keysFile := flag.String("keys", "", "tonalities checked by ear, one title per line, the key after \" | \" as the app spells it (F, A-)")
 	withForms := flag.Bool("forms", false, "also list the charts whose form found disagrees with the marks of the chart")
 	withPhrases := flag.Bool("phrases", false, "also list the charts where the phrases do not rest where the sections conclude")
 	flag.Parse()
 	if flag.NArg() < 1 {
-		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] [-keys file] [-evidence] [-forms] [-phrases] <playlist> [more ...]")
+		fmt.Fprintln(os.Stderr, "usage: corpus [-aside file] [-keys file] [-forms] [-phrases] <playlist> [more ...]")
 		os.Exit(2)
 	}
 	aside, err := readList(*asideFile)
@@ -87,7 +81,7 @@ func main() {
 		}
 		songs = append(songs, s...)
 	}
-	fmt.Print(report(songs, aside, keys, *withEvidence, *withForms, *withPhrases))
+	fmt.Print(report(songs, aside, keys, *withForms, *withPhrases))
 }
 
 // readList reads a list of titles, each with a value after " | ": the
@@ -159,11 +153,6 @@ type reading struct {
 	// sections found conclude, -1 for a section that concludes on none
 	// (see phrases).
 	rests, conclusions []int
-
-	// The candidates with the most evidence, and all the candidates
-	// with their count, "Cm 9, E♭ 4" (see analysis.Candidates).
-	leaders  [][]harmony.Tonality
-	evidence string
 }
 
 // The relations between the tonality declared and the one heard, in
@@ -257,15 +246,6 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 		}
 		r.conclusions = append(r.conclusions, bar)
 	}
-	var counts []string
-	cands := analysis.Candidates(changes, blocks, phrases)
-	for _, cd := range cands {
-		if len(cd.Evidence) == len(cands[0].Evidence) {
-			r.leaders = append(r.leaders, cd.Tonic)
-		}
-		counts = append(counts, fmt.Sprintf("%s %d", name(cd.Tonic), len(cd.Evidence)))
-	}
-	r.evidence = strings.Join(counts, ", ")
 	r.picardy = analysis.Picardy(changes, phrases)
 	_, r.blues = analysis.Blues(changes)
 	plages := analysis.Modal(changes, blocks)
@@ -281,7 +261,7 @@ func analyse(s ireal.Song, aside, keys map[string]string) reading {
 	return r
 }
 
-func report(songs []ireal.Song, aside, keys map[string]string, withEvidence, withForms, withPhrases bool) string {
+func report(songs []ireal.Song, aside, keys map[string]string, withForms, withPhrases bool) string {
 	groups := map[string][]reading{}
 	var all []reading
 	for _, s := range songs {
@@ -308,55 +288,9 @@ func report(songs []ireal.Song, aside, keys map[string]string, withEvidence, wit
 			fmt.Fprintf(&b, "  %s %s %s %s\n", pad(cut(r.title, 44), 44), pad(name(r.declared), 9), pad(name(r.heard), 9), clues(r))
 		}
 	}
-	if withEvidence {
-		b.WriteString(elsewhere(groups))
-	}
 	b.WriteString(forms(all, withForms))
 	b.WriteString(phrasing(all, withPhrases))
 	return b.String()
-}
-
-// elsewhere lists the charts judged where the evidence gathered does
-// not lead to the tonality heard: the candidate with the most evidence,
-// or those tied for it, is another. Either a proof is more decisive than
-// the others there, or the count is wrong: the charts to look at before
-// the count decides anything. How often each agrees with the tonality
-// compared with comes first.
-func elsewhere(groups map[string][]reading) string {
-	var rs []reading
-	heardAgrees, leaderAgrees, judged := 0, 0, 0
-	for rel, g := range groups {
-		if rel == modal || rel == listed {
-			continue
-		}
-		for _, r := range g {
-			judged++
-			if r.declared != nil && sameTonality(r.heard, r.declared) {
-				heardAgrees++
-			}
-			if r.declared != nil && len(r.leaders) == 1 && sameTonality(r.leaders[0], r.declared) {
-				leaderAgrees++
-			}
-			if !slices.ContainsFunc(r.leaders, func(t []harmony.Tonality) bool { return sameTonality(t, r.heard) }) {
-				rs = append(rs, r)
-			}
-		}
-	}
-	slices.SortFunc(rs, func(a, b reading) int { return strings.Compare(a.title, b.title) })
-	var b strings.Builder
-	fmt.Fprintf(&b, "\nthe evidence counted: of %d charts judged, %d agree with the tonality heard, %d with the most evidence, ties excluded\n", judged, heardAgrees, leaderAgrees)
-	fmt.Fprintf(&b, "\nthe evidence leads elsewhere (%d)\n\n", len(rs))
-	fmt.Fprintf(&b, "  %s %s %s %s\n", pad("chart", 44), pad("declared", 9), pad("heard", 9), "evidence")
-	for _, r := range rs {
-		fmt.Fprintf(&b, "  %s %s %s %s\n", pad(cut(r.title, 44), 44), pad(name(r.declared), 9), pad(name(r.heard), 9), r.evidence)
-	}
-	return b.String()
-}
-
-// sameTonality reports whether two sets of tonalities name the same
-// tonic in the same mode, as name writes them.
-func sameTonality(a, b []harmony.Tonality) bool {
-	return a != nil && b != nil && name(a) == name(b)
 }
 
 // clues lists what helps tell whether the app or the analysis is

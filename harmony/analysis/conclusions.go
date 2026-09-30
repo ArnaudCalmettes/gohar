@@ -36,9 +36,9 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // resolving, concludes on none.
 //
 // One landing concludes nothing, though a V leads to it (see
-// [leansOnSixth]): the VI of the minor tonic the turnaround goes back
-// to, on a weak bar. It is heard as leaning on that chord for a bar,
-// before the section ends open on its V.
+// [leansOn]): a neighbour of the tonic the next section opens on,
+// reached by a lone V on a weak bar and held a bar at most. It is heard
+// as leaning on that chord, before the section ends open on its V.
 type Conclusion struct {
 	// Arrives is the change the conclusive cadence lands on, -1 when
 	// the section concludes on none.
@@ -74,7 +74,7 @@ func Conclusions(c Changes, sections []Section, blocks []Block) []Conclusion {
 			if bar < s.From || bar >= end || !soundsFrom(c, i, end-3) {
 				continue
 			}
-			if t, b := cadencedAt(c, blocks, r, i); t != nil && !leansOnSixth(c, b, t, bar, end) {
+			if t, b := cadencedAt(c, blocks, r, i); t != nil && !leansOn(c, b, i, t, bar, end) {
 				out[n] = Conclusion{Arrives: i, Tonic: t, Strong: bar == end-2, Loop: -1}
 			}
 		}
@@ -87,26 +87,45 @@ func Conclusions(c Changes, sections []Section, blocks []Block) []Conclusion {
 	return out
 }
 
-// leansOnSixth reports whether tonic `t`, that block `b` lands on at
-// `bar` of a section ending before `end`, is only leant on: reached by
-// a lone V, with no two, no sus and no plagal cadence, on a weak bar,
-// and the VI of the minor tonic the next section opens on. Yesterdays
-// walks down the cycle, D9 G13 C9 F13, onto B♭maj7 at bar 14 of 16,
-// then Em7♭5 A7 goes back to Dm: the ear hears no end of phrase on
-// B♭, the section ends open on A7. Our reading, from the ear: no source
-// says it.
+// leansOn reports whether tonic `t`, that block `b` lands on at change
+// `i`, at `bar` of a section ending before `end`, is only leant on: a
+// tonicisation, no conclusion. Siron's secondary dominant makes its
+// destination a « degré I temporaire » (La partition intérieure,
+// p. 341), and in a harmony « peu chromatique », the tonalities it
+// borrows are the neighbours: the relative, the dominant, the
+// subdominant and their relatives (p. 342). A tonicisation « ne porte
+// que sur un accord » (p. 379). Hence four conditions: a lone V, with no
+// two, no sus and no plagal cadence; a weak bar; a bar at most; and a
+// tonic that neighbours the one the next section opens on, one step at
+// most on the cycle of fifths, relatives included. The length of a bar
+// is ours to set.
 //
-// Each condition keeps a real conclusion. Rosetta comes down the same
-// kind of cycle onto F6, its home, but on the strong bar 15, before
-// Bm7♭5 E7 goes to Am. Lover Man lands on Fmaj7 at bar 16, the VI of
-// the Am of its bridge, by Gm7 C7, a two five.
-func leansOnSixth(c Changes, b *Block, t []harmony.Tonality, bar, end int) bool {
+// Yesterdays walks down the cycle, D9 G13 C9 F13, onto B♭maj7 at bar
+// 14 of 16, then Em7♭5 A7 goes back to Dm: the ear hears no end of
+// phrase on B♭, its VI, the section ends open on A7. Each condition
+// keeps a real conclusion. Rosetta comes down the same kind of cycle
+// onto F6, its home, but on the strong bar 15, before Bm7♭5 E7 goes to
+// Am. Lover Man lands on Fmaj7 at bar 16, the VI of the Am of its
+// bridge, by Gm7 C7, a two five. Spain rests two bars on Bm7, by F♯7
+// alone, before it goes back to Gmaj7: Bm is a neighbour of G, the
+// relative of its dominant, but held too long to be leant on.
+func leansOn(c Changes, b *Block, i int, t []harmony.Tonality, bar, end int) bool {
 	if b.Two >= 0 || b.Sus >= 0 || b.Kind == harmony.PlagalApproach || bar == end-2 {
 		return false
 	}
 	next := nextOpening(c, end)
-	return next >= 0 && tonicOf(c.Chords[next]) != nil && isMinor(c.Chords[next].Chord.Pattern) &&
-		c.Chords[next].Chord.Root == t[0].Tonic().Transpose(4)
+	if next < 0 {
+		return false
+	}
+	var held Ticks
+	for k := i; k <= heldTo(c, i); k++ {
+		held += c.Chords[k].Length
+	}
+	if held > barOf(c) {
+		return false
+	}
+	home := tonicOf(c.Chords[next])
+	return home != nil && !sameTonic(t, home) && steps(t, home) <= 1
 }
 
 // nextOpening returns the first change of the bar `end`, the one the

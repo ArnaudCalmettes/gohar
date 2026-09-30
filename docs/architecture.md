@@ -47,8 +47,8 @@ gohar/
                              et l'analyse d'une grille : suite
                              d'accords (Changes), préparations,
                              passages, blocs et tonalités annoncées,
-                             phrases, maison et tonalité du morceau,
-                             candidats et leurs preuves, tierce
+                             phrases, maison et tonalité du morceau
+                             (ReadTune, Tune), tierce
                              picarde, plages modales, blues, degrés,
                              tonique pressentie et modulations
                              (Sensed), zones tonales (TonalAreas), forme par récurrences (Sections)

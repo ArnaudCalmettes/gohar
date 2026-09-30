@@ -56,9 +56,13 @@ func (s Step) String() string {
 // Dm7 is heard as. A II-V played again is no link but does not break
 // the chain, and a step the book does not name is no link.
 //
-// The step between the twos comes first, the step from the V only when
-// the twos give none: a chromatic dominant is always a half tone from
-// the next two, and Gm7 G♭7 | Fm7 E7 in Autumn Leaves is a tone down.
+// The cycle of fifths comes first, when the roots go on falling a fifth
+// through both II-Vs: E A D G C F in Confirmation. Then the step between
+// the twos, and the step from the V only when the twos give none: a
+// chromatic dominant is always a half tone from the next two, and Gm7
+// G♭7 | Fm7 E7 in Autumn Leaves is a tone down. Before them, Am7♭5 D7 |
+// Gm7 G♭7 falls a fifth from D7 to Gm7, but G♭7 breaks the cycle: the
+// twos are a tone apart, a step.
 func Links(c Changes, kinds []harmony.ApproachKind) []Link {
 	var twos []int
 	for i := range c.Chords {
@@ -76,10 +80,15 @@ func Links(c Changes, kinds []harmony.ApproachKind) []Link {
 		}
 		two := (root(next) - root(first) + 12) % 12
 		fall := (root(next) - root(five) + 12) % 12
+		// The cycle goes on only if the next II-V falls a fifth too.
+		cycle := false
+		if after := c.Next(next); after > next && !c.Chords[after].Silent {
+			cycle = (root(after)-root(next)+12)%12 == 5
+		}
 		var s Step
 		switch {
 		case two == 0:
-		case fall == 5:
+		case fall == 5 && cycle:
 			s = Fifths
 		case two == 1, two == 11:
 			s = HalfStep

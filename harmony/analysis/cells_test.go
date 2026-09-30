@@ -26,6 +26,7 @@ func TestCells(t *testing.T) {
 		dom7    = harmony.ChordDominantSeventh
 		halfDim = harmony.ChordHalfDiminished
 	)
+	type bar = []any
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
 		want    string
@@ -76,9 +77,23 @@ func TestCells(t *testing.T) {
 		"a II7 is no VI": {
 			changesOf(true, c, maj7, d, dom7, d, min7, g, dom7), "",
 		},
-		// Body And Soul, bars 23-24: the fifths become half tones.
+		// The fifths become half tones, a chord a bar: B♭7 comes on the
+		// first beat, an arrival.
 		"a chromatic descent": {
 			changesOf(false, d, min7, g, dom7, c, dom7, b, dom7, bb, dom7, eb, min7), "III-VI-II-V ♭II",
+		},
+		// Autumn Leaves, bars 25 to 28: Am7♭5 | D7 | Gm7 G♭7 changes its
+		// rhythm, and is no cell; Gm7 G♭7 | Fm7 E7 is one, G♭7 for C7
+		// and E7 for B♭7.
+		"a steady harmonic rhythm": {
+			barsOf(false, bar{a, halfDim}, bar{d, dom7}, bar{g, min7, gb, dom7}, bar{f, min7, e, dom7}, bar{eb, maj7}),
+			"III-VI-II-V ♭II",
+		},
+		// Body And Soul, bars 23 and 24, as played: B♭7 comes in the
+		// middle of the bar, one more link in a chain of dominants
+		// walking down to E♭m.
+		"a chain of dominants": {
+			barsOf(false, bar{d, min7, g, dom7}, bar{c, dom7, b, dom7, bb, dom7}, bar{eb, min7}), "",
 		},
 		"all three substituted": {
 			changesOf(true, c, maj7, eb, dom7, ab, dom7, db, dom7), "anatole ♭II",

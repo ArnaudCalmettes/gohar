@@ -32,12 +32,12 @@ parlé français et les alias.
 et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
-Les fiches du livre concordent à 83 degrés sur 83, et l'analyse tombe
-d'accord avec la tonalité déclarée par l'app, ou vérifiée à l'oreille,
-sur 82 % du corpus (1272 des 1547 grilles jugées, les modales et une
-liste relue à la main mises à part), sans la lire. Chaque tonique que
-le morceau donne est un candidat avec ses preuves, que `analyse`
-affiche : le verdict s'explique.
+Les fiches du livre et de Siron concordent sur leurs degrés et leurs
+modulations, et l'analyse tombe d'accord avec la tonalité déclarée par
+l'app, ou vérifiée à l'oreille, sur l'essentiel du corpus (le rapport
+de `corpus` donne le compte du jour), sans la lire. `analyse` affiche
+ce que le verdict pèse, le premier et le dernier accord et, quand ils
+divergent, la durée de leurs toniques : le verdict s'explique.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
 `Cooling` et `Discoverable`.
@@ -49,8 +49,8 @@ allocation, discipline des buffers audio, et un histogramme des délais
 `charts/ireal` lit les grilles d'iReal Pro, de l'URL jusqu'aux accords
 dans l'ordre de jeu : playlist, jetons sans perte, mesures, dépliage de
 la forme, chiffrages lus en accords de `harmony`, durées en temps.
-Vérifié sur 1678 grilles réelles, qui restent hors du dépôt, et sur
-quatre fiches d'analyse du livre *En Harmonie*. Deux commandes :
+Vérifié sur des playlists réelles, qui restent hors du dépôt, et sur
+les fiches d'analyse d'*En Harmonie* et de Siron. Deux commandes :
 `charts/cmd/analyse` affiche une grille annotée dans le terminal,
 `charts/cmd/corpus` compare l'analyse à l'app sur des playlists
 entières, les grilles auxquelles il manque l'information mises à part
@@ -450,25 +450,30 @@ La suite, dans l'ordre :
 - [x] le chiffrage en mineur, compté dans la gamme mineure comme le
   fait *En Harmonie* (tome 1, chapitre 8), une septième de dominante
   hors du V écrite avec son 7 (VII7), et le 7alt écrit 7alt.
-- [x] la tonalité du morceau par accumulation de preuves (`Candidates`),
-  lues et affichées, sans décider : le comptage confirme `Tune` plus
-  qu'il ne le dépasse (voir « Le verdict et ses preuves » dans
-  `grilles.md`). Sur des grilles seules, on ne fera guère mieux. Sur
-  les 1547 grilles jugées du corpus, ce que vaut chaque façon de
-  classer les candidats (le premier est-il la tonalité de référence ?) :
-
-  | Classement | D'accord | Égalités |
-  |---|---|---|
-  | retours seuls | 570 | 117 |
-  | ouvertures seules | 1073 | 209 |
-  | repos seuls | 1114 | 203 |
-  | toutes les preuves à égalité | 1210 | 109 |
-  | ouvertures, repos et fins, puis retours | 1253 | 25 |
-  | la fin, puis ouverture, repos, retours | 1257 | 2 |
-  | `Tune` | 1272 (82 %) | |
-- [ ] la mélodie comme preuve : ce qui sépare *In a Sentimental Mood*
-  (ré mineur) de *Lullaby Of Birdland* (la♭), au même profil de
-  preuves, et pose d'entrée sol mineur dans *It Don't Mean A Thing*.
+- [x] ce que le verdict pèse (`ReadTune`), affiché par `analyse` : le
+  premier accord, le dernier, et la durée de leurs toniques quand ils
+  divergent (voir « Ce que le verdict pèse » dans `grilles.md`). Il
+  remplace le comptage des preuves (`Candidates`), qui ne décidait pas.
+- [ ] la mémoire, dernier critère de Siron pour la modulation vraie, et
+  ce que la durée seule ne tranche pas : *Love Me Or Leave Me*, une
+  phrase sur deux en fa mineur, l'autre en la♭, s'entend en la♭.
+- [ ] *Somewhere* : sa grille ne donne la tonique qu'en mi♭ mineur au
+  pont et en mi♭ sur la fin, et l'analyse y entend une tierce picarde ;
+  à trancher à l'oreille.
+- [ ] `Home` et `homeAt`, la « maison » de l'ancien modèle, qui
+  installent encore le fond à la première phrase conclusive dans
+  `Sense` et servent de repli quand rien ne conclut : à retirer quand
+  des témoins diront ce qu'ils protègent (*Just Friends*).
+- [ ] le repli sans mesures de `modulation` (une mesure stable ou deux
+  cadences, pas vers le II), qui ne sert qu'aux suites d'accords des
+  tests : à supprimer ou à isoler.
+- [ ] les seuils à nous, à régler de façon empirique, aucune source ne
+  les chiffrant : deux mesures pour une zone, deux crans pour un centre
+  éloigné, la moitié d'une section pour une modulation vraie, la place
+  des régions dans les sections, une mesure pour un appui.
+- [ ] la mélodie : ce qui sépare *In a Sentimental Mood* (ré mineur)
+  de *Lullaby Of Birdland*, au même profil, et pose d'entrée sol
+  mineur dans *It Don't Mean A Thing*.
   Demande un format de grille qui porte la mélodie.
 - [ ] la jauge de tension, puis le direct avec l'attente et la
       surprise (voir `grilles.md`), dont le pivot diminué de Tenderly

@@ -91,8 +91,23 @@ func (k CellKind) String() string {
 // cadences" again (chapter 9, pp. 142-143): Cells reads the four
 // changes as written first, then with one X7 restored, then two, then
 // three, and keeps the first reading that makes a cell. The fifths
-// become half tones: in Body And Soul, Dm7 G7 C7 B7 B♭7 is a III VI II
-// V of B flat walking down chromatically, B7 for F7.
+// become half tones: Em7 E♭7 Dm7 G7 is a III VI II V of C, E♭7 for A7,
+// the III ♭III7 II V of Blue In Green and Too Young.
+//
+// No cell is heard where its V goes on to a dominant in the middle of
+// a bar: the formula dissolves into a chain of dominants, where « chaque
+// accord est emprunté à une tonalité différente » (Siron, La partition
+// intérieure, p. 357). In Body And Soul, Dm7 G7 | C7 B7 B♭7 walks down
+// from dominant to dominant onto E♭m, and in 'Round Midnight Fm7♭5 B♭7
+// | E♭m7 A♭7 D♭7 goes on to G♭7. A dominant on the first beat of a bar
+// is an arrival: the I7 of a blues. That the middle of the bar tells
+// the two apart is ours to say.
+//
+// Nor is a cell heard where its harmonic rhythm changes: its four
+// changes last as long as one another. In Autumn Leaves, Am7♭5 | D7 |
+// Gm7 G♭7 is a II V I, then the I moving on; the III VI II V is the
+// next one, Gm7 G♭7 | Fm7 E7. Without a steady rhythm, the fifths only
+// come down; a cell does not slow down. The rule is ours, from the ear.
 //
 // The aeolian cadence is three changes read on their roots too, with
 // the I it reaches: see [AeolianCadence]. It may share its I with an
@@ -107,6 +122,9 @@ func Cells(c Changes) []Cell {
 		}
 		for _, twins := range restorations {
 			if cl, ok := cellOf(ch, twins); ok {
+				if chained(c, i+3) || !steady(ch) {
+					break
+				}
 				cl.From, cl.To = i, i+3
 				cl.Resolves = resolves(c, i+3, cl.tonic)
 				out = append(out, cl.Cell)
@@ -207,6 +225,29 @@ func cellOf(ch []Change, twins uint8) (cl reading, ok bool) {
 }
 
 // resolves reports whether the V at change five goes on to the tonic.
+// steady reports whether the changes of a cell last as long as one
+// another: a constant harmonic rhythm.
+func steady(ch []Change) bool {
+	for _, x := range ch[1:] {
+		if x.Length != ch[0].Length {
+			return false
+		}
+	}
+	return true
+}
+
+// chained reports whether the V at change `five` goes on to a dominant
+// in the middle of a bar, a link in a chain of dominants.
+func chained(c Changes, five int) bool {
+	next := c.Next(five)
+	if next < 0 {
+		return false
+	}
+	ch := c.Chords[next]
+	bar := c.Bar(ch.Start)
+	return !ch.Silent && isDominant(ch.Chord.Pattern) && bar >= 0 && c.Bars[bar] != ch.Start
+}
+
 func resolves(c Changes, five int, tonic harmony.PitchClass) bool {
 	next := c.Next(five)
 	return next >= 0 && !c.Chords[next].Silent && c.Chords[next].Chord.Root == tonic

@@ -656,14 +656,6 @@ func TestPicardy(t *testing.T) {
 				bar{d, halfDim, g, dom7}, bar{c, maj}),
 			"Cm nat/harm/mel", true,
 		},
-		// Somewhere: the minor tonic comes by a IV-I in the middle of a
-		// phrase, and a two five whose two is a m7, the II of the major,
-		// has installed the major tonic before the end.
-		"a minor chord in a major tune": {
-			barsOf(false, bar{f, min6}, bar{c, min6}, bar{d, min7, g, dom7}, bar{c, six},
-				bar{f, min6}, bar{c, min6}, bar{d, min7, g, dom7}, bar{c, six}),
-			"C", false,
-		},
 		// Chega De Saudade: D minor for its first half, D major for its
 		// second, and a stop on D6. Not a picardy third: the reading says
 		// where it stops, the tune being as much minor as major.

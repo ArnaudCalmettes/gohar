@@ -62,12 +62,12 @@ func TestConclusions(t *testing.T) {
 	}
 }
 
-// A VI leant on is no conclusion. Yesterdays walks down the cycle onto
+// A neighbour leant on is no conclusion. Yesterdays walks down the cycle onto
 // B♭maj7 at bar 14, by F13 alone, and Em7♭5 A7 goes back to Dm: the
 // section ends open on A7. Rosetta comes down the same kind of cycle
 // onto F6, but on the strong bar 7 of its section, and concludes there
 // before Bm7♭5 E7 goes to the Am of its bridge.
-func TestLeaningOnTheSixth(t *testing.T) {
+func TestLeaningOnANeighbour(t *testing.T) {
 	const c, d, eb, e, f, g, a, bb, b harmony.PitchClass = 0, 2, 3, 4, 5, 7, 9, 10, 11
 	const (
 		min     = harmony.ChordMinorTriad
@@ -90,6 +90,24 @@ func TestLeaningOnTheSixth(t *testing.T) {
 				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{c, dom7},
 				bar{f, dom7}, bar{bb, maj7}, bar{e, halfDim}, bar{a, dom7}),
 			[]string{"none", "none"},
+		},
+		// The same walk onto Gm, the IV of the Dm that follows, a
+		// neighbour as the VI is.
+		"Yesterdays, leaning on the IV": {
+			barsOf(true, bar{d, min}, bar{e, halfDim, a, dom7}, bar{d, min}, bar{e, halfDim, a, dom7},
+				bar{d, min, d, minMaj7}, bar{d, min7}, bar{b, halfDim}, bar{e, dom7},
+				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{c, dom7},
+				bar{d, dom7}, bar{g, min}, bar{e, halfDim}, bar{a, dom7}),
+			[]string{"none", "none"},
+		},
+		// Held two bars, B♭maj7 is a rest, as the Bm7 of Spain is before
+		// its G: a tonicisation « ne porte que sur un accord ».
+		"Yesterdays, resting on the VI": {
+			barsOf(true, bar{d, min}, bar{e, halfDim, a, dom7}, bar{d, min}, bar{e, halfDim, a, dom7},
+				bar{d, min, d, minMaj7}, bar{d, min7}, bar{b, halfDim}, bar{e, dom7},
+				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{f, dom7},
+				bar{bb, maj7}, bar{bb, maj7}, bar{e, halfDim}, bar{a, dom7}),
+			[]string{"none", "B♭ at bar 13, weak, then Em7♭5"},
 		},
 		"Rosetta": {
 			barsOf(true, bar{f, six}, bar{e, dom7}, bar{eb, dom7}, bar{d, dom7},

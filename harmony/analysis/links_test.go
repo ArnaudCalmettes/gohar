@@ -42,6 +42,12 @@ func TestLinks(t *testing.T) {
 		"a tone, by chromatic dominants": {
 			barsOf(false, bar{g, min7, gb, dom7}, bar{f, min7, e, dom7}), "step",
 		},
+		// Autumn Leaves, bars 25 to 28: D7 falls a fifth to Gm7, but G♭7
+		// breaks the cycle, and the twos are a tone apart.
+		"a fifth, the cycle broken": {
+			barsOf(false, bar{a, halfDim}, bar{d, dom7}, bar{g, min7, gb, dom7}, bar{f, min7, e, dom7}),
+			"step step",
+		},
 		"the cycle of fifths": {
 			barsOf(false, bar{d, min7, g, dom7}, bar{c, min7, f, dom7}), "5th",
 		},
