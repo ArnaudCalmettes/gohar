@@ -1045,20 +1045,109 @@ en fait partie. Et deux notions dépendent de la structure : la
 demi-cadence, une section qui s'arrête sur le V, et le turnaround,
 « utilisé en fin de cycle » pour « relancer le thème ».
 
+#### Chez Siron
+
+*La partition intérieure* donne à la structure son cadre. Le temps
+musical est fait de niveaux emboîtés, temps, mesures, groupes de
+mesures, et au-dessus les formes, sections et morceaux (p. 147). Les
+standards groupent leurs mesures en « carrure », des fragments
+symétriques de 4, 8 ou 16 mesures : « La forme habituelle des morceaux
+de jazz respecte donc la carrure (phrases de 8 mesures, ou plus
+rarement de 4 mesures). Le blues possède une carrure particulière (3
+phrases de 4 mesures) » (p. 146 et 147).
+
+Dans une musique carrée, **les cadences conclusives marquent les
+groupes de mesures** (p. 390). Dans une phrase de 8 mesures, la
+cadence conclusive aboutit le plus souvent en mesure 7, la « forte »,
+parfois en mesure 8, la « faible ». L'accord de conclusion ouvre alors
+la **cadence-boucle**, le turnaround, qui se résout sur le premier
+accord du groupe suivant : « une anacrouse de la phrase harmonique
+suivante » (p. 353). Dans une forme AABA, c'est elle qui distingue le
+plus souvent les A entre eux.
+
+La forme song AABA a des sections de 8 mesures, 32 en tout, et le pont
+contraste « avec souvent un changement de tonalité ». Ses variantes
+changent la fin des A, la longueur (*Alone Together*, 14 + 14 + 8 + 8)
+ou l'ordre (ABAC, AABC). Le blues instrumental est une forme carrée de
+12 mesures en trois phrases de 4 (p. 408 et 488).
+
 #### Dans gohar
 
-Rien encore. Les marques de section d'une grille iReal ([A], [B]) ne
-sont pas lues : comme la tonalité, la structure se reconnaît, elle ne
-se dicte pas. La piste retenue est la récurrence de la séquence
-harmonique : dans *It Don't Mean A Thing*, les mesures 9 à 12
-reprennent les mesures 1 à 4, donc une section commence en 9, donc la
-mesure 8 en termine une, sur D7. Et la demi-cadence s'entend au
-contraste entre deux fins d'une même section, la première sur le V, la
-seconde sur le I, la question et sa réponse. Un II-V en dernière mesure
-qui renvoie au début de la section suivante n'est pas une demi-cadence,
-c'est une préparation ; et le turnaround est une place, pas une forme.
+`Sections` trouve les sections d'une grille par ses seuls accords. Les
+marques de section d'une grille iReal ([A], [B]) ne sont pas lues :
+comme la tonalité, la structure se reconnaît, et les annotations de la
+grille ne pourront servir qu'à affiner, en option.
 
-Repères : `Blues`, `Modal`, `IsModal`.
+**Une section, c'est un passage qui revient.** Chaque mesure devient ce
+qui y sonne, ses accords, leur place, leur fondamentale et leur
+tétrade, et deux passages sont les mêmes quand leurs mesures le sont,
+à une transposition près. Tout passage de 4 mesures ou plus qui revient
+est une récurrence. Dans *It Don't Mean A Thing*, les mesures 9 à 12
+reprennent les mesures 1 à 4 : une section commence en 9.
+
+**La forme grandit depuis la première mesure.** La première mesure
+commence une section ; on place d'abord la plus longue récurrence qui
+commence là où une section est connue, et chaque occurrence placée dit
+où d'autres commencent. Sans cet ancrage, la plus longue récurrence
+l'emporterait même mal placée : dans *Autumn Leaves*, la fin du A1 et
+tout le A2, douze mesures, reviennent à l'identique dans le B et le
+début du C. Une récurrence transposée doit toujours commencer sur une
+section connue : de courtes chaînes de dominantes se ressemblent à la
+quinte, et découperaient la forme au hasard.
+
+**La grille dit la longueur d'une section.** Quand une occurrence est
+suivie aussitôt de la suivante, comme A1 de A2, leur écart est la
+longueur de la section, même si leurs dernières mesures diffèrent :
+c'est la cadence-boucle de Siron. Chaque occurrence couvre alors cette
+longueur, et pas plus : dans *Billy Boy*, le A' dont les deux dernières
+mesures préparent le pont reste un A de 16 mesures, et le pont une
+section à part. L'écart entre la dernière occurrence et la fin de la
+grille ne compte pas : une grille qui commence par une levée de deux
+mesures coupe d'autant son dernier A. Ce qui ne revient
+nulle part est une section à part, sauf une ou deux mesures avant la
+première section, qui sont une levée (notée « - »).
+
+**La carrure ne fait que départager.** C'est la seule connaissance d'un
+style que la forme utilise, pour que le mécanisme reste valable hors du
+jazz. Une récurrence à deux mesures d'un multiple de 8 en prend la
+longueur ; une récurrence de moins de 8 mesures ne peut pas commencer
+hors de la grille de 8, et celle qui commence dessus couvre 8 mesures
+quand elle en a la place, ses dernières mesures étant une cadence-boucle
+qui diffère (les A de *There Is No Greater Love*, identiques sur cinq
+mesures seulement). Une plage d'au moins 16 mesures, multiple de 8, qui
+ne revient nulle part se coupe en sections de 8 : le B et le C
+d'*Autumn Leaves*, et un thème de 16 mesures d'un seul tenant comme
+*Blue Bossa*, que les grilles marquent en deux sections de 8.
+La grille se cale sur la levée ou l'introduction de chaque morceau. Une
+longueur que la grille dit elle-même n'est jamais arrondie : les A de
+14 mesures d'*Alone Together* restent des A de 14.
+
+#### Ce qui est difficile
+
+Sur 1350 standards, `Sections` lit un AABA dans un tiers d'entre eux
+et un ABAC dans un sur sept. Restent :
+
+- **les grilles sans reprise** : un blues, dont les trois phrases ne
+  reviennent pas, reste une seule section ; un thème de 16 ou 32
+  mesures sans reprise se coupe en sections de 8, ce qui est juste
+  pour *Blue Bossa* ou *Stella By Starlight*, mais cache les reprises
+  de *Just In Time* ou *How Insensitive*, qui diffèrent de plus d'une
+  mesure ;
+- **les niveaux** : « A16 A16 », c'est souvent un ABAC lu au niveau des
+  moitiés, et la séquence du pont du Rhythm Changes (D7 G7 puis C7 F7)
+  vit au niveau inférieur ; la forme n'en rend qu'un ;
+- **la demi-cadence**, qui s'entendra au contraste entre deux fins
+  d'une même section, la première sur le V, la seconde sur le I, la
+  question et sa réponse. Un II-V en dernière mesure qui renvoie au
+  début de la section suivante n'est pas une demi-cadence, c'est une
+  cadence-boucle.
+
+L'analyse de la tonalité n'utilise pas encore la forme : elle en fera
+ses phrases, et la place des cadences conclusives dira où la musique se
+pose. `charts/cmd/forms` lit la forme de playlists entières, comme
+`corpus` la tonalité.
+
+Repères : `Sections`, `SectionsWith`, `Blues`, `Modal`, `IsModal`.
 
 ## 7. Ce que l'analyse rend
 
@@ -1262,3 +1351,20 @@ sont pas tous des erreurs de l'analyse : sur les deux grilles vérifiées,
 c'est l'app qui se trompait. Leurs familles pointent les questions
 ouvertes. Avec `-evidence`, le rapport liste en plus les grilles où le
 candidat qui a le plus de preuves n'est pas la tonalité entendue.
+
+Le rapport se termine par **la forme** : les sections que `Sections`
+trouve par les accords, comparées aux marques de section de la grille
+([A], [B]), que l'analyse ne lit pas. La comparaison se fait lettres
+renommées dans l'ordre d'apparition, pour qu'un AABA marqué avec
+d'autres lettres reste un AABA ; une section transposée y compte comme
+une autre, puisque c'est ce que la grille marque (le pont de *So What*
+est son A un demi-ton plus haut). Chaque grille est rangée en même
+forme, mêmes sections sous d'autres lettres, sections à deux mesures
+près (une levée, une cadence-boucle), même forme à un autre niveau
+(A16 B16 marqué, ABAC trouvé : les moitiés d'un côté, les phrases de
+l'autre), autre forme, ou pas de marques. Une levée est mise de côté
+avant de comparer : la grille de *I Should Care* compte sa levée dans
+son premier A, la détection la met à part. Comme
+l'armure, les marques sont souvent absentes ou approximatives : un
+désaccord ne dit pas qui a tort. Avec `-forms`, le rapport liste les
+grilles en désaccord, la forme marquée au-dessus de la forme trouvée.

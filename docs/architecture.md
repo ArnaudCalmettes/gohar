@@ -51,7 +51,7 @@ gohar/
                              candidats et leurs preuves, tierce
                              picarde, plages modales, blues, degrés,
                              tonique pressentie et modulations
-                             (Sensed)
+                             (Sensed), forme par récurrences (Sections)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
@@ -69,8 +69,8 @@ gohar/
     cmd/analyse/             une grille et son analyse dans le terminal
     cmd/corpus/              l'analyse de playlists entières, comparée
                              à la tonalité que l'app déclare
-    cmd/forms/               sonde : la forme des grilles, trouvée par
-                             les seules récurrences d'accords
+    cmd/forms/               la forme de playlists entières, lue par
+                             analysis.Sections
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
