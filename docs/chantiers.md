@@ -456,14 +456,43 @@ La suite, dans l'ordre :
   remplace le comptage des preuves (`Candidates`), qui ne décidait pas.
 - [ ] la mémoire, dernier critère de Siron pour la modulation vraie, et
   ce que la durée seule ne tranche pas : *Love Me Or Leave Me*, une
-  phrase sur deux en fa mineur, l'autre en la♭, s'entend en la♭.
+  phrase sur deux en fa mineur, l'autre en la♭, s'entend en la♭. Les
+  témoins à écouter d'abord : sur le corpus, 43 grilles ont un premier
+  et un dernier accord qui divergent, et 7 se jouent à moins d'un contre
+  deux en durée. Pour chacune, laquelle des deux tonalités on entend,
+  et ce qui l'emporte, la première entendue ou l'arrivée :
+
+  | Morceau | Premier | Dernier | Analyse |
+  |---|---|---|---|
+  | *Lullaby Of Birdland* | fa mineur, 17 mesures | la♭, 15 | fa mineur, confirmé à l'oreille |
+  | *Love Me Or Leave Me* | fa mineur, 14 | la♭, 7 | fa mineur ; l'oreille dit la♭ |
+  | *How Deep Is The Ocean* | do mineur, 18,5 | mi♭, 10 | do mineur ; l'app dit mi♭ |
+  | *So In Love* | fa mineur, 46 | la♭, 23 | fa mineur |
+  | *Bess You Is My Woman* | si♭, 28,5 | ré mineur, 23,5 | si♭ |
+  | *Glad To Be Unhappy* | sol mineur, 8 | fa, 16 | fa |
+  | *The Summer Wind* | fa, 14,5 | la, 10 | fa |
+
 - [ ] *Somewhere* : sa grille ne donne la tonique qu'en mi♭ mineur au
   pont et en mi♭ sur la fin, et l'analyse y entend une tierce picarde ;
   à trancher à l'oreille.
 - [ ] `Home` et `homeAt`, la « maison » de l'ancien modèle, qui
   installent encore le fond à la première phrase conclusive dans
   `Sense` et servent de repli quand rien ne conclut : à retirer quand
-  des témoins diront ce qu'ils protègent (*Just Friends*).
+  des témoins diront ce qu'ils protègent. Le seul connu est *Just
+  Friends*, qui s'ouvre sur Cmaj7, son IV, et ne se pose qu'à la fin
+  sur G6 : à écouter.
+- [ ] les couleurs proposées, à rebrancher sur `Sensed` : ce qu'on dit à
+  l'apprenant sur une tonicisation (la gamme du fond, celle de l'accord
+  tonicisé, les deux ?), sur une région transitoire, sur un II-V qui ne
+  résout pas. Le premier livrable d'un outil d'analyse pour apprenants.
+- [ ] la forme donnée plutôt que détectée : des sections passées à
+  `Sense` quand elles sont connues (un standard AABA de 32 mesures),
+  pour le direct comme pour les grilles dont la forme se sait.
+- [ ] la fiche *Django* (Siron 5.11.4), laissée de côté faute de
+  savoir lire son niveau de modulation.
+- [ ] le niveau de jeu tiré d'une grille : quelles mécaniques d'abord,
+  parmi ce que l'analyse sait (les cellules à reconnaître, la cadence
+  qui arrive, la tonique qui bouge, la section qui se referme).
 - [ ] le repli sans mesures de `modulation` (une mesure stable ou deux
   cadences, pas vers le II), qui ne sert qu'aux suites d'accords des
   tests : à supprimer ou à isoler.
@@ -522,8 +551,15 @@ trancher sans source.
 
   Le premier, le deuxième, le sixième et le huitième sont cités dans
   `grilles.md`, le troisième et le dixième dans `voicings.md`.
-- [ ] Jacques Chailley, *40 000 ans de musique* (dans le projet) :
-  l'histoire, à citer pour la tierce picarde et ce que la doc en dit.
+- [x] Jacques Chailley, *40 000 ans de musique* (dans le projet) : une
+  histoire culturelle, sans règle d'harmonie ; rien sur la cadence, la
+  tonique ni la modulation, et les notions que Siron lui emprunte
+  (sensibilisation, naturalisation) sont dans son *Traité historique
+  d'analyse harmonique* et *Expliquer l'harmonie ?*, à se procurer.
+  Cité dans `grilles.md` pour les feuilles bleues (p. 263), le morceau
+  « éprouvé » par l'oreille (p. 137) et l'extension de la consonance
+  (p. 151-154) ; dans `oreille.md` pour Royaumont (p. 162-163) ; ici
+  pour l'improvisateur (p. 261-263, 306).
 - [x] *En Harmonie*, tome 2, chapitre 5, « Les pédales » jusqu'à
   l'ostinato : la pédale simple et double, de tonique et de dominante,
   générale ou passagère, sa notation (« X ped. » plutôt que la barre
@@ -617,7 +653,16 @@ Les autres jeux :
 - [ ] le shoot'em up bullet hell qui est un jeu d'harmonie déguisé, sur
       rail, sans esquive.
 - [ ] les quatre pistes du billet sur la game loop de l'improvisateur,
-      triées en jeux distincts plutôt qu'empilées dans un seul.
+      triées en jeux distincts plutôt qu'empilées dans un seul. Le
+      billet a sa phrase d'ouverture chez Chailley : « Une "composition"
+      n'est qu'une improvisation qui, jugée particulièrement réussie, a
+      été fixée dans la mémoire », et l'interprète d'avant le papier,
+      « un créateur qui reçoit une tradition et la modèle à sa guise »,
+      « c'est encore ce que font nos orchestres de jazz » (*40 000 ans
+      de musique*, p. 261-263) ; le jazz, « prééminence des interprètes,
+      improvisateurs sur canevas » (p. 306). Le canevas, c'est la
+      grille : le level design d'un niveau tiré d'une grille revient à
+      de la composition.
 
 Pistes ouvertes sur les cibles, sans urgence et pas encore assez nettes
 pour en faire des règles. Elles relèvent du jeu, jamais du dex.

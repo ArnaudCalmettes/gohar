@@ -1224,10 +1224,19 @@ reposée souvent, une fin sur le relatif majeur. La prédominance les lit
 tous deux en mineur ; l'app déclare le second en la♭. *It Don't Mean A
 Thing* s'arrête sur B♭6, et la mélodie pose d'entrée 1 3 5 de sol
 mineur, où la prédominance le lit aussi. Sur des grilles seules, on ne
-fera guère mieux ; la
-mélodie pèsera en plus, quand un format la portera. C'est
-d'ailleurs le premier des dix commandements : « Tu partiras de la
-mélodie. »
+fera guère mieux ; la mélodie pèsera en plus, quand un format la
+portera. C'est d'ailleurs le premier des dix commandements : « Tu
+partiras de la mélodie. » Et la grille n'a jamais été la musique.
+Chailley le dit des « feuilles bleues que vendent les crieurs de rue »
+: « Que dirait-on d'un chef de jazz qui exigerait de son orchestre de
+jouer exactement ce qui est imprimé » sur elles, et « que diraient les
+musicologues du XXIIIe siècle, en l'absence de disques, s'ils devaient
+juger le jazz du XXe siècle d'après lesdites feuilles bleues ? » (*40
+000 ans de musique*, p. 263). Une grille iReal est une feuille bleue :
+l'analyse en tire ce qu'elle peut, et l'oreille garde le jugement
+final, comme au temps où un morceau n'était définitif « que lorsqu'il
+avait été "éprouvé", c'est-à-dire soumis à la "preuve" d'une exécution
+d'essai » (p. 137).
 
 **L'ouverture sur un accord qui n'est pas la tonique.** *Only Trust
 Your Heart* s'ouvre sur Fmaj7♯11, le IV lydien de do, et l'analyse part
@@ -1559,6 +1568,22 @@ plus souvent, ou en 6, ou avec la neuvième majeure par-dessus la
 septième quand la mélodie est sur la fondamentale. Ce sont des
 propositions « en toute logique » : l'original, quand on le connaît,
 l'emporte.
+
+Que ces extensions soient des couleurs et non des fautes tient à
+l'histoire. La dissonance ne s'entend pas « dans l'acception arbitraire
+et inexacte des traités d'harmonie, qui appellent ainsi tout accord
+autre que l'accord parfait à 3 sons, mais dans son sens réel :
+agrégation non réductible à une perception globale de consonance,
+elle-même extensible et variable en fonction de l'évolution du
+langage » (Chailley, *40 000 ans de musique*, p. 151-152). La
+consonance s'est étendue par « notes étrangères progressivement
+assimilées », Debussy introduisant la onzième naturelle et Ravel la
+stabilisant (p. 154) ; les extensions du jazz sont l'étape suivante du
+même mouvement, et le tome 2 d'*En Harmonie* les entend comme des
+appoggiatures des notes réelles. Ce qui reste à rebrancher ici, c'est
+le lien avec la tonique pressentie : ce que l'on propose sur une
+tonicisation, sur une région, sur un II-V qui ne résout pas (voir
+`chantiers.md`).
 
 ### L'attente et la surprise
 

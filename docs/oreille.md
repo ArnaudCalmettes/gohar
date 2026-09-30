@@ -85,6 +85,15 @@ valent pour toutes les activités ; la feuille de route décrit la suite.
   doit rendre la main tout de suite. Résolu par `onKey`, seul chemin de
   toute source vers le moteur et l'affichage.
 
+- **Le papier fait paraître compliqué ce que l'oreille trouve
+  simple.** Chailley raconte une lecture de Messiaen à Royaumont : les
+  lecteurs, sur la partition, « Quelle complexité rythmique ! » ; les
+  auditeurs, sans le papier, « Rien n'est plus simple. C'est du 4/4 en
+  rubato » ; d'où « les illusions nées de la complexité sur papier »
+  (*40 000 ans de musique*, p. 162-163). Le jeu à l'oreille doit poser
+  ses questions sur ce qui sonne, jamais sur ce qui s'écrit ; et une
+  grille chargée d'extensions peut s'entendre comme trois accords.
+
 ## Ce que le premier playtest a appris
 
 - Sous Linux, le port « Midi Through » arrive en tête de liste et ne
