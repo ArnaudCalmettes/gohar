@@ -158,6 +158,9 @@ func groundsOf(c analysis.Changes) string {
 	}
 	for i, s := range sensed {
 		line := changeName(c.Chords[i]) + " in " + name(s.Ground)
+		if s.Region != nil {
+			line += " (" + name(s.Region) + ")"
+		}
 		if after := name(grounds[i]); after != name(s.Ground) {
 			line += ", in " + after + " afterwards"
 		}
@@ -166,13 +169,14 @@ func groundsOf(c analysis.Changes) string {
 	return strings.Join(out, "\n")
 }
 
-// Tune Up modulates at each phrase: C major installs on the second bar
-// of Cmaj7, B flat on Gm7, which still holds in it, and D comes home
-// with one cadence. Black Orpheus modulates to C major on its second
-// cadence there, A7♭9 Dm7 between them keeping C, and comes home to A
-// minor. Along Came Betty, heard as a chorus that comes round, dances
-// between A flat and its neighbours, each tonic held a single bar, and
-// never modulates.
+// The ground and the region at each change. Tune Up opens a region of C
+// major on Cmaj7 and one of B flat on B♭maj7, in the middle of its
+// sections: transitory, the ground stays D, and Gm7 still holds in B
+// flat. Black Orpheus opens C major on its first Cmaj7 and keeps it
+// through A7♭9 Dm7 G7 to Fmaj7, the ground staying A minor. Along Came
+// Betty, heard as a chorus that comes round, dances between A flat and
+// its neighbours, each tonic held a single bar, and never modulates.
+// Without sections, no region becomes the ground (see modulation).
 func TestModulation(t *testing.T) {
 	const (
 		c, d, eb, e, f, gb, g, ab, a, bb, b harmony.PitchClass = 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
@@ -186,36 +190,59 @@ func TestModulation(t *testing.T) {
 		halfDim = harmony.ChordHalfDiminished
 	)
 	flatNine, _ := harmony.NewChordPattern(0, 4, 7, 10, 13)
+	type bar = []any
 	for name, tc := range map[string]struct {
 		changes analysis.Changes
 		want    []string
 	}{
 		"Tune Up": {
-			changesOf(false, e, min7, a, dom7, d, maj7, d, maj7, d, min7, g, dom7, c, maj7, c, maj7,
-				c, min7, f, dom7, bb, maj7, g, min7, e, min7, a, dom7, d, maj7, d, maj7),
+			barsOf(true, bar{e, min7}, bar{a, dom7}, bar{d, maj7}, bar{d, maj7},
+				bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{c, maj7},
+				bar{c, min7}, bar{f, dom7}, bar{bb, maj7}, bar{g, min7},
+				bar{e, min7}, bar{f, dom7}, bar{bb, maj7}, bar{a, dom7},
+				bar{e, min7}, bar{a, dom7}, bar{d, maj7}, bar{d, maj7},
+				bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{c, maj7},
+				bar{c, min7}, bar{f, dom7}, bar{bb, maj7}, bar{g, min7},
+				bar{e, min7}, bar{a, dom7}, bar{d, maj7}, bar{d, maj7}),
 			[]string{
-				"Em7 in ?, in D afterwards",
-				"A7 in ?, in D afterwards",
+				"Em7 in D",
+				"A7 in D",
 				"Dmaj7 in D",
 				"Dmaj7 in D",
-				"Dm7 in D, in C afterwards",
-				"G7 in D, in C afterwards",
-				"Cmaj7 in D, in C afterwards",
-				"Cmaj7 in C",
-				"Cm7 in C, in B♭ afterwards",
-				"F7 in C, in B♭ afterwards",
-				"B♭maj7 in C, in B♭ afterwards",
-				"Gm7 in B♭",
-				"Em7 in B♭, in D afterwards",
-				"A7 in B♭, in D afterwards",
+				"Dm7 in D",
+				"G7 in D",
+				"Cmaj7 in D (C)",
+				"Cmaj7 in D (C)",
+				"Cm7 in D (C)",
+				"F7 in D (C)",
+				"B♭maj7 in D (B♭)",
+				"Gm7 in D (B♭)",
+				"Em7 in D",
+				"F7 in D",
+				"B♭maj7 in D",
+				"A7 in D",
+				"Em7 in D",
+				"A7 in D",
+				"Dmaj7 in D",
+				"Dmaj7 in D",
+				"Dm7 in D",
+				"G7 in D",
+				"Cmaj7 in D (C)",
+				"Cmaj7 in D (C)",
+				"Cm7 in D (C)",
+				"F7 in D (C)",
+				"B♭maj7 in D (B♭)",
+				"Gm7 in D (B♭)",
+				"Em7 in D",
+				"A7 in D",
 				"Dmaj7 in D",
 				"Dmaj7 in D",
 			},
 		},
 		"Black Orpheus": {
-			changesOf(false, a, minor, b, halfDim, e, flatNine, a, minor, b, halfDim, e, flatNine, a, minor,
-				d, min7, g, dom7, c, maj7, a, flatNine, d, min7, g, dom7, c, maj7, f, maj7,
-				b, halfDim, e, dom7, a, minor),
+			barsOf(false, bar{a, minor}, bar{b, halfDim}, bar{e, flatNine}, bar{a, minor}, bar{b, halfDim}, bar{e, flatNine}, bar{a, minor},
+				bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{a, flatNine}, bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{f, maj7},
+				bar{b, halfDim}, bar{e, dom7}, bar{a, minor}),
 			[]string{
 				"Am in Am nat/harm/mel",
 				"Bm7♭5 in Am nat/harm/mel",
@@ -224,16 +251,16 @@ func TestModulation(t *testing.T) {
 				"Bm7♭5 in Am nat/harm/mel",
 				"E7♭9 in Am nat/harm/mel",
 				"Am in Am nat/harm/mel",
-				"Dm7 in Am nat/harm/mel, in C afterwards",
-				"G7 in Am nat/harm/mel, in C afterwards",
-				"Cmaj7 in Am nat/harm/mel, in C afterwards",
-				"A7♭9 in Am nat/harm/mel, in C afterwards",
-				"Dm7 in Am nat/harm/mel, in C afterwards",
-				"G7 in Am nat/harm/mel, in C afterwards",
-				"Cmaj7 in C",
-				"Fmaj7 in C",
-				"Bm7♭5 in C, in Am nat/harm/mel afterwards",
-				"E7 in C, in Am nat/harm/mel afterwards",
+				"Dm7 in Am nat/harm/mel",
+				"G7 in Am nat/harm/mel",
+				"Cmaj7 in Am nat/harm/mel (C)",
+				"A7♭9 in Am nat/harm/mel (C)",
+				"Dm7 in Am nat/harm/mel (C)",
+				"G7 in Am nat/harm/mel (C)",
+				"Cmaj7 in Am nat/harm/mel (C)",
+				"Fmaj7 in Am nat/harm/mel (C)",
+				"Bm7♭5 in Am nat/harm/mel (C)",
+				"E7 in Am nat/harm/mel (C)",
 				"Am in Am nat/harm/mel",
 			},
 		},
@@ -247,15 +274,15 @@ func TestModulation(t *testing.T) {
 				"Fmaj7 in F",
 				"Am7 in F",
 				"D7 in F",
-				"Gm7 in F",
-				"C7 in F",
-				"Gm7 in F",
-				"Gm(maj7) in F",
-				"Gm7 in F",
-				"Gm(maj7) in F",
-				"Dm7 in F",
-				"G7 in F",
-				"C7 in F",
+				"Gm7 in F (Gm mel)",
+				"C7 in F (Gm mel)",
+				"Gm7 in F (Gm mel)",
+				"Gm(maj7) in F (Gm mel)",
+				"Gm7 in F (Gm mel)",
+				"Gm(maj7) in F (Gm mel)",
+				"Dm7 in F (Gm mel)",
+				"G7 in F (Gm mel)",
+				"C7 in F (C)",
 				"Fmaj7 in F",
 			},
 		},
@@ -275,17 +302,17 @@ func TestModulation(t *testing.T) {
 		},
 		// Every cadence defines the tonality, a plagal one included (En
 		// Harmonie, tome 1, chapter 8 §3, p. 103): A♭maj7 E♭maj7, the IV
-		// then the I, opens E flat, and two bars of it install it.
+		// then the I, opens a region of E flat.
 		"a plagal cadence opens a tonic": {
-			changesOf(false, c, maj7, d, min7, g, dom7, c, maj7, ab, maj7, eb, maj7, eb, maj7),
+			barsOf(false, bar{c, maj7}, bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{ab, maj7}, bar{eb, maj7}, bar{eb, maj7}),
 			[]string{
 				"Cmaj7 in C",
 				"Dm7 in C",
 				"G7 in C",
 				"Cmaj7 in C",
-				"A♭maj7 in C, in E♭ afterwards",
-				"E♭maj7 in C, in E♭ afterwards",
-				"E♭maj7 in E♭",
+				"A♭maj7 in C",
+				"E♭maj7 in C (E♭)",
+				"E♭maj7 in C (E♭)",
 			},
 		},
 		"Along Came Betty": {
@@ -300,7 +327,7 @@ func TestModulation(t *testing.T) {
 				"B♭m7 in A♭",
 				"Bm7 in A♭",
 				"E7 in A♭",
-				"Amaj7 in A♭",
+				"Amaj7 in A♭ (A)",
 				"A♭7 in A♭",
 				"Gmaj7 in A♭",
 				"F♯7 in A♭",
@@ -310,9 +337,9 @@ func TestModulation(t *testing.T) {
 				"F♯m7 in A♭",
 				"Gm7 in A♭",
 				"C7 in A♭",
-				"Fmaj7 in A♭",
-				"A7♭9 in A♭",
-				"Dm7 in A♭",
+				"Fmaj7 in A♭ (F)",
+				"A7♭9 in A♭ (F)",
+				"Dm7 in A♭ (F)",
 				"G7 in A♭",
 				"Cm7♭5 in A♭",
 				"F7 in A♭",
@@ -426,25 +453,26 @@ func TestSenseBlues(t *testing.T) {
 }
 
 // The end of My Way. The first phrase lands on C, held two bars after
-// G7. After a modulation to F, F/C is the IV of C over a tonic pedal,
-// not a tonic: with C it makes a plagal cadence, an amen that brings
-// home back, and heard afterwards C starts with it.
+// G7. After a region of F, F/C is the IV of C over a tonic pedal, not a
+// tonic: with C it makes a plagal cadence, an amen that brings the
+// ground back.
 func TestHomeOnSight(t *testing.T) {
 	const c, f, g harmony.PitchClass = 0, 5, 7
-	ch := changesOf(false, g, harmony.ChordDominantSeventh, c, harmony.ChordMajorSeventh, c, harmony.ChordMajorSeventh,
-		g, harmony.ChordMinorSeventh,
-		c, harmony.ChordDominantSeventh, f, harmony.ChordMajorSeventh, f, harmony.ChordMajorSeventh,
-		f, harmony.ChordMajorTriad, c, harmony.ChordMajorTriad)
+	type bar = []any
+	ch := barsOf(false, bar{g, harmony.ChordDominantSeventh}, bar{c, harmony.ChordMajorSeventh}, bar{c, harmony.ChordMajorSeventh},
+		bar{g, harmony.ChordMinorSeventh},
+		bar{c, harmony.ChordDominantSeventh}, bar{f, harmony.ChordMajorSeventh}, bar{f, harmony.ChordMajorSeventh},
+		bar{f, harmony.ChordMajorTriad}, bar{c, harmony.ChordMajorTriad})
 	ch.Chords[7].Bass = c
 	want := []string{
 		"G7 in ?, in C afterwards",
 		"Cmaj7 in C",
 		"Cmaj7 in C",
-		"Gm7 in C, in F afterwards",
-		"C7 in C, in F afterwards",
-		"Fmaj7 in C, in F afterwards",
-		"Fmaj7 in F",
-		"F/C in F, in C afterwards",
+		"Gm7 in C",
+		"C7 in C",
+		"Fmaj7 in C (F)",
+		"Fmaj7 in C (F)",
+		"F/C in C (F)",
 		"C in C",
 	}
 	if got := groundsOf(ch); got != strings.Join(want, "\n") {

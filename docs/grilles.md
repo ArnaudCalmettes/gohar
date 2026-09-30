@@ -377,7 +377,7 @@ la même section revient avec une fin différente, la question sur le V
 puis la réponse sur le I (voir « Le morceau »).
 
 **Le IV7-I7 du blues** n'est pas une plagale : dans un blues, le I7 est
-la maison, et rien ne conclut. Le livre range pourtant IV7-I7 parmi les
+le fond, et rien ne conclut. Le livre range pourtant IV7-I7 parmi les
 plagales, avec *Black Coffee*, où le Imaj7 « peut être modifié en I7
 afin de donner une couleur bluesy » : un morceau tonal qui emprunte la
 couleur du blues. Ce cas-là reste ouvert.
@@ -615,11 +615,13 @@ d'ailleurs sans changer de tonalité : Dm7 G7(♭13) Cmaj7 emprunte son
 G7(♭13) à do mineur. Une cadence vers un autre degré en fait un « Ier
 degré temporaire » : dans *There Will Never Be Another You*, Dm7♭5 G7♭9
 Cm7 tonicise le VI de mi♭ sans quitter mi♭. **La modulation** change de
-tonalité pour de bon, et le livre n'en donne pas une règle unique : ses
-fiches montrent trois indices qui se combinent, la cible est-elle un
-degré de la tonalité, combien de temps la nouvelle tonique tient (Tune
-Up, un I tenu deux mesures), combien de cadences la confirment (*Black
-Orpheus*, do majeur sur sept mesures).
+tonalité : « une cadence prépare généralement la modulation, celle-ci
+étant confirmée si la durée est assez longue pour que la nouvelle
+tonalité soit installée » (tome 1, chapitre 10 §1.8, p. 159). Le livre
+ne chiffre pas cette durée ; ses fiches la montrent : quatre mesures de
+do dans *Tune Up*, sept dans *Black Orpheus*. Siron affine en trois
+niveaux, tonicisation, modulation transitoire, modulation vraie (voir
+« La modulation »).
 
 Enfin le livre met en garde, dans le tome 2, contre l'analyse modale
 appliquée à tort : Dm7 G7 Cmaj7 n'est pas ré dorien, sol mixolydien et
@@ -652,8 +654,8 @@ mélodique, quand rien ne tranche), et le fond est vide au début d'un
 morceau, avant la première tonique.
 
 À part, **la tonique de départ** est gardée en mémoire, pour reconnaître
-le retour à la maison après un pont qui a modulé, si fréquent sur une
-forme AABA.
+le retour au fond de départ après un pont qui a modulé, si fréquent sur
+une forme AABA.
 
 #### Ce qui fait une tonique
 
@@ -732,15 +734,16 @@ que celles des degrés II à VI, jamais le VII, le m7♭5 du majeur
 est le II de mi♭ mineur.
 
 Au début, le **premier accord** installe le fond s'il peut être une
-tonique, sinon la première cadence résolue. C'est l'indice le plus
-faible, beaucoup de standards commençant sur un II ou un IV, et ce
-fond n'est qu'une hypothèse tant que la première phrase ne s'est pas
-posée. Un **blues** reconnu a sa tonique pour fond dès la première
+tonique, sinon la première cadence résolue. C'est un indice faible,
+beaucoup de standards commençant sur un II ou un IV : ce fond est
+l'hypothèse de l'oreille qui avance, et la tonalité du morceau se
+conclut au bout (voir « La tonalité, par le premier et le dernier
+accord »). Un **blues** reconnu a sa tonique pour fond dès la première
 mesure.
 
 Une **plagale fait tout ce que fait un V-I** : IV puis I, ou ♭VII7
-puis I, elle confirme une tonique déjà là, ramène à la maison, ou ouvre
-une région. *En Harmonie* ne réserve ce rôle à aucune cadence :
+puis I, elle confirme une tonique déjà là, ramène au fond de départ, ou
+ouvre une région. *En Harmonie* ne réserve ce rôle à aucune cadence :
 une cadence est « un enchaînement d'accords caractéristiques tendant à
 marquer le passage d'une phrase à l'autre, tout en définissant la
 tonalité » (tome 1, chapitre 8 §3, p. 103). Ce qui sépare un Dm7 Am7 de
@@ -769,10 +772,11 @@ ensuite ; l'analyse l'écrit chaque fois.
 *En Harmonie* la définit en deux conditions : « Une cadence prépare
 généralement la modulation, celle-ci étant confirmée si la durée est
 assez longue pour que la nouvelle tonalité soit installée » (tome 1,
-chapitre 10 §1.8, p. 159). gohar la lit au présent, avec un parti pris :
-**être libéral**. Appeler modulation une tonicisation
-appuyée est une analyse que beaucoup de musiciens feraient ; ne pas
-voir bouger les repères tonaux serait une faiblesse.
+chapitre 10 §1.8, p. 159). gohar la lit au présent, à deux niveaux. La
+**région** est libérale : une cadence à la bonne place l'ouvre, et
+appeler modulation une tonicisation appuyée est une analyse que
+beaucoup de musiciens feraient. Le **fond**, lui, est strict : il ne
+bascule que sur une modulation vraie.
 
 Une région devient le fond quand c'est une **modulation vraie** : entendue
 depuis la cadence qui l'a ouverte, elle tient la première mesure d'une
@@ -787,14 +791,11 @@ tant qu'aucun accord du fond ne revient : un accord qui n'appartient ni
 au fond ni à la région est une tonicisation à l'intérieur de celle-ci,
 le Gm7 C7 du pont de *Body and Soul*, en ré.
 
-Sans mesures, en direct, aucune section ne dit où tombe une modulation
-vraie, et l'ancienne règle reste en repli : une région devient le fond
-quand elle tient **plus d'une mesure d'accords stables**, ceux qui
-tiennent en elle sans rien préparer, ou quand **une deuxième cadence**
-la vise tant qu'elle dure, deux chiffrages à nous. On n'y module pas
-vers le II du fond : dans *My Lucky Star*, Am7 D7 Gm7 puis quatre
-mesures de Gm7 Gm(maj7) restent en fa, avant que Dm7 G7 C7sus C7 ne
-ramène à F6.
+Sans sections, rien ne dit où tombe une modulation dans la forme, et
+une région reste une région : le fond ne bascule pas. Une règle de
+repli a longtemps tenu là, une mesure d'accords stables ou une deuxième
+cadence ; elle ne servait plus qu'aux suites d'accords sans mesures des
+tests, et elle est tombée.
 
 Une cadence qui n'ouvre pas de région ne fait que toniciser, et laisse
 la région en place (A7 Dm7 dans la région de do, dans *Black Orpheus*).
@@ -821,12 +822,12 @@ durée « assez longue ») est plus large que la tonicisation de Siron et
 plus étroite que sa transitoire. Il met entre crochets un II-V-I tenu
 deux mesures, là où Siron appellerait transitoire un II-V qui ne se
 résout pas. gohar suit le livre, dont les fiches sont l'oracle : la
-tonicisation de chaque accord (`Tonicised`), la région (`Region`,
-l'ancienne tonique locale), qui est une modulation au sens d'*En
+tonicisation de chaque accord (`Tonicised`), la région (`Region`),
+qui est une modulation au sens d'*En
 Harmonie*, et le fond (`Ground`). `analyse` écrit la région entre
-parenthèses et la tonicisation entre crochets : « Am (C) [Dm] ». Le
-passage de la région au fond, la modulation vraie, reste pour l'instant
-la règle décrite plus haut, et sera repris à son tour.
+parenthèses et la tonicisation entre crochets : « (C) », « [Dm] ». Le
+passage de la région au fond est la modulation vraie de Siron (voir
+plus haut, et « Transitoire ou vraie »).
 
 **Ce qui fait une modulation vraie.** Siron la juge à quatre critères
 (p. 380) : la durée, « importante pour distinguer la sensation de
@@ -842,11 +843,13 @@ se compte en crans sur le cycle des quintes, un relatif partageant
 l'armure de sa tonalité (p. 383). gohar les
 mesure pour chaque **zone tonale**, un passage entendu autour d'une
 autre tonique que la première, région ou fond installé, compté depuis
-la cadence qui y mène (`TonalAreas`). Aucune source ne les pondère, et
-gohar ne décide encore rien avec : `analyse` les affiche. *Tune Up* :
-do mesures 5 à 8, quatre mesures, quittant ré, la première tonalité, à
-deux crans ; si♭ mesures 9 à 16, huit mesures, fermant la section, à
-deux crans de do.
+la cadence qui y mène (`TonalAreas`). Aucune source ne les pondère ;
+gohar en fait peser deux, la place avec la durée (« Transitoire ou
+vraie ») et la distance (« Les centres éloignés »), la mémoire pas
+encore. `analyse` les affiche toutes. *Tune Up* : do mesures 5 à 8,
+quatre mesures, quittant ré, la première tonalité, à deux crans ; si♭
+mesures 9 à 12, quatre mesures, à deux crans de do ; transitoires
+toutes deux.
 
 Une zone ne compte que si elle dure : « une cadence prépare
 généralement la modulation, celle-ci étant confirmée si la durée est
@@ -940,15 +943,15 @@ sol et en si. Les deux crans et les deux mesures sont à nous. Le pont
 de *Grand Central*, quatre mesures de F♯m7 B7, reste une modulation
 vraie : l'écoute y entend bien le centre bouger.
 
-Le **retour à la maison** est asymétrique : une seule cadence sur la
-tonique de départ la réinstalle, parfaite ou plagale, et même son
-accord de tonique seul (le F/C C de *My Way*). Quitter demande plus de
+Le **retour au fond de départ** est asymétrique : une seule cadence sur
+la tonique de départ le réinstalle, parfaite ou plagale, et même son
+accord de tonique seul (le F/C C de *My Way*). Quitter demande plus
 d'indices que revenir.
 
-En direct, le fond bascule au moment où l'indice est rempli ; après
-coup, la région commence au bloc qui y menait, et c'est sur elle que
-les degrés se comptent (Tune Up, mesure 7 : Cmaj7 est I, pas
-♭VIImaj7).
+En direct, le fond bascule au moment où la modulation vraie est
+acquise ; après coup, la zone commence au bloc qui y menait, et la
+ligne des crochets la lit dans sa tonalité (Tune Up, mesure 7 : Cmaj7
+est I, pas ♭VIImaj7).
 
 #### Local, avec une mémoire
 
@@ -981,9 +984,10 @@ experte.
 
 ### Dans gohar, au bout : la tonalité du morceau
 
-Une fois la grille lue, il reste à conclure. L'analyse sépare deux
-questions : d'où le morceau part, et où il s'arrête. Toutes deux se
-lisent sur les **phrases** : la première, et la dernière.
+Une fois la grille lue, il reste à conclure, comme le livre : par le
+premier accord et par le dernier. Le dernier se lit sur les
+**phrases**, là où le morceau s'arrête ; le premier sur la première
+cadence, qui dit s'il est la tonique là où il sonne.
 
 #### Les phrases
 
@@ -1022,23 +1026,23 @@ ne pose rien (le B♭maj7 d'*Autumn Leaves*), ni un IV, si long soit-il
 Will Never Be Another You*, son VI). Le repos dure autant que la
 tonique tient.
 
-#### La maison, là où se pose la première phrase
+#### La maison, une notion tombée
 
-Le morceau part de là où sa première phrase conclut. *Autumn Leaves*
-part de sol mineur, *Fly Me To The Moon* de la mineur. *Just Friends*
-s'ouvre sur Cmaj7, son IV ; ses Gmaj7 des mesures 5 et 11 confirment
-sol au milieu d'une section, et il ne se pose qu'à sa dernière, sur le
-G6 de la mesure 31. Tant que rien ne s'est posé, le premier accord
-n'est qu'une hypothèse.
-
-Une règle de plus a longtemps tenu ici : un morceau qui « s'ouvre au
+Le morceau partait de là où sa première phrase conclut, la « maison » :
+*Autumn Leaves* de sol mineur, *Fly Me To The Moon* de la mineur. La
+règle du premier et du dernier accord l'a remplacée (ci-dessous), et
+le premier accord ne vaut que si sa première cadence le confirme : le
+Am7 de *Fly Me To The Moon*, dont la première cadence va à do, est un
+VI. Une règle sœur a tenu ici aussi : un morceau qui « s'ouvre au
 repos », sa tonique tenue plus d'une mesure et sa première cadence y
 revenant, y restait où qu'il s'arrête. Elle faisait lire *In a
-Sentimental Mood* en ré mineur. Le livre dit autre chose : le thème
-« est en Ré mineur pour se terminer dans la tonalité de son relatif Fa
-majeur » (*En Harmonie*, tome 1, chapitre 8, p. 159). La règle est
-tombée ; ce que le début installe relève de la tonalité prédominante,
-celle qu'on entend le plus longtemps, qui reste à construire.
+Sentimental Mood* en ré mineur pour une mauvaise raison ; le livre dit
+que le thème « est en Ré mineur pour se terminer dans la tonalité de
+son relatif Fa majeur » (*En Harmonie*, tome 1, chapitre 10, p. 159),
+et c'est la prédominance qui le lit en ré mineur. Il reste de la maison
+un repli, quand aucune phrase ne conclut, et l'installation du fond à
+la première phrase conclusive dans l'écoute au présent (`Home`), à
+retirer quand des témoins diront ce qu'elle protège.
 
 #### La tonalité, par le premier et le dernier accord
 
@@ -1241,8 +1245,8 @@ mesure 2 et y revient sans cesse. Le seuil reste « plus d'une mesure et
 plus long que sa préparation ».
 
 **Le relatif.** *Autumn Leaves* tonicise d'abord si♭, puis se pose en
-sol mineur, où la première phrase s'arrête : la maison est le relatif
-mineur, et l'analyse le trouve parce qu'elle attend le repos. *Corcovado*
+sol mineur, où la première phrase s'arrête et où le morceau s'arrête :
+le relatif mineur, que l'analyse trouve parce qu'elle attend le repos. *Corcovado*
 (la mineur ou do) reste ambigu : la tradition tranche parfois là où
 l'oreille hésite.
 
@@ -1276,9 +1280,9 @@ dans la tonalité que l'analyse conclut : elle juge comme un analyste,
 en connaissance de l'harmonie. Sur demande, elle compte dans la
 tonalité déclarée par l'app, un indice parmi d'autres mais celui qu'a
 choisi l'auteur de la grille, ou dans celle qu'on lui impose. Une fois
-la tonalité fixée, on ne la corrige pas : *Lullaby Of Birdland*, en
-la♭, part de fa mineur, et ses premières mesures tonicisent fa mineur,
-que le morceau pourra installer plus tard.
+la tonalité fixée, on ne la corrige pas : *Lullaby Of Birdland*
+compté en la♭ sur demande garde fa mineur pour tonicisation, là où
+l'analyse l'entend en fa mineur.
 
 **Une seconde écoute.** Certains blocs ne se lisent bien qu'une fois la
 tonique entendue. Lus seuls, G7 Am7 est le ♭VII7 Im de la mineur et G7
@@ -1297,10 +1301,11 @@ La tonalité du morceau ne change pas, et la seconde écoute est aussi
 directe que la première : elle ne demande que la tonalité donnée au
 départ et ce qui a sonné.
 
-**Les seuils** de la modulation (plus d'une mesure, deux cadences) sont
-dans le code, à passer en données quand un second jeu en aura besoin.
-La modulation confirmée, après une phrase entière, qui distinguerait
-une modulation passagère d'une vraie région, n'est pas codée.
+**Les seuils** sont dans le code, à passer en données quand un second
+jeu en aura besoin : deux mesures pour une zone, deux crans pour un
+centre éloigné, la moitié d'une section pour une modulation vraie, une
+mesure pour un appui. Aucune source ne les chiffre ; ils se règlent de
+façon empirique, sur le corpus et les fiches.
 
 Repères : `Sense` (la tonique pressentie), `Grounds` (les régions après
 coup), `Phrases`, `Home`, `ReadTune` et `Tune`, `Picardy`, `Reread` et
@@ -1629,7 +1634,7 @@ fins.
 | Morceau | La fiche | Ce qu'il fixe |
 |---|---|---|
 | Tune Up | AA', 16 mesures, ré majeur, modulations en do (5 à 8) et en si♭ (9 à 12) | la modulation à chaque phrase, clé de construction du morceau ; 13 sur 13 |
-| Black Orpheus | AB, 32 mesures, la mineur, do majeur 6 à 12 | la modulation par deuxième cadence, qui résiste à A7♭9 Dm7 ; 20 sur 20 |
+| Black Orpheus | AB, 32 mesures, la mineur, do majeur 6 à 12 | une région de do qui résiste à A7♭9 Dm7 ; 20 sur 20 |
 | There Will Never Be Another You | ABAC, 32 mesures, mi♭ majeur, sans modulation | Cm7 tenu une mesure tonicise le VI sans l'installer |
 | Tenderly | ABAC, 32 mesures, mi♭ majeur, huit emprunts, plagales | la tonique pressentie, le I emprunté, le pivot diminué, la marche IIm7-V7 lue VI II7 |
 

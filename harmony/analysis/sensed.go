@@ -145,7 +145,6 @@ type hearing struct {
 	c      Changes
 	blocks []Block
 	r      roles
-	bar    Ticks
 	first  bool // the first hearing
 	s      Sensed
 
@@ -157,17 +156,12 @@ type hearing struct {
 	concludes *Phrase
 	home      []harmony.Tonality
 
-	// What the region has gathered toward becoming the ground.
-	region struct {
-		tonic    []harmony.Tonality // the tonalities its I is the tonic of
-		since    int                // the first chord of its first cadence
-		cadences int                // cadences resolved on it
-		stable   Ticks              // time of its stable chords
-	}
+	// opened is the first chord of the cadence that opened the region.
+	opened int
 }
 
 func newHearing(c Changes, blocks []Block, phrases []Phrase) *hearing {
-	h := &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), bar: barOf(c), sections: Sections(c)}
+	h := &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), sections: Sections(c)}
 	h.home = Home(c, phrases)
 	if first, _ := concluding(phrases); first != nil && !first.Stops {
 		h.concludes = first
@@ -272,10 +266,7 @@ func (h *hearing) cadence(i int) {
 	case sameTonic(t, s.Start):
 		s.Ground, s.Since, s.Region = s.Start, from, nil
 	case sameTonic(t, s.Region):
-		h.region.cadences++
-		if s.Tonic != nil {
-			h.region.tonic = s.Tonic
-		}
+		// A cadence more on the region: it goes on.
 	case !h.opensRegion(n, i) || !canBeTonicised(ch):
 		// A tonicisation, for the chord it resolves on, or a chord that
 		// cannot even be one.
@@ -287,7 +278,7 @@ func (h *hearing) cadence(i int) {
 		if sameTonic(s.Tonic, t) && ModesOf(s.Tonic)&ModesOf(t) == 0 {
 			s.Region = s.Tonic
 		}
-		h.region.tonic, h.region.since, h.region.cadences, h.region.stable = s.Tonic, from, 1, 0
+		h.opened = from
 	}
 }
 
@@ -311,38 +302,20 @@ func (h *hearing) leaves(ch Change) bool {
 // Are, a « respiration secondaire » (p. 379), stays a region, and the
 // degrees are still counted in A flat, as Siron analyses a transitory
 // modulation twice, its degrees in the tonality and its functions in
-// the region.
-//
-// A sequence without bars has no sections: there a region becomes the
-// ground when it holds beyond one bar of stable chords, or when a
-// second cadence resolves on it while it lasts. A stable chord sits on
-// the region's tonic, or holds in it and not in the ground, without
-// preparing anything. Nor does one modulate there to the II of the
-// ground: in My Lucky Star, Am7 D7 Gm7 then four bars of Gm7 Gm(maj7)
-// are in F.
+// the region. Without sections, nothing tells a modulation's place in
+// the form, and a region stays one.
 func (h *hearing) modulation(i int) {
 	s, ch := &h.s, h.c.Chords[i]
 	if s.Region == nil {
 		return
 	}
-	if len(h.sections) > 0 {
-		from := h.c.Bar(h.c.Chords[h.region.since].Start)
-		now := h.c.Bar(ch.Start + ch.Length - 1)
-		for _, sec := range h.sections {
-			if from <= sec.From && now >= sec.From && 2*(now-sec.From+1) >= sec.Bars {
-				s.Ground, s.Since, s.Region = s.Region, h.region.since, nil
-				return
-			}
+	from := h.c.Bar(h.c.Chords[h.opened].Start)
+	now := h.c.Bar(ch.Start + ch.Length - 1)
+	for _, sec := range h.sections {
+		if from <= sec.From && now >= sec.From && 2*(now-sec.From+1) >= sec.Bars {
+			s.Ground, s.Since, s.Region = s.Region, h.opened, nil
+			return
 		}
-		return
-	}
-	own := holds(s.Region, ch.Chord.Set()) && (s.Ground == nil || !holds(s.Ground, ch.Chord.Set()))
-	if h.r.member[i] < 0 && (own || onTonic(s.Region, ch)) {
-		h.region.stable += ch.Length
-	}
-	two := s.Ground != nil && h.region.tonic != nil && h.region.tonic[0].Tonic() == s.Ground[0].Tonic().Transpose(2)
-	if h.region.tonic != nil && !two && (h.region.stable > h.bar || h.region.cadences >= 2) {
-		s.Ground, s.Since, s.Region = h.region.tonic, h.region.since, nil
 	}
 }
 
