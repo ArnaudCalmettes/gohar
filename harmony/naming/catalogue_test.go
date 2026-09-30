@@ -9,9 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// The two modes that carry a V7 flat 9 on I alongside their tonic role.
-// The double role used to live in a prose note that was removed with
-// the Usage field; the bit field now holds it as data.
+// The three modes that carry a dominant on I alongside their tonic
+// role: a V7(♭9) over the tonic for the first two, a ♭II7 over it for
+// the third (« Xmaj7 ou ♭II7/I », En Harmonie, tome 2). The bit field
+// holds the double role as data.
 func TestDoubleFunctionModes(t *testing.T) {
 	for _, tc := range []struct {
 		name   string
@@ -19,6 +20,7 @@ func TestDoubleFunctionModes(t *testing.T) {
 	}{
 		{"the ionian flat 6 of the harmonic major", harmony.HarmonicMajor},
 		{"the aeolian natural 7 of the harmonic minor", harmony.HarmonicMinor},
+		{"the ionian flat 2 flat 6 of the double harmonic major", harmony.DoubleHarmonicMajor},
 	} {
 		t.Run(tc.name+" is both tonic and dominant", func(t *testing.T) {
 			m, ok := naming.Lookup(tc.system, 1)

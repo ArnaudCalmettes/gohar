@@ -122,17 +122,12 @@ connaît.
       serviront à autre chose qu'à la reconnaissance à l'oreille. La
       fonction d'un mode dit comment on l'emploie, et peut différer de
       celle de sa tétrade : le dorien est une tonique, son m7 seul un
-      II. Le premier degré du mineur harmonique (éolien ♮7) et celui du
-      majeur harmonique (ionien ♭6) portent `Tonic | Dominant` : ce sont
-      aussi des avatars de dominante sur pédale de tonique. Pas de test
-      qui la verrouille d'ici là.
-      Le livre donne au Ier degré du majeur double harmonique (ionien
-      ♭2 ♭6) le même double emploi, « Xmaj7 ou ♭II7/I », la ♯6 entendue
-      comme une septième mineure : il porterait aussi `Tonic |
-      Dominant`, là où le catalogue ne lui donne que `Tonic`.
-- [ ] le IIIe degré du majeur double harmonique (phrygien ♭4 𝄫7) n'a
-      pas de tétrade, mais le livre lui donne des extensions, ♭9, ♭11,
-      ♭13, que le catalogue n'a pas : il n'en donne qu'au VIIe.
+      II. Le premier degré du mineur harmonique (éolien ♮7), celui du
+      majeur harmonique (ionien ♭6) et celui du majeur double
+      harmonique (ionien ♭2 ♭6, « Xmaj7 ou ♭II7/I » dans *En
+      Harmonie*, tome 2) portent `Tonic | Dominant` : ce sont aussi des
+      avatars de dominante sur pédale de tonique. Seul ce double emploi
+      est verrouillé par un test.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne

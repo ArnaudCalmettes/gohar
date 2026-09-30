@@ -184,8 +184,9 @@ func TestCharacteristicDegrees(t *testing.T) {
 	})
 }
 
-// Two modes voice no tetrad, and one of them still carries extensions
-// with no chord to hang them on.
+// Two modes voice no tetrad, and both still carry extensions with no
+// chord to hang them on (En Harmonie, tome 2, the table of the five
+// systems).
 func TestModesWithoutTetrad(t *testing.T) {
 	t.Run("exactly two modes voice no tetrad", func(t *testing.T) {
 		var without []naming.Mode
@@ -198,6 +199,7 @@ func TestModesWithoutTetrad(t *testing.T) {
 		for _, m := range without {
 			assert.Equal(t, harmony.DoubleHarmonicMajor, m.System)
 			assert.Equal(t, harmony.NoFunction, m.Function)
+			assert.NotEmpty(t, m.Extensions, m.String())
 		}
 	})
 }
@@ -208,9 +210,9 @@ func TestModesWithoutTetrad(t *testing.T) {
 // behave alike.
 //
 // Closed is not the same as exclusive. The first degrees of harmonic
-// minor and of harmonic major carry Tonic and Dominant at once, because
-// they are also read as a dominant over a tonic pedal. What the
-// catalogue may not do is invent a fourth role.
+// minor, harmonic major and double harmonic major carry Tonic and
+// Dominant at once, because they are also read as a dominant over a
+// tonic pedal. What the catalogue may not do is invent a fourth role.
 func TestFunctionsAreClosed(t *testing.T) {
 	t.Run("no mode carries a role outside the three", func(t *testing.T) {
 		known := harmony.Tonic | harmony.Subdominant | harmony.Dominant
