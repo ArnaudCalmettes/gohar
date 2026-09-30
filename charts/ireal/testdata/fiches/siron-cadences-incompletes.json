@@ -1,0 +1,16 @@
+{
+  "title": "Cadences incomplètes enchaînées",
+  "source": "Siron, La partition intérieure, p. 379 (5.11.2)",
+  "bars": ["E-7 A7", "Eb-7 Ab7", "D-7 G7", "C^7"],
+  "degrees": ["II V", "II V", "II V", "I"],
+  "rhythm": "1-2",
+  "key": "C",
+  "modulations": [
+    {"key": "D", "bars": [1, 1], "level": "tension"},
+    {"key": "Db", "bars": [2, 2], "level": "tension"}
+  ],
+  "notes": [
+    "« Tension accrue provoquée par une modulation transitoire » : chaque II-V non résolu est une modulation transitoire, en ré puis en ré♭, avant Dm7 G7 CΔ.",
+    "Un exemple de Siron, pas un morceau."
+  ]
+}

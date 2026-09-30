@@ -422,7 +422,7 @@ func Home(c Changes, phrases []Phrase) []harmony.Tonality {
 // here, the one heard the longer (see [heardFor]).
 //
 // The first chord counts when it is the tonic where it stands (see
-// [firstTonic]); the last one is where the tune stops (see
+// [FirstTonic]); the last one is where the tune stops (see
 // [Phrases]), in the major or the three minors as its tonic's third
 // says. A picardy third does not make a minor tune major (see
 // [Picardy]). A blues is in its own tonic, found by its form. A tune
@@ -440,7 +440,7 @@ func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
 		last = MinorTonalities(last[0].Tonic())
 	}
 	blocks := Blocks(c, Approaches(c))
-	first := firstTonic(c, blocks)
+	first := FirstTonic(c, blocks)
 	if first == nil || sameTonic(first, last) {
 		return last
 	}
@@ -451,8 +451,9 @@ func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
 	return last
 }
 
-// firstTonic returns the tonic of the first chord, when it is the tonic
-// in its context, nil otherwise. The book asks for the first chord and
+// FirstTonic returns the tonic of the first chord, when it is the tonic
+// in its context, nil otherwise: the tonality a tune sets out from, one
+// of the two [Tune] weighs. The book asks for the first chord and
 // says no more; what makes it the tonic where it stands is ours to
 // say: the tune's first cadence resolves on its tonic. My Funny
 // Valentine opens on Cm6, and Dm7♭5 G7♭9 goes back to Cm7; In a
@@ -460,7 +461,7 @@ func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
 // Cmaj7, and its first cadence goes to G: C is its IV. Blue Skies opens
 // on Am, and its first cadence goes to C. The Fm7 that opens All The
 // Things You Are is a VI, the Em7 of Tune Up a II.
-func firstTonic(c Changes, blocks []Block) []harmony.Tonality {
+func FirstTonic(c Changes, blocks []Block) []harmony.Tonality {
 	r := rolesOf(c, blocks)
 	first := opensOn(c, blocks, r)
 	if first == nil {

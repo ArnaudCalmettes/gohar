@@ -1,0 +1,14 @@
+{
+  "title": "Jordu",
+  "source": "Siron, La partition intérieure, p. 357 (5.8.37)",
+  "bars": ["G7 C7", "F7 Bb7", "Eb7 Ab7", "Db7", "F7 Bb7", "Eb7 Ab7", "Db7 Gb7", "G7"],
+  "degrees": ["V I7", "IV7 VII7", "III7 VI7", "♭II7", "IV7 VII7", "III7 VI7", "♭II7 ♯IV7", "V"],
+  "rhythm": "1-2",
+  "key": "C-",
+  "ambiguity": {"bars": [1, 8]},
+  "notes": [
+    "« Exemple d'une cascade d'accords 7 sur le cycle des quintes. Trame harmonique du pont de Jordu. » Siron le range parmi les régions d'ambiguïté tonale (p. 382, 5.11.7 ①, qui renvoie au schéma 5.8.36) : « la répétition de toute structure constante affaiblit la sensation de tonique » (p. 381). « La cascade d'accords 7 est une progression complètement symétrique qui n'est rompue que dans le dernier enchaînement V - I » ; « chaque degré tend à devenir interchangeable avec son voisin » (p. 357).",
+    "Siron ne chiffre pas de degrés ni ne nomme de tonalité. La tonalité est celle du morceau, do mineur ; les degrés en sont déduits, selon le schéma 5.8.36 (dominantes secondaires, puis dominantes chromatiques) et la convention d'En Harmonie en mineur.",
+    "Un extrait : la trame diffère de la grille de l'app, qui écrit D♭maj7 à la quatrième mesure et Bmaj7 à la huitième, là où Siron écrit D♭7 et G7."
+  ]
+}

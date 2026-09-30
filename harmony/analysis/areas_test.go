@@ -28,9 +28,8 @@ func areaName(c analysis.Changes, a analysis.TonalArea) string {
 }
 
 // Tune Up: D major, then C and B flat, each a tone lower, two steps
-// each on the cycle of fifths, twice. The first time, B♭ holds to the
-// end of the first half, through Em7 F7; the second, Em7 A7 goes back
-// to D.
+// each on the cycle of fifths, twice, at bars 5 to 12 as En Harmonie
+// reads them (tome 1, p. 160).
 func TestTonalAreas(t *testing.T) {
 	const c, d, e, f, g, a, bb harmony.PitchClass = 0, 2, 4, 5, 7, 9, 10
 	const (
@@ -56,7 +55,7 @@ func TestTonalAreas(t *testing.T) {
 	}
 	want := []string{
 		"C, bars 5 to 8, 4 bars, leaving D, the first tonality, 2 steps",
-		"B♭, bars 9 to 16, 8 bars, leaving C, closing a section, 2 steps",
+		"B♭, bars 9 to 12, 4 bars, leaving C, 2 steps",
 		"C, bars 21 to 24, 4 bars, leaving D, the first tonality, 2 steps",
 		"B♭, bars 25 to 28, 4 bars, leaving C, 2 steps",
 	}

@@ -1,0 +1,14 @@
+{
+  "title": "Cellule-anatole chromatique",
+  "source": "Siron, La partition intérieure, p. 382 (5.11.7, 2)",
+  "bars": ["C^7 A7", "Ab^7#5 G7b5", "F#7 F^7#5", "Ab7b5 Db7b5"],
+  "degrees": ["IΔ VI7", "♭VIΔ♯5 V7♭5", "♯IV7 IVΔ♯5", "♭VI7♭5 ♭II7♭5"],
+  "rhythm": "2",
+  "key": "C",
+  "ambiguity": {"bars": [1, 4]},
+  "notes": [
+    "« Ambiguïté d'accords diminués et augmentés. Substitution très chromatique d'une cellule-anatole. » Sous les quatre mesures : « Région tonalement floue due aux nombreuses altérations jamais résolues ».",
+    "Siron ne nomme aucune tonalité entre lesquelles hésiter : le champ keys reste vide.",
+    "Un exemple de Siron, pas un morceau."
+  ]
+}

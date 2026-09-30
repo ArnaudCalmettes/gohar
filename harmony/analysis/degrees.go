@@ -192,8 +192,12 @@ func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
 
 // Bracketed reads a sequence as En Harmonie prints it, a bracket under
 // each two five toward its target: the chords of a two five in the
-// tonalities it announces, the others as [Degrees] does. Dm7♭5 G7
-// before Cm7 in E flat is II V, then VI.
+// tonalities it announces, the chords of a tonal area in its tonality,
+// a modulation for the book (see [TonalAreas]), the others as [Degrees]
+// does. Dm7♭5 G7 before Cm7 in E flat is II V, then VI; the B♭maj7 Gm7 of
+// Tune Up, in its region of B flat, I VI. [Degrees] counts them in the
+// tonality, as Siron's first reading of a transitory modulation does
+// (La partition intérieure, p. 379).
 //
 // A plagal cadence is not bracketed: its IVm7 ♭VII7 reads on the tonic
 // it concludes on. A two five that does not resolve and whose two sits
@@ -208,6 +212,15 @@ func Degrees(c Changes, passing []int, sensed []Sensed) []Degree {
 // is VI II7 V7sus4 V, the suspension a two hiding.
 func Bracketed(c Changes, blocks []Block, passing []int, sensed []Sensed) []Degree {
 	out := Degrees(c, passing, sensed)
+	// Without bars, no place in the form tells a modulation from a
+	// tonicisation: Dm7♭5 G7 Cm7 in E flat stays II V VI.
+	if sections := Sections(c); len(sections) > 0 {
+		for _, a := range TonalAreas(c, blocks, sensed, sections) {
+			for i := a.From; i <= a.To; i++ {
+				out[i] = degreeOf(c.Chords[i], a.Tonic, passing[i])
+			}
+		}
+	}
 	for _, b := range blocks {
 		if len(b.Announced) == 0 || b.Two < 0 || b.Kind == harmony.PlagalApproach ||
 			borrowsTonic(c, b, sensed[b.Two].Ground) || marches(c, blocks, b) {

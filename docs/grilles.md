@@ -749,24 +749,34 @@ chapitre 10 §1.8, p. 159). gohar la lit au présent, avec un parti pris :
 appuyée est une analyse que beaucoup de musiciens feraient ; ne pas
 voir bouger les repères tonaux serait une faiblesse.
 
-Une région devient le fond quand elle tient **plus d'une mesure
-d'accords stables**, ceux qui tiennent en elle sans rien préparer (le
-Dmaj7 tenu deux mesures de Tune Up, ou son B♭maj7 Gm7) : c'est notre
-chiffrage du « assez longue » du livre. Ou quand **une deuxième
-cadence** la vise tant qu'elle dure, un critère qui est à nous et que
-le livre ne donne pas. On ne module pas vers un
-accord de sous-dominante, ni pour un seul accord : le I doit pouvoir
-être une tonique, et ne pas être aussitôt le II d'un autre bloc. On ne
-module pas non plus vers le II du fond : le II tonicisé est le
-III-VI-II-V de la tonalité, si longtemps qu'il tienne. Dans *My Lucky
-Star*, Am7 D7 Gm7 puis quatre mesures de Gm7 Gm(maj7) restent en fa,
-avant que Dm7 G7 C7sus C7 ne ramène à F6. Une cadence qui n'ouvre pas
-de région ne fait que toniciser, et laisse la région en place (A7 Dm7
-dans la région de do, dans *Black Orpheus*). Les cadences vers
-les tons voisins et leurs relatifs « sont fréquemment utilisées comme
-modulations transitoires » (Siron, *La partition intérieure*, p. 385) :
-une région secondaire qui ne met pas la tonalité du morceau en danger,
-une notion que gohar ne distingue pas encore de la modulation.
+Une région devient le fond quand c'est une **modulation vraie** : entendue
+depuis la cadence qui l'a ouverte, elle tient la première mesure d'une
+section et au moins la moitié de celle-ci (voir « Transitoire ou
+vraie »). Le pont de *Body and Soul* installe ré ; le do d'*All The
+Things You Are* reste une région, et les degrés restent comptés en
+la♭ : c'est la double analyse de Siron, les degrés dans la tonalité et
+les fonctions dans la région (p. 379). La ligne des crochets, elle,
+lit une région confirmée dans sa tonalité, comme le livre imprime ses
+modulations : le B♭maj7 Gm7 de *Tune Up* y est I VI. Une région dure
+tant qu'aucun accord du fond ne revient : un accord qui n'appartient ni
+au fond ni à la région est une tonicisation à l'intérieur de celle-ci,
+le Gm7 C7 du pont de *Body and Soul*, en ré.
+
+Sans mesures, en direct, aucune section ne dit où tombe une modulation
+vraie, et l'ancienne règle reste en repli : une région devient le fond
+quand elle tient **plus d'une mesure d'accords stables**, ceux qui
+tiennent en elle sans rien préparer, ou quand **une deuxième cadence**
+la vise tant qu'elle dure, deux chiffrages à nous. On n'y module pas
+vers le II du fond : dans *My Lucky Star*, Am7 D7 Gm7 puis quatre
+mesures de Gm7 Gm(maj7) restent en fa, avant que Dm7 G7 C7sus C7 ne
+ramène à F6.
+
+Une cadence qui n'ouvre pas de région ne fait que toniciser, et laisse
+la région en place (A7 Dm7 dans la région de do, dans *Black Orpheus*).
+Les cadences vers les tons voisins et leurs relatifs « sont fréquemment
+utilisées comme modulations transitoires » (Siron, *La partition
+intérieure*, p. 385) : une région secondaire qui ne met pas la tonalité
+du morceau en danger.
 
 **Trois niveaux.** Siron en distingue trois (*La partition intérieure*,
 p. 341, 342 et 378 à 380). La **tonicisation** « ne porte que sur un
@@ -828,6 +838,82 @@ Le pont d'*All The Things You Are*, F♯m7 | B7 | Emaj7, que Siron range
 parmi les modulations (p. 387), en dure trois. Une zone est donc une
 modulation au sens d'*En Harmonie* ; la transitoire de Siron, qui
 commence dès un II-V, en compte davantage.
+
+Trois exemples de Siron ont rejoint les fiches, pour servir d'oracle à
+la modulation vraie : la « respiration secondaire » en do d'*All The
+Things You Are* (5.11.1), une modulation transitoire, que l'analyse
+entend comme une zone des mesures 6 à 8 ; les cadences incomplètes
+enchaînées Em7 A7 | E♭m7 A♭7 | Dm7 G7 | CΔ (5.11.2), des modulations
+transitoires de tension, plus fines que les zones, que le test note
+sans les exiger ; la section A d'*In a Sentimental Mood* (5.11.5),
+ambiguë entre ré mineur et fa majeur, où l'analyse entend fa sur les
+deux dernières mesures.
+
+D'autres les ont suivis. Le premier est *Pithecanthropus Erectus*
+(5.11.6), mesures 9 à 15 : une modulation dans la région de la
+sous-dominante mineure, de fa mineur vers sol♭, par des accords-pivots
+que Siron lit dans les deux tonalités. Les deux derniers sont des
+**régions d'ambiguïté tonale** (5.11.7). La première est une
+cellule-anatole très chromatique, CΔ A7 | A♭Δ♯5 G7♭5 | F♯7 FΔ♯5 |
+A♭7♭5 D♭7♭5, « région tonalement floue due aux nombreuses altérations
+jamais résolues ». La seconde est le début de *Grand Central*, trois
+II-V qui ne résolvent pas, vers la♭, sol♭ et mi, entre deux Fm. Un
+troisième manquait : le pont de *Jordu*, une cascade d'accords 7 sur le
+cycle des quintes, de G7 à D♭7 puis de F7 à G7 (5.8.37), où « chaque
+degré tend à devenir interchangeable avec son voisin » (p. 357). Dans
+ces régions, dit Siron, « il devient alors difficile de parler de
+véritables modulations » (p. 381) : le test y accepte une zone, jamais
+une modulation vraie.
+
+Deux cadences coltraniennes complètent le tableau (p. 533). *Countdown*
+remplace le Dm7 G7 | CΔ de *Tune Up* par Dm7 E♭7 | A♭Δ B7 | EΔ G7 | CΔ,
+« un carrousel de tonalités » entre do, la♭ et mi, trois tonalités
+qui n'ont que trois notes communes. *Giant Steps* n'est « composé que de
+cadences dans 3 tonalités », si, sol et mi♭, à une tierce majeure les
+unes des autres ; l'avant-dernière cadence, en mi♭, lui donne « plus de
+poids ». Siron n'y chiffre pas de degrés : il met chaque cadence entre
+crochets avec sa tonalité. Aucune de ces cadences ne dure assez pour
+installer sa tonalité ; une zone qui en enjambe plusieurs contredit le
+livre.
+
+**Transitoire ou vraie.** gohar tient une zone pour une modulation
+vraie quand elle tient la première mesure d'une section et au moins la
+moitié de celle-ci. Siron situe la modulation vraie « plus volontiers
+[…] au début ou à la fin d'un cycle de mesures ou d'une phrase
+mélodique », la transitoire « au milieu d'une phrase harmonique », et
+la durée y pèse (p. 380) ; le seuil de la moitié est à nous. La
+mémoire, son troisième critère, ne pèse encore rien ; la distance, le
+quatrième, empêche pour l'instant une zone de se former (voir plus
+bas), sans rendre une modulation plus vraie. Les témoins : le pont de *Body and Soul*, de ré♭ à ré, et le
+deuxième A de *Joy Spring*, un demi-ton plus haut, les deux modulations
+abruptes de Siron (p. 382), sont vraies ; le pont d'*In a Sentimental
+Mood*, en ré♭ dès la mesure 17 (*En Harmonie*, p. 159), aussi ; le do
+d'*All The Things You Are*, sa « respiration secondaire », est
+transitoire. Les grilles de l'app mènent d'ailleurs à ces ponts par un
+II-V (Em7 A7 avant le Dmaj7 de *Body and Soul*, A♭m7 D♭7 avant le
+G♭maj7 de *Joy Spring*) : la modulation abrupte de Siron se lit ici
+comme une modulation par cadence, et gohar n'a pas besoin d'un autre
+mécanisme pour l'entendre. Le pont de *Lullaby Of Birdland* et celui de
+*My Funny Valentine* sortent aussi en modulations vraies, ce que
+l'écoute confirme. `analyse` l'écrit au bout de chaque zone : « a true
+modulation » ou « transitory ».
+
+**Les centres éloignés.** Les tonalités qu'une dominante emprunte sont,
+« dans une harmonie peu chromatique », les voisines de la tonalité
+(Siron, p. 342) : les degrés II à VI. Un II-V qui résout sur l'accord de
+tonique d'une tonalité éloignée, à deux crans ou plus sur le cycle des
+quintes, fait entendre un autre centre. Ce centre coupe la zone où il
+sonne, sans en former une : une tonicisation « ne porte que sur un
+accord » (p. 379). Et « l'enchaînement rapproché de centres tonaux
+éloignés détruit la sensation d'une véritable modulation » (p. 380) :
+un passage de deux mesures au plus, entre deux centres éloignés aussi
+courts que lui, n'installe rien. *Giant Steps* n'est « composé que de
+cadences dans 3 tonalités », si, sol et mi♭, à une tierce majeure les
+unes des autres (p. 533) : gohar n'y entend plus aucune zone, là où il
+entendait mi♭ de la mesure 2 à la mesure 9, par-dessus les cadences en
+sol et en si. Les deux crans et les deux mesures sont à nous. Le pont
+de *Grand Central*, quatre mesures de F♯m7 B7, reste une modulation
+vraie : l'écoute y entend bien le centre bouger.
 
 Le **retour à la maison** est asymétrique : une seule cadence sur la
 tonique de départ la réinstalle, parfaite ou plagale, et même son
@@ -1032,9 +1118,16 @@ condition sur la cadence compte : *Somewhere* s'ouvre sur B♭, mais ce
 B♭ devient B♭7 et aucune cadence n'y revient ; son E♭ n'est pas un IV.
 
 *Chega De Saudade* s'ouvre sur ré mineur et s'arrête sur D6, et
-l'analyse lit ré majeur, là où il s'arrête. Quand la maison et la fin
-diffèrent, `analyse` donne les deux : *Fly Me To The Moon* part de la
-mineur et s'arrête en do.
+l'analyse lit ré majeur, là où il s'arrête.
+
+Quand le premier accord est la tonique là où il sonne, et que la
+tonalité du morceau est une autre, `analyse` donne les deux : *I Love
+Paris* part de do mineur et s'entend en do majeur (« heard in C,
+setting out from Cm »). Le premier accord compte comme pour la tonalité
+du morceau (*En Harmonie*, tome 1, chapitre 8 §1.2, p. 99) : la
+première cadence du morceau doit y résoudre. *Fly Me To The Moon*
+s'ouvre sur Am7, mais sa première cadence va à do : ce Am7 est un VI,
+et la ligne n'en dit rien.
 
 #### La tierce picarde
 
@@ -1520,7 +1613,7 @@ Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
 | Yesterdays, Virgo, Unforgettable | le VI où *Yesterdays* s'appuie sans conclure, et sa fin à travers la boucle ; le IV où la grille s'arrête avant le turnaround |
 | Someday My Prince Will Come | la tonique installée qui revient renversée sur sa quinte |
 | My Way | F/C, le IV sur pédale de tonique, et le retour par une plagale |
-| Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; *Sugar* finit ouvert sur G7 et s'arrête à travers la boucle, Fly Me part de la mineur et s'arrête en do |
+| Sugar, Fly Me To The Moon | un turnaround ne dit rien de la tonalité ; *Sugar* finit ouvert sur G7 et s'arrête à travers la boucle, Fly Me s'ouvre sur le VI et s'arrête en do |
 | My Lucky Star | le II tonicisé quatre mesures, sans modulation |
 | Softly, Summertime | la tonique mineure écrite m7 |
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |

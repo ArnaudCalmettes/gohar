@@ -278,8 +278,8 @@ func heardIn(s ireal.Song, changes analysis.Changes, phrases []analysis.Phrase, 
 	if analysis.Picardy(changes, phrases) {
 		line += ", ending on a Picardy third"
 	}
-	if home := analysis.Home(changes, phrases); home != nil && short(flats[home[0].Tonic()], home) != name {
-		line += ", setting out from " + short(flats[home[0].Tonic()], home)
+	if first := analysis.FirstTonic(changes, analysis.Blocks(changes, analysis.Approaches(changes))); first != nil && short(flats[first[0].Tonic()], first) != name {
+		line += ", setting out from " + short(flats[first[0].Tonic()], first)
 	}
 	if declared, ok := s.DeclaredTonalities(); ok {
 		if d := short(flats[declared[0].Tonic()], declared); d != name {
@@ -385,6 +385,11 @@ func areas(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block,
 			line += ", closing a section"
 		}
 		line += ", " + steps(a.Distance)
+		if a.True {
+			line += ": a true modulation"
+		} else {
+			line += ": transitory"
+		}
 		fmt.Fprintf(&b, "  %-6s %-12s %s\n", short(flats[a.Tonic[0].Tonic()], a.Tonic), bars, line)
 	}
 	return b.String()

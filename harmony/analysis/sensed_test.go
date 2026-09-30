@@ -527,15 +527,16 @@ func TestTuneEndings(t *testing.T) {
 				bar{d, halfDim}, bar{g, dom7}, bar{ab, dom7}, bar{g, dom7}),
 			"Cm nat/harm/mel",
 		},
-		// Fly Me To The Moon sets out from A minor, its first section
-		// back to Am7 at bar 8, and its second stops on Cmaj7 at bar 15,
-		// before the turnaround.
+		// Fly Me To The Moon opens on Am7 and comes back to it at bar 8,
+		// but its first cadence goes to C: the Am7 is a VI, as in Blue
+		// Skies. Its second section stops on Cmaj7 at bar 15, before the
+		// turnaround.
 		"a turnaround after the last tonic": {
 			barsOf(true, bar{a, min7}, bar{d, min7}, bar{g, dom7}, bar{c, maj7},
 				bar{f, maj7}, bar{b, halfDim}, bar{e, dom7}, bar{a, min7, a, dom7},
 				bar{d, min7}, bar{g, dom7}, bar{c, maj7, f, dom7}, bar{e, min7, a, dom7},
 				bar{d, min7}, bar{g, dom7}, bar{c, maj7}, bar{b, halfDim, e, dom7}),
-			"C, setting out from Am nat/harm/mel",
+			"C",
 		},
 		// Lullaby Of Birdland opens on F minor, and its section of 8
 		// bars concludes on A♭maj7 at bar 7: Gm7♭5 C7 after it goes back
@@ -546,7 +547,7 @@ func TestTuneEndings(t *testing.T) {
 		"the last tonic before the turnaround": {
 			barsOf(true, bar{f, min, d, halfDim}, bar{g, dom7, c, dom7}, bar{f, min}, bar{bb, min7, eb, dom7},
 				bar{c, min7, f, min7}, bar{bb, min7, eb, dom7}, bar{ab, maj7}, bar{g, halfDim, c, dom7}),
-			"Fm nat/harm/mel, setting out from A♭",
+			"Fm nat/harm/mel",
 		},
 		// Yesterdays goes through B♭maj7 in its cycle of dominants, a V
 		// with no two, at bar 14 of its 16: it stops in D minor.
@@ -566,7 +567,7 @@ func TestTuneEndings(t *testing.T) {
 		"a tune that opens in its relative": {
 			barsOf(true, bar{d, min, d, minMaj7}, bar{d, min7, d, min6}, bar{g, min7}, bar{g, min7, a, dom7},
 				bar{d, min}, bar{d, dom7}, bar{g, min7, c, dom7}, bar{f, maj7}),
-			"Dm nat/harm/mel, setting out from F",
+			"Dm nat/harm/mel",
 		},
 		// Guile's Theme comes back four times to C♯m7 by an aeolian
 		// cadence, Amaj7 B7 C♯m7, and rests on it a bar each time. Its
@@ -608,11 +609,11 @@ func TestTuneEndings(t *testing.T) {
 			"C",
 		},
 	} {
-		// A tune that comes to rest nowhere before it stops sets out
-		// from no other tonic than the one it stops on.
+		// A tune sets out from its first chord, when its first cadence
+		// confirms it as the tonic (see analysis.FirstTonic).
 		got := tonalityName(analysis.Tune(tc.changes, phrasesOf(tc.changes)))
-		if home := analysis.Home(tc.changes, phrasesOf(tc.changes)); home != nil && tonalityName(home) != got {
-			got += ", setting out from " + tonalityName(home)
+		if first := analysis.FirstTonic(tc.changes, analysis.Blocks(tc.changes, analysis.Approaches(tc.changes))); first != nil && tonalityName(first) != got {
+			got += ", setting out from " + tonalityName(first)
 		}
 		if got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)

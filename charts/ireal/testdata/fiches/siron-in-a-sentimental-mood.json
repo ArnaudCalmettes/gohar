@@ -1,0 +1,14 @@
+{
+  "title": "In a Sentimental Mood",
+  "source": "Siron, La partition intérieure, p. 381 (5.11.5)",
+  "bars": ["D- D-^7", "D-7 D-6", "G- G-^7", "G-7 G-6 A7", "D-", "D7", "G-7 C7", "F^7"],
+  "degrees": ["I I", "I I", "IV IV", "IV IV V", "I", "I7", "II V", "I"],
+  "rhythm": "1-2-3",
+  "key": "D-",
+  "ambiguity": {"keys": ["D-", "F"], "bars": [1, 8]},
+  "notes": [
+    "Section A. « Tonalité = ambiguïté entre Ré min. et son relatif majeur Fa » : Siron écrit les deux lectures sous chaque accord.",
+    "Degrés recopiés de la lecture en ré mineur pour les mesures 1 à 6, en fa majeur pour les mesures 7 et 8. Mesure 5 : Dm, pivot chromatique, I de ré mineur et VI de fa. Mesure 6 : D7, I7 de ré, VI7 de fa, V de II.",
+    "Un extrait : la grille de l'app n'est pas comparée, elle écrit Gm7 A7 à la mesure 4."
+  ]
+}

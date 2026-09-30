@@ -258,7 +258,7 @@ func (h *hearing) cadence(i int) {
 	heard := n >= 0 && len(h.blocks[n].Announced) > 0 && !(h.first && h.blocks[n].Five > i)
 	if !heard {
 		if s.Region != nil && !holds(s.Region, ch.Chord.Set()) && !onTonic(s.Region, ch) &&
-			!prepares(h.c, h.blocks, h.r.member[i], s.Region) {
+			!prepares(h.c, h.blocks, h.r.member[i], s.Region) && h.leaves(ch) {
 			s.Region = nil
 		}
 		return
@@ -291,25 +291,49 @@ func (h *hearing) cadence(i int) {
 	}
 }
 
-// modulation makes the region the ground when it holds beyond one bar
-// of stable chords, or when a second cadence resolves on it while it
-// lasts (Black Orpheus, C major). A stable chord sits on the region's
-// tonic, or holds in it and not in the ground, without preparing
-// anything: B♭maj7 Gm7 in Tune Up, coming from D. A chord the ground
-// owns says nothing for the region: in Only Trust Your Heart, B7 Em7
-// tonicises the III of C, and the Am7 after it is the VI of C, not
-// the IV of E minor, before Dm7 G7 Cmaj7. Its I must be able to be a
-// tonic: one does not modulate toward a subdominant, nor for one
-// chord. A tonic held a single bar only tonicises: Along Came Betty
-// dances from A flat to A and back, and never modulates.
+// leaves reports whether a chord that neither holds in the region nor
+// prepares a chord that does ends it. With bars, only a chord of the
+// ground does: the region « introduit de manière plus prolongée les
+// altérations d'une autre tonalité » (Siron, p. 379), and a chord that
+// belongs to neither is a tonicisation inside it, the Gm7 C7 of the
+// bridge of Body and Soul, in D. Without bars, any such chord does.
+func (h *hearing) leaves(ch Change) bool {
+	return len(h.sections) == 0 || h.s.Ground == nil || holds(h.s.Ground, ch.Chord.Set())
+}
+
+// modulation makes the region the ground when it is a true modulation
+// (see [TonalArea]): heard from the cadence that opened it, it holds the
+// first bar of a section and half the section at least. Siron places a
+// true modulation « plus volontiers […] au début ou à la fin d'un cycle
+// de mesures ou d'une phrase mélodique », a transitory one « au milieu
+// d'une phrase harmonique » (La partition intérieure, p. 380). The
+// bridge of Body and Soul installs D; the C major of All The Things You
+// Are, a « respiration secondaire » (p. 379), stays a region, and the
+// degrees are still counted in A flat, as Siron analyses a transitory
+// modulation twice, its degrees in the tonality and its functions in
+// the region.
 //
-// Nor does one modulate to the II of the ground, the subdominant
-// degree: the II tonicised is the three six two five of the tonality,
-// however long it holds. In My Lucky Star, Am7 D7 Gm7 then four bars
-// of Gm7 Gm(maj7) are in F, before Dm7 G7 C7sus C7 goes back to F6.
+// A sequence without bars has no sections: there a region becomes the
+// ground when it holds beyond one bar of stable chords, or when a
+// second cadence resolves on it while it lasts. A stable chord sits on
+// the region's tonic, or holds in it and not in the ground, without
+// preparing anything. Nor does one modulate there to the II of the
+// ground: in My Lucky Star, Am7 D7 Gm7 then four bars of Gm7 Gm(maj7)
+// are in F.
 func (h *hearing) modulation(i int) {
 	s, ch := &h.s, h.c.Chords[i]
 	if s.Region == nil {
+		return
+	}
+	if len(h.sections) > 0 {
+		from := h.c.Bar(h.c.Chords[h.region.since].Start)
+		now := h.c.Bar(ch.Start + ch.Length - 1)
+		for _, sec := range h.sections {
+			if from <= sec.From && now >= sec.From && 2*(now-sec.From+1) >= sec.Bars {
+				s.Ground, s.Since, s.Region = s.Region, h.region.since, nil
+				return
+			}
+		}
 		return
 	}
 	own := holds(s.Region, ch.Chord.Set()) && (s.Ground == nil || !holds(s.Ground, ch.Chord.Set()))

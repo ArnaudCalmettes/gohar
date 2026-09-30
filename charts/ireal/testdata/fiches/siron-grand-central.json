@@ -1,0 +1,19 @@
+{
+  "title": "Grand Central",
+  "source": "Siron, La partition intérieure, p. 382 (5.11.7, 3)",
+  "bars": ["F-", "Bb-7 Eb7", "Ab-7 Db7", "F#-7 B7", "F-"],
+  "degrees": ["I", "II V", "II V", "II V", "I"],
+  "rhythm": "1-2",
+  "key": "F-",
+  "modulations": [
+    {"key": "Ab", "bars": [2, 2], "level": "tension"},
+    {"key": "Gb", "bars": [3, 3], "level": "tension"},
+    {"key": "E", "bars": [4, 4], "level": "tension"}
+  ],
+  "ambiguity": {"bars": [2, 4]},
+  "notes": [
+    "« Séquence harmonique. Début de Grand Central » : trois II-V « en La♭ Maj. », « en Sol♭ Maj. », « en Mi Maj. », entre deux Fm notés I.",
+    "Les II-V sont notés « tension » comme ceux de 5.11.2 : aucun ne résout. Les bornes de la région d'ambiguïté, de la deuxième à la quatrième mesure, sont une lecture de la fiche : Siron donne l'exemple sans borner la région.",
+    "Un extrait : la grille de l'app enchaîne B♭m7 à la cinquième mesure, là où Siron revient à Fm. Le pont de l'app, F♯m7 B7 répété, n'est pas dans l'exemple."
+  ]
+}

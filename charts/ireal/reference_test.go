@@ -17,7 +17,8 @@ import (
 // A fiche is the analysis of a tune as a book prints it, transcribed by
 // hand into testdata/fiches: the oracle the analysis of charts will be
 // held to. See docs/grilles.md. Below, "the book" is the one a fiche
-// names in Source, En Harmonie for every fiche so far.
+// names in Source: En Harmonie, or Siron's La partition intérieure for
+// the fiches named siron-*.
 //
 // Bars are numbered as in the book, from 1. Chords are written in the
 // app's spelling so that the same reader reads both; "%" is a bar where
@@ -25,7 +26,7 @@ import (
 type fiche struct {
 	Title  string `json:"title"` // as in the app's playlists
 	Source string `json:"source"`
-	From   int    `json:"from"` // the played bar the book's bar 1 is, from 1
+	From   int    `json:"from"` // the played bar the book's bar 1 is, from 1; 0 for an excerpt
 
 	Bars    []string `json:"bars"`
 	Degrees []string `json:"degrees"` // as printed, one per chord
@@ -35,10 +36,23 @@ type fiche struct {
 	Rhythm    string `json:"rhythm"` // chords per bar: "1", "1-2"
 	Key       string `json:"key"`    // in the app's spelling: Eb, A-
 
+	// Modulations are the book's. Level tells, for Siron, a transitory
+	// modulation that halts in a region, « transitoire », from one that
+	// only tenses, « tension », a two five that does not resolve; an
+	// empty level is En Harmonie's modulation.
 	Modulations []struct {
-		Key  string `json:"key"`
-		Bars [2]int `json:"bars"`
+		Key   string `json:"key"`
+		Bars  [2]int `json:"bars"`
+		Level string `json:"level"`
 	} `json:"modulations"`
+
+	// Ambiguity holds a region of tonal ambiguity (Siron, p. 381 and
+	// 382): its bars, and the tonalities it hovers between when the book
+	// names them, as for the section A of In a Sentimental Mood.
+	Ambiguity struct {
+		Keys []string `json:"keys"`
+		Bars [2]int   `json:"bars"`
+	} `json:"ambiguity"`
 	Borrowings []struct {
 		Bars   [2]int `json:"bars"`
 		Chords string `json:"chords"`
@@ -182,6 +196,10 @@ func TestFichesAgainstCharts(t *testing.T) {
 		t.Skip("no charts in testdata/local")
 	}
 	for name, f := range fiches(t) {
+		if f.From == 0 {
+			t.Logf("%s: an excerpt, not compared with the chart", name)
+			continue
+		}
 		s, ok := songs[f.Title]
 		if !ok {
 			t.Logf("%s: %q is not in testdata/local", name, f.Title)
@@ -336,15 +354,40 @@ func TestFichesModulations(t *testing.T) {
 			return [2]int{c.Bar(c.Chords[a.From].Start) + 1, c.Bar(last.Start+last.Length-1) + 1}
 		}
 		var heard []string
+		level := map[string]bool{} // heard area, true modulation or not
 		for _, a := range areas {
-			heard = append(heard, fmt.Sprintf("%s %v", noteName(a.Tonic), barsOf(a)))
+			h := fmt.Sprintf("%s %v", noteName(a.Tonic), barsOf(a))
+			heard = append(heard, h)
+			level[h] = a.True
 		}
 		for _, m := range f.Modulations {
+			if m.Level == "tension" {
+				// Siron's transitory modulation reaches a two five that
+				// does not resolve; the areas are En Harmonie's modulation.
+				t.Logf("%s: Siron hears a transitory modulation to %s at bars %v, a tension the areas do not count", name, m.Key, m.Bars)
+				continue
+			}
 			key, _ := Song{Key: m.Key}.DeclaredTonalities()
 			want := fmt.Sprintf("%s %v", noteName(key), m.Bars)
 			if !slices.Contains(heard, want) {
 				t.Errorf("%s: the book modulates to %s, the analysis hears %v", name, want, heard)
+				continue
 			}
+			if m.Level == "transitoire" && level[want] {
+				t.Errorf("%s: Siron hears a transitory modulation to %s, the analysis a true one", name, want)
+			}
+		}
+		if amb := f.Ambiguity.Bars; amb[0] > 0 {
+			// « Il devient alors difficile de parler de véritables
+			// modulations » (Siron, p. 381): an area may cross the region,
+			// a true modulation may not.
+			for _, a := range areas {
+				if b := barsOf(a); a.True && b[0] <= amb[1] && b[1] >= amb[0] {
+					t.Errorf("%s: the book hears bars %d to %d ambiguous, the analysis a true modulation to %s %v",
+						name, amb[0], amb[1], noteName(a.Tonic), b)
+				}
+			}
+			t.Logf("%s: the book hears bars %v ambiguous %v, the analysis hears the areas %v", name, amb, f.Ambiguity.Keys, heard)
 		}
 		for _, br := range f.Toward {
 			if inside(br, f) {
@@ -379,4 +422,64 @@ func noteName(ts []harmony.Tonality) string {
 		n += "m"
 	}
 	return n
+}
+
+// Siron's true modulations, where a chart holds the tune: the bridge of
+// Body and Soul, from D flat to D, and the second A of Joy Spring, the
+// first half a step higher, « modulation abrupte » both (La partition
+// intérieure, p. 382); the bridge of In a Sentimental Mood, in D flat
+// from bar 17 (En Harmonie, tome 1, chapter 10 §1.8, p. 159). And his
+// transitory one, the C major of All The Things You Are (p. 379).
+//
+// And one heard, outside the books: the bridge of Grand Central, F♯m7 B7
+// four times over, moves the centre away from F minor, where to is hard
+// to tell. Siron quotes only the beginning of the tune, a region of
+// ambiguity (p. 382). An empty key accepts any tonic.
+func TestTrueModulations(t *testing.T) {
+	songs := localSongs(t)
+	if len(songs) == 0 {
+		t.Skip("no charts in testdata/local")
+	}
+	for _, w := range []struct {
+		title, key string // key "" for any tonic
+		bar        int    // a bar the area holds
+		true       bool
+	}{
+		{"Body And Soul", "D", 17, true},
+		{"Joy Spring", "Gb", 9, true},
+		{"In a Sentimental Mood", "Db", 17, true},
+		{"All The Things You Are", "C", 7, false},
+		{"Grand Central", "", 17, true},
+	} {
+		s, ok := songs[w.title]
+		if !ok {
+			t.Logf("%s is not in testdata/local", w.title)
+			continue
+		}
+		c, err := Structure(Lex(s.Chart)).Changes()
+		if err != nil {
+			t.Fatal(err)
+		}
+		blocks := analysis.Blocks(c, analysis.Approaches(c))
+		key, _ := Song{Key: w.key}.DeclaredTonalities()
+		found := false
+		name := w.key
+		if name == "" {
+			name = "any key"
+		}
+		for _, a := range analysis.TonalAreas(c, blocks, sensed(c, blocks), analysis.Sections(c)) {
+			last := c.Chords[a.To]
+			if (len(key) > 0 && a.Tonic[0].Tonic() != key[0].Tonic()) ||
+				c.Bar(c.Chords[a.From].Start)+1 > w.bar || c.Bar(last.Start+last.Length-1)+1 < w.bar {
+				continue
+			}
+			found = true
+			if a.True != w.true {
+				t.Errorf("%s: the area in %s at bar %d is a true modulation: %v, want %v", w.title, name, w.bar, a.True, w.true)
+			}
+		}
+		if !found {
+			t.Errorf("%s: no area in %s at bar %d", w.title, name, w.bar)
+		}
+	}
 }

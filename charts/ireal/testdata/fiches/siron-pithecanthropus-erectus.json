@@ -1,0 +1,18 @@
+{
+  "title": "Pithecanthropus Erectus",
+  "source": "Siron, La partition intérieure, p. 381 (5.11.6)",
+  "bars": ["Gh7", "C7#9", "F-7", "Db^7", "Ab-7", "Db7", "Gb^7", "Gh7 C7b9", "F-"],
+  "degrees": ["II", "V", "I", "VI", "II", "V", "I", "II V", "I"],
+  "rhythm": "1-2",
+  "key": "F-",
+  "modulations": [
+    {"key": "Gb", "bars": [5, 7], "level": "transitoire"}
+  ],
+  "notes": [
+    "« Exemple d'accords-pivots chromatiques. Mesures 9-15 de Pithecantropus Erectus. Tonalité = Fa min. Modulation dans la région de la sous-dominante mineure (♭II = Sol♭ Maj.) ».",
+    "Siron écrit deux lectures des mesures 4 à 7, grisées : D♭Δ ♭VI (diatonique) de fa mineur et VΔ (chromatique) de sol♭ ; A♭m7 ♭IIIm7, D♭7 ♭VI7, G♭Δ ♭IIΔ (chromatiques) de fa mineur, et II V I (diatoniques) de sol♭. Degrés recopiés : fa mineur à la mesure 4, sol♭ aux mesures 5 à 7, comme la double analyse les répartit.",
+    "Les degrés de fa mineur suivent la convention d'En Harmonie, comptés sur la gamme mineure : D♭Δ est VI, là où Siron écrit ♭VI.",
+    "La modulation part de la cadence, A♭m7 D♭7 G♭Δ : le pivot D♭Δ, chromatique en sol♭, n'appartient pas à la tonalité d'arrivée. Siron parle de « région » : une modulation transitoire.",
+    "Un extrait, numéroté depuis sa première mesure."
+  ]
+}
