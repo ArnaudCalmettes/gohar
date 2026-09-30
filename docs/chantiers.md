@@ -232,6 +232,58 @@ Reste :
       tape soi-même, quand un jeu en aura besoin.
 - [ ] un format de grille ouvert, mieux conçu que celui d'iReal.
 
+## L'orthographe entendue
+
+La première cause d'analyses fausses, chez un humain, est une notation
+erronée : un ♭VII de do écrit A♯7 envoie l'apprenti analyste chercher
+un accord qui mène à si. « Tu ne suivras pas bêtement les indications
+du Real Book », dit le deuxième commandement.
+
+gohar n'est pas trompé par la graphie, parce que le noyau ne la lit
+pas : il raisonne sur des hauteurs, et A♯7 s'analyse comme B♭7. Le
+jour où l'on analysera un flux MIDI, qui ne porte aucune orthographe,
+le problème sera le même : nommer des accords à partir de touches. Dans
+les deux cas, l'orthographe est une **sortie** de l'analyse, pas une
+entrée. On entend un ♭VII7, donc on écrit B♭7. Sur une grille, cela
+donne un correcteur : marquer les graphies qui s'écartent de ce que
+gohar entend, et proposer la bonne, pour apprendre à l'apprenant à
+faire de même.
+
+Deux niveaux sont acquis par construction :
+
+- **La fondamentale.** `naming` écrit dans un contexte : en si♭ majeur,
+  il n'écrira pas ré♯, sauf choix délibéré de l'analyse, comme le
+  ♯IIdim7 d'une basse qui monte.
+- **Les altérations.** Le constructeur des `ChordPattern` normalise :
+  un accord noté ♯9, ♯11, ♯5 ressort en (♭5, ♭10, ♭13). Proposer des
+  couleurs est une autre affaire, et leur notation suivra les mêmes
+  règles.
+
+Reste **le mode** : sur une grille modale, écrire les accords de façon
+à rendre compte des modes entendus. *Nardis* est le cas d'école, parce
+que ses tétrades disent tout : Fmaj7 donne la ♭2, B7 pose mi, donc mi
+phrygien, donc do majeur pour gamme-mère hors des dominantes, donc les
+extensions à proposer pour le faire sonner. C'est le terrain des
+cadences modales à deux accords (voir « L'analyse des grilles »).
+
+La limite, ce sont les grilles où l'information manque : les versions
+mal fichues d'*Infant Eyes* ou de *Naima* (locrien, phrygien contre
+lydien, pédales) ne se liront pas de but en blanc. Pour ces deux-là, on
+dispose de grilles propres, à l'orthographe corrigée par un professeur,
+et de leurs voicings : elles serviront de référence, la grille
+fautive en entrée, la propre en sortie attendue.
+
+- [ ] le rendu des symboles d'accords dans `naming`, orthographiés par
+      degré dans la tonalité entendue.
+- [ ] le signalement, en simple remarque, des graphies qui s'écartent
+      de ce qui est entendu : « écrit A♯7, entendu ♭VII7 ».
+- [ ] la lecture du mode quand les tétrades suffisent, *Nardis* en
+      tête, et les extensions qui en découlent.
+- [ ] un verdict de confiance sur les degrés et les modes, comme celui
+      de la tonalité contre l'app, sur des grilles dont on connaît la
+      bonne lecture, *Infant Eyes* et *Naima* comprises.
+- [ ] la proposition de graphie, quand le verdict le permet.
+
 ## L'analyse des grilles
 
 Conçue dans `grilles.md`, qui en tient les règles et les décisions,
