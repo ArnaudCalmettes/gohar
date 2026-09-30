@@ -295,9 +295,9 @@ var catalogue = []Mode{
 	// Double harmonic major system. Every mode here carries two
 	// alterations, the system sitting two alterations from the natural.
 	{
-		// Also a ♭II7 over the tonic, D♭7 over C, its seventh C♭ heard
-		// as the B of the mode: « Xmaj7 ou ♭II7/I », says En Harmonie,
-		// tome 2.
+		// Also a ♭II7 over the tonic, D♭7 over C, its seventh heard as
+		// the major seventh of the mode: « Xmaj7 ou ♭II7/I », says
+		// En Harmonie, tome 2.
 		System: harmony.DoubleHarmonicMajor, Degree: 1, Base: Ionian,
 		Altered: []Alteration{{2, Flat}, {6, Flat}},
 		Chord:   "XMaj7 (b9, 11, b13)", Function: harmony.Tonic | harmony.Dominant,

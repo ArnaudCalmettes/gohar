@@ -454,7 +454,7 @@ func TestSlashChordEnding(t *testing.T) {
 // Where a tune stops, and so which tonality it is in.
 func TestTuneEndings(t *testing.T) {
 	const (
-		c, d, eb, e, f, gb, g, ab, a, bb, b harmony.PitchClass = 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
+		c, db, d, eb, e, f, gb, g, ab, a, bb, b harmony.PitchClass = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 	)
 	const (
 		min     = harmony.ChordMinorTriad
@@ -514,6 +514,22 @@ func TestTuneEndings(t *testing.T) {
 			barsOf(true, bar{d, min, d, minMaj7}, bar{d, min7, d, min6}, bar{g, min7}, bar{g, min7, a, dom7},
 				bar{d, min}, bar{d, dom7}, bar{g, min7, c, dom7}, bar{f, maj7}),
 			"Dm nat/harm/mel",
+		},
+		// Guile's Theme comes back four times to C♯m7 by an aeolian
+		// cadence, Amaj7 B7 C♯m7, and rests on it a bar each time. Its
+		// one two five, to E, is the relative major tonicised in its
+		// third section. (The helper spells C♯ as D♭.)
+		"an aeolian cadence installs its I": {
+			barsOf(true, bar{db, min7}, bar{a, maj7}, bar{gb, min7, ab, min7}, bar{db, min7},
+				bar{a, maj7}, bar{gb, min7, ab, min7},
+				bar{db, min7}, bar{a, maj7}, bar{b, dom7}, bar{ab, min7},
+				bar{db, min7}, bar{a, maj7}, bar{b, dom7}, bar{ab, min7},
+				bar{a, maj7}, bar{b, dom7}, bar{db, min7},
+				bar{a, maj7}, bar{b, dom7}, bar{db, min7},
+				bar{gb, min7}, bar{b, dom7}, bar{e, maj7},
+				bar{a, maj7}, bar{b, dom7}, bar{db, min7},
+				bar{a, maj7}, bar{b, dom7}, bar{db, min7}),
+			"D♭m nat/harm/mel",
 		},
 		// Blue Skies opens on the same line from Am, but its first cadence
 		// goes to C6: it does not open at rest, and is in C.

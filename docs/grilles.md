@@ -315,8 +315,7 @@ est un gros amen sur do. Mais elle attire moins : un V-I peut faire
 changer de tonalité, un IV-I ne le fait pas. Le ♭VII7-I en est le faux
 nez mineur : avec le IV à la basse, B♭7 devient Fm6 en do. Quand un
 ♭VImaj7 la précède, ♭VImaj7 ♭VII7 Imaj7, c'est la cadence modale de do
-éolien du tome 2, que les jeux vidéo ont rendue familière : la
-« cadence Mario », à reconnaître.
+éolien du tome 2, une cellule (voir plus bas).
 
 ### Dans gohar : les blocs
 
@@ -470,6 +469,23 @@ avec les enchaînements fréquents (tome 1, chapitre 8 §3.3) :
   degré est substitué au Ier » : Fmaj7 Dm7 Gm7 C7 Am7 Dm7 Gm7 C7 dans
   *Have You Met Miss Jones*.
 
+Le tome 2 en ajoute une, parmi les cadences modales (chapitre 2 §5.2) :
+
+- **la cadence modale de do éolien**, ♭VImaj7 ♭VII7 I, qui monte vers
+  le I par tons : A♭maj7 B♭7 Cm7 dans son propre mode, A♭maj7 B♭7
+  Cmaj7 quand elle résout en majeur. Ce second cas est un emprunt, qui
+  remplace le II-V d'un II-V-I « afin de dynamiser l'enchaînement par
+  un nouveau mouvement de basses et des couleurs étrangères à la
+  tonalité ». Les musiques de jeux vidéo en ont fait un classique,
+  *Final Fantasy* plus encore que *Super Mario*, dont la fanfare de fin
+  de niveau lui a pourtant donné son surnom : la « cadence Mario ».
+  Sans son ♭VImaj7, le ♭VII7-I reste une plagale mineure déguisée, un
+  bloc : c'est le ♭VImaj7 qui fait la cadence modale. Dans le corpus,
+  elle résout le plus souvent en mineur : Amaj7 B7 C♯m7 dans le *Guile's
+  Theme* de *Street Fighter II*, G A7 Bm dans l'*Aria di mezzo
+  carattere* de *Final Fantasy VI*. La « cadence Mario » y est plus
+  rare : F G7 A dans la *Route 209* de *Pokémon*.
+
 Les règles de lecture sont les nôtres. Une cellule se lit sur les
 fondamentales, depuis la tonique que pointe le V : I (ou III), VI (sur
 la sixte majeure, ou mineure en mineur), II, V. Le premier accord est
@@ -478,7 +494,11 @@ III-VI-II-V ; le VI a une tierce, de n'importe quelle qualité ; le II
 est mineur ou de dominante, un accord majeur y étant l'arrivée d'une
 cadence (Em7 A7 Dmaj7 G7 est un II-V-I de ré, pas un III-VI-II-V de
 do) ; le dernier est une dominante. Un accord tenu plus longtemps
-compte une fois.
+compte une fois. La cadence éolienne se lit de même, sur trois
+fondamentales qui montent par tons : un accord majeur, une dominante,
+un accord de tonique, mineur (la cadence dans son propre mode) ou
+majeur (l'emprunt, la « cadence Mario »). Elle peut partager son I
+avec l'anatole qui en part.
 
 Les X7 d'une cellule peuvent être des substitutions tritoniques :
 « tout accord X7 peut être substitué à un autre accord X7, quelle que
@@ -507,7 +527,8 @@ le V n'y résout pas. Dans *Have You Met Miss Jones*, le C7 du premier
 anatole va sur Am7 ; dans *Anthropology*, F7 va sur Dm7. La cellule le
 note (`Resolves`), et `analyse` écrit les cellules sous les toniques,
 « anatole ───── », avec des points de suspension quand le V évite le I
-promis : « III-VI-II-V… ───── ».
+promis : « III-VI-II-V… ───── ». La cadence éolienne s'y écrit
+« ♭VI-♭VII-I ───── ».
 
 ### Les accords parallèles
 
@@ -641,7 +662,13 @@ confirme une tonique déjà là (le fond, la tonique de départ, la tonique
 locale), ramène à la maison, et compte comme une cadence qui confirme
 une modulation. Mais elle n'ouvre jamais seule une tonique locale. Ce
 qu'elle annonce, l'oreille l'attend : après le D♭7 de Tenderly, on
-attend mi♭.
+attend mi♭. La **cadence éolienne** fait exception : avec son ♭VImaj7,
+le ♭VII7-I est une cadence modale, qui « doit obligatoirement faire
+entendre les DCN et DCA du mode » (tome 2) et installe donc sa tonique,
+comme un V-I, un m7 compris. Dans le *Guile's Theme* de *Street Fighter
+II*, Amaj7 B7 C♯m7 revient quatre fois, suivi chaque fois d'une mesure
+de repos sur C♯m7 : le morceau est en do♯ mineur, et le seul II-V-I, en
+mi, tonicise le relatif majeur dans la troisième section.
 
 Ne change rien au fond : un accord diatonique, un emprunt sur la même
 tonique (Im7, IVm, ♭VII7), une préparation qui ne se résout pas. Un
@@ -881,6 +908,8 @@ d'où il vient se relit aussi hors de la tonique (Em7 A7 | Em7 A7, le
 II-V de ré rejoué dans *Satin Doll*), sauf quand l'alternance dure plus
 de quatre mesures, un vamp. Là où le mineur est la tonique, la plagale
 reste : Fm7 B♭7 dans *Mas Que Nada* est le I IV7 dorien de fa mineur.
+Elle reste aussi dans une cadence éolienne : Amaj7 B7 C♯m7 n'est pas
+un V de mi qui va sur son VI.
 La tonalité du morceau ne change pas, et la seconde écoute est aussi
 directe que la première : elle ne demande que la tonalité donnée au
 départ et ce qui a sonné.
@@ -1154,6 +1183,8 @@ Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
 | Chega De Saudade | le majeur homonyme installé pour de bon : pas une tierce picarde ; le morceau est en ré, mineur et majeur à la fois, mis à part du corpus |
 | Satin Doll | le II-V rejoué, Dm7 G7 \| Dm7 G7, un V qui revient sur son II et non un vamp dorien |
 | Anthropology | l'anatole et le III-VI-II-V, dont le V va sur le III sans y résoudre |
+| Guile's Theme | la cadence éolienne qui résout dans son mode, en mineur, et installe sa tonique : do♯ mineur, le seul II-V-I tonicisant le relatif majeur |
+| Pokémon, Route 209 | la cadence éolienne qui résout en majeur, la « cadence Mario » |
 | Stolen Moments | la marche d'accords parallèles |
 | Nardis | mi phrygien, le Fmaj7 pour ♭2 et le B7 qui pose mi : un mode que l'analyse n'entend pas encore |
 | So What, Maiden Voyage | la plage modale reconnue, son mode laissé à la grille qui ne le dit pas |

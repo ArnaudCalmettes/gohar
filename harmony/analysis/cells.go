@@ -1,6 +1,10 @@
 package analysis
 
-import "github.com/ArnaudCalmettes/gohar/harmony"
+import (
+	"slices"
+
+	"github.com/ArnaudCalmettes/gohar/harmony"
+)
 
 // A Cell is a formula of a few chords that standards are built from, and
 // that a musician hears as one thing: the anatole, the III VI II V. En
@@ -43,9 +47,23 @@ const (
 	// anatole twice without playing the I again: Fmaj7 Dm7 Gm7 C7 Am7 Dm7
 	// Gm7 C7 in Have You Met Miss Jones.
 	ThreeSixTwoFive
+
+	// AeolianCadence: ♭VImaj7 ♭VII7 I, the modal cadence of the aeolian,
+	// which reaches the I from the ♭VI a tone at a time: A♭maj7 B♭7
+	// Cmaj7, « cadence modale de Do éolien » (tome 2, chapter 2 §5.2).
+	// On a minor I it is the cadence of its own mode. On a major I it is
+	// a borrowing, replacing the II V of a II V I « afin de dynamiser
+	// l'enchaînement par un nouveau mouvement de basses et des couleurs
+	// étrangères à la tonalité »: that particular case is the one
+	// nicknamed the Mario Cadence, after the level-end fanfare of
+	// Super Mario.
+	//
+	// Its ♭VII7 I alone stays a disguised minor plagal (a IV→ block):
+	// the ♭VImaj7 is what makes the modal cadence.
+	AeolianCadence
 )
 
-var cellNames = [...]string{"", "anatole", "III-VI-II-V"}
+var cellNames = [...]string{"", "anatole", "III-VI-II-V", "♭VI-♭VII-I"}
 
 func (k CellKind) String() string {
 	return cellNames[k]
@@ -75,6 +93,11 @@ func (k CellKind) String() string {
 // three, and keeps the first reading that makes a cell. The fifths
 // become half tones: in Body And Soul, Dm7 G7 C7 B7 B♭7 is a III VI II
 // V of B flat walking down chromatically, B7 for F7.
+//
+// The aeolian cadence is three changes read on their roots too, with
+// the I it reaches: see [AeolianCadence]. It may share its I with an
+// anatole that starts there, so the cells come out sorted by their
+// first change, not disjoint.
 func Cells(c Changes) []Cell {
 	var out []Cell
 	for i := 0; i+3 < len(c.Chords); i++ {
@@ -92,7 +115,44 @@ func Cells(c Changes) []Cell {
 			}
 		}
 	}
+	out = append(out, aeolianCadences(c)...)
+	slices.SortStableFunc(out, func(a, b Cell) int { return a.From - b.From })
 	return out
+}
+
+// aeolianCadences finds the ♭VImaj7 ♭VII7 I of [AeolianCadence]: a
+// major chord, a dominant a tone above, and a tonic chord a tone above
+// that, of either mode, a minor tonic written m7 included as for the
+// anatole. On a minor I the cadence is its own mode's, on a major I a
+// borrowing; both are heard as the same formula.
+func aeolianCadences(c Changes) []Cell {
+	var out []Cell
+	for i := 0; i+2 < len(c.Chords); i++ {
+		if aeolian(c.Chords[i], c.Chords[i+1], c.Chords[i+2]) {
+			out = append(out, Cell{From: i, To: i + 2, Kind: AeolianCadence, Resolves: true})
+			i += 2
+		}
+	}
+	return out
+}
+
+// aeolian reports whether three changes are the ♭VImaj7 ♭VII7 I of an
+// [AeolianCadence]. Cells names the formula; Blocks marks its ♭VII7 I,
+// which concludes on a tonic where a ♭VII7 I alone only confirms one.
+func aeolian(six, seven, one Change) bool {
+	if six.Silent || seven.Silent || one.Silent {
+		return false
+	}
+	switch six.Chord.Pattern.Tetrad() {
+	case harmony.ChordMajorTriad, harmony.ChordMajorSeventh, harmony.ChordMajorSixth:
+	default:
+		return false
+	}
+	if !isDominant(seven.Chord.Pattern) ||
+		tonicOf(one) == nil && one.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
+		return false
+	}
+	return seven.Chord.Root == six.Chord.Root.Transpose(2) && one.Chord.Root == seven.Chord.Root.Transpose(2)
 }
 
 // restorations are the X7 among the last three changes of a cell that

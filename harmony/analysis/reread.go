@@ -29,7 +29,9 @@ import (
 // does not go nowhere, it promises that tonic. Where the ground is the
 // minor chord itself, the plagal reading stands: Fm7 B♭7 Fm7 in Mas Que
 // Nada is the dorian I IV7 of F minor. So it does in a vamp, the two
-// chords alternating over more than four bars.
+// chords alternating over more than four bars, and in an aeolian
+// cadence, its ♭VImaj7 before it: Amaj7 B7 C♯m7 in Guile's Theme is no
+// V of E going to its VI.
 //
 // The ground is the one of the first hearing, which reads each change
 // in turn, or before it installs one, the tonality the tune is analysed
@@ -38,7 +40,7 @@ import (
 func Reread(c Changes, kinds []harmony.ApproachKind, blocks []Block, sensed []Sensed, tune []harmony.Tonality) ([]harmony.ApproachKind, []Block) {
 	kinds, blocks = slices.Clone(kinds), slices.Clone(blocks)
 	for n, b := range blocks {
-		if b.Kind != harmony.PlagalApproach || b.Target < 0 || !isDominant(c.Chords[b.Five].Chord.Pattern) {
+		if b.Kind != harmony.PlagalApproach || b.Aeolian || b.Target < 0 || !isDominant(c.Chords[b.Five].Chord.Pattern) {
 			continue // a IVm7 is no V
 		}
 		ground := sensed[b.Five].Ground

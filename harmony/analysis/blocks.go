@@ -30,7 +30,9 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // A plagal cadence is a block too, its subdominant in the place of the
 // V (Kind is harmony.PlagalApproach): the IV before the tonic, or the
 // ♭VII7 with its IVm7 as its two (Fm7 B♭7 Cmaj7). It concludes, but
-// draws less than a V: see [Sense] for what it may do.
+// draws less than a V: see [Sense] for what it may do. With its
+// ♭VImaj7 before it, the ♭VII7 I is an aeolian cadence, which draws as
+// a V does (Aeolian).
 //
 // # Deceptive
 //
@@ -50,6 +52,14 @@ type Block struct {
 	// announces F harmonic minor and resolves on F major. See
 	// [announce].
 	Announced []harmony.Tonality
+
+	// Aeolian tells a plagal ♭VII7 I that ends an aeolian cadence, its
+	// ♭VImaj7 before it (see [AeolianCadence]). A modal cadence
+	// installs its mode: its I is a tonic, a m7 included, where a
+	// ♭VII7 I alone only confirms one. In Guile's Theme, Amaj7 B7 C♯m7
+	// comes back four times, each time followed by a bar at rest on
+	// C♯m7.
+	Aeolian bool
 }
 
 // fives are the approaches that make a V.
@@ -76,6 +86,8 @@ func Blocks(c Changes, kinds []harmony.ApproachKind) []Block {
 		}
 
 		p := c.Prev(f)
+		b.Aeolian = b.Kind == harmony.PlagalApproach && b.Target >= 0 && p >= 0 && p != f &&
+			aeolian(c.Chords[p], five, c.Chords[b.Target])
 		if p >= 0 && kinds[p].Has(harmony.SuspensionApproach) {
 			b.Sus, p = p, c.Prev(p)
 		}

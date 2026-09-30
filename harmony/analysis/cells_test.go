@@ -10,7 +10,8 @@ import (
 
 // The anatole and the III VI II V, in the forms En Harmonie gives
 // (tome 1, chapter 8 §3.3, and chapter 9 for the secondary dominants),
-// looping back to their first chord; "…" marks a cell whose V avoids
+// looping back to their first chord, and the modal cadence of the
+// aeolian (tome 2, chapter 2 §5.2); "…" marks a cell whose V avoids
 // the I it promises, a deceptive cadence (the book's "V – …"), and
 // "♭II" one whose X7 stand for their tritone twins.
 func TestCells(t *testing.T) {
@@ -90,6 +91,34 @@ func TestCells(t *testing.T) {
 		// Not on a tonic chord: the cycle alone is no anatole.
 		"a cycle of fifths": {
 			changesOf(true, e, dom7, a, dom7, d, dom7, g, dom7), "",
+		},
+		// The II V I of C, its approach replaced by the modal cadence of
+		// C aeolian, as En Harmonie does it.
+		"the modal cadence of C aeolian": {
+			changesOf(false, ab, maj7, bb, dom7, c, maj7), "♭VI-♭VII-I",
+		},
+		// Guile's Theme (Street Fighter II), on its minor I: the
+		// cadence in its own mode.
+		"Guile's Theme": {
+			changesOf(false, a, maj7, b, dom7, db, min7), "♭VI-♭VII-I",
+		},
+		// Route 209 (Pokémon Diamond and Pearl), on triads: the
+		// borrowing that resolves in major, the Mario Cadence.
+		"Route 209": {
+			changesOf(false, f, maj, g, dom7, a, maj), "♭VI-♭VII-I",
+		},
+		// Fm7 B♭7 Cmaj7: a disguised minor plagal, which is a block.
+		"the ♭VII7 I without its ♭VI": {
+			changesOf(false, f, min7, bb, dom7, c, maj7), "",
+		},
+		// A♭maj7 B♭maj7 Cmaj7: parallel chords, the ♭VII no dominant.
+		"a ♭VIImaj7 is no ♭VII7": {
+			changesOf(false, ab, maj7, bb, maj7, c, maj7), "",
+		},
+		// The cadence ends on the I an anatole starts from.
+		"the cadence, then an anatole": {
+			changesOf(false, ab, maj7, bb, dom7, c, maj7, a, min7, d, min7, g, dom7, c, maj7),
+			"♭VI-♭VII-I anatole",
 		},
 	} {
 		var got []string

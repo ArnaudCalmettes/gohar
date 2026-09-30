@@ -58,12 +58,13 @@ func tonicOf(change Change) []harmony.Tonality {
 // block: nil otherwise. Charts write the minor tonic m7 far more often
 // than it is played (m6, m(maj7)): Cm7 | Dm7♭5 G7♭9 | Cm7 in Softly, As
 // In A Morning Sunrise. A plagal IV7 does not make a m7 a tonic: C7
-// Gm7 in Honeysuckle Rose is a V going back to its two.
+// Gm7 in Honeysuckle Rose is a V going back to its two. An aeolian
+// cadence does: Amaj7 B7 C♯m7 in Guile's Theme installs C♯ minor.
 func minorSeventhTonic(c Changes, blocks []Block, r roles, i int) []harmony.Tonality {
 	ch := c.Chords[i]
 	n := r.target[i]
 	if n < 0 || r.member[i] >= 0 || ch.Silent || ch.Inverted() ||
-		blocks[n].Kind == harmony.PlagalApproach ||
+		blocks[n].Kind == harmony.PlagalApproach && !blocks[n].Aeolian ||
 		ch.Chord.Pattern.Tetrad() != harmony.ChordMinorSeventh {
 		return nil
 	}

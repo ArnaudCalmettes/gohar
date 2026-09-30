@@ -337,13 +337,6 @@ La suite, dans l'ordre :
       d'eux-mêmes (le fa♯ de D7 sur Cmaj7). Reste à savoir quand deux
       accords sont une cadence modale plutôt qu'un mouvement conjoint
       de grille tonale (Dm7 Cm7 dans un II-V de si♭).
-- [ ] la cadence modale de do éolien, ♭VImaj7 ♭VII7 Imaj7, qui monte
-      depuis le ♭VI (tome 2, p. 36), dite aussi « cadence Mario », par
-      la fanfare de fin de niveau des jeux *Super Mario* : à reconnaître
-      comme telle. Le ♭VII7-I seul, avec ou sans son IVm7, reste lu
-      comme une plagale mineure déguisée (« IV→ »). Tranché : les deux
-      lectures existent, et c'est le ♭VImaj7 qui fait la cadence
-      modale.
 - [ ] le IIm7♭5 → I : dans *I'm Old Fashioned*, Gm7♭5 Fmaj7 « peut
       être perçu comme une cadence plagale mineure, cet accord se
       confondant avec un B♭m6 (IVm) » (tome 2, p. 34). Vérifier ce que
