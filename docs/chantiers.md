@@ -133,9 +133,6 @@ connaît.
 - [ ] le IIIe degré du majeur double harmonique (phrygien ♭4 𝄫7) n'a
       pas de tétrade, mais le livre lui donne des extensions, ♭9, ♭11,
       ♭13, que le catalogue n'a pas : il n'en donne qu'au VIIe.
-- [ ] fixer en test les paires du rétrograde inversé que donne le
-      livre pour les 35 modes : elles sont toutes celles de
-      `ScalePattern.Mirror`, et le livre en fait l'oracle.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
