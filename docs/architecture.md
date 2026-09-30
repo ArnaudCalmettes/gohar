@@ -69,6 +69,8 @@ gohar/
     cmd/analyse/             une grille et son analyse dans le terminal
     cmd/corpus/              l'analyse de playlists entières, comparée
                              à la tonalité que l'app déclare
+    cmd/forms/               sonde : la forme des grilles, trouvée par
+                             les seules récurrences d'accords
 
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
