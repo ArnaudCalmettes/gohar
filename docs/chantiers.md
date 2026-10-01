@@ -243,6 +243,55 @@ Deux niveaux sont acquis par construction :
   couleurs est une autre affaire, et leur notation suivra les mêmes
   règles.
 
+`analyse` écrit désormais chaque grille ainsi, et la graphie de l'app
+ne sert plus à rien d'autre qu'à la lecture des accords. Les règles,
+qui sont les nôtres, par ordre de priorité :
+
+- **P0, des mouvements lisibles.** Une basse qui bouge d'une quinte
+  bouge d'une quinte juste, d'une tierce d'une tierce, d'un pas d'une
+  seconde. Un demi-ton peut aussi rester sur sa lettre, chromatique, et
+  une note étrangère à la zone suit le sens de la ligne : dièse en
+  montant, bémol en descendant (E7 E♭7 D7 D♭7 C, C C♯dim7 Dm7).
+- **P1, le nom suit le chiffrage.** Une fondamentale prend la lettre
+  de son degré dans la zone, le fond où se comptent les degrés : un
+  ♭II se nomme comme un ♭II. Une fondamentale diatonique est le cadre
+  où se lisent les mouvements et garde sa lettre ; P0 décide des
+  autres, les fondamentales chromatiques et les accords qui préparent
+  une résolution, nommés depuis leur cible. P1 ne fait alors que
+  départager.
+- **P2, la grille la plus simple.** La tonique de chaque zone s'écrit
+  avec le moins d'altérations à la clef, ou comme son enharmonique si
+  une armure peut l'écrire, selon ce qui donne le moins de smells,
+  puis le moins d'altérations. *Crepuscule With Nellie* passe ainsi de
+  sol♯ mineur à la♭ mineur.
+- **P3, une tonicisation se nomme comme l'accord qu'elle tonicise** :
+  [F♯m] sous F♯m7.
+- **Une basse tenue**, une pédale, s'écrit une fois par son degré dans
+  la zone et garde ce nom tant qu'elle est tenue.
+
+**L'usage simplifie ensuite les noms affichés**, jamais le chiffrage ni
+les mouvements :
+
+- E♯, F♭, B♯ et C♭ passent sur la lettre voisine, sauf la sensible
+  haussée d'un mineur ;
+- une double altération aussi, et c'est une **enharmonie tolérée**,
+  que `analyse -smells` liste à part : « D♯7/G for D♯7/F𝄪 bar 12 » ;
+- un accord qui divise l'octave en parts égales, dim7 ou triade
+  augmentée, posé sur une de ses notes, s'écrit sur sa basse : Cdim7/A
+  devient Adim7, C+/E devient E+.
+
+Une fondamentale libre, chromatique ou qui prépare une résolution,
+n'est d'ailleurs jamais écrite autrement qu'à l'usage.
+
+**Le smell** est une fondamentale ou une basse affichée avec une double
+altération, ou en E♯, F♭, B♯, C♭ que l'usage garde. Il compte une fois
+par accord, et `analyse -smells` en donne le total et la liste. Le
+choix de la zone (P2) compte les smells sur les noms affichés, et les
+altérations sur l'écriture par degré : do♯ majeur affiche son mi♯ en
+fa, mais écrit toujours sept dièses. Il désigne d'ordinaire un
+endroit où l'analyse s'est trompée de zone ou de chiffrage, ou une
+chaîne qui a fait le tour des tonalités.
+
 Reste **le mode** : sur une grille modale, écrire les accords de façon
 à rendre compte des modes entendus. *Nardis* est le cas d'école, parce
 que ses tétrades disent tout : Fmaj7 donne la ♭2, B7 pose mi, donc mi
@@ -257,8 +306,14 @@ dispose de grilles propres, à l'orthographe corrigée par un professeur,
 et de leurs voicings : elles serviront de référence, la grille
 fautive en entrée, la propre en sortie attendue.
 
-- [ ] le rendu des symboles d'accords dans `naming`, orthographiés par
-      degré dans la tonalité entendue.
+- [x] la fondamentale et la basse des accords orthographiées par degré
+      dans la tonalité d'arrivée, puis simplifiées par l'usage, dans
+      `analyse`.
+- [ ] l'endroit où rompre une chaîne qui ne se referme pas sur les
+      lettres, et les grilles qui sentent le plus (*Lush Life*,
+      *Yesterday's Gardenias*).
+- [ ] le rendu des symboles d'accords entiers dans `naming`, la qualité
+      comprise : `analyse` la recopie encore de l'app.
 - [ ] le signalement, en simple remarque, des graphies qui s'écartent
       de ce qui est entendu : « écrit A♯7, entendu ♭VII7 ».
 - [ ] la lecture du mode quand les tétrades suffisent, *Nardis* en
@@ -613,6 +668,12 @@ chose, maintenir la règle des deux surfaces : oto n'est importé que par
 `synth/device.go`, gomidi que par `games/keyboard/midi.go`.
 
 ## Les jeux
+
+- [ ] *Walk with me* : remplacer le bassiste à la main gauche, poser
+      des pêches à la main droite, à vue sur une grille arbitraire. Le
+      plan est dans `walk.md` ; d'abord dépouiller *Jazz Piano
+      Fundamentals* de Jeremy Siskind, puis trancher le modèle de
+      paliers.
 
 La suite de `ear`, dans l'ordre de `oreille.md` :
 

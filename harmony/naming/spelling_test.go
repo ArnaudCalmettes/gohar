@@ -222,3 +222,59 @@ func mustLookupPattern(t *testing.T, s harmony.System, d harmony.Degree) harmony
 	require.True(t, ok)
 	return m.Pattern()
 }
+
+// The tonic of every major and minor tonality, written with the fewest
+// accidentals, the ties at six going to the flats.
+func TestTonicSpelling(t *testing.T) {
+	for _, tc := range []struct {
+		pattern harmony.ScalePattern
+		want    [12]string
+	}{
+		{harmony.ScaleMajor, [12]string{"C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"}},
+		{harmony.ScaleNaturalMinor, [12]string{"C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"}},
+		{harmony.ScaleHarmonicMinor, [12]string{"C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"}},
+		{harmony.ScaleMelodicMinor, [12]string{"C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"}},
+	} {
+		for c := harmony.PitchClass(0); c < 12; c++ {
+			tonality, err := harmony.NewTonality(c, tc.pattern)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := naming.English.Name(naming.TonicSpelling(tonality), naming.Signs); got != tc.want[c] {
+				t.Errorf("pattern %b, class %d: %s, want %s", tc.pattern, c, got, tc.want[c])
+			}
+		}
+	}
+}
+
+// A chord root spelled by its degree, from the tonic, and the notes of a
+// chord by their intervals, from the root.
+func TestSpellAbove(t *testing.T) {
+	note := func(l naming.Letter, a naming.Accidental) naming.SpelledNote {
+		return naming.SpelledNote{Letter: l, Accidental: a}
+	}
+	for _, tc := range []struct {
+		what  string
+		from  naming.SpelledNote
+		steps int
+		class harmony.PitchClass
+		want  string
+	}{
+		{"♭VI of D♭", note(naming.LetterD, naming.FlatSign), 5, 9, "B𝄫"},
+		{"♭VI of C", note(naming.LetterC, naming.NaturalSign), 5, 8, "A♭"},
+		{"♯IV of C", note(naming.LetterC, naming.NaturalSign), 3, 6, "F♯"},
+		{"VII of F♯m", note(naming.LetterF, naming.SharpSign), 6, 5, "E♯"},
+		{"third of E7", note(naming.LetterE, naming.NaturalSign), 2, 8, "G♯"},
+		{"D♭ one letter down", note(naming.LetterD, naming.FlatSign), -1, 1, "C♯"},
+		{"G♭ one letter up", note(naming.LetterG, naming.FlatSign), 1, 6, ""},
+	} {
+		got, ok := naming.SpellAbove(tc.from, tc.steps, tc.class)
+		name := ""
+		if ok {
+			name = naming.English.Name(got, naming.Signs)
+		}
+		if name != tc.want {
+			t.Errorf("%s: %q, want %q", tc.what, name, tc.want)
+		}
+	}
+}

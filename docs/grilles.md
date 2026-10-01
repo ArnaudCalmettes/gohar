@@ -421,8 +421,9 @@ pas qu'on trouve d'une mesure à l'autre entre un accord de chacun
 | Pas | Exemple | Thème |
 |---|---|---|
 | ½ ton | Dm7 G7 \| E♭m7 A♭7, Dm7 G7 \| D♭m7 G♭7 | *Butch And Butch* : C♯m7 F♯7 Cm7 F7 Bm7 E7 |
-| ton | Dm7 G7 \| Em7 A7, et du V au II suivant : Dm7 G7 \| Am7 D7, Dm7 G7 \| Fm7 B♭7 | *Satin Doll* |
-| cycle des quintes | Dm7 G7 \| Cm7 F7 : Cm7 est le I que la première cadence aurait pu conclure, et le II de la suivante | *Confirmation* : Em7♭5 A7 Dm7 G7 Cm7 F7 |
+| ton | Dm7 G7 \| Em7 A7 | *Satin Doll* |
+| ton, vers le bas | Dm7 G7 \| Cm7 F7, un II-V puis un autre un ton en dessous : Cm7 est le I que la première cadence aurait pu conclure, et le II de la suivante | *Confirmation* : Em7♭5 A7 Dm7 G7 Cm7 F7 ; *Straight Street* : Bm7 E7 Am7 D7 Gm7 C7 Fm7 B♭7 |
+| cycle des quintes | Am7 D7 \| Dm7 G7 \| Gm7 C7 \| Cm7 F7 : les II à une quinte l'un de l'autre, et les V aussi | le pont des rhythm changes, avec ses II ; *Satin Doll* : Em7 A7 \| Am7 D7 |
 
 Les II-V se lisent sur les préparations (II→ puis son V), pas sur les
 blocs : dans *Satin Doll*, Dm7 G7 | Dm7 G7 | Em7 A7 monte d'un ton,
@@ -431,12 +432,12 @@ pas de lien mais ne rompt pas la chaîne, et un pas que le livre ne
 nomme pas n'en fait pas non plus. `analyse` écrit le pas devant le II :
 « ½ II→ », « step II→ » (un ton), « 5th II→ » (le cycle des quintes).
 
-Le cycle des quintes l'emporte quand les fondamentales continuent de
-tomber de quinte en quinte à travers les deux II-V : E A D G C F dans
-*Confirmation*. Quand le second II-V rompt la chaîne, le lien se lit
-entre les II : dans *Autumn Leaves*, D7 tombe d'une quinte sur Gm7,
-mais G♭7 rompt le cycle, et Am7♭5 D7 | Gm7 G♭7 descend d'un ton. Règle
-à nous, tirée de l'écoute.
+Le pas se mesure entre les II, ou entre les V, comme on l'entend et
+comme les musiciens le décrivent, jamais d'un V au II suivant. Un II-V
+puis un autre un ton en dessous est un ton, même si chaque V tombe d'une
+quinte sur le II suivant. Suivre le cycle des quintes, c'est le pont des
+rhythm changes : des II à une quinte l'un de l'autre. L'écart entre les
+V ne sert que lorsque les II n'en donnent aucun.
 
 Le II peut être celui d'une dominante chromatique, un demi-ton au-dessus
 d'elle : dans *Autumn Leaves*, Gm7 G♭7 | Fm7 E7 descend d'un ton. Le

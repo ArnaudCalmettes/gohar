@@ -206,3 +206,102 @@ func nearestSpelling(scale []SpelledNote, c harmony.PitchClass) (SpelledNote, bo
 	}
 	return best, found
 }
+
+// TonicSpelling returns the spelling of the tonic of `t` that writes
+// its scale with the fewest accidentals: the rule of least alteration.
+// F sharp minor, not G flat minor, which would need a double flat; C
+// sharp minor, not D flat minor; D flat major, not C sharp major.
+//
+// The count is taken on the scale of the key signature, every degree
+// spelled from the tonic (see spellDegrees), a double accidental
+// counting twice. The harmonic and melodic minors take the signature of
+// the natural minor, and the harmonic major that of the major, as they
+// are written: G sharp harmonic minor and A flat harmonic minor both
+// write six accidentals, the F double sharp of the first counting
+// twice, but the signature of G sharp minor has five sharps and that of
+// A flat minor seven flats. Any other scale of the catalogue, a mode of
+// the major or of the melodic minor, is counted on itself.
+//
+// Two tonics tie, at six accidentals each way: F sharp or G flat major,
+// D sharp or E flat minor. The tie goes to the flats, as jazz writes
+// them. The rule and its tie are ours, from common sense and common use.
+func TonicSpelling(t harmony.Tonality) SpelledNote {
+	if t.IsZero() {
+		return SpelledNote{}
+	}
+	best, bestCount := defaultSpelling(t.Tonic()), -1
+	for l := Letter(0); l < LetterCount; l++ {
+		tonic, ok := spellOn(l, t.Tonic())
+		if !ok {
+			continue
+		}
+		count := KeyAccidentals(t, tonic)
+		switch {
+		case bestCount < 0, count < bestCount,
+			count == bestCount && tonic.Accidental < best.Accidental:
+			best, bestCount = tonic, count
+		}
+	}
+	return best
+}
+
+// Accidentals counts the accidentals written in `notes`, a double sharp
+// or a double flat counting twice.
+func Accidentals(notes []SpelledNote) int {
+	n := 0
+	for _, note := range notes {
+		a := int(note.Accidental)
+		if a < 0 {
+			a = -a
+		}
+		n += a
+	}
+	return n
+}
+
+// KeyAccidentals counts the accidentals of the key signature of `t`
+// with its tonic written `tonic`: 5 for G sharp minor, 7 for A flat
+// minor, 8 for G sharp major, a key no signature writes. A double
+// counts twice.
+func KeyAccidentals(t harmony.Tonality, tonic SpelledNote) int {
+	return Accidentals(spellDegrees(signature(t), tonic))
+}
+
+// signature returns the tonality whose scale gives the key signature of
+// `t`: the natural minor for the harmonic and melodic minors, the major
+// for the harmonic major, `t` itself otherwise.
+func signature(t harmony.Tonality) harmony.Tonality {
+	p := t.Pattern()
+	switch p {
+	case harmony.ScaleHarmonicMinor, harmony.ScaleMelodicMinor:
+		p = harmony.ScaleNaturalMinor
+	case harmony.ScaleHarmonicMajor:
+		p = harmony.ScaleMajor
+	default:
+		return t
+	}
+	s, err := harmony.NewTonality(t.Tonic(), p)
+	if err != nil {
+		return t
+	}
+	return s
+}
+
+// SpellAbove writes class `c` on the letter `steps` letters above the
+// letter of `from`, below when `steps` is negative, and reports whether
+// an accidental can reach it.
+//
+// This is how a chord is spelled in a tonality: its root takes the
+// letter of its degree, counted from the tonic, and the notes of the
+// chord the letters of their intervals, counted from the root. In D
+// flat, the ♭VI is a B double flat, the sixth letter from D (steps 5),
+// and the E7 that is the VI7 of G is spelled E G♯ B D, never E A♭ B D.
+// A degree lowered or raised keeps the letter of the degree it alters:
+// ♯IVdim7 in C is F♯dim7, ♭VI7 is A♭7.
+//
+// With `c` the class of `from` itself, it gives the enharmonic of a
+// note one letter away: SpellAbove(D♭, -1, C♯) is C♯.
+func SpellAbove(from SpelledNote, steps int, c harmony.PitchClass) (SpelledNote, bool) {
+	l := Letter(((int(from.Letter)+steps)%LetterCount + LetterCount) % LetterCount)
+	return spellOn(l, c)
+}

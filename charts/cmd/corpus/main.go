@@ -50,6 +50,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/charts/ireal"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
+	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
 func main() {
@@ -325,13 +326,14 @@ func clues(r reading) string {
 	return strings.Join(out, ", ")
 }
 
-var flats = [12]string{"C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"}
-
+// name writes tonalities by their tonic, spelled with the fewest
+// accidentals in their key signature (see naming.TonicSpelling), and
+// "m" for a minor one: "F♯m", "D♭".
 func name(ts []harmony.Tonality) string {
 	if ts == nil {
 		return "-"
 	}
-	n := flats[ts[0].Tonic()]
+	n := naming.English.Name(naming.TonicSpelling(ts[0]), naming.Signs)
 	if minor(ts) {
 		n += "m"
 	}

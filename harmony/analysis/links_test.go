@@ -34,31 +34,47 @@ func TestLinks(t *testing.T) {
 		"a tone between the twos": {
 			barsOf(false, bar{d, min7, g, dom7}, bar{e, min7, a, dom7}), "step",
 		},
-		"a tone from the V": {
-			barsOf(false, bar{d, min7, g, dom7}, bar{a, min7, d, dom7}), "step",
+		// Never from the V to the next two: G7 to Am7 is a tone, but the
+		// twos and the fives are a fifth up, a gap the book does not name.
+		"no step from the V": {
+			barsOf(false, bar{d, min7, g, dom7}, bar{a, min7, d, dom7}), "",
 		},
 		// Autumn Leaves: the twos a tone apart, whatever the chromatic
 		// dominant between them.
 		"a tone, by chromatic dominants": {
 			barsOf(false, bar{g, min7, gb, dom7}, bar{f, min7, e, dom7}), "step",
 		},
-		// Autumn Leaves, bars 25 to 28: D7 falls a fifth to Gm7, but G♭7
-		// breaks the cycle, and the twos are a tone apart.
-		"a fifth, the cycle broken": {
+		// Autumn Leaves, bars 25 to 28: the twos a tone apart.
+		"Autumn Leaves": {
 			barsOf(false, bar{a, halfDim}, bar{d, dom7}, bar{g, min7, gb, dom7}, bar{f, min7, e, dom7}),
 			"step step",
 		},
-		"the cycle of fifths": {
-			barsOf(false, bar{d, min7, g, dom7}, bar{c, min7, f, dom7}), "5th",
+		// A II-V, then another a tone below: a step, whatever the V
+		// falling a fifth to the next two.
+		"a tone down": {
+			barsOf(false, bar{d, min7, g, dom7}, bar{c, min7, f, dom7}), "step",
 		},
-		// Fifths, then a half tone, toward Cmaj7.
+		// The cycle of fifths: the bridge of the rhythm changes, with its
+		// twos.
+		"the cycle of fifths": {
+			barsOf(false, bar{a, min7, d, dom7}, bar{d, min7, g, dom7}, bar{g, min7, c, dom7}, bar{c, min7, f, dom7}, bar{bb, maj7}),
+			"5th 5th 5th",
+		},
+		// A tone down, then no step: A7 to A♭m7 is a half tone, but from
+		// the V to the next two; the twos and the fives are a major third
+		// apart.
 		"combined": {
 			barsOf(false, bar{gb, min7, b, dom7}, bar{e, min7, a, dom7}, bar{ab, min7, db, dom7}, bar{c, maj7}),
-			"5th ½",
+			"step",
 		},
 		"Confirmation": {
 			barsOf(false, bar{f, maj7}, bar{e, halfDim, a, dom7}, bar{d, min7, g, dom7}, bar{c, min7, f, dom7}),
-			"5th 5th",
+			"step step",
+		},
+		// Straight Street, bars 13 to 16: the twos down by tones.
+		"Straight Street": {
+			barsOf(false, bar{b, min7, e, dom7}, bar{a, min7, d, dom7}, bar{g, min7, c, dom7}, bar{f, min7, bb, dom7}, bar{eb, min7}),
+			"step step step",
 		},
 		// The bridge of the rhythm changes, Anthropology: dominants
 		// down the cycle of fifths, two bars each.
@@ -75,12 +91,12 @@ func TestLinks(t *testing.T) {
 		"a V to a two": {
 			barsOf(false, bar{g, dom7}, bar{c, min7, f, dom7}, bar{bb, maj7}), "",
 		},
-		// Satin Doll: a tone, then a half tone, a II-V played again
-		// between them.
+		// Satin Doll: a tone, then the cycle of fifths, Em7 A7 to Am7 D7,
+		// then a half tone, a II-V played again between the first two.
 		"Satin Doll": {
 			barsOf(false, bar{d, min7, g, dom7}, bar{d, min7, g, dom7}, bar{e, min7, a, dom7}, bar{e, min7, a, dom7},
 				bar{a, min7, d, dom7}, bar{ab, min7, db, dom7}, bar{c, maj7}),
-			"step ½",
+			"step 5th ½",
 		},
 	} {
 		ch := tc.changes

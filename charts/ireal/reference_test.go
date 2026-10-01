@@ -12,6 +12,7 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
+	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
 // A fiche is the analysis of a tune as a book prints it, transcribed by
@@ -413,11 +414,10 @@ func inside(br [2]int, f fiche) bool {
 	return false
 }
 
-// noteName names the tonic of tonalities, with "m" for a minor one:
-// "B♭", "Fm".
+// noteName names the tonic of tonalities, spelled with the fewest
+// accidentals, with "m" for a minor one: "B♭", "F♯m".
 func noteName(ts []harmony.Tonality) string {
-	names := [12]string{"C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"}
-	n := names[ts[0].Tonic()]
+	n := naming.English.Name(naming.TonicSpelling(ts[0]), naming.Signs)
 	if analysis.ModesOf(ts) == analysis.Minor {
 		n += "m"
 	}

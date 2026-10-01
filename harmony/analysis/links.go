@@ -12,8 +12,12 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 //
 // The book names the link by a step found from one bar to the next
 // between one chord of each: a half tone, a tone, or the cycle of
-// fifths, where the V of the first falls a fifth to the II of the
-// second.
+// fifths. The step is measured between the twos, or between the fives,
+// as it is heard and as players describe it, never from a V to the next
+// two: Dm7 G7 | Cm7 F7, another II-V a tone below, is a step, whatever
+// G7 falling a fifth to Cm7. Following the cycle of fifths is the
+// bridge of the rhythm changes, the twos a fifth apart: Am7 D7 | Dm7 G7
+// | Gm7 C7 | Cm7 F7.
 //
 // Dominants chain the same way without their twos, each the V of the
 // next: D7 G7 C7 F7, the bridge of the rhythm changes, by fifths; E7
@@ -32,14 +36,16 @@ const (
 	// And Butch.
 	HalfStep Step = iota + 1
 
-	// WholeStep: a tone, between the two IIs, Dm7 G7 | Em7 A7, or from
-	// the V to the next II, Dm7 G7 | Am7 D7, Dm7 G7 | Fm7 B♭7.
+	// WholeStep: a tone between the two IIs, Dm7 G7 | Em7 A7 up, or
+	// Dm7 G7 | Cm7 F7 down, where Cm7 is the I the first cadence could
+	// have concluded on and the II of the next: Em7♭5 A7 Dm7 G7 Cm7 F7
+	// in Confirmation.
 	WholeStep
 
-	// Fifths: the V falls a fifth to the next II, the cycle of fourths
-	// or of fifths. In Dm7 G7 | Cm7 F7, Cm7 is the I the first cadence
-	// could have concluded on, and the II of the next: Em7♭5 A7 Dm7 G7
-	// Cm7 F7 in Confirmation.
+	// Fifths: the cycle of fifths, the twos a fifth apart, and the fives
+	// too: Am7 D7 | Dm7 G7, the bridge of the rhythm changes with its
+	// twos, or Em7 A7 | Am7 D7 in Satin Doll; or a chain of dominants,
+	// each the V of the next, D7 G7 C7 F7.
 	Fifths
 )
 
@@ -56,13 +62,10 @@ func (s Step) String() string {
 // Dm7 is heard as. A II-V played again is no link but does not break
 // the chain, and a step the book does not name is no link.
 //
-// The cycle of fifths comes first, when the roots go on falling a fifth
-// through both II-Vs: E A D G C F in Confirmation. Then the step between
-// the twos, and the step from the V only when the twos give none: a
-// chromatic dominant is always a half tone from the next two, and Gm7
-// G♭7 | Fm7 E7 in Autumn Leaves is a tone down. Before them, Am7♭5 D7 |
-// Gm7 G♭7 falls a fifth from D7 to Gm7, but G♭7 breaks the cycle: the
-// twos are a tone apart, a step.
+// The step between the twos comes first, and the step between the fives
+// only when the twos give none: Bm7 E7 | Am7 D7 in Straight Street is a
+// step down, whatever E7 falling a fifth to Am7, and Gm7 G♭7 | Fm7 E7 in
+// Autumn Leaves is a tone down, its fives chromatic dominants.
 func Links(c Changes, kinds []harmony.ApproachKind) []Link {
 	var twos []int
 	for i := range c.Chords {
@@ -78,32 +81,33 @@ func Links(c Changes, kinds []harmony.ApproachKind) []Link {
 		if next != c.Next(five) {
 			continue
 		}
-		two := (root(next) - root(first) + 12) % 12
-		fall := (root(next) - root(five) + 12) % 12
-		// The cycle goes on only if the next II-V falls a fifth too.
-		cycle := false
-		if after := c.Next(next); after > next && !c.Chords[after].Silent {
-			cycle = (root(after)-root(next)+12)%12 == 5
+		if root(next) == root(first) {
+			continue // a II-V played again
 		}
-		var s Step
-		switch {
-		case two == 0:
-		case fall == 5 && cycle:
-			s = Fifths
-		case two == 1, two == 11:
-			s = HalfStep
-		case two == 2, two == 10:
-			s = WholeStep
-		case fall == 1, fall == 11:
-			s = HalfStep
-		case fall == 2, fall == 10:
-			s = WholeStep
+		s := step(root(next) - root(first))
+		if after := c.Next(next); s == 0 && after > next && !c.Chords[after].Silent {
+			s = step(root(after) - root(five))
 		}
 		if s != 0 {
 			out = append(out, Link{From: first, To: next, Step: s})
 		}
 	}
 	return append(out, dominants(c, kinds)...)
+}
+
+// step names the gap between two roots, `d` semitones up: a half tone,
+// a tone, or a fifth down, the cycle of fifths. Zero for a gap the book
+// does not name.
+func step(d int) Step {
+	switch (d%12 + 12) % 12 {
+	case 1, 11:
+		return HalfStep
+	case 2, 10:
+		return WholeStep
+	case 5:
+		return Fifths
+	}
+	return 0
 }
 
 // dominants finds the chains of dominants: a V followed by the dominant
