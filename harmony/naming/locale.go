@@ -204,7 +204,7 @@ var French = Locale{
 	Scales:          [5]string{"majeur", "mineur", "mineur harmonique", "mineur mélodique", "majeur harmonique"},
 
 	Spoken:        true,
-	ModeQualities: [3]string{"majeur", "mineur", "augmenté"},
+	ModeQualities: [3]string{modeMajor: "majeur", modeMinor: "mineur", modeAugmented: "augmenté"},
 	Aliases: map[ModeKey][]string{
 		{harmony.MelodicMinor, 7}:  {"altéré"},
 		{harmony.MelodicMinor, 4}:  {"lydien dominante"},
@@ -333,6 +333,13 @@ func (l Locale) SpokenModeName(m Mode, notation Notation) (string, bool) {
 	return l.NaturalModes[int(m.Base)%7] + " " + l.spokenAlterations(m.Altered, notation), true
 }
 
+// The entries of [Locale.ModeQualities].
+const (
+	modeMajor = iota
+	modeMinor
+	modeAugmented
+)
+
 // spokenAlterations renders the alterations of a mode the way they are
 // said aloud.
 //
@@ -366,12 +373,12 @@ func (l Locale) spokenAlterations(altered []Alteration, notation Notation) strin
 
 	a := altered[0]
 	switch {
-	case a.Degree == 3 && a.Quality == Natural && l.ModeQualities[0] != "":
-		return l.ModeQualities[0]
-	case a.Degree == 3 && a.Quality == Flat && l.ModeQualities[1] != "":
-		return l.ModeQualities[1]
-	case a.Degree == 5 && a.Quality == Sharp && l.ModeQualities[2] != "":
-		return l.ModeQualities[2]
+	case a.Degree == 3 && a.Quality == Natural && l.ModeQualities[modeMajor] != "":
+		return l.ModeQualities[modeMajor]
+	case a.Degree == 3 && a.Quality == Flat && l.ModeQualities[modeMinor] != "":
+		return l.ModeQualities[modeMinor]
+	case a.Degree == 5 && a.Quality == Sharp && l.ModeQualities[modeAugmented] != "":
+		return l.ModeQualities[modeAugmented]
 	case isDiminished(a):
 		return l.degree(a, notation)
 	}

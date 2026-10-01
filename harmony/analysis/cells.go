@@ -7,18 +7,17 @@ import (
 )
 
 // A Cell is a formula of a few chords that standards are built from, and
-// that a musician hears as one thing: the anatole, the III VI II V. En
+// that a musician hears as one thing: the anatole, the III VI II V I. En
 // Harmonie presents them with the frequent chord sequences (tome 1,
-// chapter 8 §3.3).
+// chapter 8 §3.3, pp. 116-117).
 type Cell struct {
 	From, To int // its first and last changes
 	Kind     CellKind
 
-	// Resolves tells whether the V goes on to its I. False when the I
-	// promised is avoided, a deceptive cadence ("cadence rompue", V – …
-	// in En Harmonie), the III included: in Anthropology, F7 goes to
-	// Dm7, the mediant, which stands for the I in the III VI II V that
-	// follows but is no resolution of the V.
+	// Resolves tells whether the V goes on to its I. An anatole is a
+	// cyclic progression and may not resolve: in Have You Met Miss
+	// Jones, its C7 goes on to Am7, the III that stands for the I. A
+	// III VI II V I always does, its I being part of it.
 	Resolves bool
 
 	// Substituted tells whether some X7 of the cell stands for its
@@ -37,16 +36,20 @@ const (
 	// B♭ Gm7 Cm7 F7 in I Got Rhythm. It cycles along the fifths, and
 	// "comes in many forms, in major and in minor, through borrowings and
 	// substitutions": Fm D♭maj7 Gm7♭5 C7 in F harmonic minor, Cm Am7♭5
-	// Dm7♭5 G7 in Softly, As In A Morning Sunrise, and with secondary
-	// dominants, Cmaj7 A7 Dm7 G7, Cmaj7 A7 D7 G7 (chapter 9, "Modifier un
-	// enchaînement harmonique").
+	// Dm7♭5 G7 in Softly, As In A Morning Sunrise (p. 116). With
+	// secondary dominants, Cmaj7 A7 Dm7 G7 and Cmaj7 A7 D7 G7 are read as
+	// anatoles too, on the same degrees: that is ours, the book gives no
+	// such form.
 	Anatole CellKind = iota + 1
 
-	// ThreeSixTwoFive: III VI II V, the book's III VI II V I, "a simple
-	// variant of the anatole", the III standing for the I, to play the
-	// anatole twice without playing the I again: Fmaj7 Dm7 Gm7 C7 Am7 Dm7
-	// Gm7 C7 in Have You Met Miss Jones.
-	ThreeSixTwoFive
+	// ThreeSixTwoFiveOne: III VI II V I, "simple variante de l'anatole,
+	// est fréquemment rencontrée en début ou fin de morceau lorsque l'on
+	// veut jouer deux fois de suite l'anatole sans pour autant rejouer
+	// le degré I. Le IIIe degré est substitué au Ier" (p. 117): Fmaj7 Dm7
+	// Gm7 C7 | Am7 Dm7 Gm7 C7 in Have You Met Miss Jones. The book gives
+	// it in major only, and so does Cells. It resolves, by definition:
+	// without its I there is no cell.
+	ThreeSixTwoFiveOne
 
 	// AeolianCadence: ♭VImaj7 ♭VII7 I, the modal cadence of the aeolian,
 	// which reaches the I from the ♭VI a tone at a time: A♭maj7 B♭7
@@ -63,7 +66,7 @@ const (
 	AeolianCadence
 )
 
-var cellNames = [...]string{"", "anatole", "III-VI-II-V", "♭VI-♭VII-I"}
+var cellNames = [...]string{"", "anatole", "III-VI-II-V-I", "♭VI-♭VII-I"}
 
 func (k CellKind) String() string {
 	return cellNames[k]
@@ -71,28 +74,32 @@ func (k CellKind) String() string {
 
 // Cells finds the cells of a sequence, from its roots and its chords'
 // thirds, not from the tonality: four changes whose roots are, from the
-// tonic the V points to, I (or III), VI, II and V; the VI on the major
-// sixth or, in minor, the minor sixth (Fm D♭maj7), the III on either
-// third. The first is a tonic chord for an anatole, a minor tonic
-// written m7 included (Cm7 Am7♭5 Dm7♭5 G7), and a minor chord for a III
-// VI II V; the VI may be of any quality with a third, a secondary
-// dominant included; the II is minor or a dominant, a major chord there
-// being the arrival of a cadence (Em7 A7 Dmaj7 G7 is a II V I of D,
-// not a III VI II V of C); the last is a dominant. A change held
-// longer counts once: B♭ | G7 | Cm7 | F7 and B♭ G7 | Cm7 F7 alike.
+// tonic the V points to, I (or III), VI, II and V. The anatole has the
+// forms of the book (p. 116): a tonic chord first, major or minor, a
+// minor tonic written m7 included (Cm7 Am7♭5 Dm7♭5 G7), the VI on the
+// major sixth or, in minor, the minor sixth (Fm D♭maj7 Gm7♭5 C7♭9). The
+// III VI II V I is in major: the III minor on the major third, the VI on
+// the major sixth, then the I it reaches. The VI may be of any quality
+// with a third, a secondary dominant included, the "III – VI7" the book
+// reads in Em7 A7 (p. 116); the II is minor or a dominant, a major chord
+// there being the arrival of a cadence (Em7 A7 Dmaj7 G7 is a II V I of
+// D); the last is a dominant. A change held longer counts once: B♭ | G7
+// | Cm7 | F7 and B♭ G7 | Cm7 F7 alike.
 //
-// A cell is heard by its shape, whether or not its V resolves: Fm7 B♭7
-// E♭7 A♭7 in Anthropology is a III VI II V of D flat, and the D flat it
-// promises is avoided, A♭7 going to Dm7: a deceptive cadence, which the
-// cell notes (Resolves).
+// An anatole is heard by its shape, whether or not its V resolves: it
+// is a cyclic progression, played "sur des parties où la durée n'est
+// pas définie, tel qu'une introduction ou une coda" (p. 116). A III VI
+// II V I needs its I. Without it, Em7 A7 Dm7 G7 is two contiguous II V,
+// which "sont entendues comme des marches harmoniques" (p. 116): Links
+// reads them, Cells does not.
 //
 // Its X7 may have been substituted by their tritone twins. En Harmonie
 // analyses such a passage "from right to left", to "find the initial
 // cadences" again (chapter 9, pp. 142-143): Cells reads the four
 // changes as written first, then with one X7 restored, then two, then
 // three, and keeps the first reading that makes a cell. The fifths
-// become half tones: Em7 E♭7 Dm7 G7 is a III VI II V of C, E♭7 for A7,
-// the III ♭III7 II V of Blue In Green and Too Young.
+// become half tones: Em7 E♭7 Dm7 G7 Cmaj7 is a III VI II V I of C, E♭7
+// for A7.
 //
 // No cell is heard where its V goes on to a dominant in the middle of
 // a bar: the formula dissolves into a chain of dominants, where « chaque
@@ -104,10 +111,10 @@ func (k CellKind) String() string {
 // the two apart is ours to say.
 //
 // Nor is a cell heard where its harmonic rhythm changes: its four
-// changes last as long as one another. In Autumn Leaves, Am7♭5 | D7 |
-// Gm7 G♭7 is a II V I, then the I moving on; the III VI II V is the
-// next one, Gm7 G♭7 | Fm7 E7. Without a steady rhythm, the fifths only
-// come down; a cell does not slow down. The rule is ours, from the ear.
+// changes last as long as one another: Am7♭5 | D7 | Gm7 G♭7 in Autumn
+// Leaves is a II V I, then the I moving on. Without a steady rhythm, the
+// fifths only come down; a cell does not slow down. The rule is ours,
+// from the ear.
 //
 // The aeolian cadence is three changes read on their roots too, with
 // the I it reaches: see [AeolianCadence]. It may share its I with an
@@ -122,7 +129,8 @@ func Cells(c Changes) []Cell {
 		}
 		for _, twins := range restorations {
 			if cl, ok := cellOf(ch, twins); ok {
-				if chained(c, i+3) || !steady(ch) {
+				if chained(c, i+3) || !steady(ch) ||
+					cl.Kind == ThreeSixTwoFiveOne && !resolves(c, i+3, cl.tonic) {
 					break
 				}
 				cl.From, cl.To = i, i+3
@@ -215,8 +223,8 @@ func cellOf(ch []Change, twins uint8) (cl reading, ok bool) {
 	switch first := degree(0); {
 	case first == 0 && (tonicOf(ch[0]) != nil || ch[0].Chord.Pattern.Tetrad() == harmony.ChordMinorSeventh):
 		cl.Kind = Anatole
-	case (first == 3 || first == 4) && isMinor(ch[0].Chord.Pattern):
-		cl.Kind = ThreeSixTwoFive
+	case first == 4 && isMinor(ch[0].Chord.Pattern) && degree(1) == 9:
+		cl.Kind = ThreeSixTwoFiveOne
 	default:
 		return cl, false
 	}
@@ -251,4 +259,31 @@ func chained(c Changes, five int) bool {
 func resolves(c Changes, five int, tonic harmony.PitchClass) bool {
 	next := c.Next(five)
 	return next >= 0 && !c.Chords[next].Silent && c.Chords[next].Chord.Root == tonic
+}
+
+// InTonality keeps the cells that fall on the degrees of the tonality
+// heard there: a III VI II V I whose I is the tonic of the ground, or of
+// the region a cadence has opened (see [Sensed]). A cell is read on its
+// roots alone, and a shape can lie: in Blue In Green, heard in D minor,
+// Dm7 C♯7 Cm7 F7 B♭maj7 has the shape of a III VI II V I of B flat, but
+// it starts on the I, and B♭maj7 is the VI the cadence tonicises. The
+// anatole, cyclic, is kept as it is.
+func InTonality(c Changes, cells []Cell, sensed []Sensed) []Cell {
+	grounds := Grounds(c, sensed)
+	var out []Cell
+	for _, cl := range cells {
+		if cl.Kind == ThreeSixTwoFiveOne {
+			i := c.Next(cl.To)
+			if i < 0 || !tonicHere(grounds[i], c.Chords[i]) && !tonicHere(sensed[i].Region, c.Chords[i]) {
+				continue
+			}
+		}
+		out = append(out, cl)
+	}
+	return out
+}
+
+// tonicHere reports whether change `ch` stands on the tonic of `ts`.
+func tonicHere(ts []harmony.Tonality, ch Change) bool {
+	return len(ts) > 0 && ts[0].Tonic() == ch.Chord.Root
 }

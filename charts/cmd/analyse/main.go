@@ -153,7 +153,8 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 	spelled := respell(tl, changes, sensed, blocks, degrees)
-	formulas := analysis.Cells(changes)
+	names := spelled.names
+	formulas := analysis.InTonality(changes, analysis.Cells(changes), sensed)
 	steps := make([]string, len(changes.Chords)) // how a II-V, or a V, follows the one before it
 	for _, l := range analysis.Links(changes, kinds) {
 		steps[l.To] = l.Step.String() + " "
@@ -170,7 +171,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		if !sp.NoChord {
 			name = symbol(sp.Chord)
 		}
-		degree, tonic := degrees[i].String(), heard(sensed, i)
+		degree, tonic := degrees[i].String(), heard(names, sensed, i)
 		if inPlage(plages, i) {
 			degree, tonic = "modal", ""
 		}
@@ -201,16 +202,16 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
 	read := analysis.ReadTune(changes, phrases)
-	fmt.Fprint(&b, heardIn(s, read, plages))
+	fmt.Fprint(&b, heardIn(names, s, read, plages))
 	if tune != nil {
-		fmt.Fprintf(&b, "analysed in %s, %s\n", short(tonicName(tune), tune), why)
+		fmt.Fprintf(&b, "analysed in %s, %s\n", names.of(tune, -1), why)
 	}
 	if withSmells {
 		fmt.Fprint(&b, smells(spelled, tl))
 	}
-	fmt.Fprint(&b, reading(read, tl))
-	fmt.Fprint(&b, form(changes, tl, blocks))
-	fmt.Fprint(&b, areas(changes, tl, blocks, sensed))
+	fmt.Fprint(&b, reading(names, read, tl))
+	fmt.Fprint(&b, form(names, changes, tl, blocks))
+	fmt.Fprint(&b, areas(names, changes, tl, blocks, sensed))
 	if withLegend {
 		fmt.Fprint(&b, legend)
 	} else {
@@ -221,7 +222,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		for end < len(cells) && end-start < barsPerRow && marks[end] == "" {
 			end++
 		}
-		fmt.Fprintf(&b, "\n%s", drawBlocks(blocks, tl, words, bracketed(blocks, degrees, bracket), start, end, width))
+		fmt.Fprintf(&b, "\n%s", drawBlocks(names, blocks, tl, words, bracketed(blocks, degrees, bracket), start, end, width))
 		fmt.Fprintf(&b, "\n%4s  ", marks[start])
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s  ", pad(c.top, width))
@@ -277,7 +278,7 @@ func (c *cell) add(top, bottom, below, tonic string) (int, int) {
 // heardIn says in which tonality the analysis hears the tune, and when
 // it differs, what the app declares: the analysis does not read the
 // app's key, which is often wrong.
-func heardIn(s ireal.Song, r analysis.TuneReading, plages []analysis.Plage) string {
+func heardIn(nm namer, s ireal.Song, r analysis.TuneReading, plages []analysis.Plage) string {
 	var modal string
 	if n := len(plages); n > 0 {
 		modal = fmt.Sprintf(", %d modal plage%s, the chart not saying which mode", n, plural(n))
@@ -285,16 +286,16 @@ func heardIn(s ireal.Song, r analysis.TuneReading, plages []analysis.Plage) stri
 	if r.Tonality == nil {
 		return "no tonality heard" + modal + "\n"
 	}
-	name := short(tonicName(r.Tonality), r.Tonality)
+	name := nm.of(r.Tonality, -1)
 	line := "heard in " + name + modal
 	if r.Blues {
 		line += ", a blues"
 	}
-	if r.First != nil && short(tonicName(r.First), r.First) != name {
-		line += ", setting out from " + short(tonicName(r.First), r.First)
+	if r.First != nil && nm.of(r.First, -1) != name {
+		line += ", setting out from " + nm.of(r.First, -1)
 	}
 	if declared, ok := s.DeclaredTonalities(); ok {
-		if d := short(tonicName(declared), declared); d != name {
+		if d := nm.of(declared, -1); d != name {
 			line += ", where the app declares " + d
 		}
 	}
@@ -309,7 +310,7 @@ func heardIn(s ireal.Song, r analysis.TuneReading, plages []analysis.Plage) stri
 //
 //	the form it finds: A8 A8 B8 A8
 //	  A   bars 1-8     C at bar 7, strong, then A7 Dm7 G7
-func form(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block) string {
+func form(nm namer, changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block) string {
 	sections := analysis.Sections(changes)
 	if len(sections) == 0 {
 		return ""
@@ -329,7 +330,7 @@ func form(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block) 
 		s := sections[i]
 		line := "no conclusive cadence"
 		if k.Arrives >= 0 {
-			line = fmt.Sprintf("%s at bar %d", short(tonicName(k.Tonic), k.Tonic), tl.Spans[k.Arrives].Bar+1)
+			line = fmt.Sprintf("%s at bar %d", nm.of(k.Tonic, -1), tl.Spans[k.Arrives].Bar+1)
 			if k.Strong {
 				line += ", strong"
 			} else {
@@ -360,11 +361,11 @@ func form(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block) 
 //	  first chord    Cm6, bar 1: Cm, its first cadence resolves on it
 //	  last chord     E♭6, bar 35: E♭, the turnaround left out
 //	  heard longest  Cm 20 bars, E♭ 12 bars
-func reading(r analysis.TuneReading, tl ireal.Timeline) string {
+func reading(nm namer, r analysis.TuneReading, tl ireal.Timeline) string {
 	if r.Tonality == nil {
 		return ""
 	}
-	name := func(t []harmony.Tonality) string { return short(tonicName(t), t) }
+	name := func(t []harmony.Tonality) string { return nm.of(t, -1) }
 	chord := func(i int) string {
 		return fmt.Sprintf("%s, bar %d", symbol(tl.Spans[i].Chord), tl.Spans[i].Bar+1)
 	}
@@ -405,7 +406,7 @@ func reading(r analysis.TuneReading, tl ireal.Timeline) string {
 //
 //	the tonal areas it hears, and what would make each a true modulation:
 //	  C      bars 5-8      4 bars, leaving D (2 steps), the first tonality: transitory
-func areas(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block, sensed []analysis.Sensed) string {
+func areas(nm namer, changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block, sensed []analysis.Sensed) string {
 	found := analysis.TonalAreas(changes, blocks, sensed, analysis.Sections(changes))
 	if len(found) == 0 {
 		return ""
@@ -415,7 +416,7 @@ func areas(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block,
 	for _, a := range found {
 		last := changes.Chords[a.To]
 		bars := fmt.Sprintf("bars %d-%d", tl.Spans[a.From].Bar+1, changes.Bar(last.Start+last.Length-1)+1)
-		line := fmt.Sprintf("%g bars, leaving %s (%s)", a.Bars, short(tonicName(a.Leaves), a.Leaves), distance(a))
+		line := fmt.Sprintf("%g bars, leaving %s (%s)", a.Bars, nm.of(a.Leaves, -1), distance(a))
 		if a.First {
 			line += ", the first tonality"
 		}
@@ -430,7 +431,7 @@ func areas(changes analysis.Changes, tl ireal.Timeline, blocks []analysis.Block,
 		} else {
 			line += ": transitory"
 		}
-		fmt.Fprintf(&b, "  %-6s %-12s %s\n", short(tonicAt(a.Tonic, a.From), a.Tonic), bars, line)
+		fmt.Fprintf(&b, "  %-6s %-12s %s\n", nm.of(a.Tonic, a.From), bars, line)
 	}
 	return b.String()
 }
@@ -457,8 +458,8 @@ func distance(a analysis.TonalArea) string {
 // chord only, when it is not the region's. In bars 7 and 8 of 'Round
 // Midnight, heard in E♭m, A♭7 opens a region of D♭ and G♭7 B7 B♭7♯5
 // read "(D♭) [G♭] [B]".
-func heard(sensed []analysis.Sensed, i int) string {
-	name := func(t []harmony.Tonality) string { return short(tonicName(t), t) }
+func heard(nm namer, sensed []analysis.Sensed, i int) string {
+	name := func(t []harmony.Tonality) string { return nm.of(t, -1) }
 	same := func(a, b []harmony.Tonality) bool {
 		return (a == nil) == (b == nil) && (a == nil || name(a) == name(b))
 	}
@@ -477,10 +478,10 @@ func heard(sensed []analysis.Sensed, i int) string {
 		parts = append(parts, name(s.Ground))
 	}
 	if s.Region != nil && (i == 0 || !same(s.Region, before.Region)) {
-		parts = append(parts, "("+short(tonicAt(s.Region, i), s.Region)+")")
+		parts = append(parts, "("+nm.of(s.Region, i)+")")
 	}
 	if s.Tonicised != nil && (s.Region == nil || s.Tonicised[0].Tonic() != s.Region[0].Tonic()) {
-		parts = append(parts, "["+short(tonicAt(s.Tonicised, i), s.Tonicised)+"]")
+		parts = append(parts, "["+nm.of(s.Tonicised, i)+"]")
 	}
 	return strings.Join(parts, " ")
 }
@@ -551,7 +552,7 @@ func drawCells(formulas []analysis.Cell, words []word, first, end, width int) st
 // block across the loop, its two at the end of the chorus and its V at
 // the start, is drawn in both places. A name that would run into the
 // next block's is cut short.
-func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, readings []string, first, end, width int) string {
+func drawBlocks(nm namer, blocks []analysis.Block, tl ireal.Timeline, words []word, readings []string, first, end, width int) string {
 	line := []rune(strings.Repeat(" ", column(end, first, width)))
 	type name struct {
 		at          int
@@ -589,7 +590,7 @@ func drawBlocks(blocks []analysis.Block, tl ireal.Timeline, words []word, readin
 		}
 		if a.bar >= first && a.bar < end {
 			from = column(a.bar, first, width) + a.off
-			long, short := announced(bl, tl)
+			long, short := announced(nm, bl, tl)
 			if readings[n] != "" {
 				long += " : " + readings[n]
 			}
@@ -645,13 +646,13 @@ func bracketed(blocks []analysis.Block, ground, bracket []analysis.Degree) []str
 }
 
 // announced names the tonalities a block announces: their tonic spelled
-// as the chords under it are (see tonicAt), then their scales: "E♭" for E
+// as the chords under it are (see namer.tonic), then their scales: "E♭" for E
 // flat major, "Fm harm" for F harmonic minor, "D♭ M/m mel" when major
 // and melodic minor both remain, "Gm nat/harm/mel" when the three
 // minors do; "…" when the block does not resolve. The short name,
 // for when the next block leaves no room, keeps the mode alone: "Gm",
 // "D♭(m)" when both remain.
-func announced(bl analysis.Block, tl ireal.Timeline) (string, string) {
+func announced(nm namer, bl analysis.Block, tl ireal.Timeline) (string, string) {
 	if len(bl.Announced) == 0 {
 		return "?", "?"
 	}
@@ -659,7 +660,7 @@ func announced(bl analysis.Block, tl ireal.Timeline) (string, string) {
 	if bl.Target >= 0 {
 		at = bl.Target
 	}
-	tonic := tonicAt(bl.Announced, at)
+	tonic := nm.tonic(bl.Announced, at)
 	name, short := scales(tonic, bl.Announced)
 	if bl.Target < 0 {
 		name, short = name+"…", short+"…"
@@ -750,9 +751,9 @@ under the degrees, the tonic the ear hears, where it changes:
 
 under the tonics, the cells, formulas heard as one:
   anatole ───      I VI II V, in any colour
-  III-VI-II-V ─    the same, the III standing for the I
+  III-VI-II-V-I ─  the same, the III standing for the I, then the I
   anatole ♭II ─    with some X7 standing for their tritone twin
-  anatole… ─       its V avoiding the I it promises (deceptive)
+  anatole… ─       its V not going to its I, the anatole being cyclic
   ♭VI-♭VII-I ─     the aeolian cadence, on a minor I, or borrowed on a
                    major one (the Mario Cadence)
 `

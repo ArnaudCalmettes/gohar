@@ -290,7 +290,7 @@ sous-dominante », dit le tome 2. En cadence, il prolonge ou remplace
 le II et se résout sur son X7 ; il se chiffre V7sus4, jamais V, et un
 II-V qui tombe dessus n'est pas mis entre crochets, le sus étant un II
 qui se cache sous la fondamentale du V suivant (Dm7 G7 C7sus4 C7 F6
-dans *My Lucky Star*, un III-VI-II-V de fa). Sans résolution et tenu
+dans *My Lucky Star*, un III-VI-II-V-I de fa). Sans résolution et tenu
 longtemps, il installe une plage modale.
 
 **La dominante chromatique** se dérive sans table : toute cible a deux
@@ -458,7 +458,8 @@ des II-V.
 
 Des formules de quelques accords que les standards reprennent, et
 qu'un musicien entend d'un bloc (`Cells`). *En Harmonie* les présente
-avec les enchaînements fréquents (tome 1, chapitre 8 §3.3) :
+avec les enchaînements fréquents (tome 1, chapitre 8 §3.3, p. 116 et
+117) :
 
 - **l'anatole**, I VI II V, « connu en France sous le nom d'"anatole" »
   (la cellule, à ne pas confondre avec la forme anatole) « et dans les
@@ -467,15 +468,21 @@ avec les enchaînements fréquents (tome 1, chapitre 8 §3.3) :
   quintes », qu'on joue là où la durée n'est pas définie, une
   introduction ou une coda. « Rencontrée en majeur et en mineur, cette
   progression harmonique existe sous de nombreuses formes grâce à
-  divers emprunts et substitutions » : Fm D♭maj7 Gm7♭5 C7 en fa mineur
-  harmonique, Cm Am7♭5 Dm7♭5 G7 dans *Softly, As In A Morning
-  Sunrise*, et avec des dominantes secondaires, Cmaj7 A7 Dm7 G7 ou
-  Cmaj7 A7 D7 G7 (chapitre 9) ;
+  divers emprunts et substitutions ». Ses exemples en fa : Fmaj7 Dm7
+  Gm7 C7 en majeur, Fm D♭maj7 Gm7♭5 C7♭9 en mineur harmonique, Fm
+  Dm7♭5 Gm7 C7♭9 en mineur mélodique, Fm Dm7♭5 Gm7♭5 C7♭9 ou Fm D♭maj7
+  Gm7♭5 C7♭9 en mineur harmonique et mélodique, Fmaj7 Dm7 Gm7♭5 C7♭9
+  en majeur et mineur ; puis *Softly, As In A Morning Sunrise* (Cm
+  Am7♭5 Dm7♭5 G7) et *Prelude To A Kiss* (Emaj7 C♯m7 F♯m7♭5 B7). Nous
+  lisons aussi comme des anatoles Cmaj7 A7 Dm7 G7 et Cmaj7 A7 D7 G7,
+  avec des dominantes secondaires sur les mêmes degrés : règle à nous,
+  le livre ne donne pas ces formes ;
 - **le III-VI-II-V-I**, « simple variante de l'anatole, fréquemment
   rencontrée en début ou fin de morceau lorsque l'on veut jouer deux
   fois de suite l'anatole sans pour autant rejouer le degré I. Le IIIe
-  degré est substitué au Ier » : Fmaj7 Dm7 Gm7 C7 Am7 Dm7 Gm7 C7 dans
-  *Have You Met Miss Jones*.
+  degré est substitué au Ier » : Fmaj7 Dm7 | Gm7 C7 | Am7 Dm7 | Gm7 C7,
+  et *Have You Met Miss Jones* en début de morceau. Le livre le donne
+  en majeur seulement. C'est une cadence : elle résout sur son I.
 
 Le tome 2 en ajoute une, parmi les cadences modales (chapitre 2 §5.2) :
 
@@ -494,15 +501,37 @@ Le tome 2 en ajoute une, parmi les cadences modales (chapitre 2 §5.2) :
   carattere* de *Final Fantasy VI*. La « cadence Mario » y est plus
   rare : F G7 A dans la *Route 209* de *Pokémon*.
 
-Les règles de lecture sont les nôtres. Une cellule se lit sur les
-fondamentales, depuis la tonique que pointe le V : I (ou III), VI (sur
-la sixte majeure, ou mineure en mineur), II, V. Le premier accord est
-un accord de tonique pour l'anatole, un accord mineur pour le
-III-VI-II-V ; le VI a une tierce, de n'importe quelle qualité ; le II
-est mineur ou de dominante, un accord majeur y étant l'arrivée d'une
-cadence (Em7 A7 Dmaj7 G7 est un II-V-I de ré, pas un III-VI-II-V de
-do) ; le dernier est une dominante. Un accord tenu plus longtemps
-compte une fois. La cadence éolienne se lit de même, sur trois
+Une cellule se lit sur les fondamentales, depuis la tonique que pointe
+le V. L'anatole suit les formes du livre : un accord de tonique, majeur
+ou mineur, puis le VI sur la sixte majeure, ou mineure en mineur, le
+II et le V. Il s'entend à sa forme, que son V résolve ou non : c'est un
+enchaînement cyclique. Le III-VI-II-V-I est en majeur, comme dans le
+livre : le III mineur sur la tierce majeure, le VI sur la sixte
+majeure, le II, le V, puis le I qui arrive, sans lequel il n'y a pas de
+cellule. Le VI peut être de dominante, le « III – VI7 » que le livre lit
+dans Em7 A7 (p. 116). Le II est mineur ou de dominante, un accord
+majeur y étant l'arrivée d'une cadence (Em7 A7 Dmaj7 G7 est un II-V-I
+de ré). Un accord tenu plus longtemps compte une fois ; ces règles de
+lecture sont les nôtres, tirées des exemples du livre.
+
+Sans son I, un III-VI-II-V n'est que deux II-V contigus, et le livre
+le dit juste au-dessus : « Ces différentes successions de II – V
+contigus sont entendues comme des marches harmoniques. Nous pourrions
+également les analyser avec une approche diatonique et chiffrer, par
+exemple, le Em7 – A7 comme un III – VI7 » (p. 116). `Links` les lit
+(voir « Les II-V consécutifs »), pas `Cells` : Am7 D7 | A♭m7 D♭7 |
+Cmaj7 dans *Satin Doll*, Fm7 B♭7 E♭7 A♭7 vers Dm7 dans *Anthropology*.
+En mineur, le livre ne donne que l'anatole : Fmaj7 B♭7 Em7♭5 A7 vers
+Dm dans *Seven Steps To Heaven* n'est pas une cellule.
+
+Un III-VI-II-V-I tombe aussi sur les degrés de la tonalité entendue :
+son I est la tonique du fond, ou de la région qu'une cadence a ouverte
+(`InTonality`). Une forme lue sur les fondamentales peut mentir : dans
+*Blue In Green*, entendu en ré mineur, Dm7 C♯7 Cm7 F7 B♭maj7 a la forme
+d'un III-VI-II-V-I de si♭, mais il part du I, et B♭maj7 est le VI que
+la cadence tonicise. Règle à nous. Elle dépend de la tonalité entendue :
+quand l'analyse se trompe de fond, la cellule tombe avec elle (*How My
+Heart Sings*, entendu en sol mineur au lieu de do). La cadence éolienne se lit de même, sur trois
 fondamentales qui montent par tons : un accord majeur, une dominante,
 un accord de tonique, mineur (la cadence dans son propre mode) ou
 majeur (l'emprunt, la « cadence Mario »). Elle peut partager son I
@@ -517,7 +546,7 @@ initiales » (p. 142-143, *Sophisticated Lady*, *I Thought About You*).
 puis avec un X7 remplacé par son jumeau, puis deux, puis trois, et
 garde la première lecture qui fait une cellule. Un VI restitué doit
 être le V du II. C E♭7 A♭7 D♭7 est l'anatole C A7 D7 G7, et Em7 E♭7
-Dm7 G7 (*Blue In Green*, *Too Young*) un III-VI-II-V ; C D7 Dm7 G7
+Dm7 G7 Cmaj7 un III-VI-II-V-I ; C D7 Dm7 G7
 (*Take The A Train*) n'en est pas un, D7 y étant le II7 et non le
 jumeau d'un VI. `analyse` écrit « anatole ♭II », nom retenu en
 attendant mieux.
@@ -534,27 +563,17 @@ la mesure les distingue est une règle à nous, tirée de l'écoute ; elle
 
 Une cellule demande aussi un rythme harmonique constant : ses quatre
 accords durent autant les uns que les autres. Dans *Autumn Leaves*,
-Am7♭5 | D7 | Gm7 G♭7 est un II-V-I suivi d'un I qui s'en va ; le
-III-VI-II-V est le suivant, Gm7 G♭7 | Fm7 E7. Règle à nous, elle aussi
+Am7♭5 | D7 | Gm7 G♭7 est un II-V-I suivi d'un I qui s'en va. Règle à nous, elle aussi
 tirée de l'écoute : sans rythme constant, ce n'est pas une formule mais
 une simple descente de quintes, et une cellule ne ralentit pas. Elle
 écarte près d'un quart des cellules du corpus, le plus souvent un II-V
 par mesure suivi d'un II et d'un V d'une mesure chacun (Em7 A7 | Dm7 |
 G7).
 
-Le livre nomme la variante avec son I, que le V promet. Une cellule
-s'entend pourtant à sa forme, que le V tienne sa promesse ou non : dans
-*Anthropology*, Fm7 B♭7 E♭7 A♭7 est un III-VI-II-V de ré♭, et A♭7 va
-sur Dm7. C'est une cadence rompue, que le livre note « V – … » :
-« enchaîner l'accord de dominante avec un autre accord que l'accord de
-tonique prioritairement attendu » (tome 1, chapitre 8). Le III en est
-une aussi : la médiante tient lieu du I dans la cellule qui suit, mais
-le V n'y résout pas. Dans *Have You Met Miss Jones*, le C7 du premier
-anatole va sur Am7 ; dans *Anthropology*, F7 va sur Dm7. La cellule le
-note (`Resolves`), et `analyse` écrit les cellules sous les toniques,
-« anatole ───── », avec des points de suspension quand le V évite le I
-promis : « III-VI-II-V… ───── ». La cadence éolienne s'y écrit
-« ♭VI-♭VII-I ───── ».
+`analyse` écrit les cellules sous les toniques : « anatole ───── »,
+avec des points de suspension quand son V ne résout pas (dans *Have
+You Met Miss Jones*, le C7 du premier anatole va sur Am7, le III qui
+tient lieu du I), « III-VI-II-V-I ───── » et « ♭VI-♭VII-I ───── ».
 
 ### Les accords parallèles
 
@@ -722,8 +741,8 @@ mesures ou d'une phrase mélodique » (p. 380). Le E♭maj7 qui ouvre le
 pont de *My Funny Valentine* ouvre ainsi mi♭ majeur, dans le mode de
 l'accord d'arrivée même quand le II-V était mineur (Fm7♭5 B♭7). Et le I d'une cadence qui
 repart aussitôt comme le II de la suivante n'ouvre rien : Cm7♭5 F7♭9
-B♭m7 E♭7 A♭maj7, au pont de *Lullaby Of Birdland*, est un III-VI-II-V
-de la♭, qui tonicise le cycle des quintes. Sans mesures, en direct,
+B♭m7 E♭7 A♭maj7, au pont de *Lullaby Of Birdland*, est une marche de
+II-V qui tonicise le cycle des quintes jusqu'à la♭. Sans mesures, en direct,
 toute cadence qui a sa sous-dominante ouvre une région.
 
 Seul un accord qui a une triade majeure ou mineure peut être tonicisé.
@@ -1692,7 +1711,7 @@ Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
 | 'Round Midnight | la tierce picarde, sur le dernier accord seulement |
 | Chega De Saudade | le majeur homonyme installé pour de bon : pas une tierce picarde ; le morceau est en ré, mineur et majeur à la fois, mis à part du corpus |
 | Satin Doll | le II-V rejoué, Dm7 G7 \| Dm7 G7, un V qui revient sur son II et non un vamp dorien |
-| Anthropology | l'anatole et le III-VI-II-V, dont le V va sur le III sans y résoudre |
+| Anthropology | l'anatole, et les II-V contigus Fm7 B♭7 E♭7 A♭7 vers Dm7 : une marche, pas un III-VI-II-V-I, faute de I |
 | Guile's Theme | la cadence éolienne qui résout dans son mode, en mineur, et installe sa tonique : do♯ mineur, le seul II-V-I tonicisant le relatif majeur |
 | Pokémon, Route 209 | la cadence éolienne qui résout en majeur, la « cadence Mario » |
 | Stolen Moments | la marche d'accords parallèles |

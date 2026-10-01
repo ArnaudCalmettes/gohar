@@ -10,13 +10,13 @@ import (
 	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
-// The spelling of the song being rendered, set by [respell] and read by
-// the names of the report, so that the tonalities it names and the
-// chords under them agree.
-var (
+// A namer spells the tonics the report names as the chords under them
+// are spelled, so that the two agree (see [respell]). The zero namer
+// spells them with the fewest accidentals.
+type namer struct {
 	roots  []naming.SpelledNote                      // the root of each change, unset for a silence
 	tonics map[harmony.PitchClass]naming.SpelledNote // the tonics of the zones, then the roots
-)
+}
 
 // unset marks a change left as the chart spells it, a silence or a chord
 // without a degree. It cannot be the zero value, which is C natural: no
@@ -35,8 +35,10 @@ func filled(n int) []naming.SpelledNote {
 // A respelling is a chart's chords as [respell] writes them.
 type respelling struct {
 	roots, basses []naming.SpelledNote // unset where the chart's own spelling stays
+	names         namer                // the tonics, spelled as the chords are
 	cost          cost
 	smells        []int // the changes whose root or bass smells, once each
+	stained       int   // the changes that smell or tolerate an enharmony
 
 	// tolerated holds the changes whose root or bass needs a double
 	// accidental by degree, shown instead on the next letter, and strict
@@ -45,13 +47,23 @@ type respelling struct {
 	strict, strictBass []naming.SpelledNote
 }
 
-// A cost ranks spellings by the rules, in their order of priority: the
-// movements left unreadable, then the names that leave the chiffrage,
-// then the smells, then the accidentals written, and last, for a chord
+// A cost ranks the spellings of the chords of a zone, its tonic given:
+// the movements left unreadable (P0), then the names that leave the
+// figuring (P1), then the accidentals written, and last, for a chord
 // that prepares a resolution, a name off its degree in the zone, which
-// only breaks the ties its target leaves. It is compared
-// component by component, the first that differs deciding.
-type cost [5]int
+// only breaks the ties its target leaves. It is compared component by
+// component, the first that differs deciding. The smells do not enter
+// it: they weigh the tonics of the zones (P2, see [respell]).
+type cost [costs]int
+
+// The components of a cost, in their order of priority.
+const (
+	motionCost     = iota // movements left unreadable (P0)
+	figuringCost          // names that leave the figuring (P1)
+	accidentalCost        // accidentals written
+	tieCost               // chords preparing a resolution, named off their degree
+	costs
+)
 
 func (a cost) plus(b cost) cost {
 	for i := range a {
@@ -90,13 +102,18 @@ func (a cost) less(b cost) bool {
 //	    a signature can write it, whichever gives the grid the fewest
 //	    smells, then the fewest accidentals written by degree: C♯ major
 //	    shows its E♯ as F, but still writes seven sharps.
-//	P3. A tonicisation is named as the chord it tonicises (see [tonicAt]).
+//	P3. A tonicisation is named as the chord it tonicises (see [namer.tonic]).
+//
+// They apply in two stages. For each choice of the tonics of the zones,
+// the chords are spelled by P0, then P1, the best path through the
+// changes (see [cost] and [spellWith]); P2 then picks, among those
+// grids, the one that smells least.
 //
 // A bass takes the letter of its interval with the root, except a held
 // bass, a pedal, spelled once by its degree in the zone and kept while
 // it is held (see [pedals]).
 //
-// Usage then simplifies the names shown, never the chiffrage nor the
+// Usage then simplifies the names shown, never the figuring nor the
 // movements (see [usage]): an E♯, F♭, B♯ or C♭ is shown on the next
 // letter, B for the C♭ of a ♭II7 in B♭ minor.
 //
@@ -125,30 +142,37 @@ func respell(tl ireal.Timeline, c analysis.Changes, sensed []analysis.Sensed, bl
 		combos = next
 	}
 	// The tonics are compared by the grid they give, the simplest
-	// winning (P2): the fewest smells, then the fewest accidentals, then
-	// the fewest movements left unreadable. The names that leave the
-	// chiffrage come last, since each choice of tonics has a chiffrage
-	// of its own.
-	simpler := func(a, b cost) bool {
-		return cost{a[2], a[3], a[0], a[1], a[4]}.less(cost{b[2], b[3], b[0], b[1], b[4]})
+	// winning (P2): the fewest changes that smell or tolerate an
+	// enharmony, then the fewest accidentals; the movements and the
+	// figuring only break the ties, each choice of tonics having a
+	// figuring of its own.
+	simpler := func(a, b respelling) bool {
+		if a.stained != b.stained {
+			return a.stained < b.stained
+		}
+		for _, k := range []int{accidentalCost, motionCost, figuringCost, tieCost} {
+			if a.cost[k] != b.cost[k] {
+				return a.cost[k] < b.cost[k]
+			}
+		}
+		return false
 	}
 	var best respelling
 	for k, combo := range combos {
-		if s := spellWith(c, ds, grounds, zones, approach, combo); k == 0 || simpler(s.cost, best.cost) {
+		if s := spellWith(c, ds, grounds, zones, approach, combo); k == 0 || simpler(s, best) {
 			best = s
 		}
 	}
 
-	roots = best.roots
-	tonics = map[harmony.PitchClass]naming.SpelledNote{}
+	best.names = namer{roots: best.roots, tonics: map[harmony.PitchClass]naming.SpelledNote{}}
 	for _, i := range firsts {
 		if t, ok := zoneTonic(best, c, grounds, zones, i); ok {
-			tonics[t.Class()] = t
+			best.names.tonics[t.Class()] = t
 		}
 	}
 	for _, r := range best.roots {
-		if _, ok := tonics[r.Class()]; !ok && r != unset {
-			tonics[r.Class()] = r
+		if _, ok := best.names.tonics[r.Class()]; !ok && r != unset {
+			best.names.tonics[r.Class()] = r
 		}
 	}
 	for i := range tl.Spans {
@@ -294,28 +318,22 @@ func spellWith(c analysis.Changes, ds []analysis.Degree, grounds [][]harmony.Ton
 					bass = unset
 				}
 			}
-			// The movements and the accidentals weigh the spelling by
-			// degree, which the chiffrage rests on; the smells weigh the
-			// name usage shows, so that a C♭ shown B does not smell.
+			// The costs weigh the spelling by degree, which the figuring
+			// and the movements rest on; usage only changes the name shown.
 			shown, under := usage(root, grounds[i]), usage(bass, grounds[i])
-			own := cost{0, 0, 0, count(root), 0}
+			own := cost{accidentalCost: count(root)}
 			if ch.Inverted() && bass != unset {
-				own[3] += count(bass)
+				own[accidentalCost] += count(bass)
 			}
 			if hasRef && root != ref {
-				own[1] = 1
+				own[figuringCost] = 1
 			}
 			if tie && root != ref {
-				own[4] = 1
-			}
-			// A tolerated enharmony weighs as a smell when the zones are
-			// chosen, though the report counts it apart.
-			if smelly(shown) || ch.Inverted() && smelly(under) || double(root) || ch.Inverted() && double(bass) {
-				own[2] = 1
+				own[tieCost] = 1
 			}
 			st := state{root: root, bass: bass, shown: shown, under: under, cost: own, from: -1}
 			for k, p := range prev {
-				step := cost{motion(p.bass, bass, i-1, i, grounds), 0, 0, 0, 0}
+				step := cost{motionCost: motion(p.bass, bass, i-1, i, grounds)}
 				if total := p.cost.plus(own).plus(step); st.from < 0 || total.less(st.cost) {
 					st.cost, st.from = total, k
 				}
@@ -347,6 +365,11 @@ func spellWith(c analysis.Changes, ds []analysis.Degree, grounds [][]harmony.Ton
 			}
 			if double(st.root) || inverted && double(st.bass) {
 				s.tolerated = append([]int{i}, s.tolerated...)
+			}
+			// A tolerated enharmony weighs as a smell when the zones are
+			// chosen, though the report lists it apart.
+			if smelly(st.shown) || inverted && smelly(st.under) || double(st.root) || inverted && double(st.bass) {
+				s.stained++
 			}
 			k = st.from
 			if k < 0 {
@@ -492,7 +515,7 @@ func degreeIn(ts []harmony.Tonality, c harmony.PitchClass) (harmony.Degree, bool
 // usage writes a note as usage does once the spelling is settled, on the
 // next letter when it carries a double accidental, a tolerated enharmony
 // the report lists (see [tolerated]), or when it is an E♯, F♭, B♯ or
-// C♭: A for B𝄫, B for C♭, E for F♭. The chiffrage and the movements
+// C♭: A for B𝄫, B for C♭, E for F♭. The figuring and the movements
 // keep the spelling by degree; only the name shown changes, and with it
 // what smells. The raised leading tone of a minor, the seventh degree
 // of its harmonic or melodic scale, keeps its letter when it takes a
@@ -604,30 +627,34 @@ func symmetric(ch analysis.Change) bool {
 	return p.HasOffset(harmony.Semitones((int(ch.Bass) - int(ch.Chord.Root) + 12) % 12))
 }
 
-// tonicName spells the tonic of tonalities as the chart does: the tonic
-// of a zone as the spelling chose it, otherwise as a root on that class
-// is written first, otherwise with the fewest accidentals.
-func tonicName(ts []harmony.Tonality) string {
-	if t, ok := tonics[ts[0].Tonic()]; ok {
+// tonic spells the tonic of tonalities. Heard around change `at`, it is
+// spelled as the chords there are, the root of the nearest change on the
+// tonic, so that a tonicisation and the chord it tonicises bear the same
+// name, [F♯m] under F♯m7 (P3 of [respell]). Heard over the whole tune,
+// `at` negative, it is the tonic of a zone as the spelling chose it, or
+// a root on that class as it is written first, or the fewest
+// accidentals.
+func (n namer) tonic(ts []harmony.Tonality, at int) string {
+	c := ts[0].Tonic()
+	if at >= 0 {
+		for d := 0; d < len(n.roots); d++ {
+			for _, j := range []int{at + d, at - d} {
+				if j >= 0 && j < len(n.roots) && n.roots[j] != unset && n.roots[j].Class() == c {
+					return name(n.roots[j])
+				}
+			}
+		}
+	}
+	if t, ok := n.tonics[c]; ok {
 		return name(t)
 	}
 	return name(naming.TonicSpelling(ts[0]))
 }
 
-// tonicAt spells the tonic of tonalities heard around change `i` as the
-// chords there are: the root of the nearest change on the tonic, so that
-// a tonicisation and the chord it tonicises bear the same name, [F♯m]
-// under F♯m7 (P3 of [respell]).
-func tonicAt(ts []harmony.Tonality, i int) string {
-	c := ts[0].Tonic()
-	for d := 0; d < len(roots); d++ {
-		for _, j := range []int{i + d, i - d} {
-			if j >= 0 && j < len(roots) && roots[j] != unset && roots[j].Class() == c {
-				return name(roots[j])
-			}
-		}
-	}
-	return tonicName(ts)
+// of names tonalities as [short] does, their tonic spelled by [tonic]:
+// "F♯m", "D♭(m)".
+func (n namer) of(ts []harmony.Tonality, at int) string {
+	return short(n.tonic(ts, at), ts)
 }
 
 // smells counts the changes whose root or bass smells, and says where:

@@ -72,7 +72,7 @@ type form struct {
 	ending  map[int]*repeat // by the index of a measure opening an ending
 }
 
-var timesComment = regexp.MustCompile(`^\s*(\d+)\s*[xX]\s*$`)
+var timesComment = regexp.MustCompile(`^\s*(?P<times>\d+)\s*[xX]\s*$`)
 
 func newForm(ms []Measure) form {
 	f := form{ms: ms, closing: map[int]*repeat{}, ending: map[int]*repeat{}}
@@ -97,7 +97,7 @@ func newForm(ms []Measure) form {
 			}
 			for _, mark := range ms[j].Marks {
 				if g := timesComment.FindStringSubmatch(mark.Comment.Text); mark.Kind == Comment && g != nil {
-					r.times, _ = strconv.Atoi(g[1])
+					r.times, _ = strconv.Atoi(g[timesComment.SubexpIndex("times")])
 				}
 			}
 		}
@@ -125,8 +125,8 @@ type direction struct {
 }
 
 var (
-	daCapo   = regexp.MustCompile(`\bd\.([cs])\.(.*)$`)
-	nthEnd   = regexp.MustCompile(`^\s*al\s+(\d)(st|nd|rd|th)\s+end`)
+	daCapo   = regexp.MustCompile(`\bd\.(?P<sign>[cs])\.(?P<rest>.*)$`)
+	nthEnd   = regexp.MustCompile(`^\s*al\s+(?P<n>\d)(st|nd|rd|th)\s+end`)
 	toFine   = regexp.MustCompile(`^\s*al\s+fine`)
 	toCodaAt = regexp.MustCompile(`^\s*al\s+coda`)
 )
@@ -144,14 +144,14 @@ func (f form) direction() (direction, bool) {
 			if g == nil {
 				continue
 			}
-			d := direction{at: i, segno: g[1] == "s"}
-			rest := g[2]
+			d := direction{at: i, segno: g[daCapo.SubexpIndex("sign")] == "s"}
+			rest := g[daCapo.SubexpIndex("rest")]
 			switch {
 			case toCodaAt.MatchString(rest):
 				d.coda = true
 			case toFine.MatchString(rest):
 			case nthEnd.MatchString(rest):
-				d.ending, _ = strconv.Atoi(nthEnd.FindStringSubmatch(rest)[1])
+				d.ending, _ = strconv.Atoi(nthEnd.FindStringSubmatch(rest)[nthEnd.SubexpIndex("n")])
 			case strings.TrimSpace(rest) != "":
 				continue
 			}

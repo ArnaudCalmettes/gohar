@@ -421,7 +421,7 @@ La suite, dans l'ordre :
 - [ ] distinguer la cadence évitée, où la tonalité change, de la
   rompue. Sans urgence : « … » suffit pour l'instant, la ligne des
   toniques montrant si la nouvelle tonique s'installe.
-- [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V, d'après
+- [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V-I, d'après
   *En Harmonie* (tome 1, chapitres 8 et 9).
 - [x] la cadence rompue V-VI (G7 Am7 en do), lue seule comme un
   ♭VII7-Im de la mineur, se relit de même sur la tonique entendue au V

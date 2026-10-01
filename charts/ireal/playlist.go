@@ -92,6 +92,12 @@ func Parse(link string) (Playlist, error) {
 // after it, the accompaniment style when three fields remain, then the
 // tempo and the repeats.
 func parseSong(s string) (Song, error) {
+	// The fields always found first, before those that may be dropped.
+	const (
+		titleField = iota
+		composerField
+		firstOptionalField
+	)
 	f := strings.Split(s, "=")
 	c := -1
 	for i, field := range f {
@@ -100,17 +106,17 @@ func parseSong(s string) (Song, error) {
 			break
 		}
 	}
-	if c < 2 {
+	if c < firstOptionalField {
 		return Song{}, errors.New("no chart")
 	}
 
 	song := Song{
-		Title:    f[0],
-		Composer: f[1],
+		Title:    f[titleField],
+		Composer: f[composerField],
 		Chart:    unscramble(f[c][len(chartPrefix):]),
 	}
 
-	before := f[2:c]
+	before := f[firstOptionalField:c]
 	if n := len(before); n > 0 {
 		if t, err := strconv.Atoi(before[n-1]); err == nil {
 			song.Transpose = t
