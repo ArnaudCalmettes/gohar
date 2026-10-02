@@ -32,12 +32,17 @@ parlé français et les alias.
 et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
-Les fiches du livre et de Siron concordent sur leurs degrés et leurs
-modulations, et l'analyse tombe d'accord avec la tonalité déclarée par
-l'app, ou vérifiée à l'oreille, sur l'essentiel du corpus (le rapport
+Les cellules suivent les formes du livre : l'anatole, et le
+III-VI-II-V-I en majeur, résolu sur la tonique entendue ; les II-V
+contigus sont des marches. Les fiches du livre et de Siron concordent
+sur leurs degrés et leurs modulations, et l'analyse tombe d'accord avec
+la tonalité déclarée par l'app, ou vérifiée à l'oreille, sur
+l'essentiel du corpus (le rapport
 de `corpus` donne le compte du jour), sans la lire. `analyse` affiche
 ce que le verdict pèse, le premier et le dernier accord et, quand ils
-divergent, la durée de leurs toniques : le verdict s'explique.
+divergent, la durée de leurs toniques : le verdict s'explique. Il
+réécrit les accords de la grille dans la tonalité entendue (voir
+« L'orthographe entendue ») ; `-smells` liste ce qui sent encore.
 
 `dex` a son corps, sa persistance JSON et `Components`. Restent
 `Cooling` et `Discoverable`.
@@ -118,16 +123,6 @@ connaît.
       caractéristiques d'un mode sur une fenêtre de jeu. Choix à faire
       sur la taille de la fenêtre et l'ambiguïté entre modes voisins.
       C'est ce qui fera exister les silhouettes et `FactChosen`.
-- [ ] passe ligne à ligne sur `Mode.Function`, le jour où les modes
-      serviront à autre chose qu'à la reconnaissance à l'oreille. La
-      fonction d'un mode dit comment on l'emploie, et peut différer de
-      celle de sa tétrade : le dorien est une tonique, son m7 seul un
-      II. Le premier degré du mineur harmonique (éolien ♮7), celui du
-      majeur harmonique (ionien ♭6) et celui du majeur double
-      harmonique (ionien ♭2 ♭6, « Xmaj7 ou ♭II7/I » dans *En
-      Harmonie*, tome 2) portent `Tonic | Dominant` : ce sont aussi des
-      avatars de dominante sur pédale de tonique. Seul ce double emploi
-      est verrouillé par un test.
 - [ ] champ `Tetrad harmony.ChordPattern` dans le catalogue, extensions
       en motif, et `naming` réduit au rendu du chiffrage. Le catalogue
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
@@ -208,12 +203,6 @@ test les lit s'il y en a.
 
 Reste :
 
-- [ ] un D.S. écrit dans une reprise pas encore terminée, s'il s'en
-      présente un.
-- [ ] `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
-      n'en a pas vu un vrai.
-- [ ] un parseur de chiffrages général dans `naming`, pour ce qu'on
-      tape soi-même, quand un jeu en aura besoin.
 - [ ] un format de grille ouvert, mieux conçu que celui d'iReal.
 
 ## L'orthographe entendue
@@ -309,9 +298,11 @@ fautive en entrée, la propre en sortie attendue.
 - [x] la fondamentale et la basse des accords orthographiées par degré
       dans la tonalité d'arrivée, puis simplifiées par l'usage, dans
       `analyse`.
-- [ ] l'endroit où rompre une chaîne qui ne se referme pas sur les
-      lettres, et les grilles qui sentent le plus (*Lush Life*,
-      *Yesterday's Gardenias*).
+- [x] l'endroit où rompre une chaîne qui ne se referme pas sur les
+      lettres : à la frontière des zones, là où le chiffrage change de
+      tonique. *Lush Life* et *Yesterday's Gardenias* ne sentent plus.
+      La rupture G♭m7 → F♯m7 de *Grand Central*, mesure 17, tombe à
+      cette frontière : ♭IIm7 en fa mineur, puis Im7 en fa♯ mineur.
 - [ ] le rendu des symboles d'accords entiers dans `naming`, la qualité
       comprise : `analyse` la recopie encore de l'app.
 - [ ] le signalement, en simple remarque, des graphies qui s'écartent
@@ -444,6 +435,8 @@ La suite, dans l'ordre :
   attendant mieux. Au passage, un accord majeur n'est plus un II : Em7
   A7 Dmaj7 G7 est un II-V-I de ré (327 fausses cellules en moins sur
   le corpus).
+- [ ] *Yesterday's Gardenias* est entendu en fa♯, et non en si♭ : la
+  grille finit sur F♯maj7, mesure 32. À regarder.
 - [ ] *Peace* (Horace Silver) : le livre lui donne un « centre tonal
   autour de Si♭ », l'analyse entend ré♭. Les autres fiches du tome 2
   concordent (*Body And Soul* compris, voir « Les autres cas tranchés »
@@ -458,11 +451,11 @@ La suite, dans l'ordre :
   est préservée sur la pédale (le B13/B♭ d'*I Fall In Love Too
   Easily* est une dominante chromatique, l'anatole d'*Emily* reste une
   anatole) : reste à nommer la pédale elle-même.
-- [ ] le I renversé sur sa quinte sur lequel un V se résout reste le I
-  (tranché, d'après *En Harmonie*) : le livre prolonge la pédale de
+- [x] le I renversé sur sa quinte sur lequel un V se résout reste le I
+  (d'après *En Harmonie*) : le livre prolonge la pédale de
   dominante sur l'accord de tonique « entendu renversé sur sa 5te »,
   Fm9/B♭ B♭7 E♭maj9/B♭ (tome 2, §1.5), Dm9/G G7 C6/9/G dans *My
-  Romance*. L'analyse n'y entend pas encore de tonique. Essayé :
+  Romance*, que les tests reprennent (`fifthTonic`). Essayé :
   admettre tout accord renversé sur sa quinte comme tonique gagne 8
   grilles du corpus (*The Look Of Love*, *Sail Away*, *Re: Person I
   Knew*…) et en perd 6 : un IVm sur pédale de tonique devient une
@@ -548,9 +541,6 @@ La suite, dans l'ordre :
 - [ ] le niveau de jeu tiré d'une grille : quelles mécaniques d'abord,
   parmi ce que l'analyse sait (les cellules à reconnaître, la cadence
   qui arrive, la tonique qui bouge, la section qui se referme).
-- [ ] le repli sans mesures de `modulation` (une mesure stable ou deux
-  cadences, pas vers le II), qui ne sert qu'aux suites d'accords des
-  tests : à supprimer ou à isoler.
 - [ ] les seuils à nous, à régler de façon empirique, aucune source ne
   les chiffrant : deux mesures pour une zone, deux crans pour un centre
   éloigné, la moitié d'une section pour une modulation vraie, la place
@@ -574,6 +564,34 @@ La suite, dans l'ordre :
 - [ ] les voicings sur une grille : la marque « Employée » du dex
       constate une position placée spontanément sur les changes.
 - [ ] une grille iReal comme niveau du shoot'em up.
+
+## En attente d'un cas
+
+Ce qui n'avance que le jour où une grille, un jeu ou un besoin le
+demande. Ce ne sont pas des chantiers : rien n'y est commencé, et rien
+ne presse. Une entrée remonte dans sa section quand son cas se présente.
+
+- passe ligne à ligne sur `Mode.Function`, le jour où les modes
+  serviront à autre chose qu'à la reconnaissance à l'oreille. La
+  fonction d'un mode dit comment on l'emploie, et peut différer de
+  celle de sa tétrade : le dorien est une tonique, son m7 seul un
+  II. Le premier degré du mineur harmonique (éolien ♮7), celui du
+  majeur harmonique (ionien ♭6) et celui du majeur double
+  harmonique (ionien ♭2 ♭6, « Xmaj7 ou ♭II7/I » dans *En
+  Harmonie*, tome 2) portent `Tonic | Dominant` : ce sont aussi des
+  avatars de dominante sur pédale de tonique. Seul ce double emploi
+  est verrouillé par un test.
+- un D.S. écrit dans une reprise pas encore terminée, s'il s'en
+  présente un.
+- `irealbook://`, l'ancien schéma non brouillé : refusé tant qu'on
+  n'en a pas vu un vrai.
+- un parseur de chiffrages général dans `naming`, pour ce qu'on
+  tape soi-même, quand un jeu en aura besoin.
+- afficher les alternatives d'un mode (alias, registre parlé) le
+  jour où l'activité quitte le système naturel, qui n'en a pas.
+- les doigtés, le jour où l'on travaillera les mains : des règles
+  simples pour le cas général, et les exceptions en données
+  d'expert.
 
 ## Les sources à dépouiller
 
@@ -671,9 +689,12 @@ chose, maintenir la règle des deux surfaces : oto n'est importé que par
 
 - [ ] *Walk with me* : remplacer le bassiste à la main gauche, poser
       des pêches à la main droite, à vue sur une grille arbitraire. Le
-      plan est dans `walk.md` ; d'abord dépouiller *Jazz Piano
-      Fundamentals* de Jeremy Siskind, puis trancher le modèle de
-      paliers.
+      document de conception est dans `walk.md`. Le premier jalon : les
+      fondamentales, main gauche seule, sur un blues en fa, au
+      métronome, avec la phase sans tempo. Il demande au synthé des
+      notes programmées à l'échantillon près et un mélangeur, et un
+      `MetronomeSystem`. À côté : dépouiller *Jazz Piano Fundamentals*
+      de Jeremy Siskind, et trancher le modèle de paliers.
 
 La suite de `ear`, dans l'ordre de `oreille.md` :
 
@@ -703,14 +724,9 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
 - [ ] les paliers suivants des degrés : la tonique mobile, la tonique à
       la basse, d'autres gammes, et au plus difficile l'échelle
       chromatique.
-- [ ] afficher les alternatives d'un mode (alias, registre parlé) le
-      jour où l'activité quitte le système naturel, qui n'en a pas.
 
 Les autres jeux :
 
-- [ ] les doigtés, le jour où l'on travaillera les mains : des règles
-      simples pour le cas général, et les exceptions en données
-      d'expert.
 - [ ] le shoot'em up bullet hell qui est un jeu d'harmonie déguisé, sur
       rail, sans esquive.
 - [ ] les quatre pistes du billet sur la game loop de l'improvisateur,

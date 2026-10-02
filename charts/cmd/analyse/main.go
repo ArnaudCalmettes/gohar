@@ -153,7 +153,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
 	spelled := respell(tl, changes, sensed, blocks, degrees)
-	names := spelled.names
+	nm := spelled.names
 	formulas := analysis.InTonality(changes, analysis.Cells(changes), sensed)
 	steps := make([]string, len(changes.Chords)) // how a II-V, or a V, follows the one before it
 	for _, l := range analysis.Links(changes, kinds) {
@@ -171,7 +171,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		if !sp.NoChord {
 			name = symbol(sp.Chord)
 		}
-		degree, tonic := degrees[i].String(), heard(names, sensed, i)
+		degree, tonic := degrees[i].String(), heard(nm, sensed, i)
 		if inPlage(plages, i) {
 			degree, tonic = "modal", ""
 		}
@@ -202,16 +202,16 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "%s, %s (%s), %d bars played\n", s.Title, s.Key, s.Style, len(tl.Bars))
 	read := analysis.ReadTune(changes, phrases)
-	fmt.Fprint(&b, heardIn(names, s, read, plages))
+	fmt.Fprint(&b, heardIn(nm, s, read, plages))
 	if tune != nil {
-		fmt.Fprintf(&b, "analysed in %s, %s\n", names.of(tune, -1), why)
+		fmt.Fprintf(&b, "analysed in %s, %s\n", nm.of(tune, -1), why)
 	}
 	if withSmells {
 		fmt.Fprint(&b, smells(spelled, tl))
 	}
-	fmt.Fprint(&b, reading(names, read, tl))
-	fmt.Fprint(&b, form(names, changes, tl, blocks))
-	fmt.Fprint(&b, areas(names, changes, tl, blocks, sensed))
+	fmt.Fprint(&b, reading(nm, read, tl))
+	fmt.Fprint(&b, form(nm, changes, tl, blocks))
+	fmt.Fprint(&b, areas(nm, changes, tl, blocks, sensed))
 	if withLegend {
 		fmt.Fprint(&b, legend)
 	} else {
@@ -222,7 +222,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		for end < len(cells) && end-start < barsPerRow && marks[end] == "" {
 			end++
 		}
-		fmt.Fprintf(&b, "\n%s", drawBlocks(names, blocks, tl, words, bracketed(blocks, degrees, bracket), start, end, width))
+		fmt.Fprintf(&b, "\n%s", drawBlocks(nm, blocks, tl, words, bracketed(blocks, degrees, bracket), start, end, width))
 		fmt.Fprintf(&b, "\n%4s  ", marks[start])
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s  ", pad(c.top, width))
@@ -294,8 +294,10 @@ func heardIn(nm namer, s ireal.Song, r analysis.TuneReading, plages []analysis.P
 	if r.First != nil && nm.of(r.First, -1) != name {
 		line += ", setting out from " + nm.of(r.First, -1)
 	}
+	// The declared key is spelled as a key signature would be, B♭ and
+	// not the A♯ a zone of the tune may have chosen.
 	if declared, ok := s.DeclaredTonalities(); ok {
-		if d := nm.of(declared, -1); d != name {
+		if d := (namer{}).of(declared, -1); d != (namer{}).of(r.Tonality, -1) {
 			line += ", where the app declares " + d
 		}
 	}

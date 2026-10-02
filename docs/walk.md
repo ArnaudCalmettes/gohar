@@ -296,7 +296,10 @@ d'une source le dit ; le reste est à nous. Pas encore de code.
 
 ## Le son
 
-- Au début, un métronome.
+- Au début, un métronome, plus humain qu'un clic : un claquement de
+  doigts sur 2 et 4, comme le bonhomme quand ça tourne. Il faut lui
+  trouver un échantillon sous licence claire, comme pour les autres
+  instruments.
 - Plus tard : batterie et piano quand le joueur travaille la main
   gauche, batterie seule (en guise de métronome) quand il joue à deux
   mains. On construit au fil de ce que les autres chantiers débloquent.
@@ -311,9 +314,15 @@ d'une source le dit ; le reste est à nous. Pas encore de code.
     aurait de la gigue ;
   - **un mélangeur**, puisqu'un `Engine` joue un seul timbre et que
     `synth.Open` ne prend qu'une source ;
-  - **les soundfonts**, pour la charleston, la contrebasse et le piano.
-    Piste : go-meltysynth, en Go pur, licence et performances à
-    vérifier, et des soundfonts libres à choisir.
+  - **les soundfonts**, pour la charleston, la contrebasse et le piano,
+    par go-meltysynth dans `synth/soundfont`, déjà au programme de
+    `chantiers.md` (« Les jeux ») : licence MIT, rien d'autre que la
+    bibliothèque standard, pas d'allocation au rendu, SF2 seulement,
+    enveloppé dans la `queue` commune. Reste à trouver, comme pour le
+    piano (Salamander, CC-BY, réduit avec Polyphone), une contrebasse et
+    une charleston sous licence claire, et un claquement de doigts pour
+    le métronome, puis à mesurer sous charge avec
+    plusieurs instruments.
 - Un `MetronomeSystem` synchronise tout : il tient la carte du temps
   musical (tempo, temps et mesures), que lisent le défilement, le
   marqueur et le son.

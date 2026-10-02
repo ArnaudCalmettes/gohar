@@ -481,15 +481,27 @@ func TestHomeOnSight(t *testing.T) {
 }
 
 // The imperfect cadence reaches the tonic on its fifth: C7 Fmaj7/C
-// (En Harmonie, tome 1, chapter 8 §3.1, p. 103). Without a V before
-// it, the same chord over the same bass is the IV of C over a tonic
-// pedal, as at the end of My Way.
+// (En Harmonie, tome 1, chapter 8 §3.1, p. 103). A dominant pedal held
+// under the whole II-V-I does too, the tonic « entendu renversé sur sa
+// 5te » (tome 2, chapter 5 §1.5): Fm7/B♭ B♭7 E♭maj7/B♭, and Dm7/G G7
+// C6/G in My Romance. Without a V before it, the same chord over the
+// same bass is the IV of C over a tonic pedal, as at the end of My Way.
 func TestTonicOnItsFifth(t *testing.T) {
-	const c, f, g harmony.PitchClass = 0, 5, 7
+	const c, d, eb, f, g, bb harmony.PitchClass = 0, 2, 3, 5, 7, 10
 	imperfect := changesOf(false, g, harmony.ChordMinorSeventh, c, harmony.ChordDominantSeventh, f, harmony.ChordMajorSeventh)
 	imperfect.Chords[2].Bass = c
 	if got := sense(imperfect)[2].Tonic; got == nil || tonalityName(got) != "F" {
 		t.Errorf("Fmaj7/C after C7: tonic of %v, want F", got)
+	}
+	book := changesOf(false, f, harmony.ChordMinorSeventh, bb, harmony.ChordDominantSeventh, eb, harmony.ChordMajorSeventh)
+	book.Chords[0].Bass, book.Chords[2].Bass = bb, bb
+	if got := sense(book)[2].Tonic; got == nil || tonalityName(got) != "E♭" {
+		t.Errorf("E♭maj7/B♭ after Fm7/B♭ B♭7: tonic of %v, want E♭", got)
+	}
+	romance := changesOf(false, d, harmony.ChordMinorSeventh, g, harmony.ChordDominantSeventh, c, harmony.ChordMajorSixth)
+	romance.Chords[0].Bass, romance.Chords[2].Bass = g, g
+	if got := sense(romance)[2].Tonic; got == nil || tonalityName(got) != "C" {
+		t.Errorf("C6/G after Dm7/G G7: tonic of %v, want C", got)
 	}
 	pedal := changesOf(false, c, harmony.ChordMajorSeventh, f, harmony.ChordMajorSeventh)
 	pedal.Chords[1].Bass = c

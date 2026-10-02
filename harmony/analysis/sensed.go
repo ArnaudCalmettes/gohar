@@ -360,8 +360,9 @@ func (h *hearing) expect(i int) {
 //
 // Its I is no two of the next cadence: a m7 that goes on as a two is
 // no tonic (tome 1, chapter 8 §2.1, p. 101), and Cm7♭5 F7♭9 B♭m7 E♭7
-// A♭maj7, at the bridge of Lullaby Of Birdland, is a three six two five
-// in A flat, the cycle of fifths tonicised.
+// A♭maj7, at the bridge of Lullaby Of Birdland, is two contiguous II-Vs
+// a tone apart toward A flat, a march (tome 1, chapter 8, p. 116), and
+// B♭m7 its second two.
 //
 // And its I ends a group of bars, or opens a section. Where is ours to
 // set, and set on the fiches of En Harmonie: the second of each pair of
