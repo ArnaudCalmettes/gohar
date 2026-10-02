@@ -331,7 +331,7 @@ accord, l'analyse dit comment il prépare le suivant, parmi ces types :
 | X7sus4 | retarde son propre X7 | A7sus4 A7 |
 | Sous-dominante secondaire | II-V de…, IIm7 ou IIm7♭5 | Em7 A7 |
 | Sous-dominante chromatique | ♭VIm7 ou ♭VIm7♭5 devant le ♭II7 | B♭m7 E♭7, ou B♭m7 A7 |
-| Plagale | le IV de toute qualité, ou le ♭VII7, devant une tonique | Gm7 Dm, C7 Dm |
+| Plagale | le IV de toute qualité, le ♭VII7 ou le IIm7♭5, devant une tonique | Gm7 Dm, C7 Dm |
 | IVm7-♭VII7 de… | la plagale préparée | Gm7 C7 Dm |
 
 Il manque à ce tableau l'accord parallèle (même qualité, une seconde à

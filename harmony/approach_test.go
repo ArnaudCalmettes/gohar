@@ -78,6 +78,13 @@ func TestApproachOf(t *testing.T) {
 			{chordOf(t, eb, seventh...), dom},
 			{chordOf(t, ab, major7...), none},
 		},
+		// I'm Old Fashioned: Gm7♭5 holds the notes of B♭m6, the IVm,
+		// and goes to F as a minor plagal does (En Harmonie, tome 2,
+		// p. 34).
+		"a half-diminished II before its I": {
+			{chordOf(t, g, halfDim...), plag},
+			{chordOf(t, f, major7...), none},
+		},
 		// No tritone, or the tritone going elsewhere.
 		"not an approach": {
 			{chordOf(t, g, seventh...), none}, // to the dominant a tone below

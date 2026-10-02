@@ -67,7 +67,10 @@ const (
 	// PlagalApproach is a subdominant before the tonic it concludes on:
 	// the IV of any quality, Fmaj7, F7, Fm6 before C, the plagal amen;
 	// and the ♭VII7, B♭7 before C, the minor plagal in disguise (with F
-	// in the bass it is Fm6). The tonic must be a chord that can be one.
+	// in the bass it is Fm6); and the IIm7♭5, Dm7♭5 before C, « se
+	// confondant avec » Fm6, the same four notes over its sixth (En
+	// Harmonie, tome 2, p. 34, on the Gm7♭5 Fmaj7 of I'm Old Fashioned).
+	// The tonic must be a chord that can be one.
 	// A plagal cadence concludes as a V-I does, but draws less: what it
 	// may do in the analysis of a chart is the analysis's to say.
 	//
@@ -143,7 +146,9 @@ func ApproachOf(from, to Chord) ApproachKind {
 		k |= TwoApproach
 	}
 	if isTonicChord(to.Pattern) && hasThird(from.Pattern) && !isDiminishedSeventh(from.Pattern) &&
-		(from.Root == to.Root.Transpose(5) || from.Root == to.Root.Transpose(10) && isDominant(from.Pattern)) {
+		(from.Root == to.Root.Transpose(5) ||
+			from.Root == to.Root.Transpose(10) && isDominant(from.Pattern) ||
+			from.Root == to.Root.Transpose(2) && from.Pattern.Tetrad() == ChordHalfDiminished) {
 		k |= PlagalApproach
 	}
 	return k

@@ -358,8 +358,9 @@ Fait :
   turnaround exclu, sinon à travers la boucle ; jamais l'armure ; une grille qui boucle
   entendue comme son deuxième chorus ; la tonique mineure écrite m7 ;
   la tierce picarde (`Picardy`).
-- **Les cadences plagales** : le IV de toute qualité, et le ♭VII7 avec
-  son IVm7 (`PlagalApproach`), qui concluent sans ouvrir de tonique.
+- **Les cadences plagales** : le IV de toute qualité, le ♭VII7 avec
+  son IVm7, et le IIm7♭5 (`PlagalApproach`), qui concluent sans ouvrir
+  de tonique.
 - **Le blues**, reconnu à sa forme (`Blues`), sa septième d'espèce lue
   comme sa tonique.
 - **La plage modale** (`Modal`), un accord tenu quatre mesures sans
@@ -398,10 +399,12 @@ La suite, dans l'ordre :
       d'eux-mêmes (le fa♯ de D7 sur Cmaj7). Reste à savoir quand deux
       accords sont une cadence modale plutôt qu'un mouvement conjoint
       de grille tonale (Dm7 Cm7 dans un II-V de si♭).
-- [ ] le IIm7♭5 → I : dans *I'm Old Fashioned*, Gm7♭5 Fmaj7 « peut
+- [x] le IIm7♭5 → I : dans *I'm Old Fashioned*, Gm7♭5 Fmaj7 « peut
       être perçu comme une cadence plagale mineure, cet accord se
-      confondant avec un B♭m6 (IVm) » (tome 2, p. 34). Vérifier ce que
-      les préparations en font.
+      confondant avec un B♭m6 (IVm) » (tome 2, p. 34). C'est une
+      plagale (`PlagalApproach`). Sur le corpus, 21 grilles bougent ;
+      *I See Your Face Before Me* passe de fa mineur à mi♭, la tonalité
+      de l'app, son Fm7♭5 E♭6/9 concluant enfin.
 - [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
       manque : le ♭VIImaj7-I et le ♭VIIm7-I (les modes de la grille). Le V seul, sans II, qui va
       ailleurs que sur sa tonique n'est pas un bloc : les degrés disent
@@ -676,15 +679,19 @@ trancher sans source.
 
 - [ ] les allocations de la boucle de jeu : une collecte toutes les une à
       deux secondes (voir `architecture.md`, tranché le 26/09). Sans
-      risque pour le son, à réduire quand on touche au rendu :
-      `reveal()` refait ses namers à chaque frame, par exemple.
+      risque pour le son, à réduire quand on touche au rendu.
+      `reveal()` ne refait plus ses namers à chaque frame : il écrit
+      une fois par réponse et par langue.
 - [ ] calibration chez le joueur. Promise dès le premier jour, et les
       chiffres mesurés ici sont ceux d'une machine, pas une promesse.
 - [ ] les timbres 8 bits dans les préférences du joueur, avec le rendu
       authentique ou adouci : pour l'instant `-timbre` et `-authentic`,
       le rendu adouci étant le défaut.
-- [ ] niveau de sortie bas, conséquence de la marge prise sur le gain.
-      Réglage, pas conception.
+- [x] niveau de sortie bas, conséquence de la marge prise sur le gain :
+      la marge passe d'un sixième à un quart, une tétrade frappée à
+      pleine vélocité atteignant la pleine échelle. Un écrêtage doux,
+      si cinq touches fortes saturent à l'usage, serait de la
+      conception.
 
 Deux portes délibérément ouvertes et non planifiées, décrites dans
 `architecture.md` : un lecteur `/dev/snd/midiC*D*` en pur Go pour sortir
@@ -705,8 +712,10 @@ chose, maintenir la règle des deux surfaces : oto n'est importé que par
 
 La suite de `ear`, dans l'ordre de `oreille.md` :
 
-- [ ] un rendu plus joli d'une touche enfoncée : l'enfoncement de 2 px
-      passe pour un MVP mais a l'air bon marché.
+- [x] un rendu plus joli d'une touche enfoncée : au repos, une touche
+      montre sa face avant, un rebord plus sombre ; enfoncée, le rebord
+      passe sous les touches voisines et une ombre marque l'arrière.
+      À regarder à l'écran.
 - [ ] la soundfont, dans `synth/soundfont` : go-meltysynth (MIT, rien
       d'autre que la bibliothèque standard, n'alloue pas en rendu, SF2
       seulement) enveloppé dans la `queue` commune. Il faut un piano
