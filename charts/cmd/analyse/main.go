@@ -152,9 +152,11 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 	plages := analysis.Modal(changes, blocks)
 	degrees := analysis.Degrees(changes, passing, sensed)
 	bracket := analysis.Bracketed(changes, blocks, passing, sensed)
-	spelled := respell(tl, changes, sensed, blocks, degrees)
+	pedals := analysis.Pedals(changes, analysis.Grounds(changes, sensed), analysis.Sections(changes))
+	spelled := respell(tl, changes, sensed, blocks, degrees, pedals)
 	nm := spelled.names
-	formulas := analysis.InTonality(changes, analysis.Cells(changes), sensed)
+	held := pedalRules(pedals, tl)
+	formulas := cellRules(analysis.InTonality(changes, analysis.Cells(changes), sensed))
 	steps := make([]string, len(changes.Chords)) // how a II-V, or a V, follows the one before it
 	for _, l := range analysis.Links(changes, kinds) {
 		steps[l.To] = l.Step.String() + " "
@@ -231,6 +233,9 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s |", pad(c.bottom, width))
 		}
+		if line := drawRules(held, words, start, end, width); line != "" {
+			fmt.Fprintf(&b, "\n%s", line)
+		}
 		fmt.Fprintf(&b, "\n%4s  ", "")
 		for _, c := range cells[start:end] {
 			fmt.Fprintf(&b, " %s  ", pad(c.below, width))
@@ -242,7 +247,7 @@ func render(s ireal.Song, key string, withLegend, withSmells bool) string {
 		if strings.TrimSpace(tonics.String()) != "" {
 			fmt.Fprintf(&b, "\n%4s  %s", "", strings.TrimRight(tonics.String(), " "))
 		}
-		if line := drawCells(formulas, words, start, end, width); line != "" {
+		if line := drawRules(formulas, words, start, end, width); line != "" {
 			fmt.Fprintf(&b, "\n%s", line)
 		}
 		fmt.Fprintln(&b)
@@ -511,12 +516,50 @@ func ruleEnd(words []word, i, first, width int) int {
 	return column(z.bar, first, width) + width
 }
 
-// drawCells writes the cells of a row under its tonics, each named at
-// its first chord and ruled to the end of its last: "anatole ─────".
-func drawCells(formulas []analysis.Cell, words []word, first, end, width int) string {
-	line := []rune(strings.Repeat(" ", column(end, first, width)))
+// A rule is a name over a stretch of changes, ruled from its first to
+// its last: a cell, a pedal.
+type rule struct {
+	from, to int
+	text     string
+}
+
+// cellRules names the cells: "anatole", "anatole ♭II…".
+func cellRules(formulas []analysis.Cell) []rule {
+	var out []rule
 	for _, cl := range formulas {
-		a, z := words[cl.From], words[cl.To]
+		text := cl.Kind.String()
+		if cl.Substituted {
+			text += " ♭II"
+		}
+		if !cl.Resolves {
+			text += "…"
+		}
+		out = append(out, rule{cl.From, cl.To, text})
+	}
+	return out
+}
+
+// pedalRules names the pedals as En Harmonie writes them, "B♭ ped.",
+// the bass spelled as the chords over it show it.
+func pedalRules(pedals []analysis.Pedal, tl ireal.Timeline) []rule {
+	var out []rule
+	for _, p := range pedals {
+		bass := ""
+		for k := p.From; k <= p.To && bass == ""; k++ {
+			bass = tl.Spans[k].Chord.Bass
+		}
+		out = append(out, rule{p.From, p.To, note(bass) + " ped."})
+	}
+	return out
+}
+
+// drawRules writes rules on a line of a row, each named at its first
+// chord and ruled to the end of its last: "anatole ─────". A rule that
+// goes on from the row before is drawn without its name.
+func drawRules(rules []rule, words []word, first, end, width int) string {
+	line := []rune(strings.Repeat(" ", column(end, first, width)))
+	for _, r := range rules {
+		a, z := words[r.from], words[r.to]
 		if z.bar < first || a.bar >= end {
 			continue
 		}
@@ -525,16 +568,9 @@ func drawCells(formulas []analysis.Cell, words []word, first, end, width int) st
 			from = column(a.bar, first, width) + a.off
 		}
 		if z.bar < end {
-			to = ruleEnd(words, cl.To, first, width)
+			to = ruleEnd(words, r.to, first, width)
 		}
-		text := cl.Kind.String()
-		if cl.Substituted {
-			text += " ♭II"
-		}
-		if !cl.Resolves {
-			text += "…"
-		}
-		name := []rune(text + " ")
+		name := []rune(r.text + " ")
 		if a.bar < first {
 			name = nil
 		}
@@ -737,6 +773,9 @@ above, the blocks ([II] [sus4] V) and the tonality each announces:
   D♭ M/m mel… ──   D♭ major or melodic minor, not resolved (deceptive)
   Fm harm : II V   the block read in that tonality, as En Harmonie
                    brackets it, when it differs from the degrees below
+
+under the chords, the pedals, a bass held under chords on other roots:
+  B♭ ped. ───      over Fm7/B♭ B♭7 E♭maj7/B♭
 
 under each chord, its degree in the tonality of the passage:
   IIIm7♭5 VI7      Gm7♭5 C7 in E♭ major

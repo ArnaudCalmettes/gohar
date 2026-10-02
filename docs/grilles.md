@@ -115,6 +115,69 @@ une basse, et garde les lectures qui se recouvrent, à rendre toutes :
 
 Ces cas sont gardés comme tests.
 
+### La pédale
+
+#### Dans le livre
+
+Une pédale est une basse tenue sous des accords qui changent. *En
+Harmonie* l'analyse « toujours en deux temps : on considère d'abord le
+type de pédale, puis les accords présents », la basse étant alors « une
+note étrangère » (tome 2, chapitre 5 §1.6). Il en distingue le degré,
+tonique ou dominante, et la portée, générale ou passagère. Il la note
+« B♭ ped. ».
+
+La pédale de dominante peut se prolonger sur l'accord de tonique, alors
+« entendu renversé sur sa 5te » : Fm9/B♭ B♭7 E♭maj9/B♭ (§1.5). Elle
+« crée une tension qui ne trouvera sa résolution » qu'au retour de la
+tonique.
+
+#### Dans gohar
+
+Une pédale, c'est une même basse sous au moins deux accords qui se
+suivent, sur au moins deux fondamentales (`Pedals`). Un accord écrit
+deux fois sur sa tierce, Cm/E♭ Cm/E♭, n'en est pas une ; C Am/C est la
+plus courte. Un silence ou la fin du chorus l'arrête.
+
+Les accords gardent leur lecture : chacun est chiffré sur sa
+fondamentale, et sa fonction tient au-dessus de la pédale. Le B13/B♭
+d'*I Fall In Love Too Easily* reste une dominante chromatique, l'anatole
+d'*Emily* reste une anatole. La pédale se nomme par-dessus, sur une
+ligne entre les accords et les degrés :
+
+```
+   1 | Cm7         | Dm7/C       | E♭maj7/C    | Dm7/C       |
+       C ped. ─────────────────────────────────────────────────
+       I             II/7          III/7         II/7
+```
+
+C'est l'ostinato de *Stolen Moments*, une pédale de tonique. La fin de
+*My Way* en a une autre, plus courte : F/C C, le IV de do sur sa
+tonique.
+
+Le degré se lit dans le fond entendu au premier accord de la pédale :
+tonique sur le 1er degré, dominante sur le 5e, et sinon la note seule.
+La basse s'écrit une fois, par son degré dans la zone (voir
+« L'orthographe entendue » dans `chantiers.md`).
+
+#### Ce qui est difficile
+
+La portée. Le livre ne donne aucune mesure de ce qui fait une pédale
+générale.
+
+Et tout ce que le livre dit des pédales ne sert pas une grille seule.
+La double pédale, une quinte tenue pour encadrer une mélodie, est un
+conseil d'arrangement : avec des accords seuls, il n'y a rien à en
+montrer.
+
+#### Ce qu'on a décidé
+
+Une pédale est générale quand elle tient sur une section entière de la
+forme trouvée (`Sections`), passagère sinon. C'est notre seuil, à revoir
+sur des cas.
+
+L'affichage ne montre que la note, comme le livre. Le degré et la
+portée sont dans `analysis.Pedal`, pour ce qui viendra les lire.
+
 ### Le degré
 
 #### Dans le livre

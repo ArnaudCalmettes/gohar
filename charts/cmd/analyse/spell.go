@@ -120,7 +120,7 @@ func (a cost) less(b cost) bool {
 // A smell is a root or a bass shown with a double accidental, or as an
 // E♯, F♭, B♯ or C♭ that usage keeps. It counts once for each change,
 // and the report gives the count (see [smells]).
-func respell(tl ireal.Timeline, c analysis.Changes, sensed []analysis.Sensed, blocks []analysis.Block, ds []analysis.Degree) respelling {
+func respell(tl ireal.Timeline, c analysis.Changes, sensed []analysis.Sensed, blocks []analysis.Block, ds []analysis.Degree, ps []analysis.Pedal) respelling {
 	grounds := analysis.Grounds(c, sensed)
 	zones, firsts := zonesOf(grounds)
 	approach := approaches(c, blocks)
@@ -159,7 +159,7 @@ func respell(tl ireal.Timeline, c analysis.Changes, sensed []analysis.Sensed, bl
 	}
 	var best respelling
 	for k, combo := range combos {
-		if s := spellWith(c, ds, grounds, zones, approach, combo); k == 0 || simpler(s, best) {
+		if s := spellWith(c, ds, ps, grounds, zones, approach, combo); k == 0 || simpler(s, best) {
 			best = s
 		}
 	}
@@ -270,9 +270,9 @@ func approaches(c analysis.Changes, blocks []analysis.Block) []bool {
 // dynamic programming over the changes: each root among its possible
 // spellings, each movement between two roots weighed by [motion], the
 // best path kept.
-func spellWith(c analysis.Changes, ds []analysis.Degree, grounds [][]harmony.Tonality, zones []int, approach []bool, tonics []naming.SpelledNote) respelling {
+func spellWith(c analysis.Changes, ds []analysis.Degree, ps []analysis.Pedal, grounds [][]harmony.Tonality, zones []int, approach []bool, tonics []naming.SpelledNote) respelling {
 	n := len(c.Chords)
-	held := pedals(c, ds, grounds, zones, tonics)
+	held := pedals(c, ps, grounds, zones, tonics)
 	type state struct {
 		root, bass   naming.SpelledNote // as the movements read them
 		shown, under naming.SpelledNote // as usage writes them
@@ -462,38 +462,29 @@ func against(n naming.SpelledNote, dir int, ground []harmony.Tonality) bool {
 	return dir > 0 && n.Accidental < 0 || dir < 0 && n.Accidental > 0
 }
 
-// pedals spells the held basses: a bass under two changes or more in a
-// row, one of them at least inverted, takes the letter of its degree in
-// the zone, or failing that its plainest spelling, and keeps it while it
-// is held. The E♭ under A♭/E♭ B♭m/E♭ Cm/E♭ D♭/E♭ E♭7sus in A♭.
-func pedals(c analysis.Changes, ds []analysis.Degree, grounds [][]harmony.Tonality, zones []int, tonics []naming.SpelledNote) []naming.SpelledNote {
+// pedals spells the held basses (see [analysis.Pedals]): each takes the
+// letter of its degree in the zone, or failing that its plainest
+// spelling, and keeps it while it is held. The E♭ under A♭/E♭ B♭m/E♭
+// Cm/E♭ D♭/E♭ E♭7sus in A♭.
+func pedals(c analysis.Changes, ps []analysis.Pedal, grounds [][]harmony.Tonality, zones []int, tonics []naming.SpelledNote) []naming.SpelledNote {
 	out := filled(len(c.Chords))
-	for i := 0; i < len(c.Chords); {
-		j, inverted := i, false
-		for j < len(c.Chords) && !c.Chords[j].Silent && c.Chords[j].Bass == c.Chords[i].Bass {
-			inverted = inverted || c.Chords[j].Inverted()
-			j++
+	for _, p := range ps {
+		spelled := spellings(p.Bass)[0]
+		for _, s := range spellings(p.Bass) {
+			if count(s) < count(spelled) || count(s) == count(spelled) && s.Accidental < spelled.Accidental {
+				spelled = s
+			}
 		}
-		if j-i >= 2 && inverted {
-			bass := c.Chords[i].Bass
-			spelled := spellings(bass)[0]
-			for _, s := range spellings(bass) {
-				if count(s) < count(spelled) || count(s) == count(spelled) && s.Accidental < spelled.Accidental {
+		if z := zones[p.From]; z >= 0 {
+			if n, ok := degreeIn(grounds[p.From], p.Bass); ok {
+				if s, ok := naming.SpellAbove(tonics[z], int(n)-1, p.Bass); ok {
 					spelled = s
 				}
 			}
-			if z := zones[i]; z >= 0 {
-				if n, ok := degreeIn(grounds[i], bass); ok {
-					if s, ok := naming.SpellAbove(tonics[z], int(n)-1, bass); ok {
-						spelled = s
-					}
-				}
-			}
-			for k := i; k < j; k++ {
-				out[k] = spelled
-			}
 		}
-		i = max(j, i+1)
+		for k := p.From; k <= p.To; k++ {
+			out[k] = spelled
+		}
 	}
 	return out
 }

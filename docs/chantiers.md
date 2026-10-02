@@ -441,16 +441,11 @@ La suite, dans l'ordre :
   autour de Si♭ », l'analyse entend ré♭. Les autres fiches du tome 2
   concordent (*Body And Soul* compris, voir « Les autres cas tranchés »
   dans `grilles.md`), et *Fall*, sans centre tonal, est écarté.
-- [ ] les pédales, à reconnaître et à afficher comme le livre les note
-  (« B♭ ped. ») : une même basse sous des accords de fondamentales
-  différentes, de tonique, de dominante ou double, générale ou
-  passagère. *En Harmonie* analyse « toujours en deux temps : on
-  considère d'abord le type de pédale, puis les accords présents », la
-  basse étant alors « une note étrangère » (tome 2, chapitre 5 §1.6).
-  Les accords se lisent déjà sur leur fondamentale, et leur fonction
-  est préservée sur la pédale (le B13/B♭ d'*I Fall In Love Too
-  Easily* est une dominante chromatique, l'anatole d'*Emily* reste une
-  anatole) : reste à nommer la pédale elle-même.
+- [x] les pédales à la basse (`Pedals`) : de tonique, de dominante ou
+  sur un autre degré, générales ou passagères, notées comme le livre
+  (« B♭ ped. ») entre les accords et les degrés (voir « La pédale »
+  dans `grilles.md`). La double pédale n'est pas reprise : c'est un
+  conseil d'arrangement, sans objet sur une grille d'accords seuls.
 - [x] le I renversé sur sa quinte sur lequel un V se résout reste le I
   (d'après *En Harmonie*) : le livre prolonge la pédale de
   dominante sur l'accord de tonique « entendu renversé sur sa 5te »,
@@ -592,6 +587,10 @@ ne presse. Une entrée remonte dans sa section quand son cas se présente.
 - les doigtés, le jour où l'on travaillera les mains : des règles
   simples pour le cas général, et les exceptions en données
   d'expert.
+- les dominantes sur pédale de tonique, à reconnaître quand un
+  m(maj7) est chiffré avec des extensions qui décrivent les modes
+  correspondants. Proche de la lecture des modes par les tétrades
+  (*Nardis*).
 
 ## Les sources à dépouiller
 
