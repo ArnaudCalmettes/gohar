@@ -32,7 +32,11 @@ const (
 	maxCommands = 64
 )
 
-const headroom = 1.0 / 6
+// headroom scales each voice so that a tetrad struck at full velocity
+// reaches full scale. What ear sounds at most, a pedal under a scale,
+// stays well below; one voice sits 12 dB under full scale. A fifth key
+// struck as hard is cut by clamp.
+const headroom = 1.0 / 4
 
 // An Envelope shapes a note over time: it rises to full level in
 // Attack, falls to Sustain in Decay, holds there while the key is down,

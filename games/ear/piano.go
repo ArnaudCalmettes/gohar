@@ -34,6 +34,16 @@ const (
 	// octaves below, or a MIDI keyboard set to another octave. It still
 	// shows which class sounds, without pretending to be that key.
 	ghost = 0.5
+
+	// A key at rest shows its front, a lip a shade darker than its top,
+	// and a key held down hides it under the keys around it: what a
+	// keyboard seen from above and in front shows. The pressed key also
+	// takes a shadow where it goes under the fallboard.
+	whiteLip   = 4
+	blackLip   = 3
+	lipShade   = 0.78
+	shadowRows = 3
+	shadowFrom = 0.55
 )
 
 var (
@@ -199,13 +209,24 @@ func (p *piano) draw(c canvas, r reveal, f *font) {
 					base, label = t.dark, lightLabel
 				}
 			}
-			// Pressed keys sink a little. A placeholder: it reads as a
-			// press, but looks cheap, and a better rendering is to find.
-			if levels[k] > 0.95 {
-				y += 2
+			top := blend(base, lit, levels[k])
+			lip := float32(whiteLip)
+			if black {
+				lip = blackLip
 			}
 			c.rect(x, y, w, h, keyBorder)
-			c.rect(x+1, y, w-2, h-1, blend(base, lit, levels[k]))
+			if levels[k] > 0.95 {
+				// Down: the lip goes under, the top runs to the edge,
+				// darkened at the back where it sinks.
+				c.rect(x+1, y, w-2, h-1, top)
+				for i := range shadowRows {
+					f := shadowFrom + (1-shadowFrom)*float32(i)/shadowRows
+					c.rect(x+1, y+float32(i), w-2, 1, shade(top, f))
+				}
+			} else {
+				c.rect(x+1, y, w-2, h-1-lip, top)
+				c.rect(x+1, y+h-1-lip, w-2, lip, shade(top, lipShade))
+			}
 
 			if name := r.labels[k%12]; r.on && name != "" {
 				tw, th := c.measure(name, f)
@@ -213,6 +234,11 @@ func (p *piano) draw(c canvas, r reveal, f *font) {
 			}
 		}
 	}
+}
+
+// shade darkens a colour to `f` of its brightness.
+func shade(a color.RGBA, f float32) color.RGBA {
+	return blend(color.RGBA{A: 0xff}, a, f)
 }
 
 // blend moves from a toward b by t, between 0 and 1.

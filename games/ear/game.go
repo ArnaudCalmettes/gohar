@@ -112,6 +112,12 @@ type game struct {
 	debug    bool
 	earOnly  bool // the piano hidden during questions, P toggles it
 
+	// shown is what the keyboard shows once the answer is out, spelled
+	// once per answer and per language rather than at every frame:
+	// spelling builds namers, and namers allocate.
+	shown      reveal
+	shownFresh bool
+
 	// What the correction playing now is made of, to name the shape
 	// that sounds: its cues, when it started, and when it ends.
 	cues     []cue
@@ -190,6 +196,7 @@ func (g *game) answer(i int) {
 	g.chosen = i
 	g.correct = g.series.Answer(i)
 	g.state = stateRevealed
+	g.shownFresh = false
 	g.playCorrection(q)
 }
 
@@ -282,6 +289,7 @@ func (g *game) Update() error {
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyL) {
 		g.lang, g.other = g.other, g.lang
+		g.shownFresh = false
 	}
 	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
 		g.earOnly = !g.earOnly
@@ -517,11 +525,20 @@ func (g *game) drawFooter(screen *ebiten.Image) {
 
 // reveal says what the keyboard may show. Nothing but what sounds
 // until the answer is out: marking the mode during the question would
-// be showing the answer.
+// be showing the answer. Once out, it is spelled once (see game.shown).
 func (g *game) reveal() reveal {
 	if g.state != stateRevealed {
 		return reveal{}
 	}
+	if !g.shownFresh {
+		g.shown, g.shownFresh = g.spellReveal(), true
+	}
+	return g.shown
+}
+
+// spellReveal marks and names the right shape on the keys, and the one
+// chosen after a mistake.
+func (g *game) spellReveal() reveal {
 	q, _ := g.series.Current()
 	d := g.activity.Show(q, g.chosen)
 	r := reveal{
