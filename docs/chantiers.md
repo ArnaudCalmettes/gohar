@@ -24,7 +24,8 @@ accord, et les préparations d'un accord à l'autre. Testé, benché, vert.
 `naming` sépare la langue (français, anglais) et la notation (signes
 par défaut, mots en option). Il nomme les intervalles jusqu'à la
 septième et les gammes nommées (majeure, mineure naturelle, mineure
-harmonique, mineure mélodique, majeure harmonique) sur leur tonique.
+harmonique, mineure mélodique, majeure harmonique) sur leur tonique,
+et écrit les symboles d'accords dans le style choisi (`ChordStyle`).
 Chaque mode a un nom systématique et des alternatives : le registre
 parlé français et les alias.
 
@@ -88,6 +89,19 @@ phrygien bécarre 6) sont une option du `Namer`, pas de la `Locale`,
 pour l'accessibilité : une synthèse vocale lit des mots, pas des
 signes. Un jeu peut tenir deux namers, signes à l'écran et mots pour un
 lecteur d'écran.
+
+**Les symboles d'accords en réglage.** `ChordStyle` écrit la qualité
+d'un accord : Cmaj7, Cm7, Cm7♭5, Cdim7 par défaut, comme *En
+Harmonie* ; C♮7 ou CΔ7, C-7, Cø, C°7 en option. Le bécarre ne se lit
+bien qu'en exposant, sur une grille gravée : sur une ligne de texte,
+C♮9 se lirait comme un do avec une neuvième bécarre. Les extensions
+naturelles empilées montent sur la septième (C9 : la 9e ; C13 : la 9e
+et la 13e, sans 11e ; Cm11 : la 9e et la 11e ; Cm13 : la 9e, la 11e et
+la 13e). Sur une tierce majeure, la 11e reste toujours à part :
+C13(11). Le reste va entre parenthèses sans espace, la plus grave
+d'abord : C7(♭9,♯11). Pas d'espace, parce que sur une grille une espace sépare
+deux accords. Le mineur-majeur s'écrit Cm(maj7), et ses extensions
+entrent dans la même parenthèse sans monter : Cm(maj7,9,♯11). Le 7alt s'écrit 7alt.
 
 **Le nom systématique par défaut, sans exception.** La base naturelle
 suivie de chaque degré altéré : phrygien ♮3, lydien ♯5. Les noms
@@ -303,8 +317,8 @@ fautive en entrée, la propre en sortie attendue.
       tonique. *Lush Life* et *Yesterday's Gardenias* ne sentent plus.
       La rupture G♭m7 → F♯m7 de *Grand Central*, mesure 17, tombe à
       cette frontière : ♭IIm7 en fa mineur, puis Im7 en fa♯ mineur.
-- [ ] le rendu des symboles d'accords entiers dans `naming`, la qualité
-      comprise : `analyse` la recopie encore de l'app.
+- [x] le rendu des symboles d'accords entiers dans `naming`, la qualité
+      comprise (`ChordStyle`), et ses réglages dans `analyse`.
 - [ ] le signalement, en simple remarque, des graphies qui s'écartent
       de ce qui est entendu : « écrit A♯7, entendu ♭VII7 ».
 - [ ] la lecture du mode quand les tétrades suffisent, *Nardis* en

@@ -1,7 +1,7 @@
 // Command analyse prints a chart of an iReal Pro playlist with what the
 // analysis sees in it, bar by bar, in the terminal.
 //
-//	analyse [-key heard|declared|F|A-] [-legend] [-smells] playlist.html "tenderly"
+//	analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] playlist.html "tenderly"
 //
 // The playlist is an export of the app: an HTML file holding irealb://
 // links, or a text file holding one. The title is matched without case,
@@ -31,6 +31,10 @@
 // C♭, and the enharmonies tolerated, when run with -smells (see
 // respell).
 //
+// Their qualities are written by naming (see naming.ChordStyle): Cmaj7,
+// Cm7, Cm7♭5, Cdim7 by default; -maj7 natural or -maj7 delta writes C♮7
+// or CΔ7, -minus C-7, -halfdim Cø, -dimsign C°7.
+//
 // It is the test bench of the analysis (see docs/grilles.md), and grows
 // with it: for now each chord says how it prepares the next one.
 package main
@@ -46,6 +50,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/charts/ireal"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
+	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
 const barsPerRow = 4
@@ -54,11 +59,22 @@ func main() {
 	withLegend := flag.Bool("legend", false, "explain the marks before the chart")
 	withSmells := flag.Bool("smells", false, "list the spellings that smell and the enharmonies tolerated")
 	key := flag.String("key", "heard", `the tonality to analyse the tune in: "heard" by the analysis, "declared" by the app, or a key as the app spells it (F, A-)`)
+	maj7 := flag.String("maj7", "maj", `how to write the major seventh: "maj" (Cmaj7), "natural" (C♮7) or "delta" (CΔ7)`)
+	flag.BoolVar(&style.Minus, "minus", false, "write a minor chord C-7 rather than Cm7")
+	flag.BoolVar(&style.HalfDiminishedSign, "halfdim", false, "write a half-diminished chord Cø rather than Cm7♭5")
+	flag.BoolVar(&style.DiminishedSign, "dimsign", false, "write a diminished chord C°7 rather than Cdim7")
 	flag.Parse()
 	if flag.NArg() != 2 {
-		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] [-legend] [-smells] <playlist> <title>")
+		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] <playlist> <title>")
 		os.Exit(2)
 	}
+	sevenths := map[string]naming.MajorSeventhSign{"natural": naming.NaturalSeventh, "delta": naming.DeltaSeventh, "maj": naming.MajSeventh}
+	sign, ok := sevenths[*maj7]
+	if !ok {
+		fmt.Fprintf(os.Stderr, "-maj7 %s: not maj, natural or delta\n", *maj7)
+		os.Exit(2)
+	}
+	style.MajorSeventh = sign
 	if _, ok := (ireal.Song{Key: *key}).DeclaredTonalities(); !ok && *key != "declared" && *key != "heard" {
 		fmt.Fprintf(os.Stderr, "-key %s: not a key, nor declared or heard\n", *key)
 		os.Exit(2)
@@ -834,19 +850,39 @@ func label(k harmony.ApproachKind) string {
 	return strings.Join(out, "+") + "→"
 }
 
-// spelling writes the app's qualities the way a lead sheet does, until
-// naming renders chord symbols (see docs/chantiers.md).
+// style is how chord symbols are written, set once from the flags.
+var style naming.ChordStyle
+
+// spelling writes the app's qualities the way a lead sheet does, for
+// the few that naming cannot render: a quality typed by hand that the
+// reader does not know.
 var spelling = strings.NewReplacer(
 	"^", "maj", "-", "m", "h7", "m7♭5", "h9", "m9♭5", "h", "m7♭5",
 	"o", "dim", "b", "♭", "#", "♯",
 )
 
 func symbol(c ireal.ChordSymbol) string {
-	s := note(c.Root) + spelling.Replace(c.Quality)
-	if c.Bass != "" {
-		s += "/" + note(c.Bass)
+	return note(c.Root) + quality(c) + slash(c)
+}
+
+// quality writes the quality of a chord symbol in the chosen style. The
+// root, which respell may have rewritten in signs, does not matter here:
+// the quality is read on C.
+func quality(c ireal.ChordSymbol) string {
+	if r, err := (ireal.ChordSymbol{Root: "C", Quality: c.Quality, Custom: c.Custom}).Read(); err == nil {
+		if q, ok := style.Symbol(r.Pattern); ok {
+			return q
+		}
 	}
-	return s
+	return spelling.Replace(c.Quality)
+}
+
+// slash writes the bass of a chord symbol, "/E", or nothing.
+func slash(c ireal.ChordSymbol) string {
+	if c.Bass == "" {
+		return ""
+	}
+	return "/" + note(c.Bass)
 }
 
 func note(n string) string {
