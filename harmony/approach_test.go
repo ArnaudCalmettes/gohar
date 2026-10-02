@@ -89,8 +89,8 @@ func TestApproachOf(t *testing.T) {
 		"not an approach": {
 			{chordOf(t, g, seventh...), none}, // to the dominant a tone below
 			{chordOf(t, f, seventh...), plag}, // ♭VII7-I: a plagal, see below
-			{chordOf(t, g, major7...), none}, // ♭VIImaj7: a modal cadence, not read
-			{chordOf(t, a, minor7...), none}, // a two needs a dominant after
+			{chordOf(t, g, major7...), none},  // ♭VIImaj7: a modal cadence, not read
+			{chordOf(t, a, minor7...), none},  // a two needs a dominant after
 			{chordOf(t, d, major7...), none},
 		},
 		// Cmaj7 C♯dim7 Dm7 D♯dim7 Em7: each diminished chord a semitone

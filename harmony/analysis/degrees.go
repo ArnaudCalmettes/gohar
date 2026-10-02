@@ -37,11 +37,6 @@ type Degree struct {
 	Inversion int
 }
 
-// DegreeOf reads a change in tonalities that share a tonic.
-func DegreeOf(ch Change, ts []harmony.Tonality) Degree {
-	return degreeOf(ch, ts, 0)
-}
-
 // degreeOf reads a change in tonalities, naming an altered root by the way
 // a passing bass walks, when it does.
 func degreeOf(ch Change, ts []harmony.Tonality, walk int) Degree {

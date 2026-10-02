@@ -279,10 +279,11 @@ d'une source le dit ; le reste est à nous. Pas encore de code.
   (forum MuseScore) : les paires qui comptent, aux jonctions des deux
   polices (B♭7, F♮7), se règlent à la main dans le rendu.
 - Reste à vérifier où trouver ø et °.
-- **Un chiffrage réglable.** Par défaut, la septième majeure s'écrit
-  « ♮7 » : bécarre, naturel et majeur vont ensemble, et le joueur s'y
-  habitue. C'est un réglage du rendu des chiffrages dans `naming`,
-  chantier déjà ouvert.
+- **Un chiffrage réglable.** Le jeu choisit son `ChordStyle` : la
+  septième majeure peut s'y écrire « ♮7 », bécarre, naturel et majeur
+  allant ensemble, puisque la police la met en exposant, là où le
+  terminal garde maj7 (voir les décisions du nommage dans
+  `chantiers.md`).
 - Les noms d'accords suivent l'orthographe d'`analyse` (`spell.go`) :
   la lettre du degré, des mouvements lisibles, l'usage pour
   l'affichage.

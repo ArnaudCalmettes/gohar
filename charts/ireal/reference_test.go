@@ -335,7 +335,7 @@ func numeral(d string) string {
 // fiches of En Harmonie read without the key the chart declares.
 func sensed(c analysis.Changes, blocks []analysis.Block) []analysis.Sensed {
 	phrases := analysis.Phrases(c, blocks)
-	return analysis.Sense(c, blocks, phrases, analysis.Tune(c, phrases))
+	return analysis.Sense(c, blocks, analysis.Tune(c, phrases))
 }
 
 // The book tells a modulation from a tonicisation: « Une cadence

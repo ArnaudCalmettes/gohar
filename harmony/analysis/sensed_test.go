@@ -696,6 +696,14 @@ func TestPicardy(t *testing.T) {
 				bar{d, halfDim, g, dom7}, bar{c, maj}),
 			"Cm nat/harm/mel", true,
 		},
+		// Somewhere: the first cadence resolves elsewhere, the minor
+		// tonic is only touched later, and the major one ends the tune.
+		// No picardy third: the tune is in the major.
+		"a minor tonic touched later": {
+			barsOf(false, bar{g, dom7}, bar{c, dom7, f, maj}, bar{d, halfDim, g, dom7}, bar{c, min6},
+				bar{d, min7, g, dom7}, bar{c, maj}),
+			"C", false,
+		},
 		// Chega De Saudade: D minor for its first half, D major for its
 		// second, and a stop on D6. Not a picardy third: the reading says
 		// where it stops, the tune being as much minor as major.
@@ -715,9 +723,9 @@ func TestPicardy(t *testing.T) {
 	}
 }
 
-// Home, where a tune sets out from, is where its first phrase comes to
-// rest, however long that phrase is.
-func TestHome(t *testing.T) {
+// The first phrase of a tune comes to rest where its first conclusive
+// cadence lands, however long that phrase is.
+func TestFirstPhrase(t *testing.T) {
 	const (
 		c, cs, d, eb, e, f, fs, g, ab, a, bb, b harmony.PitchClass = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
 	)
@@ -787,7 +795,14 @@ func TestHome(t *testing.T) {
 		},
 	} {
 		c := tc.changes
-		if got := tonalityName(analysis.Home(c, phrasesOf(c))); got != tc.want {
+		var first []harmony.Tonality
+		for _, p := range phrasesOf(c) {
+			if p.Tonic != nil {
+				first = p.Tonic
+				break
+			}
+		}
+		if got := tonalityName(first); got != tc.want {
 			t.Errorf("%s: %s, want %s", name, got, tc.want)
 		}
 	}

@@ -79,18 +79,21 @@ type Sensed struct {
 	Across   bool
 }
 
-// Sense reads the sensed tonic at each change, given the blocks and the
-// phrases of the sequence. Four mechanisms, each a method of [hearing]:
+// Sense reads the sensed tonic at each change, given the blocks of the
+// sequence. Four mechanisms, each a method of [hearing]:
 //
-//   - home: until the first phrase concludes, the ground is a guess, the
-//     first chord when it can be a tonic, else the first cadence that
-//     resolves; the first phrase then gives the tune its home (see
-//     [Home]). A blues has its tonic for ground from the start.
+//   - start: the first ground is a guess, the first chord when it can be
+//     a tonic, else the first cadence that resolves. A blues has its
+//     tonic for ground from the start.
 //   - cadence: a cadence that resolves elsewhere than on the ground makes
 //     its target the tonic of a region, which lasts while the chords
 //     after it hold in it or prepare a chord that does.
 //   - modulation: the region becomes the ground.
 //   - return: coming home is easier than leaving.
+//
+// The phrases play no part in it: where the tune sets out from is what
+// its cadences say. Just Friends opens on Cmaj7, which turns minor, a
+// IV, before a backdoor II-V takes it to G.
 //
 // A key signature plays no part in what the ear hears: it belongs to
 // the written score, the weakest clue to a tonality. The fiches of En
@@ -118,8 +121,8 @@ type Sensed struct {
 // In a Sentimental Mood and Lullaby Of Birdland give much the same
 // evidence, a minor tonic set from the start and an end on its relative
 // major. Nil leaves the second hearing to go on as the first ended.
-func Sense(c Changes, blocks []Block, phrases []Phrase, tune []harmony.Tonality) []Sensed {
-	h := newHearing(c, blocks, phrases)
+func Sense(c Changes, blocks []Block, tune []harmony.Tonality) []Sensed {
+	h := newHearing(c, blocks)
 	seed := Sensed{}
 	if t, ok := Blues(c); ok {
 		seed.Start, seed.Ground = t, t
@@ -151,22 +154,12 @@ type hearing struct {
 	// The sections of the form, nil for a sequence without bars.
 	sections []Section
 
-	// The first phrase that concludes before the tune stops, nil when
-	// none does, and the home it gives (see [Home]).
-	concludes *Phrase
-	home      []harmony.Tonality
-
 	// opened is the first chord of the cadence that opened the region.
 	opened int
 }
 
-func newHearing(c Changes, blocks []Block, phrases []Phrase) *hearing {
-	h := &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), sections: Sections(c)}
-	h.home = Home(c, phrases)
-	if first, _ := concluding(phrases); first != nil && !first.Stops {
-		h.concludes = first
-	}
-	return h
+func newHearing(c Changes, blocks []Block) *hearing {
+	return &hearing{c: c, blocks: blocks, r: rolesOf(c, blocks), sections: Sections(c)}
 }
 
 // pass hears the changes once, from the state seed.
@@ -186,9 +179,6 @@ func (h *hearing) pass(seed Sensed, first bool) []Sensed {
 		h.returns(i)
 		h.cadence(i)
 		h.modulation(i)
-		if first {
-			h.homeAt(i)
-		}
 		if h.s.Start == nil {
 			h.s.Start = h.s.Ground
 		}
@@ -197,19 +187,6 @@ func (h *hearing) pass(seed Sensed, first bool) []Sensed {
 		out[i] = h.s
 	}
 	return out
-}
-
-// homeAt installs home where the first phrase concludes, when it
-// concludes at home: Just Friends, which opens on Cmaj7, its IV, on G6
-// at bar 31.
-func (h *hearing) homeAt(i int) {
-	if h.concludes == nil || i != h.concludes.To || !sameTonic(h.concludes.Tonic, h.home) {
-		return
-	}
-	h.s.Start, h.s.Region = h.home, nil
-	if !sameTonic(h.s.Ground, h.home) {
-		h.s.Ground, h.s.Since = h.home, h.since(i)
-	}
 }
 
 // returns brings the ground back home on sight: the tonic chord of the

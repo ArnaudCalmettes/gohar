@@ -69,7 +69,7 @@ func TestReread(t *testing.T) {
 		blocks := analysis.Blocks(tc.changes, kinds)
 		phrases := analysis.Phrases(tc.changes, blocks)
 		tune := analysis.Tune(tc.changes, phrases)
-		sensed := analysis.Sense(tc.changes, blocks, phrases, tune)
+		sensed := analysis.Sense(tc.changes, blocks, tune)
 		_, blocks = analysis.Reread(tc.changes, kinds, blocks, sensed, tune)
 		if got := blocksName(tc.changes, blocks); got != tc.want {
 			t.Errorf("%s:\n got %s\nwant %s", name, got, tc.want)

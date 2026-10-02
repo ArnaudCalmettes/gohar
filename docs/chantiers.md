@@ -7,7 +7,7 @@ redécouvrir et sans rouvrir un débat déjà tranché. Les raisons des choix
 faits sont dans `architecture.md`, le vocabulaire dans `glossaire.md`, la
 conception de la collection dans `dex.md`, l'ear trainer dans
 `oreille.md`, les voicings dans `voicings.md`, l'analyse des grilles
-dans `grilles.md`. Ici il n'y a que ce qui reste à faire, les
+dans `grilles.md`, *Walk with me* dans `walk.md`. Ici il n'y a que ce qui reste à faire, les
 décisions qu'il ne faut pas rouvrir, et, pour s'y retrouver, un bref
 état de ce qui est fait.
 
@@ -33,9 +33,10 @@ parlé français et les alias.
 et analyse une grille à la manière d'*En Harmonie* : préparations,
 passages, blocs et tonalités qu'ils annoncent, degrés sur la tonique
 installée et en crochets, tonique pressentie et modulations, blues.
-Les cellules suivent les formes du livre : l'anatole, et le
-III-VI-II-V-I en majeur, résolu sur la tonique entendue ; les II-V
-contigus sont des marches. Les fiches du livre et de Siron concordent
+Les cellules suivent les formes du livre : l'anatole, le
+III-VI-II-V-I en majeur, résolu sur la tonique entendue, et la cadence
+éolienne ♭VI-♭VII-I ; les II-V contigus sont des marches. Les pédales,
+les demi-cadences et les fins de section se lisent sur la forme. Les fiches du livre et de Siron concordent
 sur leurs degrés et leurs modulations, et l'analyse tombe d'accord avec
 la tonalité déclarée par l'app, ou vérifiée à l'oreille, sur
 l'essentiel du corpus (le rapport
@@ -56,11 +57,12 @@ allocation, discipline des buffers audio, et un histogramme des délais
 dans l'ordre de jeu : playlist, jetons sans perte, mesures, dépliage de
 la forme, chiffrages lus en accords de `harmony`, durées en temps.
 Vérifié sur des playlists réelles, qui restent hors du dépôt, et sur
-les fiches d'analyse d'*En Harmonie* et de Siron. Deux commandes :
+les fiches d'analyse d'*En Harmonie* et de Siron. Trois commandes :
 `charts/cmd/analyse` affiche une grille annotée dans le terminal,
 `charts/cmd/corpus` compare l'analyse à l'app sur des playlists
 entières, les grilles auxquelles il manque l'information mises à part
-(`charts/ireal/testdata/set-aside.txt`).
+(`charts/ireal/testdata/set-aside.txt`), et `charts/cmd/forms` lit
+leur forme.
 
 `games/keyboard` a deux sources : le clavier MIDI, qui saute les ports
 Through quand aucun n'est demandé, et la séquence rejouée, qui joue des
@@ -100,7 +102,9 @@ et la 13e, sans 11e ; Cm11 : la 9e et la 11e ; Cm13 : la 9e, la 11e et
 la 13e). Sur une tierce majeure, la 11e reste toujours à part :
 C13(11). Le reste va entre parenthèses sans espace, la plus grave
 d'abord : C7(♭9,♯11). Pas d'espace, parce que sur une grille une espace sépare
-deux accords. Le mineur-majeur s'écrit Cm(maj7), et ses extensions
+deux accords. Le 6/9 s'écrit avec la barre de fraction, C6⁄9, comme
+la fraction ⁶⁄₉ d'une grille gravée, et la barre du clavier, C6/9, en
+option. Le mineur-majeur s'écrit Cm(maj7), et ses extensions
 entrent dans la même parenthèse sans monter : Cm(maj7,9,♯11). Le 7alt s'écrit 7alt.
 
 **Le nom systématique par défaut, sans exception.** La base naturelle
@@ -142,10 +146,10 @@ connaît.
       actuel devient l'oracle du test plutôt que la donnée. Le métier ne
       doit pas parser une chaîne quand il a une représentation exacte
       sous la main.
-- [ ] rendre un chiffrage depuis une lecture : `C7♯9` à partir d'une
-      `Reading`. Écrit en lettres américaines dans toutes les langues,
-      dit dans la langue (« do mineur majeur 7 add 9 ») : deux rendus,
-      dont un seul dépend de la locale.
+- [ ] dire un chiffrage dans la langue (« do mineur majeur 7 add 9 »).
+      Le rendu écrit est fait (`ChordStyle`), en lettres américaines
+      dans toutes les langues ; seul le rendu parlé dépend de la
+      locale.
 - [ ] catalogue de progressions, pour que `ProgressionID` désigne
       quelque chose. Servirait aussi à juger les détours d'une
       réharmonisation (voir les jeux). Le contenu v0 est dans
@@ -159,8 +163,6 @@ connaît.
 - [ ] la ligne de basse chromatique sous d'autres accords que le
       diminué (dominantes chromatiques et renversements, It Never
       Entered My Mind) : une autre lecture, à côté de `PassingChords`.
-- [ ] un registre parlé anglais, s'il en existe un qui mérite d'être
-      proposé en alternative. Aujourd'hui seul le français en a un.
 
 ## Les voicings
 
@@ -176,7 +178,6 @@ Les décisions sont dans `voicings.md`.
       positions d'une progression.
 - [ ] dans le dex, un détail de production propre à la notion : le
       couple (tétrade, fondamentale) pour une position.
-- [ ] vérifier la fin du II-V-I mineur en m6, 1-3-6-5.
 
 ## La lecture des grilles iReal
 
@@ -348,12 +349,13 @@ Fait :
 - **La tonique pressentie**, lue de gauche à droite (`Sense`) : tonique
   de fond, tonique locale, ce qu'une cadence attend, le I emprunté.
 - **La modulation**, installée en direct (`Sense`) et datée après coup
-  (`Grounds`), le retour à la maison sur une cadence ou sur le seul
-  accord de tonique ; Tune Up et Black Orpheus concordent entièrement
+  (`Grounds`), le retour au fond de départ sur une cadence ou sur le
+  seul accord de tonique ; Tune Up et Black Orpheus concordent entièrement
   avec leurs fiches.
-- **Les phrases** (`Phrases`), qui vont d'un repos au suivant ; **la
-  maison** (`Home`), là où se pose la première, et **la tonalité du
-  morceau** (`Tune`), là où il s'arrête à son dernier chorus : la fin
+- **Les phrases** (`Phrases`), qui vont d'un repos au suivant, et **la
+  tonalité du morceau** (`Tune`), par son premier et son dernier
+  accord, la prédominance tranchant quand ils divergent ; le dernier,
+  là où il s'arrête à son dernier chorus : la fin
   que marque la grille, sinon la conclusion de sa dernière section,
   turnaround exclu, sinon à travers la boucle ; jamais l'armure ; une grille qui boucle
   entendue comme son deuxième chorus ; la tonique mineure écrite m7 ;
@@ -393,7 +395,8 @@ La suite, dans l'ordre :
       Cmaj7 (lydien), D♭maj7 Cm7 et B♭m7 Cm7 (phrygien), Dm7 Cm7 et
       B♭maj7 Cm7 (dorien), Dm7 C7 et B♭maj7 C7 (mixolydien), Dm7♭5 Cm7
       et B♭7 Cm7 (éolien). Aujourd'hui seul le ♭VII7-I se lit, comme
-      une plagale. Le Fmaj7 Em7 de *Nardis* est le ♭IImaj7-Im7
+      une plagale, et le ♭VImaj7 ♭VII7 I complet comme cellule
+      éolienne. Le Fmaj7 Em7 de *Nardis* est le ♭IImaj7-Im7
       phrygien. Une cadence modale « doit obligatoirement faire
       entendre les DCN et DCA du mode », ce que les deux accords font
       d'eux-mêmes (le fa♯ de D7 sur Cmaj7). Reste à savoir quand deux
@@ -425,9 +428,6 @@ La suite, dans l'ordre :
   constant, une marche d'accords parallèles. Reste à décider ce qu'on
   en montre quand les blocs lisent déjà les accords (voir
   `grilles.md`).
-- [ ] distinguer la cadence évitée, où la tonalité change, de la
-  rompue. Sans urgence : « … » suffit pour l'instant, la ligne des
-  toniques montrant si la nouvelle tonique s'installe.
 - [x] les cellules (`Cells`) : l'anatole et le III-VI-II-V-I, d'après
   *En Harmonie* (tome 1, chapitres 8 et 9).
 - [x] la cadence rompue V-VI (G7 Am7 en do), lue seule comme un
@@ -440,18 +440,16 @@ La suite, dans l'ordre :
   Le turnaround, qui se reconnaît à sa place dans la structure, reste
   à faire ; ce n'est pas une cellule (une anatole, souvent, ou un
   turnaround sur pédale en introduction).
-- [x] les cellules par substitutions tritoniques, lues sur les accords
+- [x] les cellules par dominantes chromatiques, lues sur les accords
   qu'elles remplacent, comme *En Harmonie* retrouve les cadences
   initiales (tome 1, chapitre 9) : « anatole ♭II », nom retenu en
   attendant mieux. Au passage, un accord majeur n'est plus un II : Em7
   A7 Dmaj7 G7 est un II-V-I de ré (327 fausses cellules en moins sur
   le corpus).
-- [ ] *Yesterday's Gardenias* est entendu en fa♯, et non en si♭ : la
-  grille finit sur F♯maj7, mesure 32. À regarder.
-- [ ] *Peace* (Horace Silver) : le livre lui donne un « centre tonal
-  autour de Si♭ », l'analyse entend ré♭. Les autres fiches du tome 2
-  concordent (*Body And Soul* compris, voir « Les autres cas tranchés »
-  dans `grilles.md`), et *Fall*, sans centre tonal, est écarté.
+- [ ] *Yesterday's Gardenias* est entendu en fa♯ ; il est en si♭
+  majeur, sans doute possible à l'écoute. La grille pose F♯maj7 à la
+  mesure 32, puis F9sus4 ramène à B♭maj7 : la règle du turnaround mis
+  de côté prend ici la mauvaise fin. À regarder.
 - [x] les pédales à la basse (`Pedals`) : de tonique, de dominante ou
   sur un autre degré, générales ou passagères, notées comme le livre
   (« B♭ ped. ») entre les accords et les degrés (voir « La pédale »
@@ -526,15 +524,6 @@ La suite, dans l'ordre :
   | *Glad To Be Unhappy* | sol mineur, 8 | fa, 16 | fa |
   | *The Summer Wind* | fa, 14,5 | la, 10 | fa |
 
-- [ ] *Somewhere* : sa grille ne donne la tonique qu'en mi♭ mineur au
-  pont et en mi♭ sur la fin, et l'analyse y entend une tierce picarde ;
-  à trancher à l'oreille.
-- [ ] `Home` et `homeAt`, la « maison » de l'ancien modèle, qui
-  installent encore le fond à la première phrase conclusive dans
-  `Sense` et servent de repli quand rien ne conclut : à retirer quand
-  des témoins diront ce qu'ils protègent. Le seul connu est *Just
-  Friends*, qui s'ouvre sur Cmaj7, son IV, et ne se pose qu'à la fin
-  sur G6 : à écouter.
 - [ ] les couleurs proposées, à rebrancher sur `Sensed` : ce qu'on dit à
   l'apprenant sur une tonicisation (la gamme du fond, celle de l'accord
   tonicisé, les deux ?), sur une région transitoire, sur un II-V qui ne
@@ -553,7 +542,12 @@ La suite, dans l'ordre :
   des régions dans les sections, une mesure pour un appui.
 - [ ] la mélodie : ce qui sépare *In a Sentimental Mood* (ré mineur)
   de *Lullaby Of Birdland*, au même profil, et pose d'entrée sol
-  mineur dans *It Don't Mean A Thing*.
+  mineur dans *It Don't Mean A Thing*. *Somewhere* montre ce qu'elle
+  apporte : la grille n'y montre la tonique qu'en filigrane, et la
+  mélodie lève le doute dès les deux premières mesures, si♭ sur B♭,
+  la♭ sur B♭7, sol sur E♭7, la tierce de mi♭ atteinte par la quarte,
+  puis mi♭ do sur A♭. La grille seule y arrive aussi, par sa première
+  cadence (voir « La tierce picarde » dans `grilles.md`).
   Demande un format de grille qui porte la mélodie.
 - [ ] la jauge de tension, puis le direct avec l'attente et la
       surprise (voir `grilles.md`), dont le pivot diminué de Tenderly
@@ -602,6 +596,11 @@ ne presse. Une entrée remonte dans sa section quand son cas se présente.
   m(maj7) est chiffré avec des extensions qui décrivent les modes
   correspondants. Proche de la lecture des modes par les tétrades
   (*Nardis*).
+- distinguer la cadence évitée, où la tonalité change, de la rompue,
+  le jour où une application en aurait besoin : « … » suffit, la ligne
+  des toniques montrant si la nouvelle tonique s'installe.
+- un registre parlé anglais pour les modes, s'il en existe un qui
+  mérite d'être proposé en alternative : seul le français en a un.
 
 ## Les sources à dépouiller
 
@@ -732,9 +731,6 @@ La suite de `ear`, dans l'ordre de `oreille.md` :
       le dex dans `localStorage`. Le geste qui démarre l'audio est le
       clic dans le menu. La police des signes est embarquée, rien à
       faire de ce côté.
-- [ ] juger à l'oreille le tempo (350 ms par note) et le registre (la
-      gamme entre la3 et sol♯4 ; la pédale deux octaves dessous, sauf
-      pendant la question d'un degré où elle est dans la même octave).
 - [ ] les paliers suivants des modes : les autres systèmes. Les
       distracteurs proches sont couverts par le palier des sept modes.
 - [ ] les paliers suivants des degrés : la tonique mobile, la tonique à

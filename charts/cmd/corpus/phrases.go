@@ -8,9 +8,9 @@ import (
 
 // phrasing reports how the rests of the phrases (see analysis.Phrases)
 // agree with the conclusive cadences of the sections found (see
-// analysis.Conclusions): the rule of the analysis today, a tonic held
-// or coming back, against Siron's, a cadence at the end of a group of
-// bars. With `list`, the charts where they part, bar by bar.
+// analysis.Conclusions), where the phrases are meant to rest: a check
+// that the two stay together. With `list`, the charts where they part,
+// bar by bar.
 func phrasing(rs []reading, list bool) string {
 	var sections, concluding, both, alone, inside int
 	var parted []reading

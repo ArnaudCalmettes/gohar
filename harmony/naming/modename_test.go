@@ -214,3 +214,27 @@ func TestFunctionName(t *testing.T) {
 		}
 	})
 }
+
+// A namer names the mode a tonality is in, in its language: E phrygian
+// ♮3, the fifth mode of A harmonic minor, said « phrygien majeur » or
+// known as « phrygien dominante ».
+func TestNamerModes(t *testing.T) {
+	n, err := naming.NewNamer(naming.French)
+	require.NoError(t, err)
+	assert.Equal(t, "do", n.Locale().Letters[naming.LetterC])
+
+	p, ok := harmony.HarmonicMinor.Mode(5)
+	require.True(t, ok)
+	e, err := harmony.NewTonality(4, p)
+	require.NoError(t, err)
+
+	m, ok := n.Mode(e)
+	require.True(t, ok)
+	name, ok := n.ModeName(e)
+	require.True(t, ok)
+	assert.Equal(t, "phrygien ♮3", name)
+	assert.Equal(t, []string{"phrygien majeur", "phrygien dominante"}, n.ModeAlternatives(m))
+
+	_, ok = n.ModeName(harmony.Tonality{})
+	assert.False(t, ok, "no tonality, no mode")
+}

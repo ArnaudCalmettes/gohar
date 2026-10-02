@@ -9,8 +9,7 @@ import (
 // A Phrase runs from one rest to the next: from its first change to
 // the one it concludes on, the tonic where the music comes to rest.
 //
-// The phrases tell where a tune sets out from (see [Home]) and where it
-// stops (see [Tune]): the first of them, and the last.
+// The phrases tell where a tune stops (see [Tune]): the last of them.
 type Phrase struct {
 	From, To int // its first and last changes
 
@@ -407,26 +406,14 @@ func (ph *phrasing) subdominant(t []harmony.Tonality) bool {
 // stopping returns the phrase the tune stops on, else the last that
 // concludes, nil when none does.
 func stopping(phrases []Phrase) *Phrase {
+	var last *Phrase
 	for i := range phrases {
 		if phrases[i].Stops {
 			return &phrases[i]
 		}
+		if phrases[i].Tonic != nil {
+			last = &phrases[i]
+		}
 	}
-	_, last := concluding(phrases)
 	return last
-}
-
-// concluding returns the first and the last phrases that conclude, nil
-// when none does.
-func concluding(phrases []Phrase) (first, last *Phrase) {
-	for i := range phrases {
-		if phrases[i].Tonic == nil {
-			continue
-		}
-		if first == nil {
-			first = &phrases[i]
-		}
-		last = &phrases[i]
-	}
-	return first, last
 }

@@ -89,9 +89,10 @@ Les positions des accords 6 et m6 sont distinctes de celles des
 tétrades : à l'état fondamental, une tétrade en a six (la basse, puis
 les trois autres sons dans tous les ordres), un accord 6 aussi.
 
-Le II-V-I mineur se termine sur un m(maj7) ou un m6 : le cours
-introduit les deux tétrades avec lui (§13, Dm7♭5 G7♭9 Cm(maj7) et
-Dm7♭5 G7♭9 Cm6), et 1-3-6-5 est l'une de ses positions de m6.
+Le II-V-I mineur se termine sur un m(maj7) ou un m6 en tétrades
+(Dm7♭5 G7♭9 Cm(maj7), Dm7♭5 G7♭9 Cm6, avec Cm6 en 1-3-6-5 par
+exemple), et le plus souvent sur un m6/9 dès que les extensions
+entrent en jeu.
 
 ## Les enchaînements
 
@@ -164,7 +165,7 @@ du moindre mouvement, suivi dans le dex.
 ## Le nom des accords
 
 En français, on **écrit** les chiffrages avec les lettres américaines
-et on les **dit** avec les syllabes latines : « CmMaj7(add9) » se dit
+et on les **dit** avec les syllabes latines : « Cm(maj7,9) » se dit
 « do mineur majeur 7 add 9 ». Le rendu d'un chiffrage en tient compte
 (voir `glossaire.md`), et c'est ce qui compte pour l'accessibilité : une
 synthèse vocale doit dire ce qu'un musicien dirait.

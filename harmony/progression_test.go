@@ -215,3 +215,26 @@ func TestNewProgressionStepsRejectsAnOriginItLacks(t *testing.T) {
 	assert.Error(t, err,
 		"the first step is the origin, so it sits at zero by construction")
 }
+
+// A II-V-I in C read from its roots: three chords, the G a fourth up
+// from D, the C a fourth up again, each step measured from the first.
+func TestProgressionFromRoots(t *testing.T) {
+	const c, d, g harmony.PitchClass = 0, 2, 7
+	p, err := harmony.NewProgression(
+		[]harmony.ChordPattern{harmony.ChordMinorSeventh, harmony.ChordDominantSeventh, harmony.ChordMajorSeventh},
+		[]harmony.PitchClass{d, g, c},
+	)
+	require.NoError(t, err)
+	assert.Equal(t, 3, p.Len())
+
+	var got []harmony.Step
+	for i, s := range p.Steps() {
+		assert.Equal(t, len(got), i)
+		got = append(got, s)
+	}
+	assert.Equal(t, []harmony.Step{
+		{Offset: 0, Tetrad: harmony.ChordMinorSeventh},    // Dm7
+		{Offset: 5, Tetrad: harmony.ChordDominantSeventh}, // G7
+		{Offset: 10, Tetrad: harmony.ChordMajorSeventh},   // Cmaj7
+	}, got)
+}

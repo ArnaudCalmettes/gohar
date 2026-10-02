@@ -31,8 +31,8 @@ func Hear(c Changes, choose func(heard []harmony.Tonality) []harmony.Tonality) H
 	if choose != nil {
 		h.Tune = choose(h.Heard)
 	}
-	h.Kinds, h.Blocks = Reread(c, h.Kinds, h.Blocks, Sense(c, h.Blocks, h.Phrases, h.Tune), h.Tune)
+	h.Kinds, h.Blocks = Reread(c, h.Kinds, h.Blocks, Sense(c, h.Blocks, h.Tune), h.Tune)
 	h.Phrases = Phrases(c, h.Blocks)
-	h.Sensed = Sense(c, h.Blocks, h.Phrases, h.Tune)
+	h.Sensed = Sense(c, h.Blocks, h.Tune)
 	return h
 }

@@ -48,7 +48,7 @@ func TestTonalAreas(t *testing.T) {
 		bar{e, min7}, bar{a, dom7}, bar{d, maj7}, bar{d, maj7})
 	blocks := analysis.Blocks(tuneUp, analysis.Approaches(tuneUp))
 	phrases := analysis.Phrases(tuneUp, blocks)
-	sensed := analysis.Sense(tuneUp, blocks, phrases, analysis.Tune(tuneUp, phrases))
+	sensed := analysis.Sense(tuneUp, blocks, analysis.Tune(tuneUp, phrases))
 	var got []string
 	for _, ar := range analysis.TonalAreas(tuneUp, blocks, sensed, analysis.Sections(tuneUp)) {
 		got = append(got, areaName(tuneUp, ar))

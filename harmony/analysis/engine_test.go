@@ -228,3 +228,56 @@ func TestResetClearsEverything(t *testing.T) {
 	assert.True(t, e.Tonality().IsZero())
 	assert.True(t, e.Snapshot().IsEmpty())
 }
+
+// A teaching game that gives the key pins it: the engine reports it
+// from the first note, and keeps listening, so that releasing it hands
+// back what it has heard meanwhile.
+func TestPinnedTonality(t *testing.T) {
+	e := engine(t, analysis.DefaultConfig)
+	fMajor, err := harmony.NewTonality(5, harmony.ScaleMajor)
+	require.NoError(t, err)
+
+	e.PinTonality(fMajor)
+	assert.True(t, e.TonalityIsPinned())
+	assert.Equal(t, fMajor, e.Tonality(), "F major, told before a note is played")
+
+	progression := [][]harmony.Pitch{
+		{60, 64, 67}, {65, 69, 72}, {55, 59, 62, 65}, {60, 64, 67},
+		{62, 65, 69}, {55, 59, 62, 65}, {60, 64, 67},
+	}
+	for i, chord := range progression {
+		play(e, i*800, chord...)
+		e.Advance(at(i*800 + 700))
+	}
+	assert.Equal(t, fMajor, e.Tonality(), "still F major while pinned, whatever is played")
+
+	e.ReleaseTonality()
+	assert.False(t, e.TonalityIsPinned())
+	assert.Equal(t, harmony.PitchClass(0), e.Tonality().Tonic(),
+		"released, C major as heard all along")
+}
+
+// The chords read so far, as a shape: C F G7 C played from C is a I IV
+// V I, the F a fourth up, the G a fifth up, both measured from C.
+func TestEngineProgression(t *testing.T) {
+	e := engine(t, analysis.DefaultConfig)
+	_, ok := e.Progression()
+	assert.False(t, ok, "nothing played, no progression")
+
+	for i, chord := range [][]harmony.Pitch{{60, 64, 67}, {65, 69, 72}, {55, 59, 62, 65}, {60, 64, 67}} {
+		// Held past the settling time, then let go long enough before
+		// the next chord to fall out of its gather window.
+		play(e, i*800, chord...)
+		e.Advance(at(i*800 + 200))
+		for _, p := range chord {
+			e.NoteOff(p, at(i*800+250))
+		}
+	}
+	p, ok := e.Progression()
+	require.True(t, ok)
+	var roots []harmony.Semitones
+	for _, s := range p.Steps() {
+		roots = append(roots, s.Offset)
+	}
+	assert.Equal(t, []harmony.Semitones{0, 5, 7, 12}, roots, "C, F, G, C: each move the nearest, a fourth up, a tone up, a fourth up")
+}

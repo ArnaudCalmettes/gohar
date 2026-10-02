@@ -42,25 +42,34 @@ gohar/
     approach.go              ApproachKind, ApproachOf : les préparations
 
     naming/                  orthographe, locales, noms des 35 modes,
-                             des intervalles et des gammes nommées
+                             des intervalles et des gammes nommées,
+                             symboles d'accords (ChordStyle)
     analysis/                identification déterministe, moteur,
                              et l'analyse d'une grille : suite
                              d'accords (Changes), préparations,
                              passages, blocs et tonalités annoncées,
-                             phrases, maison et tonalité du morceau
-                             (ReadTune, Tune), tierce
-                             picarde, plages modales, blues, degrés,
-                             tonique pressentie et modulations
-                             (Sensed), zones tonales (TonalAreas), forme par récurrences (Sections)
-                             et cadences conclusives (Conclusions)
+                             II-V consécutifs (Links), cellules
+                             (Cells), seconde écoute (Reread),
+                             phrases et tonalité du morceau
+                             (ReadTune, Tune), tierce picarde,
+                             plages modales, blues, degrés, tonique
+                             pressentie et modulations (Sensed),
+                             zones tonales (TonalAreas), forme par
+                             récurrences (Sections), cadences
+                             conclusives et demi-cadences
+                             (Conclusions), pédales (Pedals)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
     dex.go                   marques, entrées, faits, questions
+    persist.go               lecture et écriture JSON
 
   synth/       go.mod        synthèse et sortie audio, dépend d'oto
     tuning.go                numéro de touche vers fréquence
     engine.go                voix, enveloppe, mélange, io.Reader
+    timbre.go                formes d'onde, timbres 8 bits
+    queue.go                 Instrument, file de commandes
+    histogram.go             histogramme des délais
     device.go                ouverture d'oto et discipline des buffers
 
   charts/      go.mod        grilles venues d'autres logiciels
@@ -116,7 +125,7 @@ déferait l'abstraction pour laquelle il a été construit.
 
 `synth` possède la sortie audio et parle à oto directement. Ebitengine
 garde le graphisme et les entrées, et le paquet `ebiten/v2/audio` n'est
-pas utilisé du tout.
+utilisé que par la sonde de mesure `games/latency`.
 
 Ce n'est pas un contournement, c'est la seule façon d'atteindre une
 latence jouable. La raison est précise et vaut d'être écrite, parce que
@@ -299,7 +308,8 @@ et détaillé plus bas.
 
 Deux bibliothèques externes touchent le monde réel : oto pour le son,
 `gitlab.com/gomidi/midi/v2` pour les touches. Chacune n'est importée que
-par **un seul fichier**.
+par **un seul fichier**, hors des sondes de mesure (`games/latency`,
+`games/otolatency`).
 
 | Bibliothèque | Unique point d'entrée | Devant |
 |---|---|---|

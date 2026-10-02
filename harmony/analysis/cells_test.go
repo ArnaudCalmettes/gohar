@@ -201,7 +201,7 @@ func TestInTonality(t *testing.T) {
 		ch := tc.changes
 		blocks := analysis.Blocks(ch, analysis.Approaches(ch))
 		phrases := analysis.Phrases(ch, blocks)
-		sensed := analysis.Sense(ch, blocks, phrases, analysis.Tune(ch, phrases))
+		sensed := analysis.Sense(ch, blocks, analysis.Tune(ch, phrases))
 		var got []string
 		for _, cl := range analysis.InTonality(ch, analysis.Cells(ch), sensed) {
 			s := cl.Kind.String()

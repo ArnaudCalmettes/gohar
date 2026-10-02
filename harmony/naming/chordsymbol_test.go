@@ -32,9 +32,9 @@ func TestChordSymbol(t *testing.T) {
 		{[]harmony.Semitones{4, 7, 14}, "add9"},
 		{[]harmony.Semitones{3, 7, 14}, "madd9"},
 		{[]harmony.Semitones{4, 7, 9}, "6"},
-		{[]harmony.Semitones{4, 7, 9, 14}, "6/9"},
+		{[]harmony.Semitones{4, 7, 9, 14}, "6⁄9"},
 		{[]harmony.Semitones{3, 7, 9}, "m6"},
-		{[]harmony.Semitones{3, 7, 9, 14}, "m6/9"},
+		{[]harmony.Semitones{3, 7, 9, 14}, "m6⁄9"},
 		{[]harmony.Semitones{3, 7, 8}, "m♭6"},
 		{[]harmony.Semitones{3, 8}, "m♯5"},
 		{[]harmony.Semitones{4, 7, 11}, "maj7"},
@@ -108,6 +108,7 @@ func TestChordStyle(t *testing.T) {
 		{naming.ChordStyle{HalfDiminishedSign: true}, half9, "ø9"},
 		{naming.ChordStyle{DiminishedSign: true}, dim, "°"},
 		{naming.ChordStyle{DiminishedSign: true}, dim7, "°7"},
+		{naming.ChordStyle{Slash: true}, chordPattern(t, 4, 7, 9, 14), "6/9"},
 	} {
 		if got, _ := tc.style.Symbol(tc.p); got != tc.want {
 			t.Errorf("%+v: got %q, want %q", tc.style, got, tc.want)

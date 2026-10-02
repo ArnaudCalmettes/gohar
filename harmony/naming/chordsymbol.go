@@ -28,7 +28,17 @@ type ChordStyle struct {
 	// DiminishedSign writes the diminished chords C° and C°7 rather than
 	// Cdim and Cdim7.
 	DiminishedSign bool
+
+	// Slash writes the sixth chord with its ninth C6/9, with the slash
+	// of the keyboard, rather than C6⁄9, with the fraction slash.
+	Slash bool
 }
+
+// fractionSlash separates the 6 and the 9 of a sixth chord with its
+// ninth, as the fraction ⁶⁄₉ of an engraved chart does, on one line.
+// The slash of the keyboard reads as well, a 9 being no bass note:
+// the option [ChordStyle.Slash].
+const fractionSlash = "\u2044"
 
 // A MajorSeventhSign is a way of writing the major seventh in a chord
 // symbol.
@@ -127,9 +137,9 @@ func (s ChordStyle) Symbol(p harmony.ChordPattern) (string, bool) {
 	case fifthOnly:
 		head = "5"
 	case harmony.ChordMajorSixth:
-		head = sixNine(ext, "6")
+		head = s.sixNine(ext, "6")
 	case harmony.ChordMinorSixth:
-		head = sixNine(ext, m+"6")
+		head = s.sixNine(ext, m+"6")
 	case minorFlatSixth:
 		head = m + "♭6"
 	case minorSharpFifth:
@@ -270,12 +280,15 @@ func added(e extensions, triad string) string {
 	return triad
 }
 
-// sixNine writes a sixth chord with its ninth stacked: 6/9, m6/9.
-func sixNine(e extensions, six string) string {
-	if e.take(ninth) {
+// sixNine writes a sixth chord with its ninth stacked: 6⁄9, m6⁄9.
+func (s ChordStyle) sixNine(e extensions, six string) string {
+	if !e.take(ninth) {
+		return six
+	}
+	if s.Slash {
 		return six + "/9"
 	}
-	return six
+	return six + fractionSlash + "9"
 }
 
 func mustPattern(offsets ...harmony.Semitones) harmony.ChordPattern {

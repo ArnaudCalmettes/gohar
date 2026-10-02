@@ -1,7 +1,7 @@
 // Command analyse prints a chart of an iReal Pro playlist with what the
 // analysis sees in it, bar by bar, in the terminal.
 //
-//	analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] playlist.html "tenderly"
+//	analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] [-slash69] playlist.html "tenderly"
 //
 // The playlist is an export of the app: an HTML file holding irealb://
 // links, or a text file holding one. The title is matched without case,
@@ -33,7 +33,8 @@
 //
 // Their qualities are written by naming (see naming.ChordStyle): Cmaj7,
 // Cm7, Cm7♭5, Cdim7 by default; -maj7 natural or -maj7 delta writes C♮7
-// or CΔ7, -minus C-7, -halfdim Cø, -dimsign C°7.
+// or CΔ7, -minus C-7, -halfdim Cø, -dimsign C°7, -slash69 C6/9 rather
+// than C6⁄9.
 //
 // It is the test bench of the analysis (see docs/grilles.md), and grows
 // with it: for now each chord says how it prepares the next one.
@@ -63,9 +64,10 @@ func main() {
 	flag.BoolVar(&style.Minus, "minus", false, "write a minor chord C-7 rather than Cm7")
 	flag.BoolVar(&style.HalfDiminishedSign, "halfdim", false, "write a half-diminished chord Cø rather than Cm7♭5")
 	flag.BoolVar(&style.DiminishedSign, "dimsign", false, "write a diminished chord C°7 rather than Cdim7")
+	flag.BoolVar(&style.Slash, "slash69", false, "write a sixth chord with its ninth C6/9 rather than C6⁄9")
 	flag.Parse()
 	if flag.NArg() != 2 {
-		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] <playlist> <title>")
+		fmt.Fprintln(os.Stderr, "usage: analyse [-key heard|declared|F|A-] [-legend] [-smells] [-maj7 maj|natural|delta] [-minus] [-halfdim] [-dimsign] [-slash69] <playlist> <title>")
 		os.Exit(2)
 	}
 	sevenths := map[string]naming.MajorSeventhSign{"natural": naming.NaturalSeventh, "delta": naming.DeltaSeventh, "maj": naming.MajSeventh}
@@ -780,7 +782,8 @@ over each chord, how it prepares the next:
   II→              as the two of a dominant, a fifth above it, or a
                    half tone above a chromatic dominant, as the two of
                    its tritone twin: Fm7 E7 (the two of B♭7)
-  IV→              as its subdominant, in a plagal cadence (IV or ♭VII7)
+  IV→              as its subdominant, in a plagal cadence (IV, ♭VII7
+                   or IIm7♭5)
   ↗ ↘              a passing chord, its bass walking up or down
   ½ step 5th II→   a II-V following the one before it by a half tone,
                    a tone, or down the cycle of fifths

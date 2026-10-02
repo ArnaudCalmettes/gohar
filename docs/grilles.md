@@ -609,7 +609,7 @@ un accord de tonique, mineur (la cadence dans son propre mode) ou
 majeur (l'emprunt, la « cadence Mario »). Elle peut partager son I
 avec l'anatole qui en part.
 
-Les X7 d'une cellule peuvent être des substitutions tritoniques :
+Les X7 d'une cellule peuvent être des dominantes chromatiques :
 « tout accord X7 peut être substitué à un autre accord X7, quelle que
 soit sa fonction » (chapitre 9, p. 141). Le livre analyse un tel
 passage « de la droite vers la gauche », pour « retrouver les cadences
@@ -1131,10 +1131,13 @@ revenant, y restait où qu'il s'arrête. Elle faisait lire *In a
 Sentimental Mood* en ré mineur pour une mauvaise raison ; le livre dit
 que le thème « est en Ré mineur pour se terminer dans la tonalité de
 son relatif Fa majeur » (*En Harmonie*, tome 1, chapitre 10, p. 159),
-et c'est la prédominance qui le lit en ré mineur. Il reste de la maison
-un repli, quand aucune phrase ne conclut, et l'installation du fond à
-la première phrase conclusive dans l'écoute au présent (`Home`), à
-retirer quand des témoins diront ce qu'elle protège.
+et c'est la prédominance qui le lit en ré mineur. Les derniers restes
+de la maison, un repli quand aucune phrase ne conclut et l'installation
+du fond à la première phrase conclusive, sont retirés : sur tout le
+corpus, ils ne changeaient rien. Leur seul témoin supposé, *Just
+Friends*, s'ouvre bien au repos sur Cmaj7, mais ce do se minorise
+aussitôt, Cm7 F7, ce qui le désigne comme un IV, et le II-V backdoor
+le pousse vers sol.
 
 #### La tonalité, par le premier et le dernier accord
 
@@ -1187,8 +1190,9 @@ Une grille muette s'arrête comme finit sa dernière section :
 - **sur sa conclusion**, quand elle en a une. Le turnaround qui suit
   ramène au premier accord et ne se joue pas à la fin : *Lullaby Of
   Birdland* s'ouvre sur fa mineur et s'arrête sur A♭maj7, avant que
-  Gm7♭5 C7 ne ramène à Fm ; il est en la♭. *All The Things You Are*
-  n'est tranché que par son dernier A♭maj7 ;
+  Gm7♭5 C7 ne ramène à Fm ; la♭ est son dernier accord, et la
+  prédominance tranche pour fa mineur. *All The Things You Are* n'est
+  tranché que par son dernier A♭maj7 ;
 - **à travers la boucle**, quand elle finit ouverte sur son V : la
   dernière fois, ce V se résout sur le premier accord, et le morceau
   s'arrête là. C'est la demi-cadence d'*A Fine Romance*, prise à la fin
@@ -1282,9 +1286,15 @@ picarde, un morceau autant majeur que mineur. De même *I Love Paris* et
 *Once Upon A Summertime* et *Maybe September* tiennent une section
 entière en majeur, mais reviennent au mineur avant leur dernier accord :
 tierce picarde, et des morceaux mineurs, comme la grille les déclare.
-*Somewhere* est un cas ouvert : sa grille ne donne la tonique qu'en
-E♭m au pont et en E♭ sur la fin, et l'analyse y entend une tierce
-picarde.
+
+Il faut encore que le morceau parte de cette tonique : sa première
+cadence s'y résout, en mineur ou déjà en majeur. *Somewhere* résout
+d'abord sur A♭, ne fait qu'indiquer E♭ en filigrane par des cadences
+évitées, touche E♭m au pont, et ne résout sur E♭ qu'à la toute fin :
+il est en mi♭ majeur, comme l'oreille l'entend, la mélodie ne laissant
+aucun doute. Sur le corpus, *Never Let Me Go* rejoint de même si♭
+majeur, la tonalité de l'app, et *You're My Everything* passe de fa
+mineur à fa.
 
 #### Ce que le verdict pèse
 
@@ -1346,8 +1356,8 @@ mesure 2 et y revient sans cesse. Le seuil reste « plus d'une mesure et
 plus long que sa préparation ».
 
 **Le relatif.** *Autumn Leaves* tonicise d'abord si♭, puis se pose en
-sol mineur, où la première phrase s'arrête et où le morceau s'arrête :
-le relatif mineur, que l'analyse trouve parce qu'elle attend le repos. *Corcovado*
+sol mineur, son premier et son dernier accord : le relatif mineur, que
+l'analyse trouve parce qu'elle attend la résolution. *Corcovado*
 (la mineur ou do) reste ambigu : la tradition tranche parfois là où
 l'oreille hésite.
 
@@ -1409,7 +1419,7 @@ mesure pour un appui. Aucune source ne les chiffre ; ils se règlent de
 façon empirique, sur le corpus et les fiches.
 
 Repères : `Sense` (la tonique pressentie), `Grounds` (les régions après
-coup), `Phrases`, `Home`, `ReadTune` et `Tune`, `Picardy`, `Reread` et
+coup), `Phrases`, `ReadTune` et `Tune`, `Picardy`, `Reread` et
 `Hear` (la seconde écoute). Le drapeau `-key` d'`analyse` choisit la
 tonalité où compter les degrés : `heard` par défaut, `declared`, ou une
 tonalité comme l'app l'écrit (`F`, `A-`). Sur le corpus, l'analyse
@@ -1418,9 +1428,8 @@ le rapport de `corpus` donne le compte du jour.
 
 ## 6. Le morceau : blues, plages, structure
 
-L'étage du haut, et celui où le moins est fait : ce qu'on y lit
-aujourd'hui, c'est le blues à sa forme, et les plages modales à leur
-durée. La structure est le chantier suivant.
+L'étage du haut : le blues à sa forme, les plages modales à leur
+durée, et la structure, les sections et la façon dont chacune finit.
 
 ### Le blues
 
@@ -1593,24 +1602,19 @@ et un ABAC dans un sur sept. Restent :
 - **les niveaux** : « A16 A16 », c'est souvent un ABAC lu au niveau des
   moitiés, et la séquence du pont du Rhythm Changes (D7 G7 puis C7 F7)
   vit au niveau inférieur ; la forme n'en rend qu'un ;
-- **la demi-cadence**, qui s'entendra au contraste entre deux fins
-  d'une même section, la première sur le V, la seconde sur le I, la
-  question et sa réponse. Un II-V en dernière mesure qui renvoie au
-  début de la section suivante n'est pas une demi-cadence, c'est une
-  cadence-boucle.
 
 **Comment finit une section.** `Conclusions` donne, pour chaque
 section, sa cadence conclusive : la dernière cadence qui se résout sur
 une tonique dans ses trois dernières mesures, forte si elle aboutit sur
 l'avant-dernière mesure, faible sinon, et l'accord où commence la
-cadence-boucle qui la suit. Une section qui s'arrête sur son V, une
-demi-cadence, ou qui traverse ses dernières mesures sans se résoudre,
-n'en a pas. `analyse` l'affiche en tête de grille, avec la forme.
+cadence-boucle qui la suit. Une section qui ne se résout pas n'en a
+pas ; si elle s'arrête sur le V d'un bloc, c'est une demi-cadence
+(`Conclusion.Half`). `analyse` l'affiche en tête de grille, avec la
+forme.
 
-L'analyse de la tonalité n'utilise pas encore la forme : elle en fera
-ses phrases, et la place des cadences conclusives dira où la musique se
-pose. `charts/cmd/forms` lit la forme de playlists entières, comme
-`corpus` la tonalité.
+Les phrases s'arrêtent là où une section conclut (voir « Les
+phrases »). `charts/cmd/forms` lit la forme de playlists entières,
+comme `corpus` la tonalité.
 
 Repères : `Sections`, `SectionsWith`, `Conclusions`, `Blues`, `Modal`, `IsModal`.
 
@@ -1637,11 +1641,13 @@ sur fond blanc et les chiffrages en indices et exposants ; **une page
 web**, le moteur compilé en WASM, pour distribuer et faire connaître le
 travail, dans la lignée de l'ancien gohareact.
 
-Dans le terminal, la grille se lit ligne par ligne : au-dessus des
-accords, ce que chacun fait au suivant (V→, II→, IV→) et les blocs avec
-la tonalité qu'ils annoncent ; sous les accords, leur degré ; sous les
-degrés, la tonique que l'oreille entend là où elle change ; et
-dessous, les cellules. La légende s'affiche avec le drapeau `-legend`.
+Dans le terminal, la grille se lit ligne par ligne, sous un en-tête qui
+donne la tonalité, sa lecture et la forme : au-dessus des accords, ce
+que chacun fait au suivant (V→, II→, IV→), le pas d'un II-V au
+précédent (½, step, 5th) et les blocs avec la tonalité qu'ils
+annoncent ; sous les accords, les pédales (« B♭ ped. »), puis leur
+degré ; sous les degrés, la tonique que l'oreille entend là où elle
+change ; et dessous, les cellules. La légende s'affiche avec le drapeau `-legend`.
 
 ### Les couleurs proposées
 
@@ -1758,8 +1764,9 @@ fins.
 Le tome 2 donne aussi des fiches, plus courtes, sous l'angle modal (un
 mode par accord) : *Someday My Prince Will Come*, *The Days Of Wine And
 Roses*, *Body And Soul*, *Fall*, *Very Early*, *Peace*, *Re: Person I
-Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
-*Fall*, sans centre tonal, est écarté.
+Knew*. L'analyse tombe d'accord sur leur tonalité. *Peace*, morceau
+modal qui se conclut sur un si♭ ionien, et *Fall*, sans centre tonal,
+sont écartés : l'analyse tonale y a peu de pertinence.
 
 ### Les autres cas tranchés
 
@@ -1769,11 +1776,11 @@ Knew*. L'analyse tombe d'accord sur leur tonalité, sauf *Peace*, et
 | Body And Soul | ré♭ majeur, le début entendu en mi♭ mineur : *En Harmonie* le nomme mi♭ dorien, « la sensation de Mi♭ mineur » l'emportant au début (tome 2), et l'analyse l'entend partir de mi♭ mineur |
 | Giant Steps | trois centres, mais des tonicisations de moins d'une seconde à ce tempo : pas de modulation |
 | Black Orpheus, le pont | Dm (une triade) tenu deux mesures : une modulation temporaire, ou une tonicisation appuyée, lecture juste de ce cas limite |
-| Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur où se pose la première phrase |
+| Autumn Leaves | le relatif qui tonicise d'abord : si♭ passé, sol mineur au premier et au dernier accord |
 | How Insensitive | une première phrase de quatorze mesures, qui revient sur son accord d'ouverture |
-| Just Friends | un morceau qui s'ouvre sur son IV, confirme son I au milieu des sections, et ne se pose qu'à la dernière |
-| Lullaby Of Birdland, All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
-| In a Sentimental Mood, Blue Skies | commencer sur le relatif mineur et finir sur le majeur : en fa (*En Harmonie*, p. 159), en do |
+| Just Friends | un morceau qui s'ouvre au repos sur son IV : Cmaj7 se minorise, Cm7 F7, et le II-V backdoor mène à sol |
+| All The Things You Are | la dernière tonique entendue, turnaround exclu, fait la tonalité |
+| In a Sentimental Mood, Lullaby Of Birdland, Blue Skies | commencer sur le relatif mineur et finir sur le majeur : la prédominance tranche, ré mineur (*En Harmonie*, p. 159), fa mineur, do |
 | Yesterdays, Virgo, Unforgettable | le VI où *Yesterdays* s'appuie sans conclure, et sa fin à travers la boucle ; le IV où la grille s'arrête avant le turnaround |
 | Someday My Prince Will Come | la tonique installée qui revient renversée sur sa quinte |
 | My Way | F/C, le IV sur pédale de tonique, et le retour par une plagale |
@@ -1846,11 +1853,10 @@ l'autre), autre forme, ou pas de marques. Une levée est mise de côté
 avant de comparer : la grille de *I Should Care* compte sa levée dans
 son premier A, la détection la met à part.
 
-Il se termine par **les phrases** : là où l'analyse se repose
-aujourd'hui (`Phrases`), comparé à là où les sections trouvées
-concluent (`Conclusions`), la règle de Siron appelée à remplacer la
-nôtre. Avec `-phrases`, il liste les grilles où les deux divergent,
-mesure par mesure. Comme
+Il se termine par **les phrases** : il vérifie que les repos des
+phrases (`Phrases`) tombent là où les sections trouvées concluent
+(`Conclusions`). Avec `-phrases`, il liste les grilles où les deux
+divergent, mesure par mesure. Comme
 l'armure, les marques sont souvent absentes ou approximatives : un
 désaccord ne dit pas qui a tort. Avec `-forms`, le rapport liste les
 grilles en désaccord, la forme marquée au-dessus de la forme trouvée.

@@ -17,18 +17,19 @@ theory library never pulls in a graphics or audio stack.
 | Module    | What it holds |
 |-----------|---------------|
 | `harmony` | The theory core: pitches, intervals, scales, chords, the five mother scales and their 35 modes, tonalities, functions. No note names, no frequencies. |
-| `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`). |
-| `harmony/analysis` | Deterministic chord recognition, without scoring, and the analysis of a chord chart after the book *En Harmonie*: preparations, cadences, degrees, the tonic the ear senses and its modulations. |
+| `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`), and chord symbols in a chosen style (`Cmaj7`, `C-7`, `Cø`). |
+| `harmony/analysis` | Deterministic chord recognition, without scoring, and the analysis of a chord chart after the book *En Harmonie*: preparations, cadences, cells, degrees, the tonic the ear senses and its modulations, the form, half cadences and pedals. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
 | `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
-| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name, and two commands to see their analysis. |
+| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name, and three commands to see their analysis and their form. |
 | `games`   | The playable programs, Ebitengine and MIDI included. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
 for the choices and their reasons, `dex.md` for the collection,
 `oreille.md` for the ear trainer, `voicings.md` for chord positions,
-`grilles.md` for chart analysis, `glossaire.md` for the vocabulary,
-`chantiers.md` for what is open.
+`grilles.md` for chart analysis, `walk.md` for the design of *Walk with
+me*, `glossaire.md` for the vocabulary, `chantiers.md` for what is
+open.
 
 ## Requirements
 
@@ -74,7 +75,7 @@ go run ./ear                  # French, signs
 go run ./ear -lang en         # English
 go run ./ear -notation words  # si bémol rather than si♭
 go run ./ear -port 1          # pick a MIDI input, see keys -list
-go run ./ear -timbre square   # an 8-bit voice: pulse12, pulse25, square, triangle
+go run ./ear -timbre square   # an 8-bit voice: pulse12, pulse25, square, triangle, noise
 go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 ```
 
@@ -134,7 +135,11 @@ go run ./cmd/analyse ireal/testdata/local/playlist.html "tenderly"
 The degrees are counted in the tonality the analysis hears, and the
 heading says when the chart declares another; `-key declared` counts
 them in the key the chart declares, `-key F` or `-key A-` in the one
-you choose. `-legend` explains the marks before the chart.
+you choose. `-legend` explains the marks before the chart, `-smells`
+lists the chord spellings that still smell. The chord symbols are
+written Cmaj7, Cm7, Cm7♭5, Cdim7, C6⁄9 by default; `-maj7 natural` or
+`-maj7 delta`, `-minus`, `-halfdim`, `-dimsign` and `-slash69` write
+C♮7 or CΔ7, C-7, Cø, C°7 and C6/9 instead.
 
 And over whole playlists, where the tonality it hears differs from the
 one the app declares, or the one checked by ear when a chart is listed

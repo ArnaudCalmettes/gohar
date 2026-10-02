@@ -5,22 +5,7 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // The tonality of the tune, read from its phrases as En Harmonie reads
 // it: its first chord, its last one, and when they part, the
 // predominance of one or the other (tome 1, chapter 8 §1.2). Where the
-// tune sets out from and where it stops come from the phrases (see
-// [Phrases]).
-
-// Home reads where the tune sets out from: the tonic its first phrase
-// concludes on, nil when none does. Autumn Leaves sets out from G
-// minor, Fly Me To The Moon from A minor, and Just Friends from G,
-// which it confirms twice before its first conclusion, at bar 31.
-func Home(c Changes, phrases []Phrase) []harmony.Tonality {
-	if t, ok := Blues(c); ok {
-		return t
-	}
-	if first, _ := concluding(phrases); first != nil {
-		return first.Tonic
-	}
-	return nil
-}
+// tune stops comes from the phrases (see [Phrases]).
 
 // Tune reads the tonality of the tune: see [ReadTune].
 func Tune(c Changes, phrases []Phrase) []harmony.Tonality {
@@ -71,7 +56,7 @@ type TuneReading struct {
 // [Phrases]), in the major or the three minors as its tonic's third
 // says. A picardy third does not make a minor tune major (see
 // [Picardy]). A blues is in its own tonic, found by its form. A tune
-// that stops nowhere is in its home (see [Home]).
+// that stops nowhere has no tonality heard.
 func ReadTune(c Changes, phrases []Phrase) TuneReading {
 	r := TuneReading{Opens: opening(c), Stops: -1}
 	if t, ok := Blues(c); ok {
@@ -82,7 +67,6 @@ func ReadTune(c Changes, phrases []Phrase) TuneReading {
 	r.First, r.Cadence = FirstTonic(c, blocks), firstCadence(c, blocks)
 	end := stopping(phrases)
 	if end == nil {
-		r.Tonality = Home(c, phrases)
 		return r
 	}
 	r.Stops, r.Last = end.Arrives, end.Tonic
@@ -136,11 +120,9 @@ func firstCadence(c Changes, blocks []Block) []harmony.Tonality {
 // heardFor returns how long each tonic is heard: the tonal areas for
 // theirs (see [TonalAreas]), and the rest of the tune for the tonic it
 // is first heard in. A tonicisation, shorter than an area, counts for
-// the tonic around it. The tune is heard without its phrases, which
-// would install the home where the first one concludes: In a
-// Sentimental Mood would be heard in F from its first bar.
+// the tonic around it. The tune is heard without a tonality given.
 func heardFor(c Changes, blocks []Block) map[harmony.PitchClass]Ticks {
-	sensed := Sense(c, blocks, nil, nil)
+	sensed := Sense(c, blocks, nil)
 	out := map[harmony.PitchClass]Ticks{}
 	var first []harmony.Tonality
 	for _, s := range sensed {
@@ -175,6 +157,13 @@ func heardFor(c Changes, blocks []Block) map[harmony.PitchClass]Ticks {
 // its second A on E♭6, then starts its last A again on E♭m: a picardy
 // third. Chega De Saudade holds D major for its whole second half: not
 // a picardy third, a tune as much major as minor.
+//
+// And the tune's first cadence resolves on that tonic, minor or
+// already major: a tune whose first resolution goes elsewhere does not
+// set out from it. 'Round Midnight resolves on E♭m after its
+// introduction. Somewhere first resolves on A♭, hints at E♭ by avoided
+// cadences, touches E♭m in its bridge, and resolves on E♭ at the very
+// end: it is in E♭, its melody leaving no doubt.
 func Picardy(c Changes, phrases []Phrase) bool {
 	if _, ok := Blues(c); ok {
 		return false
@@ -194,5 +183,6 @@ func Picardy(c Changes, phrases []Phrase) bool {
 		}
 		last = t
 	}
-	return first != nil && ModesOf(first) != Major && ModesOf(last) != Major
+	return first != nil && ModesOf(first) != Major && ModesOf(last) != Major &&
+		sameTonic(firstCadence(c, Blocks(c, Approaches(c))), first)
 }

@@ -13,7 +13,7 @@ import (
 func degreesOf(c analysis.Changes) (string, string) {
 	blocks := analysis.Blocks(c, analysis.Approaches(c))
 	phrases := analysis.Phrases(c, blocks)
-	sensed := analysis.Sense(c, blocks, phrases, analysis.Tune(c, phrases))
+	sensed := analysis.Sense(c, blocks, analysis.Tune(c, phrases))
 	passing := analysis.PassingChords(c)
 	write := func(ds []analysis.Degree) string {
 		var out []string

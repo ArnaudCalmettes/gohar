@@ -106,10 +106,11 @@ L'orthographe vit exclusivement dans `naming`. Le noyau l'ignore.
 | `SpelledNote` | Une `PitchClass` associée à une lettre et une altération. Mi♯ et fa sont deux `SpelledNote` distinctes pour la même `PitchClass`. |
 | `Accidental` | Une altération écrite : bécarre, dièse, bémol, double dièse, double bémol. Valeur entière en demi-tons, domaine -2 à +2. |
 | `Locale` | Table de noms de lettres et de patterns pour une langue. Passé en paramètre, jamais global. |
+| `ChordStyle` | La façon d'écrire la qualité d'un symbole d'accord : Cmaj7, Cm7, Cm7♭5, Cdim7, C6⁄9 par défaut, C♮7 ou CΔ7, C-7, Cø, C°7, C6/9 en option. Les chiffrages ne dépendent pas de la langue. |
 
 Les **chiffrages** s'écrivent avec les lettres américaines dans toutes
-les langues : un chiffrage français est « CmMaj7(add9) », pas
-« domMaj7(add9) ». Ils se **disent** en revanche dans la langue : « do
+les langues : un chiffrage français est « Cm(maj7,9) », pas
+« dom(maj7,9) ». Ils se **disent** en revanche dans la langue : « do
 mineur majeur 7 add 9 ». Le rendu écrit d'un chiffrage ne dépend donc
 pas de la locale, et son rendu parlé si, ce qui compte pour une
 synthèse vocale.
@@ -179,7 +180,7 @@ chantée une octave plus haut est transposée de douze, pas de rien.
 
 Un slot de jeu ne demande pas un accord, il demande d'**atteindre une
 cible**. La différence n'est pas de la sévérité, elle est structurelle :
-un substitut tritonique n'est la dominante de do que par rapport à do,
+une dominante chromatique n'est la dominante de do que par rapport à do,
 et le même ré♭7 est la dominante de sol♭ ailleurs. La fonction ne se lit
 donc pas sur l'accord seul, et une table tétrade vers fonction est
 nécessaire sans jamais suffire.
@@ -221,7 +222,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | `Changes` | La suite d'accords qu'on analyse, chacun avec sa basse, son début et sa durée. Celle d'une grille boucle, celle d'un joueur s'allonge | Une `Progression`, relative et sans durées |
 | Rythme harmonique | Le nombre d'accords par mesure | Le tempo |
 | Plage | Un passage tonal (centre et fonctions), modal (un accord tenu quatre mesures sans cadence installe un mode, que la grille ne dit pas : `Modal`) ou atonal (pas de centre) | Une section de la grille |
-| Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée ou une deuxième cadence. Entendue au moment où elle s'installe (`Sense`), elle commence après coup à la cadence qui y menait (`Grounds`) | Un emprunt ; une tonicisation, qui ne tient pas plus d'une mesure |
+| Modulation | Un changement de tonalité installé : préparé par une cadence, confirmé par la durée (la moitié d'une section). Entendue au moment où elle s'installe (`Sense`), elle commence après coup à la cadence qui y menait (`Grounds`) | Un emprunt ; une tonicisation, qui ne tient pas plus d'une mesure |
 | Emprunt | Un accord ou une cadence venu d'une autre tonalité, sans en changer | Une modulation |
 | Tonicisation | Faire jouer à un accord le rôle de tonique secondaire, le « Ier degré temporaire » du livre | Une modulation |
 | Arrivée | L'accord qu'une préparation vise | La tonique du morceau |
@@ -229,10 +230,9 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Cadence plagale | Une sous-dominante avant la tonique : le IV de toute qualité, le ♭VII7, plagale mineure déguisée (avec le IV à la basse, B♭7 devient Fm6 en do), ou le IIm7♭5, qui a les notes du IVm6 (Dm7♭5 est Fm6 sur sa sixte, *I'm Old Fashioned*). Elle conclut, mais n'ouvre pas de tonique (`PlagalApproach`) | Le backdoor, autre nom du ♭VII7-I, qu'on ne garde pas |
 | Cadence modale | Une cadence qui installe la couleur d'un mode plutôt qu'une tonalité, et fait entendre ses degrés caractéristiques (*En Harmonie*, t. 2, ch. 2 §5.2). En majeur, ♭VImaj7 ♭VII7 Imaj7 est la cadence modale de do éolien, la « cadence Mario » | Le ♭VII7-I seul, une plagale mineure déguisée |
 | Second renversement | Un accord renversé sur sa quinte, qui garde sa fonction (*En Harmonie*) : F/C est le IV de do sur une pédale de tonique (la fin de *My Way*), E♭maj9/B♭ le I sur lequel se résout le V d'une pédale de dominante | Un premier renversement, I/3 |
-| Pédale | Une même basse sous au moins deux accords de fondamentales différentes, de tonique ou de dominante (le 1er ou le 5e degré du fond), générale quand elle tient une section entière, passagère sinon (`Pedals`). Notée « B♭ ped. » comme dans *En Harmonie* | Un accord écrit deux fois sur la même basse ; la double pédale, affaire d'arrangement |
-| Tierce picarde | La tonique, mineure là où on l'entend d'abord et en dernier avant la fin, majorisée sur l'accord de fin (*'Round Midnight*). Le morceau reste mineur (`Picardy`) | Une seconde moitié dans le majeur homonyme (*Chega De Saudade*, en ré, mineur et majeur à la fois) |
-| Phrase | Ce qui va d'un repos au suivant, sans longueur fixe : elle se termine quand elle se pose sur une tonique, ou quand le morceau s'arrête (`analysis.Phrase`, à ne pas confondre avec `harmony.Phrase`, la forme mélodique) | Une section de la grille |
-| Maison | Là où se pose la première phrase, d'où le morceau part (`Home`). Elle devient la tonalité du morceau quand il s'ouvre au repos et que sa première cadence y revient | La tonalité du morceau, là où s'arrête la dernière phrase (`Tune`) |
+| Pédale | Une même basse sous au moins deux accords de fondamentales différentes, de tonique, de dominante (le 1er ou le 5e degré du fond) ou sur un autre degré, générale quand elle tient une section entière, passagère sinon (`Pedals`). Notée « B♭ ped. » comme dans *En Harmonie* | Un accord écrit deux fois sur la même basse ; la double pédale, affaire d'arrangement |
+| Tierce picarde | La tonique, mineure là où on l'entend d'abord et en dernier avant la fin, la première cadence du morceau s'y résolvant, majorisée sur l'accord de fin (*'Round Midnight*). Le morceau reste mineur (`Picardy`) | Une seconde moitié dans le majeur homonyme (*Chega De Saudade*, en ré, mineur et majeur à la fois) |
+| Phrase | Ce qui va d'un repos au suivant, sans longueur fixe : elle se termine quand elle se pose sur une tonique, là où une section de la forme conclut, ou quand le morceau s'arrête (`analysis.Phrase`, à ne pas confondre avec `harmony.Phrase`, la forme mélodique) | Une section de la grille |
 | II-V consécutifs | Des II-V qui s'enchaînent sans se résoudre, liés par un pas d'une mesure à l'autre : ½ ton, ton, cycle des quintes (`Links`, *En Harmonie* t. 1, ch. 8 §3.3). Les dominantes s'enchaînent de même, par quintes ou par demi-tons | Un II-V rejoué, qui ne fait pas de lien |
 | Lecture du morceau | Ce que le verdict pèse (`ReadTune`) : le premier accord et s'il est la tonique là où il sonne, le dernier accord, turnaround exclu, et quand ils divergent la durée de leurs toniques | La tonalité du morceau, qui en est le verdict (`Tune`) |
 | Septième d'espèce | Un X7 qui n'est pas une dominante : il ne prépare rien, il est la couleur de son degré. Le I7 et le IV7 du blues, le X7sus4 de *Maiden Voyage* | Une dominante, qui a le même son mais prépare un accord |
@@ -246,7 +246,7 @@ Le détail est dans `grilles.md`. Ces termes sont ceux d'*En Harmonie*.
 | Dominante chromatique | Le X7 un demi-ton au-dessus de l'arrivée, qui partage le triton de sa dominante | |
 | Sous-dominante secondaire | Le II d'une dominante secondaire : II-V de… | |
 | Sous-dominante chromatique | Le II d'une dominante chromatique, ♭VIm7 ou ♭VIm7♭5 | |
-| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V-I fait tenir au III la place du I, en majeur, et résout sur son I ; « … » quand le V de l'anatole ne résout pas ; « ♭II » quand des X7 y sont des substitutions tritoniques | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
+| Cellule anatole | L'enchaînement I VI II V, cyclique, *rhythm changes* dans les pays anglo-saxons (`Cells`). Sa variante III-VI-II-V-I fait tenir au III la place du I, en majeur, et résout sur son I ; « … » quand le V de l'anatole ne résout pas ; « ♭II » quand des X7 y sont des dominantes chromatiques | La forme anatole, structure de morceau (*rhythm changes*) ; une chaîne de dominantes, qui n'a pas de I |
 | Cadence rompue | Le V enchaîné sur un autre accord que la tonique attendue, « V – … » (*En Harmonie*, t. 1, ch. 8) : V-VI, et V-III, la médiante tenant lieu du I sans que le V y résolve. `analyse` la note « … » | Une résolution, qui ne va que sur le I |
 | Cadence, cellule | Une cadence aboutit, une cellule tourne | |
 | Turnaround | La place d'une préparation en fin de grille ou de section, qui fait repartir pour un tour : souvent une anatole, parfois sur pédale, en introduction | Une cellule, que sa forme suffit à reconnaître où qu'elle soit |
