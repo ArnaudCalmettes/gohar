@@ -403,8 +403,7 @@ La suite, dans l'ordre :
       confondant avec un B♭m6 (IVm) » (tome 2, p. 34). Vérifier ce que
       les préparations en font.
 - [ ] les cadences du catalogue qui restent, chacune avec ce qui lui
-      manque : la demi-cadence (la structure), le ♭VIImaj7-I et le
-      ♭VIIm7-I (les modes de la grille). Le V seul, sans II, qui va
+      manque : le ♭VIImaj7-I et le ♭VIIm7-I (les modes de la grille). Le V seul, sans II, qui va
       ailleurs que sur sa tonique n'est pas un bloc : les degrés disent
       déjà V III ou V IV7, et rien ne demande plus.
 - [x] les II-V consécutifs (`Links`) : ½ ton, ton, cycle des quintes,
@@ -431,18 +430,13 @@ La suite, dans l'ordre :
 - [x] la cadence rompue V-VI (G7 Am7 en do), lue seule comme un
   ♭VII7-Im de la mineur, se relit de même sur la tonique entendue au V
   (`Reread`).
-- [ ] la demi-cadence, une phrase qui s'arrête sur le V (le D7 de la
-  mesure 8 d'*It Don't Mean A Thing*, qui se résout pourtant au retour
-  du A). Demande de reconnaître la structure, sans la lire dans les
-  marques de la grille : les sections par la récurrence de la séquence
-  harmonique, par exemple. Elle s'entend au contraste entre deux fins
-  d'une même section, la première sur le V, la seconde sur le I, la
-  question et sa réponse. Un II-V en dernière mesure qui renvoie au
-  début de la section suivante n'en est pas une : c'est une
-  préparation. Le turnaround se reconnaît de même à sa place dans la
-  structure, où il fait repartir pour un tour ; ce n'est pas une
-  cellule (une anatole, souvent, ou un turnaround sur pédale en
-  introduction).
+- [x] la demi-cadence (`Conclusion.Half`) : une section qui ne conclut
+  pas et s'arrête sur le V d'un bloc, d'après *En Harmonie* (tome 1,
+  chapitre 8). Le contraste entre deux fins d'une même section a été
+  écarté (voir « Ce qu'on a décidé » des cadences dans `grilles.md`).
+  Le turnaround, qui se reconnaît à sa place dans la structure, reste
+  à faire ; ce n'est pas une cellule (une anatole, souvent, ou un
+  turnaround sur pédale en introduction).
 - [x] les cellules par substitutions tritoniques, lues sur les accords
   qu'elles remplacent, comme *En Harmonie* retrouve les cadences
   initiales (tome 1, chapitre 9) : « anatole ♭II », nom retenu en

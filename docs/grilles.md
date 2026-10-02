@@ -436,8 +436,8 @@ pas nulle part, il la promet.
 **La demi-cadence** est une phrase qui s'arrête sur le V, et le D7 de la
 mesure 8 d'*It Don't Mean A Thing* se résout pourtant au retour du A.
 Ce n'est donc pas un bloc sans cible, c'est une affaire de structure :
-la même section revient avec une fin différente, la question sur le V
-puis la réponse sur le I (voir « Le morceau »).
+une section qui ne conclut pas et s'arrête sur un V (voir « Le
+morceau »).
 
 **Le IV7-I7 du blues** n'est pas une plagale : dans un blues, le I7 est
 le fond, et rien ne conclut. Le livre range pourtant IV7-I7 parmi les
@@ -447,10 +447,19 @@ couleur du blues. Ce cas-là reste ouvert.
 
 ### Ce qu'on a décidé
 
-- **Toutes les cadences du tableau sont codées**, sauf le IV7-I7, la
-  demi-cadence, et les modales ♭VIImaj7-I et ♭VIIm7-I qui, sans leur
+- **Toutes les cadences du tableau sont codées**, sauf le IV7-I7 et
+  les modales ♭VIImaj7-I et ♭VIIm7-I qui, sans leur
   mode, ne se distinguent pas des mouvements conjoints de n'importe
   quelle grille tonale (Em7 Fmaj7 en do, Dm7 Em7).
+- **La demi-cadence** se lit sur la forme (`Conclusion.Half`) : une
+  section qui ne conclut pas, et dont le dernier accord est le V d'un
+  bloc. Le D7 de la mesure 8 d'*It Don't Mean A Thing*, le G7 de chaque
+  A d'*A Fine Romance*. Le contraste entre deux fins d'une même
+  section, la question sur le V puis la réponse sur le I, a été essayé
+  et écarté : il manquait *A Fine Romance*, dont aucun A ne conclut.
+  Sur le corpus, un peu plus d'un millier de sections s'arrêtent ainsi.
+  `analyse` l'écrit dans la forme : « half cadence on D7, bar 8, the V
+  of Gm ».
 - **La cadence rompue** se note « … » : sur un bloc qui a son II et
   dont le V va ailleurs que sur sa cible, sur une cellule dont le V
   évite le I promis, et sur le V-VI relu à la seconde écoute. La

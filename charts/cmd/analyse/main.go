@@ -352,6 +352,9 @@ func form(nm namer, changes analysis.Changes, tl ireal.Timeline, blocks []analys
 	for i, k := range analysis.Conclusions(changes, sections, blocks) {
 		s := sections[i]
 		line := "no conclusive cadence"
+		if k.Half >= 0 {
+			line = fmt.Sprintf("half cadence on %s, bar %d, the V of %s", symbol(tl.Spans[k.Half].Chord), tl.Spans[k.Half].Bar+1, nm.of(k.Tonic, -1))
+		}
 		if k.Arrives >= 0 {
 			line = fmt.Sprintf("%s at bar %d", nm.of(k.Tonic, -1), tl.Spans[k.Arrives].Bar+1)
 			if k.Strong {

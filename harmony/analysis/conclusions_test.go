@@ -13,6 +13,9 @@ import (
 // tonic, the bar, strong or weak, and the chord the turnaround starts
 // on. "C at bar 7, strong, then A7".
 func conclusionName(c analysis.Changes, k analysis.Conclusion) string {
+	if k.Half >= 0 {
+		return "half cadence on " + changeName(c.Chords[k.Half]) + ", the V of " + tonalityName(k.Tonic)
+	}
 	if k.Arrives < 0 {
 		return "none"
 	}
@@ -56,17 +59,17 @@ func TestConclusions(t *testing.T) {
 	for _, k := range analysis.Conclusions(ch, sections, analysis.Blocks(ch, analysis.Approaches(ch))) {
 		got = append(got, conclusionName(ch, k))
 	}
-	want := []string{"C at bar 7, strong, then A7", "C at bar 16, weak", "none"}
+	want := []string{"C at bar 7, strong, then A7", "C at bar 16, weak", "half cadence on G7, the V of C"}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
 		t.Errorf("got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
 	}
 }
 
-// A neighbour leant on is no conclusion. Yesterdays walks down the cycle onto
-// B♭maj7 at bar 14, by F13 alone, and Em7♭5 A7 goes back to Dm: the
-// section ends open on A7. Rosetta comes down the same kind of cycle
-// onto F6, but on the strong bar 7 of its section, and concludes there
-// before Bm7♭5 E7 goes to the Am of its bridge.
+// A neighbour leant on is no conclusion. Yesterdays walks down the cycle
+// onto B♭maj7 at bar 14, by F13 alone, and Em7♭5 A7 goes back to Dm:
+// the section ends open on A7, a half cadence. Rosetta comes down the
+// same kind of cycle onto F6, but on the strong bar 7 of its section,
+// and concludes there before Bm7♭5 E7 goes to the Am of its bridge.
 func TestLeaningOnANeighbour(t *testing.T) {
 	const c, d, eb, e, f, g, a, bb, b harmony.PitchClass = 0, 2, 3, 4, 5, 7, 9, 10, 11
 	const (
@@ -89,7 +92,7 @@ func TestLeaningOnANeighbour(t *testing.T) {
 				bar{d, min, d, minMaj7}, bar{d, min7}, bar{b, halfDim}, bar{e, dom7},
 				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{c, dom7},
 				bar{f, dom7}, bar{bb, maj7}, bar{e, halfDim}, bar{a, dom7}),
-			[]string{"none", "none"},
+			[]string{"half cadence on E7, the V of Am harm", "half cadence on A7, the V of Dm harm"},
 		},
 		// The same walk onto Gm, the IV of the Dm that follows, a
 		// neighbour as the VI is.
@@ -98,7 +101,7 @@ func TestLeaningOnANeighbour(t *testing.T) {
 				bar{d, min, d, minMaj7}, bar{d, min7}, bar{b, halfDim}, bar{e, dom7},
 				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{c, dom7},
 				bar{d, dom7}, bar{g, min}, bar{e, halfDim}, bar{a, dom7}),
-			[]string{"none", "none"},
+			[]string{"half cadence on E7, the V of Am harm", "half cadence on A7, the V of Dm harm"},
 		},
 		// Held two bars, B♭maj7 is a rest, as the Bm7 of Spain is before
 		// its G: a tonicisation « ne porte que sur un accord ».
@@ -107,14 +110,14 @@ func TestLeaningOnANeighbour(t *testing.T) {
 				bar{d, min, d, minMaj7}, bar{d, min7}, bar{b, halfDim}, bar{e, dom7},
 				bar{a, dom7}, bar{d, dom7}, bar{g, dom7}, bar{f, dom7},
 				bar{bb, maj7}, bar{bb, maj7}, bar{e, halfDim}, bar{a, dom7}),
-			[]string{"none", "B♭ at bar 13, weak, then Em7♭5"},
+			[]string{"half cadence on E7, the V of Am harm", "B♭ at bar 13, weak, then Em7♭5"},
 		},
 		"Rosetta": {
 			barsOf(true, bar{f, six}, bar{e, dom7}, bar{eb, dom7}, bar{d, dom7},
 				bar{g, dom7}, bar{c, dom7}, bar{f, six}, bar{b, halfDim, e, dom7},
 				bar{a, min}, bar{b, halfDim, e, dom7}, bar{a, min}, bar{d, min7, g, dom7},
 				bar{c, maj7, a, min7}, bar{d, min7, g, dom7}, bar{g, min7}, bar{c, dom7}),
-			[]string{"F at bar 7, strong, then Bm7♭5", "none"},
+			[]string{"F at bar 7, strong, then Bm7♭5", "half cadence on C7, the V of F"},
 		},
 	} {
 		ch := tc.changes

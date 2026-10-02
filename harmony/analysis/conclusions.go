@@ -35,6 +35,14 @@ import "github.com/ArnaudCalmettes/gohar/harmony"
 // on its V, a half cadence, or that goes through its last bars without
 // resolving, concludes on none.
 //
+// A section that concludes on none and stops on a V ends open, on a
+// half cadence: « un point d'interrogation dans une phrase » (En
+// Harmonie, tome 1, chapter 8). Its I most often opens the next section,
+// and the V is then also the chord that prepares it: the D7 at bar 8 of
+// It Don't Mean A Thing, the G7 that ends each A of A Fine Romance. At
+// the end of a tune, it is the V that goes round again (see
+// [Conclusion.Half]).
+//
 // One landing concludes nothing, though a V leads to it (see
 // [leansOn]): a neighbour of the tonic the next section opens on,
 // reached by a lone V on a weak bar and held a bar at most. It is heard
@@ -55,6 +63,10 @@ type Conclusion struct {
 	// conclusive one and before the next section: -1 when the tonic
 	// holds to the end of the section.
 	Loop int
+
+	// Half is the V a section concluding on none stops on, a half
+	// cadence, -1 otherwise. Tonic is then the tonic that V announces.
+	Half int
 }
 
 // Conclusions returns how each section ends, given the blocks of the
@@ -64,7 +76,7 @@ func Conclusions(c Changes, sections []Section, blocks []Block) []Conclusion {
 	r := rolesOf(c, blocks)
 	out := make([]Conclusion, len(sections))
 	for n, s := range sections {
-		out[n] = Conclusion{Arrives: -1, Loop: -1}
+		out[n] = Conclusion{Arrives: -1, Loop: -1, Half: -1}
 		if s.Label == "-" || s.Bars < 4 {
 			continue
 		}
@@ -75,7 +87,7 @@ func Conclusions(c Changes, sections []Section, blocks []Block) []Conclusion {
 				continue
 			}
 			if t, b := cadencedAt(c, blocks, r, i); t != nil && !leansOn(c, b, i, t, bar, end) {
-				out[n] = Conclusion{Arrives: i, Tonic: t, Strong: bar == end-2, Loop: -1}
+				out[n] = Conclusion{Arrives: i, Tonic: t, Strong: bar == end-2, Loop: -1, Half: -1}
 			}
 		}
 		if i := out[n].Arrives; i >= 0 {
@@ -84,7 +96,37 @@ func Conclusions(c Changes, sections []Section, blocks []Block) []Conclusion {
 			}
 		}
 	}
+	halves(c, sections, blocks, out)
 	return out
+}
+
+// halves marks the half cadences among the sections that conclude on
+// none (see [Conclusion]): those whose last change is the V of a block.
+// A pickup, or a section shorter than 4 bars, stops on none.
+func halves(c Changes, sections []Section, blocks []Block, out []Conclusion) {
+	for n, s := range sections {
+		if out[n].Arrives >= 0 || s.Label == "-" || s.Bars < 4 {
+			continue
+		}
+		last := lastIn(c, s.From+s.Bars)
+		for _, b := range blocks {
+			if b.Five == last && b.Kind&fives != 0 && len(b.Announced) > 0 {
+				out[n].Half, out[n].Tonic = last, b.Announced
+			}
+		}
+	}
+}
+
+// lastIn returns the last change that starts before bar `end`, -1 when
+// none does.
+func lastIn(c Changes, end int) int {
+	last := -1
+	for i, ch := range c.Chords {
+		if c.Bar(ch.Start) < end {
+			last = i
+		}
+	}
+	return last
 }
 
 // leansOn reports whether tonic `t`, that block `b` lands on at change
