@@ -157,7 +157,7 @@ tonique.
 Le degré se lit dans le fond entendu au premier accord de la pédale :
 tonique sur le 1er degré, dominante sur le 5e, et sinon la note seule.
 La basse s'écrit une fois, par son degré dans la zone (voir
-« L'orthographe entendue » dans `chantiers.md`).
+« L'orthographe entendue »).
 
 #### Ce qui est difficile
 
@@ -1372,6 +1372,22 @@ Doll* : un II ou un VI, pas une tonique, tant qu'aucune cadence mineure
 n'y résout. Le turnaround qui y ramène à la fin de la grille ne suffit
 pas.
 
+**La mémoire**, dernier critère de Siron pour la modulation vraie, et
+ce que la durée seule ne tranche pas. *Love Me Or Leave Me*, une phrase
+sur deux en fa mineur, l'autre en la♭, s'entend en la♭. Sur le corpus,
+43 grilles ont un premier et un dernier accord qui divergent, et 7 se
+jouent à moins d'un contre deux en durée :
+
+| Morceau | Premier | Dernier | Analyse |
+|---|---|---|---|
+| *Lullaby Of Birdland* | fa mineur, 17 mesures | la♭, 15 | fa mineur, confirmé à l'oreille |
+| *Love Me Or Leave Me* | fa mineur, 14 | la♭, 7 | fa mineur ; l'oreille dit la♭ |
+| *How Deep Is The Ocean* | do mineur, 18,5 | mi♭, 10 | do mineur ; l'app dit mi♭ |
+| *So In Love* | fa mineur, 46 | la♭, 23 | fa mineur |
+| *Bess You Is My Woman* | si♭, 28,5 | ré mineur, 23,5 | si♭ |
+| *Glad To Be Unhappy* | sol mineur, 8 | fa, 16 | fa |
+| *The Summer Wind* | fa, 14,5 | la, 10 | fa |
+
 ### Ce qu'on a décidé
 
 **L'armure n'est pas lue.** C'est un attribut de la partition écrite,
@@ -1648,6 +1664,63 @@ précédent (½, step, 5th) et les blocs avec la tonalité qu'ils
 annoncent ; sous les accords, les pédales (« B♭ ped. »), puis leur
 degré ; sous les degrés, la tonique que l'oreille entend là où elle
 change ; et dessous, les cellules. La légende s'affiche avec le drapeau `-legend`.
+
+### L'orthographe entendue
+
+#### Dans le livre
+
+La première cause d'analyses fausses, chez un humain, est une notation
+erronée : un ♭VII de do écrit A♯7 envoie l'apprenti analyste chercher
+un accord qui mène à si. « Tu ne suivras pas bêtement les indications
+du Real Book », dit le deuxième commandement.
+
+#### Dans gohar
+
+Le noyau ne lit pas la graphie : il raisonne sur des hauteurs, et A♯7
+s'analyse comme B♭7. L'orthographe est une **sortie** de l'analyse : on
+entend un ♭VII7, donc on écrit B♭7. `analyse` réécrit ainsi chaque
+grille dans la tonalité entendue, la graphie de l'app ne servant qu'à
+lire les accords. Les règles sont les nôtres, par ordre de priorité :
+
+- **P0, des mouvements lisibles.** Une basse qui bouge d'une quinte
+  bouge d'une quinte juste, d'une tierce d'une tierce, d'un pas d'une
+  seconde. Un demi-ton peut aussi rester sur sa lettre, chromatique, et
+  une note étrangère à la zone suit le sens de la ligne : dièse en
+  montant, bémol en descendant (E7 E♭7 D7 D♭7 C, C C♯dim7 Dm7).
+- **P1, le nom suit le chiffrage.** Une fondamentale prend la lettre
+  de son degré dans la zone, le fond où se comptent les degrés : un
+  ♭II se nomme comme un ♭II. Une fondamentale diatonique est le cadre
+  où se lisent les mouvements et garde sa lettre ; P0 décide des
+  autres, les fondamentales chromatiques et les accords qui préparent
+  une résolution, nommés depuis leur cible.
+- **P2, la grille la plus simple.** La tonique de chaque zone s'écrit
+  avec le moins d'altérations à la clef, ou comme son enharmonique si
+  une armure peut l'écrire, selon ce qui donne le moins de smells,
+  puis le moins d'altérations. *Crepuscule With Nellie* passe ainsi de
+  sol♯ mineur à la♭ mineur.
+- **P3, une tonicisation se nomme comme l'accord qu'elle tonicise** :
+  [F♯m] sous F♯m7.
+- **Une basse tenue**, une pédale, s'écrit une fois par son degré dans
+  la zone.
+
+L'usage simplifie ensuite les noms affichés, jamais le chiffrage ni
+les mouvements : E♯, F♭, B♯ et C♭ passent sur la lettre voisine, sauf
+la sensible haussée d'un mineur ; une double altération aussi, en
+**enharmonie tolérée** ; un dim7 ou une triade augmentée posé sur une
+de ses notes s'écrit sur sa basse (Cdim7/A devient Adim7).
+
+**Le smell** est une fondamentale ou une basse affichée avec une double
+altération, ou en E♯, F♭, B♯, C♭ que l'usage garde. Il désigne
+d'ordinaire un endroit où l'analyse s'est trompée de zone ou de
+chiffrage. `analyse -smells` en donne la liste, et celle des
+enharmonies tolérées.
+
+#### Ce qui est difficile
+
+Les chaînes qui ne se referment pas sur les lettres. Elles se rompent à
+la frontière des zones, là où le chiffrage change de tonique : la
+rupture G♭m7 → F♯m7 de *Grand Central*, mesure 17, est le ♭IIm7 de fa
+mineur, puis le Im7 de fa♯ mineur.
 
 ### Les couleurs proposées
 

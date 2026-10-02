@@ -317,7 +317,7 @@ d'une source le dit ; le reste est à nous. Pas encore de code.
     `synth.Open` ne prend qu'une source ;
   - **les soundfonts**, pour la charleston, la contrebasse et le piano,
     par go-meltysynth dans `synth/soundfont`, déjà au programme de
-    `chantiers.md` (« Les jeux ») : licence MIT, rien d'autre que la
+    `chantiers.md` (« L'audio ») : licence MIT, rien d'autre que la
     bibliothèque standard, pas d'allocation au rendu, SF2 seulement,
     enveloppé dans la `queue` commune. Reste à trouver, comme pour le
     piano (Salamander, CC-BY, réduit avec Polyphone), une contrebasse et
