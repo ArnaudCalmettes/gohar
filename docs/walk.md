@@ -253,15 +253,22 @@ Ce qui suit est notre lecture des sources.
   Elle suppose la latence calibrée (`oreille.md`).
 - **Les marques du palier 1** (`Marker`) : chaque note de la zone basse
   est rapportée au temps le plus proche et reçoit deux marques.
-  - Le temps : **à l'heure** (moins de 30 ms d'écart), **en avance** ou
-    **en retard** (jusqu'à 100 ms), **entre deux temps** au-delà, et
-    alors aucun temps ne la compte. Valeurs de départ, à régler à
-    l'oreille.
+  - Le temps : **sur le temps** (jusqu'à 1/8 de temps d'écart, 75 ms à
+    100), **en avance** ou **en retard** (jusqu'à 1/3 de temps, 200 ms
+    à 100), **entre deux temps** au-delà, et alors aucun temps ne la
+    compte. Des fractions de temps, pour que les fenêtres s'élargissent
+    quand le tempo ralentit ; des valeurs larges, faute de correction
+    de latence pour l'instant, à régler à l'oreille.
   - La hauteur, rapportée à l'accord du temps : **fondamentale** (la
     basse écrite d'un accord renversé), **note de l'accord**, **hors de
     l'accord**.
   - Chaque arrivée d'accord, une fois sa fenêtre refermée : **posée**
     si une fondamentale l'a prise, **manquée** sinon.
+  - Un accord qui se prolonge sur la mesure suivante se lit comme deux
+    rondes liées, mais un bassiste y joue quand même une note : le
+    temps 1 de cette mesure attend aussi une note, n'importe quelle
+    note de la tétrade (`HeldChordTone`) : la basse bouge dans l'accord
+    qu'elle tient.
   - **Doublée** : deux notes sur un même temps. Sur une arrivée, elle
     vaut manquée : le joueur doit faire entendre la note qu'il veut,
     et devant deux notes, le marqueur refuse de deviner laquelle
@@ -310,6 +317,81 @@ Ce qui suit est notre lecture des sources.
   formules et évite les répétitions.
 - Le générateur et le marqueur partagent les mêmes règles : une ligne
   générée doit recevoir de bonnes marques, et c'est un test tout trouvé.
+- Fait pour le premier jalon (`Walk`, dans `generator.go`), joué par
+  `-demo` :
+  - quatre accords dans la mesure : les fondamentales (règle 1) ; deux
+    accords : chaque fondamentale, puis la quinte, la tierce, ou un
+    demi-ton vers la fondamentale suivante (règle 2) ;
+  - un accord, suivi d'un accord une quinte plus bas : le walk up, le
+    walk down dans la gamme « conservatrice » de Siron (dorien sur m7,
+    mixolydien sur 7, ionien sur un accord majeur, locrien sur
+    m7♭5), ou la triade puis un demi-ton au-dessus de la cible
+    (règle 3) ;
+  - un accord tenu sur la mesure suivante : l'arpège 1 3 5 3, ou la
+    gamme qui monte vers la quinte (règle 4) ;
+  - tout autre enchaînement : la fondamentale répétée à l'octave, ou
+    la tierce, puis la quinte et un demi-ton vers la cible (règle 5).
+    La basse en deux doublée de Siskind, R R 5 5, sauterait une octave
+    sur la quinte, ce que la règle suivante interdit ;
+  - sur un accord tenu, la gamme peut aussi descendre vers la quinte
+    du dessous : ce miroir de la règle 4 n'est pas dans Siskind, il
+    permet à un walk down de se poursuivre ;
+  - chaque note de préférence dans les quatre cordes, à l'octave la
+    plus proche de la précédente ; la même note jamais deux fois de
+    suite (p. 116). La ligne peut monter au-delà, jusqu'au do 3, où
+    commence la main droite (p. 118) : sans cette marge, un fa ou un sol
+    en haut des quatre cordes ne laisse à la mesure qu'un walk down.
+- Trois règles s'ajoutent à celles de Siskind, après écoute de la
+  démo, qui sautait de grands intervalles à des endroits peu naturels :
+  - **pas de saut de plus d'une quinte** d'une note à la suivante ;
+  - **l'octave seulement sur la fondamentale** : un accord peut
+    répéter sa fondamentale à l'octave, quitte à descendre jusqu'au
+    do 1, le plus grave que permet Siskind (p. 117) ;
+  - **une marche se poursuit** : après un walk up ou un walk down, la
+    mesure suivante continue dans le même sens quand une de ses règles
+    le permet, jusqu'à ce que la tessiture l'arrête. Deux fois sur
+    trois seulement : toujours, la démo rejouait le même walk down sur
+    chaque mesure de fa.
+- Le générateur propose donc tous les chemins d'une mesure, chacun
+  placé depuis chaque octave que peut prendre sa première note (fa 1
+  ou fa 2 après un do 2, tous deux à une quinte au plus), et garde ceux
+  qui respectent ces règles. Il écarte la mesure jouée la dernière fois
+  sur la même fondamentale, sauf si rien d'autre ne convient, puis
+  préfère, deux fois sur trois, ceux qui poursuivent la marche. Quand
+  aucun ne convient, il relâche d'abord le registre, puis les sauts.
+  - le choix entre les chemins au hasard, avec une graine fixe dans
+    les tests ;
+  - les notes de la démo passent par le marqueur au moment où elles
+    sonnent, comme celles du joueur : les tests vérifient, sur vingt
+    tirages, qu'aucune arrivée n'est manquée.
+- La démo se signale : l'étiquette dit « A TEMPO, DÉMO », le bonhomme
+  passe en gris, et ses touches s'allument en bleu.
+- `-record` écrit dans un fichier chaque note que le marqueur entend,
+  celles du joueur ou de la démo : le chorus, la mesure et le temps,
+  l'écart au temps, l'accord, la note avec son octave, et sa marque.
+  De quoi relire une ligne à tête reposée, et comparer celle d'un
+  bassiste à celles du générateur.
+- Un modèle plus général a été essayé puis écarté : des notes-cibles
+  sur les temps forts, et des approches sur les temps faibles, vers
+  n'importe quelle note (Siron, p. 693 et 694). Il ouvre des centaines
+  de mesures possibles, et les poids qui devaient les départager
+  appelaient chacun une correction de plus : la ligne s'est dégradée
+  au lieu de s'améliorer.
+- La suite : **un catalogue de patterns par situation**, deux ou trois
+  pour chacune (un accord par mesure par le cycle des quintes, deux
+  accords par mesure, un accord tenu...), plus quelques lignes
+  idiomatiques. Simple à lire, à régler et à enrichir. `-record` y
+  aidera : des mesures de bassiste enregistrées montrent ce qui manque,
+  comme ces deux-là sur le blues en fa, où un fa descend d'une octave
+  en passant par la quinte sur la barre de mesure :
+
+      | F7          | F7          | B♭7
+      | F E♭ D D♭   | C B♭ A F    | B♭
+
+- Restent aussi les variations rythmiques de Siron, les enclosures, et
+  « trois montées, deux descentes » sur les accords tenus. Sur une
+  mesure tenue, le premier temps pourrait prendre la quinte pour
+  poursuivre une gamme, plutôt que de revenir à la fondamentale.
 
 ## La jauge de tension
 
@@ -363,7 +445,29 @@ Ce qui suit est notre lecture des sources.
 - **Pour le MVP**, un bonhomme en bâtons dessiné au trait par le moteur,
   avec les mêmes états et animations : il suffit à valider que la
   démarche suit le jeu et que le juice fonctionne, avant de commander le
-  moindre dessin.
+  moindre dessin. Fait (`walker.go`), dans l'en-tête, entre le titre
+  et le mode :
+  - l'aisance est une moyenne glissante des arrivées, posées contre
+    manquées, où chacune pèse un quart : à peu près les huit
+    dernières comptent ;
+  - il cherche le tempo à l'arrêt, au décompte et sans tempo ; il
+    marche par défaut ; il est dedans au-dessus de 0,6 d'aisance, en
+    rebondissant entre les temps ; il claque des doigts sur 2 et 4
+    au-dessus de 0,85, après huit arrivées posées d'affilée ;
+  - il saute à chaque arrivée posée, et trébuche sur une arrivée
+    manquée seulement quand l'aisance est déjà retombée sous la
+    marche « dedans » : une erreur isolée ne le fait pas trébucher ;
+  - deux images, comme un cycle de sprite, jamais d'entre-deux, une
+    animation fluide collant mal au pas : sur les temps forts, les
+    jambes écartées et les bras qui balancent ; sur les temps faibles,
+    les jambes qui se croisent, l'une à la verticale, l'autre le genou
+    plié et le pied relevé, et les bras le long du corps. La hanche
+    descend quand les jambes s'écartent, ce qui donne le rebond ;
+  - le claquement de doigts se fait à la manière jazz, du coude : très
+    plié sur 1 et 3, la main remontée près de la poitrine ; moins plié
+    sur 2 et 4, la main vers l'avant, où elle claque, des étincelles
+    (trois petits traits) au bout des doigts.
+  Les seuils sont des valeurs de départ, à régler en jouant.
 - **Pour le graphiste**, plus tard : un cycle de marche par état, quatre
   images au moins ; des animations brèves (tendre l'oreille, sauter,
   trébucher et se rattraper) ; une bulle de BD extensible, les
@@ -531,8 +635,12 @@ Ce qui suit est notre lecture des sources.
    grille en MuseJazz Text, quatre mesures par ligne, la mesure jouée
    grisée et un curseur ; le décompte en grand ; les claquements sur 2
    et 4 ; la main gauche en contrebasse, la droite en piano ; `-demo`
-   pour la basse de référence. Restent les marques, la phase sans tempo
-   et le bonhomme.
+   pour la basse de référence ; le clavier à l'écran, le joueur en
+   orange et la démo en bleu. Deuxième livraison faite : les marques
+   des arrivées sur la grille (pastille verte, croix rouge, double
+   trait orange), celle de la dernière note en bas de l'écran, et la
+   phase sans tempo (`-practice`, ou la touche T à l'arrêt). Troisième
+   livraison faite : le bonhomme en bâtons (voir « Le bonhomme »).
 5. **La progression**, par le dex.
 
 ## Le premier jalon jouable

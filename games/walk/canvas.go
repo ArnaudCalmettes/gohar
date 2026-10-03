@@ -30,6 +30,11 @@ var (
 	ink   = color.Black
 	pale  = color.RGBA{0xe8, 0xe8, 0xe8, 0xff} // the bar being played
 	faint = color.RGBA{0x88, 0x88, 0x88, 0xff} // what is said rather than shown
+
+	// The marks of the arrivals: landed, missed, doubled.
+	landedInk  = color.RGBA{0x2a, 0x9d, 0x5a, 0xff}
+	missedInk  = color.RGBA{0xc0, 0x39, 0x2b, 0xff}
+	doubledInk = color.RGBA{0xe0, 0x8a, 0x1e, 0xff}
 )
 
 type canvas struct {
@@ -40,6 +45,11 @@ type canvas struct {
 func (c canvas) rect(x, y, w, h float32, col color.Color) {
 	s := float32(c.scale)
 	vector.DrawFilledRect(c.dst, x*s, y*s, w*s, h*s, col, true)
+}
+
+func (c canvas) circle(x, y, r float32, col color.Color) {
+	s := float32(c.scale)
+	vector.DrawFilledCircle(c.dst, x*s, y*s, r*s, col, true)
 }
 
 func (c canvas) line(x0, y0, x1, y1, width float32, col color.Color) {

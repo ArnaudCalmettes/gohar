@@ -15,7 +15,8 @@ const (
 	Bb1 = 34 // B♭1
 )
 
-// runOf marks the jazz blues in F at 120: a beat is 500 ms.
+// runOf marks the jazz blues in F at 120: a beat is 500 ms, so the
+// first palier is on time within 62 ms and loose within 166 ms.
 func runOf(t *testing.T, r Rules) (*Marker, Metronome) {
 	t.Helper()
 	grid, err := readGrid(jazzBlues)
@@ -40,8 +41,8 @@ func TestMarkerNotes(t *testing.T) {
 		pitch  Pitch
 	}{
 		{"F on bar 1, on time", F2, 10, OnTime, Root},
-		{"F 50 ms late", F2, 50, Late, Root},
-		{"F 80 ms early", F2, -80, Early, Root},
+		{"F 100 ms late", F2, 100, Late, Root},
+		{"F 120 ms early", F2, -120, Early, Root},
 		{"A, the third of F7", A2, 0, OnTime, ChordTone},
 		{"F♯, not in F7", Fs2, 0, OnTime, Outside},
 	} {
@@ -62,9 +63,9 @@ func TestMarkerArrival(t *testing.T) {
 		want  BeatKind
 	}{
 		{"F, on time", FirstPalier, []struct{ key, ms int }{{F2, 0}}, Landed},
-		{"F, 80 ms late", FirstPalier, []struct{ key, ms int }{{F2, 80}}, Landed},
+		{"F, 150 ms late", FirstPalier, []struct{ key, ms int }{{F2, 150}}, Landed},
 		{"nothing", FirstPalier, nil, Missed},
-		{"F, 150 ms late: between two beats", FirstPalier, []struct{ key, ms int }{{F2, 150}}, Missed},
+		{"F, 200 ms late: between two beats", FirstPalier, []struct{ key, ms int }{{F2, 200}}, Missed},
 		{"A instead of F, for a beginner", FirstPalier, []struct{ key, ms int }{{A2, 0}}, Missed},
 		{"A instead of F, inversions allowed", withInversions(), []struct{ key, ms int }{{A2, 0}}, Landed},
 		{"F♯ instead of F", FirstPalier, []struct{ key, ms int }{{Fs2, 0}}, Missed},
@@ -121,12 +122,12 @@ func TestMarkerTwoArrivalsInABar(t *testing.T) {
 // still come late.
 func TestMarkerWaitsForTheWindow(t *testing.T) {
 	k, m := runOf(t, FirstPalier)
-	if marks := k.Close(at(m, 1, 1, 90)); len(marks) != 0 {
-		t.Errorf("90 ms after bar 1, beat 1: %+v, want nothing yet", marks)
+	if marks := k.Close(at(m, 1, 1, 160)); len(marks) != 0 {
+		t.Errorf("160 ms after bar 1, beat 1: %+v, want nothing yet", marks)
 	}
-	k.Play(Note{F2, at(m, 1, 1, 95)})
-	if marks := k.Close(at(m, 1, 1, 101)); len(marks) != 1 || marks[0].Kind != Landed {
-		t.Errorf("101 ms after: %+v, want F7 landed", marks)
+	k.Play(Note{F2, at(m, 1, 1, 165)})
+	if marks := k.Close(at(m, 1, 1, 170)); len(marks) != 1 || marks[0].Kind != Landed {
+		t.Errorf("170 ms after: %+v, want F7 landed", marks)
 	}
 }
 
@@ -137,5 +138,32 @@ func TestMarkerIgnores(t *testing.T) {
 	}
 	if _, ok := k.Play(Note{F2, at(m, 0, 4, 0)}); ok {
 		t.Error("a note in the count-in was marked")
+	}
+}
+
+// Beat 1 of bar 4, where F7 carries on: a note is expected, any note of
+// the tetrad.
+func TestMarkerHeldBar(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		key  int
+		want BeatKind
+	}{
+		{"F, the root", F2, Landed},
+		{"C, the fifth", C2, Landed},
+		{"A, the third", A2, Landed},
+		{"E♭, the seventh", 39, Landed},
+		{"F♯, not in F7", Fs2, Missed},
+		{"nothing", 0, Missed},
+	} {
+		k, m := runOf(t, FirstPalier)
+		k.Close(at(m, 4, 1, -250)) // the first three bars, unplayed
+		if tc.key != 0 {
+			k.Play(Note{tc.key, at(m, 4, 1, 0)})
+		}
+		marks := k.Close(at(m, 4, 2, 0))
+		if len(marks) != 1 || marks[0] != (BeatMark{12, tc.want}) {
+			t.Errorf("%s on bar 4, beat 1: %+v, want %d", tc.name, marks, tc.want)
+		}
 	}
 }

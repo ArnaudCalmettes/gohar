@@ -217,14 +217,15 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 
 ## Les jeux
 
-- [ ] *Walk with me* (`walk.md`), premier jalon : les fondamentales à
-      la main gauche sur un blues jazz, au métronome, avec la phase
-      sans tempo. Les notes programmées, le mélangeur et le `Metronome`
-      sont faits ; il demande encore de trancher le modèle de
-      paliers. La soundfont en fait partie (voir « L'audio ») : la
-      contrebasse qui marche et les claquements de doigts sur 2 et 4
-      sont la première chose qu'un joueur entendra, et ce sont eux qui
-      posent l'ambiance.
+- [ ] *Walk with me* (`walk.md`). Le premier jalon tourne : les
+      fondamentales à la main gauche sur un blues jazz, au snap sur 2
+      et 4, marquées sur la grille, avec la phase sans tempo, le
+      bonhomme et une démo qui marche d'après Siskind. Restent :
+      régler à l'oreille les fenêtres et les seuils du bonhomme ; la
+      correction de latence (`oreille.md`) ; trancher le modèle de
+      paliers avant le deuxième, la basse en deux ; d'autres grilles ;
+      un catalogue de patterns pour la basse de référence (voir « La
+      basse de référence » dans `walk.md`).
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

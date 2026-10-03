@@ -24,6 +24,11 @@ const (
 	// Words writes them out in the locale's language, apart from the
 	// letter: si bémol, phrygien bécarre 6.
 	Words
+
+	// ASCII writes them with the characters of any keyboard and any
+	// font, for a terminal or a face without the musical signs: bb, b,
+	// #, ##, and nat for the natural of a degree. F#, phrygien nat6.
+	ASCII
 )
 
 // accidentalSigns and degreeSigns are the same five signs in every
@@ -40,6 +45,11 @@ const (
 var (
 	accidentalSigns = [5]string{"\U0001D12B", "\u266d", "", "\u266f", "\U0001D12A"}
 	degreeSigns     = [5]string{"\U0001D12B", "\u266d", "\u266e", "\u266f", "\U0001D12A"}
+
+	// The same in ASCII. A double is two simple signs side by side here:
+	// with no glyph of its own to write, that is how it is typed.
+	accidentalASCII = [5]string{"bb", "b", "", "#", "##"}
+	degreeASCII     = [5]string{"bb", "b", "nat", "#", "##"}
 )
 
 // A Locale holds the words one language uses for letters, accidentals
@@ -264,8 +274,11 @@ func (l Locale) Name(n SpelledNote, notation Notation) string {
 	if n.Accidental == NaturalSign {
 		return letter
 	}
-	if notation == Words {
+	switch notation {
+	case Words:
 		return letter + " " + l.AccidentalWords[i]
+	case ASCII:
+		return letter + accidentalASCII[i]
 	}
 	return letter + accidentalSigns[i]
 }
@@ -294,8 +307,11 @@ func (l Locale) ModeName(m Mode, notation Notation) string {
 // degree writes one alteration with its sign or word, then its number.
 func (l Locale) degree(a Alteration, notation Notation) string {
 	i := int(a.Quality) + 2
-	if notation == Words {
+	switch notation {
+	case Words:
 		return l.DegreeWords[i] + " " + strconv.Itoa(int(a.Degree))
+	case ASCII:
+		return degreeASCII[i] + strconv.Itoa(int(a.Degree))
 	}
 	return degreeSigns[i] + strconv.Itoa(int(a.Degree))
 }

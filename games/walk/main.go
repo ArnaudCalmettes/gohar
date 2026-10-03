@@ -1,16 +1,19 @@
 // Command walk is Walk With Me, the game that teaches the left hand to
 // replace the bassist (docs/walk.md).
 //
-// The first shell: the chart of a jazz blues, two bars of finger snaps
-// to count in, then the snaps on 2 and 4 while the player walks the
-// roots at the MIDI keyboard. The left hand sounds like a double bass,
-// the right like a piano, split at sol2 (G3). No marks yet.
+// The first palier: the chart of a jazz blues, two bars of finger snaps
+// to count in, then the snaps on 2 and 4 while the player plays the
+// roots at the MIDI keyboard, and the arrivals marked on the chart. The
+// left hand sounds like a double bass, the right like a piano, split at
+// sol2 (G3). Without tempo, the chart waits for each root instead.
 //
 // The sounds come from GeneralUser GS, which `make sounds` downloads
 // into the user's cache directory; without it, the chip sounds of ear.
 //
 //	go run ./walk                  # play, the space bar starts
 //	go run ./walk -demo            # the band plays the bass itself
+//	go run ./walk -practice        # without tempo, T switches back
+//	go run ./walk -record line.txt # write down the notes heard
 //	go run ./walk -list            # the presets of the soundfont
 //	go run ./walk -sf2 other.sf2 -bass 0:33
 package main
@@ -29,9 +32,10 @@ import (
 )
 
 func main() {
-	bpm := flag.Float64("bpm", 120, "tempo, in beats per minute")
+	bpm := flag.Float64("bpm", 100, "tempo, in beats per minute")
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
-	demo := flag.Bool("demo", false, "the band plays the roots itself, the reference line")
+	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
+	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")
 	sf2 := flag.String("sf2", defaultSoundFont(), "the soundfont to play the bass and the piano with")
 	chip := flag.Bool("chip", false, "play 8-bit sounds rather than the soundfont")
 	list := flag.Bool("list", false, "list the presets of the soundfont, and quit")
@@ -40,6 +44,7 @@ func main() {
 	useMIDI := flag.Bool("midi", true, "listen to a MIDI keyboard if there is one")
 	port := flag.String("port", "", "an input's number or part of its name; the first one if empty")
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
+	record := flag.String("record", "", "write down the notes the marker hears, a line each, in this file")
 	flag.Parse()
 
 	if _, err := os.Stat(*sf2); err != nil && !*chip {
@@ -88,9 +93,20 @@ func main() {
 		}
 	}
 
-	g, err := newGame("12 Bar Blues", grid, *bpm, *choruses, bd, midiName)
+	g, err := newGame("12 Bar Blues", grid, *bpm, *choruses, bd, midiName, *practicing)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if *record != "" {
+		g.rec, err = newRecorder(*record)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer func() {
+			if err := g.rec.Close(); err != nil {
+				fmt.Fprintln(os.Stderr, "record:", err)
+			}
+		}()
 	}
 	if keys != nil {
 		if err := keys.Listen(g.onKey); err != nil {

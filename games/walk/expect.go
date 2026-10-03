@@ -24,6 +24,11 @@ type Beat struct {
 	Next    analysis.Change
 	Arrives bool
 
+	// Holds is beat 1 of a bar where no chord arrives: the chord of the
+	// bar before carries on, like two tied whole notes on a chart. A
+	// bassist still plays a note there, and the marker expects one.
+	Holds bool
+
 	// PerBar is how many changes start in the bar, the harmonic rhythm:
 	// it picks which of Siskind's rules applies (one, two or four
 	// chords a bar).
@@ -71,6 +76,7 @@ func Expect(c analysis.Changes, m Metronome, choruses int) []Beat {
 				Chord:    c.Chords[i],
 				Next:     c.Chords[next],
 				Arrives:  arrives,
+				Holds:    p.Beat == 1 && !arrives,
 				PerBar:   changesInBar(c, b/barBeats, barBeats),
 			})
 		}

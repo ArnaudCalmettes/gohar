@@ -79,25 +79,24 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 	return b, nil
 }
 
-// beat schedules what the band plays on beat `n`, at `at`: snaps on 2
-// and 4, from the count-in on, and in demo the root of `b` on every
-// beat, legato. A beat of the count-in has no chord: `b` is nil.
-func (bd *band) beat(p Position, b *Beat, at time.Time) {
+// beat schedules what the band plays on the beat at `p`, at `at`: snaps
+// on 2 and 4, from the count-in on, and in demo `key`, the reference
+// line, legato. No key, 0, in the count-in or out of demo.
+func (bd *band) beat(p Position, key int, at time.Time) {
 	if p.Beat%2 == 0 {
 		bd.snap.ScheduleOn(noiseKey, 1, at)
 		bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
 	}
-	if !bd.demo || b == nil {
+	if !bd.demo || key == 0 {
 		return
 	}
-	root := bassKey(b.Chord.Bass)
 	// Legato, as Siskind asks: each note holds until the next one,
 	// released on the same date it is replaced.
 	if bd.held != 0 {
 		bd.bass.ScheduleOff(bd.held, at)
 	}
-	bd.bass.ScheduleOn(root, 0.8, at)
-	bd.held = root
+	bd.bass.ScheduleOn(key, 0.8, at)
+	bd.held = key
 }
 
 // stop releases what the reference bass holds, at `at`.

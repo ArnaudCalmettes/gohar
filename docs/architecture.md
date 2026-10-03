@@ -90,6 +90,9 @@ gohar/
   games/       go.mod        Ebitengine, ark, MIDI
     keyboard/                port des touches, seul endroit qui voit gomidi
     ear/                     ear trainer : menu, degrés, tétracordes, modes
+    walk/                    Walk with me : métronome, swing, temps
+                             attendus, marqueur, walking bass générée,
+                             grille, clavier et bonhomme à l'écran
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio

@@ -97,20 +97,24 @@ go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 ### walk
 
 *Walk with me*, the game that teaches the left hand to replace the
-bassist. A first shell, without marks yet: the chart of a jazz blues,
-finger snaps on 2 and 4 to count in and to keep going, and your left
-hand on a double bass, your right on a piano, split at G3.
+bassist. The first palier: the chart of a jazz blues, finger snaps on
+2 and 4 to count in and to keep going, your left hand on a double
+bass, your right on a piano, split at G3, and the roots you land on
+each change marked on the chart. Without tempo, the chart waits for
+each root.
 
 ```sh
 make sounds                    # once, from the repository root
 cd games
 go run ./walk                  # the space bar starts and stops
-go run ./walk -demo            # the band plays the roots itself
+go run ./walk -demo            # the band walks the bass itself
+go run ./walk -practice        # without tempo; T switches at rest
+go run ./walk -record line.txt # writes down every note heard
 ```
 
 `-sf2` plays another soundfont, `-list` shows its presets and `-bass`
 picks one (`bank:patch`, `0:32` by default). `-choruses` sets how many
-times the chart goes round.
+times the chart goes round, `-bpm` the tempo (100 by default).
 
 ### keys
 

@@ -132,3 +132,27 @@ func TestBassKey(t *testing.T) {
 		}
 	}
 }
+
+// Bar 4 carries on the F7 of bar 3, as two tied whole notes would: its
+// beat 1 holds, and only its beat 1.
+func TestExpectHolds(t *testing.T) {
+	grid, err := readGrid(jazzBlues)
+	if err != nil {
+		t.Fatal(err)
+	}
+	beats := Expect(grid, at120(), 1)
+	for _, tc := range []struct {
+		bar, beat int
+		holds     bool
+	}{
+		{1, 1, false}, // F7 arrives
+		{4, 1, true},  // F7 carries on from bar 3
+		{4, 2, false},
+		{6, 1, true}, // B♭7 carries on from bar 5
+		{11, 3, false},
+	} {
+		if b := beatAt(t, beats, tc.bar, tc.beat); b.Holds != tc.holds {
+			t.Errorf("bar %d, beat %d: holds %v, want %v", tc.bar, tc.beat, b.Holds, tc.holds)
+		}
+	}
+}

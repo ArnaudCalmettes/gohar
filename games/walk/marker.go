@@ -11,9 +11,9 @@ import (
 // takes note of what was played and never grades the player.
 //
 // Each note gets two marks, one for its timing and one for its pitch,
-// against the beat it is nearest to. Each beat where a chord arrives
-// gets a mark of its own once its window has closed: the root landed,
-// or it did not.
+// against the beat it is nearest to. Each beat where a chord arrives,
+// and beat 1 of each bar where it carries on, gets a mark of its own
+// once its window has closed: a note landed it, or none did.
 
 // A Note is a key pressed in the bass zone, at the instant it sounded:
 // the MIDI timestamp, already corrected for the calibrated latency.
@@ -55,11 +55,12 @@ type NoteMark struct {
 type BeatKind int
 
 const (
-	// Landed: the chord arrived and one note claimed the beat, its root,
-	// on time or within the loose window.
+	// Landed: one note claimed the beat, on time or within the loose
+	// window, and the rules accept it there: the root of a chord that
+	// arrives; any note of one that carries on.
 	Landed BeatKind = iota
 
-	// Missed: the chord arrived and no root claimed the beat.
+	// Missed: a note was expected and none landed the beat.
 	Missed
 
 	// Doubled: two notes or more claimed the beat. On an arrival, it
@@ -78,9 +79,11 @@ type BeatMark struct {
 // constraint of a run is a different value (see "Ce qu'on attend, temps
 // par temps" in docs/walk.md).
 type Rules struct {
-	// OnTime and Loose are the half widths of the windows around a beat.
-	// The defaults are starting points, to be set by ear.
-	OnTime, Loose time.Duration
+	// OnTime and Loose are the half widths of the windows around a beat,
+	// in fractions of a beat, so that they widen as the tempo slows. The
+	// defaults are generous starting points, to be set by ear; there is
+	// no correction for the latency yet.
+	OnTime, Loose float64
 
 	// Split is the lowest key of the right hand: below it, the bass.
 	Split int
@@ -88,13 +91,20 @@ type Rules struct {
 	// Inversions lets another chord tone land an arrival, for a player
 	// who knows what to do with it. Off for a beginner, who plays roots.
 	Inversions bool
+
+	// HeldChordTone lets any note of the chord land beat 1 of a bar
+	// where the chord carries on, besides its root: the bass moves
+	// within the chord it holds.
+	HeldChordTone bool
 }
 
 // FirstPalier is the first palier: roots, on the changes, nothing else.
 var FirstPalier = Rules{
-	OnTime: 30 * time.Millisecond,
-	Loose:  100 * time.Millisecond,
-	Split:  55, // G3, sol2 in French
+	OnTime: 1.0 / 8, // 75 ms at 100
+	Loose:  1.0 / 3, // 200 ms at 100
+	Split:  55,      // G3, sol2 in French
+
+	HeldChordTone: true,
 }
 
 // A Marker marks the notes of one run.
@@ -145,7 +155,7 @@ func (k *Marker) Play(n Note) (NoteMark, bool) {
 
 	c := &k.claims[beat]
 	c.notes++
-	if mark.Pitch == Root || mark.Pitch == ChordTone && k.rules.Inversions {
+	if k.lands(b, mark.Pitch) {
 		c.landed = true
 	}
 	return mark, true
@@ -158,14 +168,14 @@ func (k *Marker) Close(now time.Time) []BeatMark {
 	var marks []BeatMark
 	for ; k.closed < len(k.beats); k.closed++ {
 		n := k.closed
-		if !now.After(k.m.At(n).Add(k.rules.Loose)) {
+		if !now.After(k.m.At(n).Add(k.window(k.rules.Loose))) {
 			break
 		}
 		c, b := k.claims[n], k.beats[n]
 		switch {
 		case c.notes > 1:
 			marks = append(marks, BeatMark{n, Doubled})
-		case !b.Arrives || b.Chord.Silent:
+		case !b.Arrives && !b.Holds || b.Chord.Silent:
 		case c.landed:
 			marks = append(marks, BeatMark{n, Landed})
 		default:
@@ -181,12 +191,30 @@ func (k *Marker) timing(off time.Duration) Timing {
 		a = -a
 	}
 	switch {
-	case a <= k.rules.OnTime:
+	case a <= k.window(k.rules.OnTime):
 		return OnTime
-	case a > k.rules.Loose:
+	case a > k.window(k.rules.Loose):
 		return Between
 	case off < 0:
 		return Early
 	}
 	return Late
+}
+
+// lands tells whether a note of pitch `p` lands beat `b`: its root
+// always; another chord tone when inversions are allowed, or on beat 1
+// of a held chord when the rules allow it.
+func (k *Marker) lands(b Beat, p Pitch) bool {
+	switch {
+	case p == Root:
+		return true
+	case p != ChordTone:
+		return false
+	}
+	return k.rules.Inversions || b.Holds && k.rules.HeldChordTone
+}
+
+// window turns a fraction of a beat into a duration at the run's tempo.
+func (k *Marker) window(f float64) time.Duration {
+	return time.Duration(f * float64(k.m.Beat()))
 }

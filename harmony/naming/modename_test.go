@@ -149,6 +149,7 @@ func TestNaturalSignIsSilentInNotesAndSpokenInModes(t *testing.T) {
 		m := modeAt(t, harmony.MelodicMinor, 2)
 		assert.Equal(t, "phrygian \u266e6", naming.English.ModeName(m, naming.Signs))
 		assert.Equal(t, "phrygien bécarre 6", naming.French.ModeName(m, naming.Words))
+		assert.Equal(t, "phrygien nat6", naming.French.ModeName(m, naming.ASCII))
 		assert.Contains(t, naming.French.ModeAlternatives(m, naming.Signs), "phrygien sixte majeure",
 			"the spoken register says the same thing in another form")
 	})

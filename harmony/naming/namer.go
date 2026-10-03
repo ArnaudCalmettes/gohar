@@ -90,8 +90,8 @@ func (n *Namer) WithSpelledTonality(t harmony.Tonality, tonic SpelledNote) *Name
 	return &out
 }
 
-// WithNotation returns a namer writing accidentals as signs or as
-// words. Signs, the zero value, is the default.
+// WithNotation returns a namer writing accidentals as signs, as words
+// or in ASCII. Signs, the zero value, is the default.
 //
 // Two namers side by side are the intended use when both are needed:
 // signs on the screen, words for a screen reader.

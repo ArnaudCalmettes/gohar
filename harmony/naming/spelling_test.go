@@ -195,6 +195,14 @@ func TestLocaleRendersInItsOwnWords(t *testing.T) {
 			naming.French.Name(naming.SpelledNote{Letter: naming.LetterB, Accidental: naming.DoubleFlatSign}, naming.Words))
 	})
 
+	t.Run("ASCII types what the signs engrave, for a face without them", func(t *testing.T) {
+		assert.Equal(t, "F#", naming.English.Name(sharp(naming.LetterF), naming.ASCII))
+		assert.Equal(t, "Bbb",
+			naming.English.Name(naming.SpelledNote{Letter: naming.LetterB, Accidental: naming.DoubleFlatSign}, naming.ASCII))
+		assert.Equal(t, "fa##",
+			naming.French.Name(naming.SpelledNote{Letter: naming.LetterF, Accidental: naming.DoubleSharpSign}, naming.ASCII))
+	})
+
 	t.Run("a natural carries no sign in either locale", func(t *testing.T) {
 		assert.Equal(t, "C", naming.English.Name(natural(naming.LetterC), naming.Signs))
 		assert.Equal(t, "do", naming.French.Name(natural(naming.LetterC), naming.Words))
