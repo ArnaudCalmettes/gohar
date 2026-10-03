@@ -73,7 +73,8 @@ func (w *walker) gait(tempo bool) gait {
 	return walking
 }
 
-// draw draws him standing on (`x`, `y`), facing right, in `col`: ink
+// draw draws him standing on (`x`, `y`), facing right, `s` times the
+// size of the sketch his lengths are written for, in `col`: ink
 // for the player, grey when the demo plays. `beats` is where
 // the music is, in beats. Two frames, as a sprite cycle would have,
 // never in between:
@@ -86,13 +87,15 @@ func (w *walker) gait(tempo bool) gait {
 // The hip sits lower with the legs apart, which gives the bounce for
 // free. The reactions are frames held for their length: up for a hop,
 // leaning for a stumble.
-func (w *walker) draw(c canvas, x, y float32, g gait, beats float64, now time.Time, col color.Color) {
-	const (
-		stroke = 2
-		thigh  = 8.0
-		shin   = 8.0
-		upper  = 6.0 // the arm, shoulder to elbow
-		fore   = 7.0 // elbow to hand
+func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, now time.Time, col color.Color) {
+	var (
+		stroke = float32(1.5 * s)
+		thigh  = 8.0 * s
+		shin   = 8.0 * s
+		upper  = 6.0 * s // the arm, shoulder to elbow
+		fore   = 7.0 * s // elbow to hand
+		torso  = 14.0 * s
+		head   = 5.0 * s
 	)
 	beat := int(math.Floor(beats))
 	strong := beat%2 == 0
@@ -107,7 +110,7 @@ func (w *walker) draw(c canvas, x, y float32, g gait, beats float64, now time.Ti
 
 	lift, lean := 0.0, 0.0
 	if now.Sub(w.hop) < hopTime {
-		lift = 5
+		lift = 5 * s
 	}
 	if now.Sub(w.stumble) < stumbleTime {
 		lean = 0.3
@@ -134,14 +137,14 @@ func (w *walker) draw(c canvas, x, y float32, g gait, beats float64, now time.Ti
 		limb(kx, ky, shin, -0.9)               // the foot up behind
 	}
 
-	neckX := hipX + 14*math.Sin(lean)
-	neckY := hipY - 14*math.Cos(lean)
+	neckX := hipX + torso*math.Sin(lean)
+	neckY := hipY - torso*math.Cos(lean)
 	c.line(float32(hipX), float32(hipY), float32(neckX), float32(neckY), stroke, col)
-	c.circle(float32(neckX+5*math.Sin(lean)), float32(neckY-6), 5, col)
+	c.circle(float32(neckX+head*math.Sin(lean)), float32(neckY-1.2*head), float32(head), col)
 
 	// The arms, each with its elbow: against the legs on the strong
 	// beats, down on the weak ones.
-	shX, shY := neckX, neckY+3
+	shX, shY := neckX, neckY+0.6*head
 	swing := 0.0
 	if strong {
 		swing = stride
@@ -165,6 +168,6 @@ func (w *walker) draw(c canvas, x, y float32, g gait, beats float64, now time.Ti
 	hx, hy := limb(ex, ey, fore, 1.3) // open, the hand forward
 	for _, a := range []float64{-0.6, 0, 0.6} {
 		dx, dy := math.Cos(a), math.Sin(a) // away from the body
-		c.line(float32(hx+3*dx), float32(hy+3*dy), float32(hx+7*dx), float32(hy+7*dy), 1, col)
+		c.line(float32(hx+3*s*dx), float32(hy+3*s*dy), float32(hx+7*s*dx), float32(hy+7*s*dy), stroke/2, col)
 	}
 }

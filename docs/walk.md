@@ -522,6 +522,12 @@ Ce qui suit est notre lecture des sources.
 - Ebiten, comme `games/ear`, et Ark si un ECS se justifie.
 - Une écriture « marqueur », noire sur fond blanc, comme sur un Real
   Book.
+- **La mise en page** : la grille à droite, sur les deux tiers de
+  l'écran, quatre mesures par ligne ; le bonhomme dans le tiers gauche,
+  trois fois plus grand que son croquis d'origine, debout au niveau de
+  la dernière ligne de la grille ; le clavier en dessous, sur toute la
+  largeur. Le titre, le tempo et la ligne d'état restent dans la marge
+  de gauche, le mode en haut à droite.
 - Les polices de MuseScore, sous licence SIL OFL 1.1 : **MuseJazz Text**
   pour les lettres, les chiffres et les qualités, **MuseJazz** pour les
   glyphes musicaux (♮, ♭, ♯, 𝄫, 𝄪, aux points de code SMuFL). `naming`

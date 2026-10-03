@@ -33,13 +33,20 @@ const (
 	countIn = 2 * perBar
 )
 
-// The chart, laid out as a Real Book page: four bars a row.
+// The layout: the chart on the right two thirds of the screen, laid
+// out as a Real Book page, four bars a row; the walker on the third
+// left of it, standing level with its last row.
 const (
+	margin     = 20 // around the screen: the title, the status line, the mode
 	barsPerRow = 4
-	chartX     = 20
+	barW       = 105
+	chartX     = screenWidth - margin - barsPerRow*barW
 	chartY     = 70
-	barW       = 150
 	rowH       = 56 // room for the keyboard below
+
+	walkerX     = chartX / 2
+	walkerY     = chartY + 3*rowH - 10
+	walkerScale = 3
 )
 
 // A cell is one chord written in a bar, at the beat it starts on.
@@ -327,12 +334,12 @@ func (g *game) markAt(n int, chorus int) (BeatKind, bool) {
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(paper)
 	c := canvas{dst: screen, scale: g.scale}
-	c.text(g.title, g.fonts.ui, chartX, 24, ink)
+	c.text(g.title, g.fonts.ui, margin, 24, ink)
 	tempo := fmt.Sprintf("%.0f à la noire", g.bpm)
 	if g.practicing {
 		tempo = "sans tempo : la grille attend la fondamentale"
 	}
-	c.text(tempo, g.fonts.ui, chartX, 40, faint)
+	c.text(tempo, g.fonts.ui, margin, 40, faint)
 	g.drawMode(c)
 
 	pos := math.Inf(-1)
@@ -345,14 +352,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 	g.drawChart(c, pos)
 
 	if !g.practicing && pos < 0 && pos > -countIn {
-		// The count-in, in big, as the hi-hat counts it: "1, 3", then
-		// "1, 2, 3, 4". In the first bar, each number holds two beats.
+		// The count-in, in big: every beat of both bars, "1, 2, 3, 4",
+		// even where the hi-hat only plays 1 and 3.
 		p := g.m.Position(int(math.Floor(pos)))
-		n := p.Beat
-		if p.Bar < 0 {
-			n -= (n - 1) % 2
-		}
-		c.centred(fmt.Sprint(n), g.fonts.count, screenWidth/2, chartY+rowH/2, ink)
+		c.centred(fmt.Sprint(p.Beat), g.fonts.count, chartX+barsPerRow*barW/2, chartY+rowH/2, ink)
 	}
 
 	g.piano.draw(c)
@@ -365,7 +368,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	case g.lastMark != "":
 		status = g.lastMark + "   " + status
 	}
-	c.text(status, g.fonts.ui, chartX, screenHeight-28, faint)
+	c.text(status, g.fonts.ui, margin, screenHeight-28, faint)
 }
 
 // drawChart draws the twelve bars, the one being played shaded, and a
@@ -423,7 +426,7 @@ func (g *game) drawWalker(c canvas) {
 	if g.band.demo && !g.practicing {
 		col = faint // a silhouette: the band plays, not a player
 	}
-	g.walker.draw(c, screenWidth/2, 60, g.walker.gait(tempo), beats, now, col)
+	g.walker.draw(c, walkerX, walkerY, walkerScale, g.walker.gait(tempo), beats, now, col)
 }
 
 // drawMode draws, top right, the phase the space bar starts or is
@@ -442,7 +445,7 @@ func (g *game) drawMode(c canvas) {
 	}
 	w, h := c.measure(label, g.fonts.ui)
 	const pad = 4
-	x, y := float32(screenWidth-chartX-w-2*pad), float32(18)
+	x, y := float32(screenWidth-margin-w-2*pad), float32(18)
 	bw, bh := float32(w+2*pad), float32(h+2*pad)
 	fill, text := paper, ink
 	if g.running {
