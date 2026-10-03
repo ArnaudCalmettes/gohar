@@ -251,6 +251,28 @@ Ce qui suit est notre lecture des sources.
   basse, la gamme « conservatrice » de Siron.
 - Le temps : une tolérance en millisecondes, réglée de façon empirique.
   Elle suppose la latence calibrée (`oreille.md`).
+- **Les marques du palier 1** (`Marker`) : chaque note de la zone basse
+  est rapportée au temps le plus proche et reçoit deux marques.
+  - Le temps : **à l'heure** (moins de 30 ms d'écart), **en avance** ou
+    **en retard** (jusqu'à 100 ms), **entre deux temps** au-delà, et
+    alors aucun temps ne la compte. Valeurs de départ, à régler à
+    l'oreille.
+  - La hauteur, rapportée à l'accord du temps : **fondamentale** (la
+    basse écrite d'un accord renversé), **note de l'accord**, **hors de
+    l'accord**.
+  - Chaque arrivée d'accord, une fois sa fenêtre refermée : **posée**
+    si une fondamentale l'a prise, **manquée** sinon.
+  - **Doublée** : deux notes sur un même temps. Sur une arrivée, elle
+    vaut manquée : le joueur doit faire entendre la note qu'il veut,
+    et devant deux notes, le marqueur refuse de deviner laquelle
+    (« In the face of ambiguity, refuse the temptation to guess », *The
+    Zen of Python*).
+  - Entre deux arrivées, répéter la fondamentale ou se taire ne reçoit
+    aucune marque : au palier 1, c'est l'exercice.
+  - Une autre note de l'accord ne pose pas une arrivée pour un
+    débutant, à qui on demande les fondamentales. Plus tard, une règle
+    (`Inversions`) l'autorisera, quand le joueur saura quoi faire de
+    ce renversement.
 - On juge ce qui sonne, jamais ce qui s'écrit (`oreille.md`, d'après
   Chailley, p. 162-163).
 - Les règles de chaque ligne sont des données : une contrainte de run
@@ -390,7 +412,8 @@ Ce qui suit est notre lecture des sources.
   SMuFL.
 - MuseJazz Text n'a pas de crénage, son fichier source ayant été perdu
   (forum MuseScore) : les paires aux jonctions des deux polices (B♭7,
-  F♮7) se règlent à la main. Reste à trouver ø et °.
+  F♮7) se règlent à la main. Elle a ♭ ♮ ♯, ø et ° : pour le premier
+  jalon, elle suffit seule (`games/walk/fonts`).
 - Le jeu choisit son `ChordStyle` : la septième majeure peut s'y écrire
   « ♮7 », puisque la police la met en exposant (voir les décisions du
   nommage dans `chantiers.md`). Les noms d'accords suivent l'orthographe
@@ -486,10 +509,15 @@ Ce qui suit est notre lecture des sources.
 
 1. **Les temps attendus** : pour chaque temps, l'accord, la gamme du
    moment, temps fort ou faible, l'accord suivant, le rythme harmonique
-   de la mesure. Pur, testable sur le corpus.
+   de la mesure. Pur, testable sur le corpus. Fait pour le premier
+   jalon (`Expect`, dans `games/walk`) : l'accord, s'il arrive sur ce
+   temps, le suivant, temps fort ou faible, le nombre d'accords de la
+   mesure (0 pour un accord tenu depuis une mesure précédente). La
+   gamme du moment viendra de l'analyse, la coda plus tard.
 2. **Le marqueur** : des notes horodatées et les temps attendus en
-   entrée, des marques en sortie. Pur, sans horloge, testé avec
-   `keyboard.Sequence`.
+   entrée, des marques en sortie. Pur, sans horloge. Fait pour le
+   palier 1 (`Marker`, voir « Ce qu'on attend, temps par temps »),
+   testé sur des notes datées à la main.
 3. **Le synthé** :
    - les **notes programmées** : fait, `ScheduleOn` et `ScheduleOff`
      (voir « Les notes datées » dans `architecture.md`) ;
@@ -499,12 +527,18 @@ Ce qui suit est notre lecture des sources.
      candidats et une mesure sous charge avec plusieurs instruments ;
    - les **zones du clavier**.
 4. **La coquille du jeu** (`games/walk`) : défilement, entrée,
-   décompte, affichage, le bonhomme.
+   décompte, affichage, le bonhomme. Première livraison faite : la
+   grille en MuseJazz Text, quatre mesures par ligne, la mesure jouée
+   grisée et un curseur ; le décompte en grand ; les claquements sur 2
+   et 4 ; la main gauche en contrebasse, la droite en piano ; `-demo`
+   pour la basse de référence. Restent les marques, la phase sans tempo
+   et le bonhomme.
 5. **La progression**, par le dex.
 
 ## Le premier jalon jouable
 
-- Les fondamentales, main gauche seule, sur un blues en fa généré, au
+- Les fondamentales, main gauche seule, sur un blues jazz lu dans un
+  export iReal (le IV en mesure 2, le VI7, un II-V, un turnaround), au
   claquement de doigts sur 2 et 4, la contrebasse et le métronome en
   soundfont.
 - La phase d'entraînement sans tempo.

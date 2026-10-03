@@ -218,7 +218,7 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 ## Les jeux
 
 - [ ] *Walk with me* (`walk.md`), premier jalon : les fondamentales à
-      la main gauche sur un blues en fa, au métronome, avec la phase
+      la main gauche sur un blues jazz, au métronome, avec la phase
       sans tempo. Les notes programmées, le mélangeur et le `Metronome`
       sont faits ; il demande encore de trancher le modèle de
       paliers. La soundfont en fait partie (voir « L'audio ») : la

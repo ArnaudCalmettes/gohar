@@ -73,6 +73,7 @@ gohar/
     clock.go                 échantillons vers horloge murale
     mixer.go                 plusieurs instruments, une sortie
     soundfont.go             fichiers SF2, Sampler
+    clip.go                  un son enregistré en WAV, Clip
     histogram.go             histogramme des délais
     device.go                ouverture d'oto et discipline des buffers
 
@@ -337,6 +338,19 @@ et reçoit un clavecin sonnerait faux sans dire pourquoi.
 Le parsing lit tous les échantillons en mémoire et alloue d'autant ; il
 se fait une fois, avant le jeu, et plusieurs `Sampler` partagent le même
 `SoundFont`. Ensuite, ni `Read`, ni `NoteOn` n'allouent.
+
+### Les sons enregistrés
+
+Certains sons n'existent dans aucune soundfont : le claquement de
+doigts de *Walk with me*, par exemple. Le `Clip` joue un seul fichier
+WAV, une percussion : chaque frappe le relance depuis le début, à sa
+vélocité, et il s'éteint seul. La touche n'y change rien, le relâchement
+non plus. Quatre prises peuvent se chevaucher.
+
+Le WAV doit être échantillonné à 48 kHz, comme tout le paquet : une
+autre fréquence est une erreur plutôt qu'un rééchantillonnage. PCM 16 ou
+24 bits, ou flottants 32 bits, en mono ou en stéréo. Le décodeur ne lit
+que les blocs « fmt » et « data », et saute les métadonnées.
 
 ## Répartition entre `harmony` et `naming`
 

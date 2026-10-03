@@ -2,15 +2,17 @@ module github.com/ArnaudCalmettes/gohar/games
 
 go 1.27.0
 
-// dex, harmony et synth ne sont pas publiés : le workspace les résout pour build et test,
+// charts, dex, harmony et synth ne sont pas publiés : le workspace les résout pour build et test,
 // ces replace les résolvent aussi pour go mod tidy, qui ignore le workspace.
 replace (
+	github.com/ArnaudCalmettes/gohar/charts => ../charts
 	github.com/ArnaudCalmettes/gohar/dex => ../dex
 	github.com/ArnaudCalmettes/gohar/harmony => ../harmony
 	github.com/ArnaudCalmettes/gohar/synth => ../synth
 )
 
 require (
+	github.com/ArnaudCalmettes/gohar/charts v0.0.0
 	github.com/ArnaudCalmettes/gohar/dex v0.0.0
 	github.com/ArnaudCalmettes/gohar/harmony v0.0.0
 	github.com/ArnaudCalmettes/gohar/synth v0.0.0

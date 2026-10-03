@@ -1,18 +1,19 @@
-# Provenance des sons
+# Where the sounds come from
 
 ## snap.wav
 
-- **Source** : « finger-snap-stereo-11.wav », par newagesoup, sur
-  Freesound (son n° 364732) :
+- **Source**: "finger-snap-stereo-11.wav", by newagesoup, on Freesound
+  (sound #364732):
   <https://freesound.org/people/newagesoup/sounds/364732/>
-- **Licence** : Creative Commons 0 (domaine public).
-- **Retouches** : coupé 3 ms avant l'attaque, fondu d'entrée de 1 ms,
-  150 ms de queue finies par un fondu de 20 ms ; mono, 48 kHz, 16 bits.
+- **License**: Creative Commons 0 (public domain).
+- **Edits**: cut 3 ms before the attack, with a 1 ms fade in; 150 ms of
+  tail ending in a 20 ms fade out; mono, 48 kHz, 16 bits.
 
 ## GeneralUser GS
 
-La contrebasse vient de GeneralUser GS v2.0.3, par S. Christian Collins
-(<https://github.com/mrbumpy409/GeneralUser-GS>). Sa licence permet de
-l'utiliser dans un logiciel et de la redistribuer, retouchée ou non.
-Elle n'est pas versionnée ici pour son poids (32 Mo) : `make sounds` la
-télécharge dans le cache de l'utilisateur, en vérifiant son empreinte.
+The double bass, the piano and the drum kit come from GeneralUser GS
+v2.0.3, by S. Christian Collins
+(<https://github.com/mrbumpy409/GeneralUser-GS>). Its license allows
+using it in software and redistributing it, modified or not. It is not
+kept in the repository because of its size (32 MB): `make sounds`
+downloads it into the user's cache directory and checks its hash.
