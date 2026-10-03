@@ -19,6 +19,24 @@ fmt:
 bench:
 	cd harmony && go test -bench . -benchmem ./...
 
+# Les sons trop gros pour le dépôt, téléchargés une fois dans le cache
+# de l'utilisateur, là où les jeux les cherchent (os.UserCacheDir sous
+# Linux). Le commit est figé et l'empreinte vérifiée : un fichier qui
+# change en amont ne passe pas en silence.
+CACHE ?= $(or $(XDG_CACHE_HOME),$(HOME)/.cache)/gohar
+GENERALUSER_URL := https://raw.githubusercontent.com/mrbumpy409/GeneralUser-GS/684543d5e5efaef08d02be50dcda8d552478fa60/GeneralUser-GS.sf2
+GENERALUSER_SHA256 := 9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe
+
+.PHONY: sounds
+sounds: $(CACHE)/GeneralUser-GS.sf2
+
+$(CACHE)/GeneralUser-GS.sf2:
+	@mkdir -p $(CACHE)
+	curl -fL --progress-bar -o $@.part $(GENERALUSER_URL)
+	@echo "$(GENERALUSER_SHA256)  $@.part" | sha256sum -c --quiet
+	@mv $@.part $@
+	@echo "GeneralUser GS v2.0.3 dans $@"
+
 # La latence audio ne se mesure pas en test : elle se joue et s'écoute.
 .PHONY: latency
 latency:

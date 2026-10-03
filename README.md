@@ -43,6 +43,9 @@ open.
   ```
 
 - A MIDI keyboard is recommended, not required.
+- The sounds of *Walk with me*: `make sounds` downloads GeneralUser GS
+  (32 MB) into your cache directory (`~/.cache/gohar`), where the game
+  looks for it. Without it, the game falls back to 8-bit sounds.
 
 Developed and tested on Linux. Other platforms supported by Ebitengine
 should work but have not been tried.
@@ -90,6 +93,21 @@ go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 | `N` | switch between signs and words |
 | `H` | show audio delay figures |
 | `Esc` | quit |
+
+### walk
+
+*Walk with me*, the game that teaches the left hand to replace the
+bassist. For now it only counts: finger snaps on 2 and 4 count in, then
+a double bass plays the roots of a blues in F.
+
+```sh
+make sounds                    # once, from the repository root
+cd games
+go run ./walk -bars 12
+```
+
+`-sf2` plays another soundfont, `-list` shows its presets and `-bass`
+picks one (`bank:patch`, `0:32` by default).
 
 ### keys
 

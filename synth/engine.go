@@ -93,10 +93,10 @@ type voice struct {
 //
 // # Two goroutines, one handover
 //
-// NoteOn and NoteOff are called from wherever the keys come from, a
-// MIDI callback or a game loop. Read is called by the audio driver on
-// its own goroutine and must never wait, never allocate and never
-// block on anything.
+// NoteOn, NoteOff and their scheduled twins are called from wherever
+// the keys come from, a MIDI callback or a game loop. Read is called by
+// the audio driver on its own goroutine and must never wait, never
+// allocate and never block on anything.
 //
 // So the two sides share a queue of commands and nothing else, and the
 // voices are touched by the audio goroutine alone.
@@ -121,8 +121,7 @@ type Engine struct {
 
 	Envelope Envelope
 
-	voices  [maxVoices]voice
-	pending [maxCommands]command
+	voices [maxVoices]voice
 }
 
 var _ Instrument = (*Engine)(nil)
@@ -157,11 +156,12 @@ func frames(d time.Duration) float64 {
 }
 
 func (e *Engine) Read(buf []byte) (int, error) {
-	n := e.take(time.Now(), &e.pending)
-	for i := range n {
-		e.apply(e.pending[i])
-	}
+	return e.render(e, buf, time.Now()), nil
+}
 
+// fill writes the frames of `buf` with whatever is sounding. Called by
+// render between two commands, so a dated note starts on its frame.
+func (e *Engine) fill(buf []byte) {
 	env := e.envelope()
 	rise := 1 / frames(env.Attack)
 	decay := (1 - env.Sustain) / frames(env.Decay)
@@ -208,8 +208,6 @@ func (e *Engine) Read(buf []byte) (int, error) {
 
 		writeFrame(buf[f*BytesPerFrame:], float32(clamp(sample)))
 	}
-
-	return count * BytesPerFrame, nil
 }
 
 func (e *Engine) apply(c command) {
@@ -276,8 +274,12 @@ func clamp(v float64) float64 {
 	return v
 }
 
+// writeFrame writes the same sample on both channels.
 func writeFrame(buf []byte, v float32) {
-	bits := math.Float32bits(v)
-	binary.LittleEndian.PutUint32(buf[0:], bits)
-	binary.LittleEndian.PutUint32(buf[4:], bits)
+	writeSample(buf[0:], v)
+	writeSample(buf[4:], v)
+}
+
+func writeSample(buf []byte, v float32) {
+	binary.LittleEndian.PutUint32(buf, math.Float32bits(v))
 }

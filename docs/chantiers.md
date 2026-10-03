@@ -206,9 +206,9 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] la calibration chez le joueur, promise dès le premier jour.
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
-- [ ] la soundfont dans `synth/soundfont` : go-meltysynth dans la
-      `queue` commune, un piano Salamander réduit avec Polyphone, puis
-      une mesure sous charge.
+- [ ] la soundfont : le `Sampler` existe ; restent l'audition des
+      candidats, un piano Salamander réduit avec Polyphone, puis une
+      mesure sous charge.
 
 Deux portes ouvertes, décrites dans `architecture.md` : un lecteur MIDI
 en pur Go et la cible navigateur. Elles ne coûtent que la règle des
@@ -219,9 +219,12 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 
 - [ ] *Walk with me* (`walk.md`), premier jalon : les fondamentales à
       la main gauche sur un blues en fa, au métronome, avec la phase
-      sans tempo. Il demande des notes programmées à l'échantillon près,
-      un mélangeur et un `MetronomeSystem`, et de trancher le modèle de
-      paliers.
+      sans tempo. Les notes programmées, le mélangeur et le `Metronome`
+      sont faits ; il demande encore de trancher le modèle de
+      paliers. La soundfont en fait partie (voir « L'audio ») : la
+      contrebasse qui marche et les claquements de doigts sur 2 et 4
+      sont la première chose qu'un joueur entendra, et ce sont eux qui
+      posent l'ambiance.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

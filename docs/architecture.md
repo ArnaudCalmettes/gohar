@@ -65,10 +65,14 @@ gohar/
     persist.go               lecture et écriture JSON
 
   synth/       go.mod        synthèse et sortie audio, dépend d'oto
+                             et de go-meltysynth
     tuning.go                numéro de touche vers fréquence
-    engine.go                voix, enveloppe, mélange, io.Reader
+    engine.go                voix, enveloppe, io.Reader
     timbre.go                formes d'onde, timbres 8 bits
-    queue.go                 Instrument, file de commandes
+    queue.go                 Instrument, file de commandes, notes datées
+    clock.go                 échantillons vers horloge murale
+    mixer.go                 plusieurs instruments, une sortie
+    soundfont.go             fichiers SF2, Sampler
     histogram.go             histogramme des délais
     device.go                ouverture d'oto et discipline des buffers
 
@@ -249,6 +253,90 @@ petit, mais non mesuré, et c'est la somme des deux que le joueur sent.
 
 La calibration reste au programme quoi qu'il arrive : ces chiffres sont
 ceux d'une machine, et rien ne dit qu'ils ressemblent à ceux du joueur.
+
+### Les notes datées
+
+Ce que joue le joueur part tout de suite : `NoteOn` s'applique au début
+du prochain tampon, et `at` ne sert qu'à mesurer le retard. Ce que joue
+le programme, un métronome ou une ligne de basse, ne peut pas suivre ce
+chemin : la boucle d'Ebiten tourne toutes les 16,7 ms, et un temps
+envoyé depuis elle tomberait n'importe où dans cet intervalle. Une
+gigue de cet ordre s'entend sur un claquement de doigts.
+
+D'où `ScheduleOn` et `ScheduleOff`, que fournit la `queue` commune à
+tous les instruments. Le programme les appelle en avance, une fenêtre
+d'une centaine de millisecondes avant le temps, et la goroutine audio
+applique chaque commande sur son échantillon : elle remplit le tampon
+jusqu'à cet échantillon, applique la commande, puis continue.
+
+Il faut pour cela savoir à quel instant correspond chaque échantillon.
+C'est le rôle de l'horloge du paquet (`clock`). Elle n'entend pas le
+haut-parleur : elle voit seulement à quels instants le pilote appelle
+`Read`. Elle en tire une estimation lissée, qui ne suit chaque écart
+qu'au soixante-quatrième. Le pilote appelle par rafales, plusieurs
+tampons d'un coup pour remplir son ring buffer, et une lecture isolée
+ne dit pas grand-chose ; la moyenne, elle, suit la lente dérive entre
+le quartz de la carte son et celui du système. Au-delà de 100 ms
+d'écart (un décrochage, un portable mis en veille), l'horloge saute au
+lieu de lisser.
+
+Le son sort plus tard que l'échantillon écrit, du temps des files du
+dessous. Ce retard est constant pour un réglage donné : il décale toutes
+les notes datées de la même quantité, sans toucher à leur espacement.
+C'est la latence de sortie, que la calibration mesure. Une note datée
+dans le passé part tout de suite, en retard ; une fenêtre d'avance plus
+large que le pire hoquet de la boucle de jeu évite d'en arriver là.
+
+### Le mélangeur
+
+Un `Device` ne prend qu'une source, et un `Engine` ne joue qu'un timbre.
+Un jeu qui fait entendre une contrebasse, un claquement de doigts et le
+piano du joueur passe donc par un `Mixer`, qui additionne ses entrées,
+chacune avec son gain, et écrête la somme comme le fait un `Engine` sur
+un accord trop dense. Ses tampons sont alloués une fois pour toutes ;
+une lecture plus longue qu'eux se fait en plusieurs passes.
+
+Chaque instrument garde sa propre horloge. Le mélangeur les lit l'un
+après l'autre dans le même appel, à quelques microsecondes d'écart :
+leurs estimations coïncident, et deux notes datées du même instant sur
+deux instruments tombent sur le même échantillon.
+
+### Les soundfonts
+
+Un fichier SF2 contient des instruments enregistrés, échantillonnés
+note par note : une contrebasse, un piano, des kits de batterie. Le
+`Sampler` en joue un, désigné comme en General MIDI par une banque et un
+numéro de programme ; la banque 128 contient les kits, où chaque touche
+est une percussion. Il passe par la même `queue` que l'`Engine`, et donc
+par les mêmes notes datées et la même mesure des délais.
+
+Le moteur est go-meltysynth (licence MIT, rien d'autre que la
+bibliothèque standard). Il n'est importé que par `soundfont.go`. Ce
+n'est pas une surface au sens de la section suivante, puisqu'il ne
+touche pas le monde réel : il calcule des échantillons, et suivra le
+jeu dans le navigateur sans rien changer.
+
+Trois choix :
+
+- **Le fichier dans `synth`, pas dans un sous-paquet.** Le `Sampler` a
+  besoin de la `queue`, que rien n'exporte ; un sous-paquet aurait
+  demandé d'exporter la file, ses commandes et son rendu pour un seul
+  client.
+- **Un bloc de 16 échantillons.** meltysynth calcule par blocs et
+  n'applique une commande qu'au bloc suivant : une note datée tombe à un
+  bloc près, un tiers de milliseconde, sous la gigue du pilote.
+  L'`Engine` tombe sur l'échantillon, le `Sampler` à un bloc près.
+- **Ni réverbération ni chorus**, qui coûtent plus cher que toutes les
+  voix réunies, et dont une basse dans un mixage n'a pas besoin. À
+  revoir avec le piano.
+
+Un preset absent du fichier est une erreur. meltysynth, lui, se replie
+en silence sur son premier preset : un jeu qui demande une contrebasse
+et reçoit un clavecin sonnerait faux sans dire pourquoi.
+
+Le parsing lit tous les échantillons en mémoire et alloue d'autant ; il
+se fait une fois, avant le jeu, et plusieurs `Sampler` partagent le même
+`SoundFont`. Ensuite, ni `Read`, ni `NoteOn` n'allouent.
 
 ## Répartition entre `harmony` et `naming`
 

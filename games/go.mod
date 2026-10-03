@@ -27,6 +27,7 @@ require (
 	github.com/go-text/typesetting v0.2.0 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/jfreymuth/pulse v0.1.3 // indirect
+	github.com/sinshu/go-meltysynth v0.0.0-20230205031334-05d311382fc4 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.18.0 // indirect

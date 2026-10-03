@@ -80,7 +80,9 @@ valent pour toutes les activités ; la feuille de route décrit la suite.
   `Update` donnerait une gigue d'une frame (16,7 ms). Résolu par
   `keyboard.Sequence`, une `Source` qui rejoue des notes datées sur sa
   propre goroutine : sa gigue est celle d'un doigt sur le clavier MIDI,
-  le buffer du périphérique.
+  le buffer du périphérique. Depuis, `synth` sait aussi jouer des notes
+  datées à l'échantillon près (voir « Les notes datées » dans
+  `architecture.md`).
 - **Deux sources, un moteur, un affichage.** Le rappel d'une `Source`
   doit rendre la main tout de suite. Résolu par `onKey`, seul chemin de
   toute source vers le moteur et l'affichage.
@@ -153,9 +155,10 @@ Fait :
 
 Reste :
 
-8. **Soundfont** : go-meltysynth dans `synth/soundfont`, derrière la
-   même interface `Instrument`, puis refaire la mesure 6. Le lecteur
-   est étudié (voir `chantiers.md`) ; il manque un piano SF2 réduit.
+8. **Soundfont** : le `Sampler` de `synth` lit les SF2 par
+   go-meltysynth, derrière la même interface `Instrument`. Reste à le
+   brancher dans `ear` avec un piano SF2 réduit, puis refaire la
+   mesure 6.
 9. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
 
 ## La feuille de route

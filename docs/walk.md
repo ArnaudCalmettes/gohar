@@ -321,7 +321,7 @@ Ce qui suit est notre lecture des sources.
 - Un personnage qui marche en rythme : le jeu s'appelle *Walk With Me*.
   Sa démarche dit comment ça tourne, à la place d'une jauge abstraite ;
   il montre l'énergie du moment, jamais un score.
-- **Son pas** suit le `MetronomeSystem`, un pas par temps, calé sur les
+- **Son pas** suit le `Metronome`, un pas par temps, calé sur les
   temps et jamais sur les images. **Sa démarche** suit l'aisance du
   joueur sur les dernières mesures, avec de l'inertie : une fausse note
   isolée ne le fait pas trébucher, une série oui. **Ses bulles** suivent
@@ -419,11 +419,55 @@ Ce qui suit est notre lecture des sources.
   Polyphone), une contrebasse, une charleston et un claquement de
   doigts, tous sous licence claire, joués par go-meltysynth (voir « Les
   briques »).
-- Un `MetronomeSystem` tient la carte du temps musical (tempo, temps,
-  mesures), que lisent le défilement, le marqueur et le son. Il
-  programme le son à l'avance, la boucle d'Ebiten à 60 Hz étant trop
-  grossière ; les notes du joueur, datées par le MIDI et corrigées de la
-  latence calibrée, se placent sur la même carte.
+- Un `Metronome` (`games/walk`) tient la carte du temps musical
+  (tempo, temps, mesures), que lisent le défilement, le marqueur et le
+  son. Il programme le son à l'avance, la boucle d'Ebiten à 60 Hz étant
+  trop grossière ; les notes du joueur, datées par le MIDI et corrigées
+  de la latence calibrée, se placent sur la même carte.
+- Le métronome ne tient que la pulsation, sans style. Les temps forts
+  relèvent d'un cadre stylistique : le 1 et le 3 du jazz à quatre temps
+  vivent provisoirement dans `Metronome.Strong`.
+- **Sous la noire.** Les pêches anticipées sur le « et » du 4 (Siskind,
+  p. 207) demandent que la carte descende à la croche : `AtBeats` et
+  `Beats` comptent en temps fractionnaires, et `DueEvery` sert les
+  croches d'une fenêtre comme `Due` en sert les temps.
+- **Le swing**, un décorateur du métronome (`Swing`), réglable par la
+  place du « et » dans le temps : 0,5 pour des croches égales, 0,66
+  pour le swing ternaire « d'école », 0,75 pour le swing très serré des
+  débuts du jazz à La Nouvelle-Orléans. Il déforme le temps à
+  l'intérieur de chaque temps, dans les deux sens : de la position vers
+  l'instant pour le son, de l'instant vers la position pour le
+  marqueur, qui doit reconnaître un « et » joué swing comme un « et ».
+  Les temps eux-mêmes ne bougent jamais.
+- **L'humanisation** appartient au musicien, pas à la pulsation : un
+  décorateur de l'instrument au moment de programmer ses notes. Chaque
+  musicien a son placement (devant, sur ou derrière le temps) et sa
+  dispersion, et ses vélocités varient. Le marqueur juge toujours
+  contre la grille du métronome, jamais contre les notes humanisées de
+  l'accompagnement. Le tirage part d'une graine fixe, pour des tests
+  reproductibles.
+- **Les sons retenus à l'écoute** : une seule soundfont, GeneralUser GS
+  (v2.0.3, licence libre y compris dans un logiciel), et un claquement
+  de doigts en WAV (newagesoup sur Freesound, CC0), aucun des kits
+  essayés n'en ayant.
+  - La contrebasse (0:32) : ronde, sans l'attaque percussive de FluidR3
+    ni l'inégalité des pizzicati bruts de VSCO-2.
+  - Le kit Jazz (128:32) : la charleston au pied (touche 44) et la ride,
+    au choix du joueur entre la 1 (touche 51) et la 2 (touche 59), qui
+    ne diffèrent que par la hauteur.
+  - Plus tard, le joueur pourra charger ses propres soundfonts.
+  - Le snap est versionné dans `games/walk/sounds`, avec sa provenance
+    (`CREDITS.md`), et embarqué dans l'exécutable. GeneralUser, 32 Mo,
+    n'est pas versionnée : `make sounds` la télécharge dans le cache de
+    l'utilisateur, d'un commit figé, empreinte vérifiée. Sa licence
+    permettrait de l'embarquer ; le jour où le jeu se distribuera en
+    binaire, on pourra en extraire les seuls presets utiles.
+- **L'accompagnement doit groover**, pas seulement tomber juste : la
+  charleston et le snap jouant la même chose sur 2 et 4 sonnent
+  redondants. Le motif de ride classique (1, 2 et, 3, 4 et, accents sur
+  2 et 4) y pourvoit, sur des croches swing. Les instruments entrent
+  l'un après l'autre : la charleston au décompte, la basse à la mesure
+  1, le reste ensuite.
 
 ## La progression
 
@@ -447,15 +491,12 @@ Ce qui suit est notre lecture des sources.
    entrée, des marques en sortie. Pur, sans horloge, testé avec
    `keyboard.Sequence`.
 3. **Le synthé** :
-   - des **notes programmées**, appliquées à l'échantillon près par la
-     goroutine audio : aujourd'hui `NoteOn` part à la lecture suivante
-     du tampon, et un métronome piloté par un timer aurait de la gigue ;
-   - un **mélangeur**, puisqu'un `Engine` joue un seul timbre et que
-     `synth.Open` ne prend qu'une source ;
-   - les **soundfonts**, par go-meltysynth dans `synth/soundfont` (MIT,
-     rien d'autre que la bibliothèque standard, pas d'allocation au
-     rendu, SF2 seulement), dans la `queue` commune, puis une mesure
-     sous charge avec plusieurs instruments ;
+   - les **notes programmées** : fait, `ScheduleOn` et `ScheduleOff`
+     (voir « Les notes datées » dans `architecture.md`) ;
+   - le **mélangeur** : fait, `synth.Mixer` ;
+   - les **soundfonts** : fait, `synth.Sampler` (voir « Les
+     soundfonts » dans `architecture.md`) ; restent l'audition des
+     candidats et une mesure sous charge avec plusieurs instruments ;
    - les **zones du clavier**.
 4. **La coquille du jeu** (`games/walk`) : défilement, entrée,
    décompte, affichage, le bonhomme.

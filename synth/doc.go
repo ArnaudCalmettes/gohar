@@ -1,9 +1,9 @@
 // Package synth turns note events into a stream of audio samples.
 //
-// It depends on nothing but the standard library. What it produces is
-// an io.Reader over linear PCM, which is what a game hands to its audio
-// context; the engine that consumes it is the game's business, not this
-// package's.
+// What it produces is an io.Reader over linear PCM. Two libraries
+// only: oto, behind Device, to reach the sound card, and go-meltysynth,
+// behind Sampler, to play soundfonts; everything else is the standard
+// library.
 //
 // Nothing here knows about harmony. A pitch arrives as a MIDI note
 // number and leaves as a frequency, and the conversion lives here
