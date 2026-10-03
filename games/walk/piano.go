@@ -11,17 +11,28 @@ import "image/color"
 // wants it, it moves to a package of its own.
 
 const (
+	midiKeys = 128 // 0 to 127
+
 	pianoLow  = 24 // C1, under the low E of the double bass
 	pianoHigh = 84 // C6
 
-	pianoX      = 20
+	pianoX      = margin
 	pianoY      = 250
-	pianoWidth  = 600
+	pianoWidth  = screenWidth - 2*margin
 	pianoHeight = 70
+
+	// A black key, against a white one.
+	blackWidth  = 0.6
+	blackLength = 0.62
 
 	// glowDecay is what a released key keeps of its light each tick:
 	// mostly gone in a quarter of a second, as in ear.
 	glowDecay = 0.85
+
+	// glowOff is the light under which a key is dark again, and pressed
+	// the light over which it is drawn down.
+	glowOff = 0.01
+	pressed = 0.95
 
 	// ghost dims a key folded in from outside the range.
 	ghost = 0.5
@@ -31,6 +42,8 @@ const (
 	lipShade   = 0.78
 	shadowRows = 3
 	shadowFrom = 0.55
+
+	splitTick = 5 // the mark of the split, above the keys
 )
 
 var (
@@ -47,14 +60,14 @@ var (
 // A piano is the keyboard's state from one frame to the next: how lit
 // each MIDI key still is.
 type piano struct {
-	glow   [128]float32
-	byDemo [128]bool // the light comes from the demo, not the player
-	split  int       // the lowest key of the right hand
+	glow   [midiKeys]float32
+	byDemo [midiKeys]bool // the light comes from the demo, not the player
+	split  int            // the lowest key of the right hand
 }
 
 // update lights what the player holds and what the demo plays, the
 // player first when both play the same key, and lets the rest fade.
-func (p *piano) update(player, demo *[128]bool) {
+func (p *piano) update(player, demo *[midiKeys]bool) {
 	for k := range p.glow {
 		switch {
 		case player[k]:
@@ -63,7 +76,7 @@ func (p *piano) update(player, demo *[128]bool) {
 			p.glow[k], p.byDemo[k] = 1, true
 		default:
 			p.glow[k] *= glowDecay
-			if p.glow[k] < 0.01 {
+			if p.glow[k] < glowOff {
 				p.glow[k] = 0
 			}
 		}
@@ -73,17 +86,17 @@ func (p *piano) update(player, demo *[128]bool) {
 // fold brings a key into the displayed range by octaves.
 func fold(k int) int {
 	for k < pianoLow {
-		k += 12
+		k += octave
 	}
 	for k > pianoHigh {
-		k -= 12
+		k -= octave
 	}
 	return k
 }
 
 // levels folds every lit key into the range, keeping the brightest
 // light per displayed key, and whether the demo lit it.
-func (p *piano) levels() (out [128]float32, demo [128]bool) {
+func (p *piano) levels() (out [midiKeys]float32, demo [midiKeys]bool) {
 	for k, g := range p.glow {
 		if g == 0 {
 			continue
@@ -100,7 +113,7 @@ func (p *piano) levels() (out [128]float32, demo [128]bool) {
 }
 
 func isBlack(k int) bool {
-	switch k % 12 {
+	switch k % octave {
 	case 1, 3, 6, 8, 10:
 		return true
 	}
@@ -130,8 +143,8 @@ func keyRect(k int) (x, y, w, h float32) {
 	if !isBlack(k) {
 		return pianoX + float32(whites)*whiteW, pianoY, whiteW, pianoHeight
 	}
-	bw := whiteW * 0.6
-	return pianoX + float32(whites)*whiteW - bw/2, pianoY, bw, pianoHeight * 0.62
+	bw := whiteW * blackWidth
+	return pianoX + float32(whites)*whiteW - bw/2, pianoY, bw, pianoHeight * blackLength
 }
 
 // draw paints the keyboard, whites then blacks over them, and marks
@@ -158,7 +171,7 @@ func (p *piano) draw(c canvas) {
 				lip = blackLip
 			}
 			c.rect(x, y, w, h, keyBorder)
-			if levels[k] > 0.95 {
+			if levels[k] > pressed {
 				// Down: the lip goes under, the top runs to the edge,
 				// darkened at the back where it sinks.
 				c.rect(x+1, y, w-2, h-1, top)
@@ -174,7 +187,7 @@ func (p *piano) draw(c canvas) {
 	}
 	if p.split > pianoLow && p.split <= pianoHigh {
 		x, y, _, _ := keyRect(p.split)
-		c.line(x, y-6, x, y-1, 1, faint)
+		c.line(x, y-1-splitTick, x, y-1, 1, faint)
 	}
 }
 

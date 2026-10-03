@@ -133,13 +133,15 @@ func (s *Sampler) fill(buf []byte) {
 
 // midiVelocity turns a velocity between 0 and 1 into MIDI's 1 to 127.
 // Never 0, which MIDI reads as a release.
+const maxVelocity = 127
+
 func midiVelocity(v float64) int32 {
-	return int32(max(1, min(127, math.Round(v*127))))
+	return int32(max(1, min(maxVelocity, math.Round(v*maxVelocity))))
 }
 
 // writeStereo writes a frame, clamped: a soundfont recorded hot, or a
 // chord struck hard, may exceed full scale.
 func writeStereo(buf []byte, l, r float32) {
 	writeSample(buf[0:], float32(clamp(float64(l))))
-	writeSample(buf[4:], float32(clamp(float64(r))))
+	writeSample(buf[bytesPerSample:], float32(clamp(float64(r))))
 }

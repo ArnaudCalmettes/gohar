@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ArnaudCalmettes/gohar/harmony"
+	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 // The marker is the second brick of the game (see "Les briques" in
@@ -143,19 +144,10 @@ func (k *Marker) Play(n Note) (NoteMark, bool) {
 	}
 
 	b := k.beats[beat]
-	pc := harmony.PitchClass(n.Key % 12)
-	switch {
-	case !b.Chord.Silent && pc == b.Chord.Bass:
-		mark.Pitch = Root
-	case !b.Chord.Silent && b.Chord.Chord.Set().Contains(pc):
-		mark.Pitch = ChordTone
-	default:
-		mark.Pitch = Outside
-	}
-
+	mark.Pitch = pitchOf(n.Key, b.Chord)
 	c := &k.claims[beat]
 	c.notes++
-	if k.lands(b, mark.Pitch) {
+	if k.rules.lands(b, mark.Pitch) {
 		c.landed = true
 	}
 	return mark, true
@@ -201,17 +193,32 @@ func (k *Marker) timing(off time.Duration) Timing {
 	return Late
 }
 
+// pitchOf says what `key` is to the chord `ch`: its bass, another of
+// its notes, or neither. Nothing is in a silence.
+func pitchOf(key int, ch analysis.Change) Pitch {
+	pc := harmony.PitchClass(key % octave)
+	switch {
+	case ch.Silent:
+		return Outside
+	case pc == ch.Bass:
+		return Root
+	case ch.Chord.Set().Contains(pc):
+		return ChordTone
+	}
+	return Outside
+}
+
 // lands tells whether a note of pitch `p` lands beat `b`: its root
 // always; another chord tone when inversions are allowed, or on beat 1
 // of a held chord when the rules allow it.
-func (k *Marker) lands(b Beat, p Pitch) bool {
+func (r Rules) lands(b Beat, p Pitch) bool {
 	switch {
 	case p == Root:
 		return true
 	case p != ChordTone:
 		return false
 	}
-	return k.rules.Inversions || b.Holds && k.rules.HeldChordTone
+	return r.Inversions || b.Holds && r.HeldChordTone
 }
 
 // window turns a fraction of a beat into a duration at the run's tempo.

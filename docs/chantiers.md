@@ -206,9 +206,9 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] la calibration chez le joueur, promise dès le premier jour.
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
-- [ ] la soundfont : le `Sampler` existe ; restent l'audition des
-      candidats, un piano Salamander réduit avec Polyphone, puis une
-      mesure sous charge.
+- [ ] la soundfont : GeneralUser GS est retenue (`make sounds`) ;
+      restent un meilleur piano, Salamander réduit avec Polyphone par
+      exemple, et une mesure sous charge.
 
 Deux portes ouvertes, décrites dans `architecture.md` : un lecteur MIDI
 en pur Go et la cible navigateur. Elles ne coûtent que la règle des
@@ -218,14 +218,20 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 ## Les jeux
 
 - [ ] *Walk with me* (`walk.md`). Le premier jalon tourne : les
-      fondamentales à la main gauche sur un blues jazz, au snap sur 2
-      et 4, marquées sur la grille, avec la phase sans tempo, le
+      fondamentales à la main gauche sur un blues jazz, sur la
+      batterie, marquées sur la grille, avec la phase sans tempo, le
       bonhomme et une démo qui marche d'après Siskind. Restent :
-      régler à l'oreille les fenêtres et les seuils du bonhomme ; la
-      correction de latence (`oreille.md`) ; trancher le modèle de
-      paliers avant le deuxième, la basse en deux ; d'autres grilles ;
-      un catalogue de patterns pour la basse de référence (voir « La
-      basse de référence » dans `walk.md`).
+      - régler à l'oreille les fenêtres, les seuils du bonhomme et le
+        gain du kit ;
+      - la correction de latence (`oreille.md`) : un premier
+        enregistrement (`-record`) montre les notes en avance d'une
+        trentaine de millisecondes, régulièrement ;
+      - le commentaire du bonhomme en fin de run ;
+      - trancher le modèle de paliers avant le deuxième, la basse en
+        deux ;
+      - d'autres grilles ;
+      - un catalogue de patterns pour la basse de référence (voir « La
+        basse de référence » dans `walk.md`).
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

@@ -9,7 +9,7 @@ func TestPractice(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	p := newPractice(Expect(grid, at120(), 1))
+	p := newPractice(FirstPalier, Expect(grid, at120(), 1))
 	waiting := func() string { return chordName(p.waiting().Chord) }
 
 	if got := p.play(A2); got != ChordTone || waiting() != "F7" {
@@ -27,7 +27,7 @@ func TestPractice(t *testing.T) {
 
 	// Through the chorus, root after root, back to the top.
 	for range len(p.arrivals) - 1 {
-		p.play(bassKey(p.waiting().Chord.Bass))
+		p.play(C2 + int(p.waiting().Chord.Bass))
 	}
 	if waiting() != "F7" || p.at != 0 || len(p.landed) != 0 {
 		t.Errorf("after the turnaround: waiting on %s, %d landed; want F7 again, marks cleared", waiting(), len(p.landed))

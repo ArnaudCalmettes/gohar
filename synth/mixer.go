@@ -50,19 +50,18 @@ func (m *Mixer) Read(buf []byte) (int, error) {
 
 // mix fills `out`, at most mixChunk frames, with the sum of the inputs.
 func (m *Mixer) mix(out []byte) {
-	samples := len(out) / 4
-	sum := m.sum[:samples]
+	sum := m.sum[:len(out)/bytesPerSample]
 	clear(sum)
 
 	for _, in := range m.inputs {
 		s := m.scratch[:len(out)]
 		got, _ := io.ReadFull(in.src, s)
-		for i := range got / 4 {
-			sum[i] += in.gain * math.Float32frombits(binary.LittleEndian.Uint32(s[i*4:]))
+		for i := range got / bytesPerSample {
+			sum[i] += in.gain * math.Float32frombits(binary.LittleEndian.Uint32(s[i*bytesPerSample:]))
 		}
 	}
 
 	for i, v := range sum {
-		binary.LittleEndian.PutUint32(out[i*4:], math.Float32bits(float32(clamp(float64(v)))))
+		writeSample(out[i*bytesPerSample:], float32(clamp(float64(v))))
 	}
 }

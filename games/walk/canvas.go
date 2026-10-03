@@ -102,15 +102,22 @@ type fonts struct {
 	chord, count, ui *font
 }
 
+// Their sizes, in logical units.
+const (
+	chordSize = 24
+	countSize = 64
+	uiSize    = 11
+)
+
 func newFonts() (fonts, error) {
 	var fs fonts
 	var err error
-	if fs.chord, err = newFont(museJazzText, 24); err != nil {
+	if fs.chord, err = newFont(museJazzText, chordSize); err != nil {
 		return fs, err
 	}
-	if fs.count, err = newFont(museJazzText, 64); err != nil {
+	if fs.count, err = newFont(museJazzText, countSize); err != nil {
 		return fs, err
 	}
-	fs.ui, err = newFont(goregular.TTF, 11)
+	fs.ui, err = newFont(goregular.TTF, uiSize)
 	return fs, err
 }

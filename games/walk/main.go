@@ -37,7 +37,7 @@ func main() {
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
 	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
 	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")
-	sf2 := flag.String("sf2", defaultSoundFont(), "the soundfont to play the bass and the piano with")
+	sf2 := flag.String("sf2", defaultSoundFont(), "the soundfont of the band: the bass, the piano, the drums")
 	chip := flag.Bool("chip", false, "play 8-bit sounds rather than the soundfont")
 	list := flag.Bool("list", false, "list the presets of the soundfont, and quit")
 	bassPreset := flag.String("bass", "0:32", "bank:patch of the bass in the soundfont")

@@ -25,6 +25,34 @@ const (
 	ride1    = 51 // or ride 2, 59: they differ only in pitch
 )
 
+var acousticGrand = synth.Preset{Bank: 0, Patch: 0}
+
+// The velocities of the band, 0 to 1, set by ear.
+const (
+	countVel    = 0.7 // the hi-hat of the count-in
+	backbeatVel = 0.7 // the ride on 2 and 4
+	beatVel     = 0.4 // the ride on 1 and 3
+	andVel      = 0.5 // the ride on the "and" of 2 and 4
+	hatVel      = 0.6 // the hi-hat on 2 and 4
+	endVel      = 0.7 // the ride on the demo's last note
+	snapVel     = 1
+	bassVel     = 0.8 // the reference bass
+)
+
+// The gains of the mix. With a soundfont, the balance of the renders
+// validated by ear, bass to snap as 4 to 0.6, a little lower overall;
+// meltysynth plays at half scale, hence the large gains of the samplers.
+// The kit's is a first guess, to set by ear.
+const (
+	bassGain  = 3
+	pianoGain = 2
+	kitGain   = 2
+	snapGain  = 0.45
+
+	chipHandsGain = 0.6
+	chipNoiseGain = 0.8
+)
+
 // The keys of the chip sounds, the fallback without a soundfont: the
 // noise is pitched by the key, high for a short hiss.
 const (
@@ -68,8 +96,8 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 		}
 		b.bass, b.piano, b.snap, b.kit = hands, hands, noise, noise
 		b.hat, b.ride, b.chip = noiseKey, chipRide, true
-		mix.Add(hands, 0.6)
-		mix.Add(noise, 0.8)
+		mix.Add(hands, chipHandsGain)
+		mix.Add(noise, chipNoiseGain)
 		return b, nil
 	}
 
@@ -77,7 +105,7 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 	if err != nil {
 		return nil, err
 	}
-	piano, err := synth.NewSampler(sf, synth.Preset{Bank: 0, Patch: 0})
+	piano, err := synth.NewSampler(sf, acousticGrand)
 	if err != nil {
 		return nil, err
 	}
@@ -90,13 +118,10 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 		return nil, err
 	}
 	b.bass, b.piano, b.kit, b.snap = bass, piano, kit, snap
-	// The balance of the renders validated by ear, bass to snap as 4 to
-	// 0.6, a little lower overall. meltysynth plays at half scale, hence
-	// the large gains of the soundfont.
-	mix.Add(bass, 3)
-	mix.Add(piano, 2)
-	mix.Add(kit, 2) // a first guess, to set by ear
-	mix.Add(snap, 0.45)
+	mix.Add(bass, bassGain)
+	mix.Add(piano, pianoGain)
+	mix.Add(kit, kitGain)
+	mix.Add(snap, snapGain)
 	return b, nil
 }
 
@@ -117,18 +142,18 @@ func (bd *band) beat(p Position, key int, at, and time.Time, snap bool) {
 	case p.Bar < 0 && backbeat:
 		// the first bar of the count-in: 1 and 3 only
 	case p.Bar <= 0:
-		bd.strike(bd.hat, 0.7, at)
+		bd.strike(bd.hat, countVel, at)
 	default:
-		vel := 0.4
+		vel := beatVel
 		if backbeat {
-			vel = 0.7
-			bd.strike(bd.hat, 0.6, at)
-			bd.strike(bd.ride, 0.5, and)
+			vel = backbeatVel
+			bd.strike(bd.hat, hatVel, at)
+			bd.strike(bd.ride, andVel, and)
 		}
 		bd.strike(bd.ride, vel, at)
 	}
 	if snap && backbeat {
-		bd.snap.ScheduleOn(noiseKey, 1, at)
+		bd.snap.ScheduleOn(noiseKey, snapVel, at)
 		bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
 	}
 	if bd.demo && key != 0 {
@@ -139,7 +164,7 @@ func (bd *band) beat(p Position, key int, at, and time.Time, snap bool) {
 // end plays the demo's last note, `key` at `at`, with a stroke of the
 // ride: the chord the turnaround leads to (see Ending).
 func (bd *band) end(key int, at time.Time) {
-	bd.strike(bd.ride, 0.7, at)
+	bd.strike(bd.ride, endVel, at)
 	bd.walk(key, at)
 }
 
@@ -150,7 +175,7 @@ func (bd *band) walk(key int, at time.Time) {
 	if bd.held != 0 {
 		bd.bass.ScheduleOff(bd.held, at)
 	}
-	bd.bass.ScheduleOn(key, 0.8, at)
+	bd.bass.ScheduleOn(key, bassVel, at)
 	bd.held = key
 }
 

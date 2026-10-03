@@ -62,8 +62,8 @@ func (r *recorder) Close() error {
 // octaveName appends the octave of `key` to `name`, as MIDI counts
 // them: 28 is E1, 43 is G2.
 func octaveName(name string, key int) string {
-	pc := harmony.PitchClass(key % 12)
-	o := key/12 - 1
+	pc := harmony.PitchClass(key % octave)
+	o := key/octave - 1
 	// B♯ and C♭ spell across the octave line: C♭2 sounds as B1.
 	switch {
 	case pc == 11 && name[0] == 'C':

@@ -92,7 +92,8 @@ gohar/
     ear/                     ear trainer : menu, degrés, tétracordes, modes
     walk/                    Walk with me : métronome, swing, temps
                              attendus, marqueur, walking bass générée,
-                             grille, clavier et bonhomme à l'écran
+                             batterie, enregistrement, grille, clavier
+                             et bonhomme à l'écran
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio
@@ -294,8 +295,8 @@ large que le pire hoquet de la boucle de jeu évite d'en arriver là.
 ### Le mélangeur
 
 Un `Device` ne prend qu'une source, et un `Engine` ne joue qu'un timbre.
-Un jeu qui fait entendre une contrebasse, un claquement de doigts et le
-piano du joueur passe donc par un `Mixer`, qui additionne ses entrées,
+Un jeu qui fait entendre une contrebasse, une batterie, un claquement de
+doigts et le piano du joueur passe donc par un `Mixer`, qui additionne ses entrées,
 chacune avec son gain, et écrête la somme comme le fait un `Engine` sur
 un accord trop dense. Ses tampons sont alloués une fois pour toutes ;
 une lecture plus longue qu'eux se fait en plusieurs passes.

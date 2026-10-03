@@ -18,7 +18,9 @@ const (
 	ChannelCount = 2
 
 	// BytesPerFrame is one float32 per channel.
-	BytesPerFrame = ChannelCount * 4
+	BytesPerFrame = ChannelCount * bytesPerSample
+
+	bytesPerSample = 4 // a float32
 )
 
 const (
@@ -277,7 +279,7 @@ func clamp(v float64) float64 {
 // writeFrame writes the same sample on both channels.
 func writeFrame(buf []byte, v float32) {
 	writeSample(buf[0:], v)
-	writeSample(buf[4:], v)
+	writeSample(buf[bytesPerSample:], v)
 }
 
 func writeSample(buf []byte, v float32) {

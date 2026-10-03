@@ -74,7 +74,7 @@ func (w *walker) gait(tempo bool) gait {
 }
 
 // draw draws him standing on (`x`, `y`), facing right, `s` times the
-// size of the sketch his lengths are written for, in `col`: ink
+// size of his sketch, in `col`: ink
 // for the player, grey when the demo plays. `beats` is where
 // the music is, in beats. Two frames, as a sprite cycle would have,
 // never in between:
@@ -88,37 +88,63 @@ func (w *walker) gait(tempo bool) gait {
 // free. The reactions are frames held for their length: up for a hop,
 // leaning for a stumble.
 func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, now time.Time, col color.Color) {
-	var (
-		stroke = float32(1.5 * s)
-		thigh  = 8.0 * s
-		shin   = 8.0 * s
-		upper  = 6.0 * s // the arm, shoulder to elbow
-		fore   = 7.0 * s // elbow to hand
-		torso  = 14.0 * s
-		head   = 5.0 * s
+	// The sketch, at scale 1: lengths in logical units, angles in
+	// radians from the downward vertical, positive toward the front.
+	const (
+		stroke = 1.5
+		thigh  = 8.0
+		shin   = 8.0
+		torso  = 14.0
+		head   = 5.0 // its radius
+
+		neckGap      = 1.2 // the centre of the head above the neck, in radii
+		shoulderDrop = 0.6 // the shoulders below the neck, in radii
+		upper        = 6.0 // the arm, shoulder to elbow
+		fore         = 7.0 // elbow to hand
+
+		stride       = 0.4 // each leg, walking
+		grooveStride = 0.5
+		shuffle      = 0.1  // looking for the tempo, on the spot
+		knee         = 0.5  // the crossing leg: the knee forward...
+		foot         = -0.9 // ...the foot up behind
+		elbow        = 0.3  // the forearm, from the upper arm
+
+		hopLift = 5.0
+		lean    = 0.3 // stumbling
+
+		snapUpper  = 0.3 // the snapping arm, up front
+		snapFolded = 2.6 // on 1 and 3, the hand up by the chest
+		snapOpen   = 1.3 // on 2 and 4, the hand out, snapping
+		spark      = 0.6 // the spread of the sparks
+		sparkFrom  = 3.0
+		sparkTo    = 7.0
 	)
+	// Drawn at scale 1 on a canvas `s` times larger.
+	c.scale *= s
+	x, y = x/float32(s), y/float32(s)
+
 	beat := int(math.Floor(beats))
 	strong := beat%2 == 0
 
-	stride := 0.4 // radians, each leg from the vertical
+	legs := stride
 	switch g {
 	case searching:
-		stride, strong = 0.1, true // a shuffle on the spot, no crossing
+		legs, strong = shuffle, true // no crossing
 	case grooving, snapping:
-		stride = 0.5
+		legs = grooveStride
 	}
 
-	lift, lean := 0.0, 0.0
+	lift, tilt := 0.0, 0.0
 	if now.Sub(w.hop) < hopTime {
-		lift = 5 * s
+		lift = hopLift
 	}
 	if now.Sub(w.stumble) < stumbleTime {
-		lean = 0.3
+		tilt = lean
 	}
 
 	hipX, hipY := float64(x), float64(y)-(thigh+shin)-lift
 	if strong {
-		hipY = float64(y) - (thigh+shin)*math.Cos(stride) - lift
+		hipY = float64(y) - (thigh+shin)*math.Cos(legs) - lift
 	}
 	// limb draws a segment from a point at an angle from the downward
 	// vertical, positive toward the front, and returns its end.
@@ -129,45 +155,45 @@ func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, 
 	}
 
 	if strong {
-		limb(hipX, hipY, thigh+shin, stride)
-		limb(hipX, hipY, thigh+shin, -stride)
+		limb(hipX, hipY, thigh+shin, legs)
+		limb(hipX, hipY, thigh+shin, -legs)
 	} else {
 		limb(hipX, hipY, thigh+shin, 0)
-		kx, ky := limb(hipX, hipY, thigh, 0.5) // the knee forward
-		limb(kx, ky, shin, -0.9)               // the foot up behind
+		kx, ky := limb(hipX, hipY, thigh, knee)
+		limb(kx, ky, shin, foot)
 	}
 
-	neckX := hipX + torso*math.Sin(lean)
-	neckY := hipY - torso*math.Cos(lean)
+	neckX := hipX + torso*math.Sin(tilt)
+	neckY := hipY - torso*math.Cos(tilt)
 	c.line(float32(hipX), float32(hipY), float32(neckX), float32(neckY), stroke, col)
-	c.circle(float32(neckX+head*math.Sin(lean)), float32(neckY-1.2*head), float32(head), col)
+	c.circle(float32(neckX+head*math.Sin(tilt)), float32(neckY-neckGap*head), float32(head), col)
 
 	// The arms, each with its elbow: against the legs on the strong
 	// beats, down on the weak ones.
-	shX, shY := neckX, neckY+0.6*head
+	shX, shY := neckX, neckY+shoulderDrop*head
 	swing := 0.0
 	if strong {
-		swing = stride
+		swing = legs
 	}
 	ex, ey := limb(shX, shY, upper, -swing)
-	limb(ex, ey, fore, -swing+0.3)
+	limb(ex, ey, fore, -swing+elbow)
 	if g != snapping {
 		ex, ey = limb(shX, shY, upper, swing)
-		limb(ex, ey, fore, swing+0.3)
+		limb(ex, ey, fore, swing+elbow)
 		return
 	}
 
 	// The jazz snap, from the elbow: very bent on 1 and 3, the hand up
 	// by the chest; opening on 2 and 4, the hand out in front, where it
 	// snaps, sparks at the fingers.
-	ex, ey = limb(shX, shY, upper, 0.3)
+	ex, ey = limb(shX, shY, upper, snapUpper)
 	if strong {
-		limb(ex, ey, fore, 2.6) // folded, the hand up and forward
+		limb(ex, ey, fore, snapFolded)
 		return
 	}
-	hx, hy := limb(ex, ey, fore, 1.3) // open, the hand forward
-	for _, a := range []float64{-0.6, 0, 0.6} {
+	hx, hy := limb(ex, ey, fore, snapOpen)
+	for _, a := range []float64{-spark, 0, spark} {
 		dx, dy := math.Cos(a), math.Sin(a) // away from the body
-		c.line(float32(hx+3*s*dx), float32(hy+3*s*dy), float32(hx+7*s*dx), float32(hy+7*s*dy), stroke/2, col)
+		c.line(float32(hx+sparkFrom*dx), float32(hy+sparkFrom*dy), float32(hx+sparkTo*dx), float32(hy+sparkTo*dy), stroke/2, col)
 	}
 }

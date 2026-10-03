@@ -18,8 +18,8 @@ import (
 // must land every arrival, and the tests check it does.
 
 // Walk returns a key per beat of `beats`, in the register of the double
-// bass, E1 to G2, climbing to C3 at most. `rng` draws among the paths a rule allows: a fixed
-// seed gives the same line every time.
+// bass, E1 to G2, climbing to C3 at most. `rng` draws among the paths a
+// rule allows: a fixed seed gives the same line every time.
 //
 // Each bar offers its paths, as pitch classes, each placed on keys after
 // the line so far (see step), from every octave its first note may
@@ -57,7 +57,7 @@ func Ending(beats []Beat, line []int, end int) int {
 	if end != 0 || last < 0 {
 		return 0
 	}
-	pc := beats[last].Next.Bass
+	pc := target(beats, len(beats))
 	if pc == beats[last].Chord.Bass {
 		return 0
 	}
@@ -90,27 +90,22 @@ func choose(ps []path, bar []Beat, prev, dir int, last []int, rng *rand.Rand) (p
 		p    path
 		keys []int
 	}
-	var fits, fresh, runs []fit
+	var fits []fit
 	for _, p := range ps {
 		for _, keys := range place(p, bar, prev, strict) {
 			fits = append(fits, fit{p, keys})
 		}
 	}
-	for _, f := range fits {
-		if !slices.Equal(f.keys, last) {
-			fresh = append(fresh, f)
+	// prefer keeps the fits `keep` accepts, unless it accepts none.
+	prefer := func(keep func(fit) bool) {
+		kept := slices.DeleteFunc(slices.Clone(fits), func(f fit) bool { return !keep(f) })
+		if len(kept) > 0 {
+			fits = kept
 		}
 	}
-	if len(fresh) > 0 {
-		fits = fresh
-	}
-	for _, f := range fits {
-		if dir != 0 && f.p.dir == dir {
-			runs = append(runs, f)
-		}
-	}
-	if len(runs) > 0 && rng.Float64() < carryOn {
-		fits = runs
+	prefer(func(f fit) bool { return !slices.Equal(f.keys, last) })
+	if dir != 0 && rng.Float64() < carryOn {
+		prefer(func(f fit) bool { return f.p.dir == dir })
 	}
 	if len(fits) > 0 {
 		f := fits[rng.IntN(len(fits))]
@@ -344,12 +339,11 @@ func step(pc harmony.PitchClass, prev, dir int, root harmony.PitchClass, l loose
 func candidates(pc harmony.PitchClass, prev, dir int, root harmony.PitchClass, l looseness) []int {
 	var ks []int
 	for k := lowC1; k <= highC3; k++ {
-		if k%12 != int(pc) || k == prev {
+		if k%octave != int(pc) || k == prev {
 			continue
 		}
-		in := k >= lowE1 && k <= highG2
 		if prev == 0 {
-			if in {
+			if fourStrings(k) {
 				ks = append(ks, k)
 			}
 			continue
@@ -366,10 +360,9 @@ func candidates(pc harmony.PitchClass, prev, dir int, root harmony.PitchClass, l
 		}
 		ks = append(ks, k)
 	}
-	inside := func(k int) bool { return k >= lowE1 && k <= highG2 }
 	slices.SortStableFunc(ks, func(a, b int) int {
-		if inside(a) != inside(b) {
-			if inside(a) {
+		if fourStrings(a) != fourStrings(b) {
+			if fourStrings(a) {
 				return -1
 			}
 			return 1
@@ -377,6 +370,11 @@ func candidates(pc harmony.PitchClass, prev, dir int, root harmony.PitchClass, l
 		return abs(a-prev) - abs(b-prev)
 	})
 	return ks
+}
+
+// fourStrings tells whether `k` is within the four strings, E1 to G2.
+func fourStrings(k int) bool {
+	return k >= lowE1 && k <= highG2
 }
 
 func abs(n int) int {

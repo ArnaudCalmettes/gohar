@@ -1,8 +1,8 @@
 # Walk with me
 
 Le document de conception du jeu, une puce par décision. Ce qui vient
-d'une source le dit, avec sa page ; le reste est à nous. Pas encore de
-code.
+d'une source le dit, avec sa page ; le reste est à nous. Le code est
+dans `games/walk` ; ce qui y est fait le dit, au fil des sections.
 
 Les sources : Jeremy Siskind, *Jazz Piano Fundamentals* (Unit 8,
 « Playing Bass in Two », p. 115 à 118 ; Book 2, Unit 10, « Drop-Two
@@ -27,7 +27,8 @@ Chailley, *40 000 ans de musique*.
 
 1. **Jouer à vue.** Une grille n'est maîtrisée que si ses situations le
    sont. Le piège inverse existe aussi : tenir le joueur toujours en
-   déséquilibre rendrait le jeu frustrant (voir « Le répertoire »).
+   déséquilibre rendrait le jeu frustrant (voir « Les grilles et le
+   répertoire »).
 2. **Une seule nouveauté à la fois.** Une difficulté qui monte fait
    redescendre les autres.
 3. **On marque, on ne juge pas.** En retard, hors de l'accord, approche
@@ -63,7 +64,7 @@ disparaissent. Elle dure autant qu'il le souhaite.
 ## Le clavier
 
 - Deux zones, partagées par défaut au **sol2** (MIDI 55, G3 en notation
-  américaine), le partage réglable. Pas de mains croisées : le partage
+  américaine), le partage réglable (`-split`). Pas de mains croisées : le partage
   suffit toujours.
 - La main gauche sonne comme une contrebasse, la droite comme un piano.
 - **Le registre de la basse.** Celui des quatre cordes de la
@@ -249,8 +250,6 @@ Ce qui suit est notre lecture des sources.
 - La gamme du moment vient de l'analyse : le fond, la région, la
   tonicisation (`Sensed`), la tonalité qu'annonce un bloc ; et pour la
   basse, la gamme « conservatrice » de Siron.
-- Le temps : une tolérance en millisecondes, réglée de façon empirique.
-  Elle suppose la latence calibrée (`oreille.md`).
 - **Les marques du palier 1** (`Marker`) : chaque note de la zone basse
   est rapportée au temps le plus proche et reçoit deux marques.
   - Le temps : **sur le temps** (jusqu'à 1/8 de temps d'écart, 75 ms à
@@ -311,14 +310,12 @@ Ce qui suit est notre lecture des sources.
 ## La basse de référence
 
 - Au premier passage d'une grille, le jeu joue une vraie ligne de
-  basse ; au second, le joueur prend la main.
-- Le générateur applique les règles de Siskind, mesure par mesure,
-  selon le rythme harmonique que lit l'analyse ; il mélange les
-  formules et évite les répétitions.
-- Le générateur et le marqueur partagent les mêmes règles : une ligne
-  générée doit recevoir de bonnes marques, et c'est un test tout trouvé.
+  basse ; au second, le joueur prend la main. Le générateur et le
+  marqueur partagent leurs règles : une ligne générée doit recevoir de
+  bonnes marques, et c'est un test tout trouvé.
 - Fait pour le premier jalon (`Walk`, dans `generator.go`), joué par
-  `-demo` :
+  `-demo`. Les règles de Siskind (p. 204 à 206), mesure par mesure,
+  selon le rythme harmonique :
   - quatre accords dans la mesure : les fondamentales (règle 1) ; deux
     accords : chaque fondamentale, puis la quinte, la tierce, ou un
     demi-ton vers la fondamentale suivante (règle 2) ;
@@ -327,79 +324,63 @@ Ce qui suit est notre lecture des sources.
     mixolydien sur 7, ionien sur un accord majeur, locrien sur
     m7♭5), ou la triade puis un demi-ton au-dessus de la cible
     (règle 3) ;
-  - un accord tenu sur la mesure suivante : l'arpège 1 3 5 3, ou la
-    gamme qui monte vers la quinte (règle 4) ;
-  - tout autre enchaînement : la fondamentale répétée à l'octave, ou
-    la tierce, puis la quinte et un demi-ton vers la cible (règle 5).
-    La basse en deux doublée de Siskind, R R 5 5, sauterait une octave
-    sur la quinte, ce que la règle suivante interdit ;
-  - sur un accord tenu, la gamme peut aussi descendre vers la quinte
-    du dessous : ce miroir de la règle 4 n'est pas dans Siskind, il
-    permet à un walk down de se poursuivre ;
-  - chaque note de préférence dans les quatre cordes, à l'octave la
-    plus proche de la précédente ; la même note jamais deux fois de
-    suite (p. 116). La ligne peut monter au-delà, jusqu'au do 3, où
-    commence la main droite (p. 118) : sans cette marge, un fa ou un sol
-    en haut des quatre cordes ne laisse à la mesure qu'un walk down.
-- Trois règles s'ajoutent à celles de Siskind, après écoute de la
-  démo, qui sautait de grands intervalles à des endroits peu naturels :
-  - **pas de saut de plus d'une quinte** d'une note à la suivante ;
-  - **l'octave seulement sur la fondamentale** : un accord peut
-    répéter sa fondamentale à l'octave, quitte à descendre jusqu'au
-    do 1, le plus grave que permet Siskind (p. 117) ;
-  - **une marche se poursuit** : après un walk up ou un walk down, la
-    mesure suivante continue dans le même sens quand une de ses règles
-    le permet, jusqu'à ce que la tessiture l'arrête. Deux fois sur
-    trois seulement : toujours, la démo rejouait le même walk down sur
-    chaque mesure de fa.
-- Le générateur propose donc tous les chemins d'une mesure, chacun
-  placé depuis chaque octave que peut prendre sa première note (fa 1
-  ou fa 2 après un do 2, tous deux à une quinte au plus), et garde ceux
-  qui respectent ces règles. Il écarte la mesure jouée la dernière fois
-  sur la même fondamentale, sauf si rien d'autre ne convient, puis
-  préfère, deux fois sur trois, ceux qui poursuivent la marche. Quand
-  aucun ne convient, il relâche d'abord le registre, puis les sauts.
-  - le choix entre les chemins au hasard, avec une graine fixe dans
-    les tests ;
-  - les notes de la démo passent par le marqueur au moment où elles
-    sonnent, comme celles du joueur : les tests vérifient, sur vingt
-    tirages, qu'aucune arrivée n'est manquée.
-- La démo se signale : l'étiquette dit « A TEMPO, DÉMO », le bonhomme
-  passe en gris, et ses touches s'allument en bleu.
+  - un accord tenu sur la mesure suivante : l'arpège 1 3 5 3, la gamme
+    qui monte vers la quinte (règle 4), ou son miroir, qui descend vers
+    la quinte du dessous, pour qu'un walk down puisse se poursuivre ;
+  - tout autre enchaînement : la fondamentale répétée à l'octave, ou la
+    tierce, puis la quinte et un demi-ton vers la cible (règle 5). La
+    basse en deux doublée, R R 5 5, sauterait une octave sur la quinte.
+- **Les règles de la ligne** :
+  - **le registre** : de préférence les quatre cordes, de E1 à G2
+    (Siskind, p. 116 et 204), jusqu'au do 3 au plus haut, où commence
+    la main droite (p. 118) : sans cette marge, un fa en haut des
+    quatre cordes ne laisse qu'un walk down ;
+  - **jamais la même note deux fois de suite** (p. 116) ;
+  - **pas de saut de plus d'une quinte**, et **l'octave seulement sur
+    la fondamentale**, quitte à descendre jusqu'au do 1, le plus grave
+    que permet Siskind (p. 117). Ces deux règles ne viennent pas des
+    sources : la démo sautait de grands intervalles à des endroits peu
+    naturels.
+- **Le tirage** : chaque chemin est placé depuis chaque octave que peut
+  prendre sa première note (fa 1 ou fa 2 après un do 2), et seuls
+  restent ceux qui respectent ces règles. Parmi eux, au hasard, avec
+  une graine fixe dans les tests :
+  - jamais la mesure jouée la dernière fois sur la même fondamentale,
+    si autre chose convient ;
+  - deux fois sur trois, un chemin qui **poursuit la marche** de la
+    mesure d'avant, dans le même sens. Toujours, la démo rejouait le
+    même walk down sur chaque mesure de fa.
+- **La démo se signale** : l'étiquette dit « A TEMPO, DÉMO », le
+  bonhomme passe en gris, et ses touches s'allument en bleu. Ses notes
+  passent par le marqueur au moment où elles sonnent ; les tests
+  vérifient, sur vingt tirages, qu'aucune arrivée n'est manquée.
 - **La démo conclut.** Une grille qui boucle sans dire où elle finit
   (ni « Fine », ni coda, ni point d'orgue) s'arrêterait sur son
-  turnaround, sur une dominante : une fin qui déstabilise. La démo pose
-  alors une dernière note, sur le temps qui suit, tenue une mesure avec
-  un coup de ride : la fondamentale de l'accord vers lequel mène le
-  turnaround, celui où le chorus reboucle (le F du blues en fa, après
-  G7 C7). Ce n'est pas une tonalité détectée, seulement l'accord
-  suivant ; si la grille finit déjà sur lui, rien ne s'ajoute.
+  turnaround, sur une dominante. La démo pose alors une dernière note,
+  tenue une mesure avec un coup de ride : la fondamentale de l'accord
+  où le chorus reboucle (le F du blues en fa, après G7 C7). Ce n'est
+  pas une tonalité détectée, seulement l'accord suivant.
 - `-record` écrit dans un fichier chaque note que le marqueur entend,
   celles du joueur ou de la démo : le chorus, la mesure et le temps,
   l'écart au temps, l'accord, la note avec son octave, et sa marque.
-  De quoi relire une ligne à tête reposée, et comparer celle d'un
-  bassiste à celles du générateur.
-- Un modèle plus général a été essayé puis écarté : des notes-cibles
-  sur les temps forts, et des approches sur les temps faibles, vers
-  n'importe quelle note (Siron, p. 693 et 694). Il ouvre des centaines
-  de mesures possibles, et les poids qui devaient les départager
-  appelaient chacun une correction de plus : la ligne s'est dégradée
-  au lieu de s'améliorer.
-- La suite : **un catalogue de patterns par situation**, deux ou trois
+- **Un modèle écarté** : des notes-cibles sur les temps forts, et des
+  approches vers n'importe quelle note sur les temps faibles (Siron,
+  p. 693 et 694). Il ouvre des centaines de mesures possibles, et les
+  poids qui devaient les départager appelaient chacun une correction
+  de plus : la ligne s'est dégradée au lieu de s'améliorer.
+- **La suite** : un catalogue de patterns par situation, deux ou trois
   pour chacune (un accord par mesure par le cycle des quintes, deux
   accords par mesure, un accord tenu...), plus quelques lignes
-  idiomatiques. Simple à lire, à régler et à enrichir. `-record` y
-  aidera : des mesures de bassiste enregistrées montrent ce qui manque,
-  comme ces deux-là sur le blues en fa, où un fa descend d'une octave
-  en passant par la quinte sur la barre de mesure :
+  idiomatiques, que des mesures de bassiste enregistrées avec `-record`
+  aideront à choisir. Par exemple, sur le blues en fa, un fa qui
+  descend d'une octave en passant par la quinte sur la barre de
+  mesure :
 
       | F7          | F7          | B♭7
       | F E♭ D D♭   | C B♭ A F    | B♭
 
-- Restent aussi les variations rythmiques de Siron, les enclosures, et
-  « trois montées, deux descentes » sur les accords tenus. Sur une
-  mesure tenue, le premier temps pourrait prendre la quinte pour
-  poursuivre une gamme, plutôt que de revenir à la fondamentale.
+  Restent aussi les variations rythmiques de Siron, les enclosures, et
+  « trois montées, deux descentes » sur les accords tenus.
 
 ## La jauge de tension
 
@@ -448,13 +429,12 @@ Ce qui suit est notre lecture des sources.
   pédale, une descente reconnue), il tend l'oreille, petite bulle
   (« Cool ! ») ; **atterrissage**, il saute, grosse bulle (« Yeah ! ») ;
   **décroché**, il perd le pas et se rattrape, sans moquerie.
-- Il vit en périphérie, en bas de l'écran par exemple, et ne masque
-  jamais un chiffrage.
+- Il vit en périphérie, à gauche de la grille, et ne masque jamais un
+  chiffrage.
 - **Pour le MVP**, un bonhomme en bâtons dessiné au trait par le moteur,
   avec les mêmes états et animations : il suffit à valider que la
   démarche suit le jeu et que le juice fonctionne, avant de commander le
-  moindre dessin. Fait (`walker.go`), dans l'en-tête, entre le titre
-  et le mode :
+  moindre dessin. Fait (`walker.go`) :
   - l'aisance est une moyenne glissante des arrivées, posées contre
     manquées, où chacune pèse un quart : à peu près les huit
     dernières comptent ;
@@ -550,29 +530,29 @@ Ce qui suit est notre lecture des sources.
 
 ## Le son
 
-- **Le métronome, plus humain qu'un clic** : la batterie. La
-  charleston au pied au décompte, sur deux mesures comptées « 1, 3, 1,
-  2, 3, 4 » : le temps d'amener les mains de la barre d'espace au
-  clavier. Puis la ride sur
-  chaque temps et sur le « et » swing de 2 et 4, accentuée sur 2 et 4,
-  avec la charleston sur 2 et 4. Avec la contrebasse qui marche, c'est
-  la première chose qu'un joueur entendra : c'est elle qui pose
-  l'ambiance.
-- **Le juice s'entend** : le claquement de doigts ne vient sur 2 et 4
-  que quand le bonhomme claque des doigts, quand ça tourne depuis un
-  moment (voir « Le bonhomme »). Le joueur l'entend arriver avant même
-  de regarder l'écran, et l'entend partir quand il décroche. La fonction métrique est partagée par la basse et la
-  batterie, un tandem « souvent alchimique » (Siron, p. 694).
-- Plus tard : batterie et piano quand le joueur travaille la main
-  gauche, batterie seule quand il joue à deux mains.
+- **Le métronome, plus humain qu'un clic** : la batterie. Avec la
+  contrebasse qui marche, c'est la première chose qu'un joueur entend :
+  c'est elle qui pose l'ambiance. La fonction métrique est partagée par
+  la basse et la batterie, un tandem « souvent alchimique » (Siron,
+  p. 694).
+- **L'accompagnement doit groover**, pas seulement tomber juste, et les
+  instruments entrent l'un après l'autre :
+  - au décompte, la charleston au pied, sur deux mesures comptées
+    « 1, 3, 1, 2, 3, 4 » : le temps d'amener les mains de la barre
+    d'espace au clavier ;
+  - à partir de la mesure 1, le motif de ride classique : chaque temps
+    et le « et » de 2 et 4, en croches swing (aux 2/3 du temps),
+    accentué sur 2 et 4, avec la charleston sur 2 et 4 ; la contrebasse
+    de la démo entre en même temps ;
+  - **le juice s'entend** : le claquement de doigts ne vient sur 2 et 4
+    que quand le bonhomme claque des doigts, quand ça tourne depuis un
+    moment (voir « Le bonhomme »). Le joueur l'entend arriver avant
+    même de regarder l'écran, et l'entend partir quand il décroche.
 - La basse et le piano du joueur passent par le synthé, une zone du
   clavier chacun.
-- Le soufflant ou la chanteuse : la mélodie, quand un format de grille
-  la portera.
-- Les échantillons : un piano (Salamander, CC-BY, réduit avec
-  Polyphone), une contrebasse, une charleston et un claquement de
-  doigts, tous sous licence claire, joués par go-meltysynth (voir « Les
-  briques »).
+- Plus tard : batterie et piano quand le joueur travaille la main
+  gauche, batterie seule quand il joue à deux mains ; le soufflant ou
+  la chanteuse pour la mélodie, quand un format de grille la portera.
 - Un `Metronome` (`games/walk`) tient la carte du temps musical
   (tempo, temps, mesures), que lisent le défilement, le marqueur et le
   son. Il programme le son à l'avance, la boucle d'Ebiten à 60 Hz étant
@@ -593,22 +573,23 @@ Ce qui suit est notre lecture des sources.
   l'instant pour le son, de l'instant vers la position pour le
   marqueur, qui doit reconnaître un « et » joué swing comme un « et ».
   Les temps eux-mêmes ne bougent jamais.
-- **L'humanisation** appartient au musicien, pas à la pulsation : un
-  décorateur de l'instrument au moment de programmer ses notes. Chaque
-  musicien a son placement (devant, sur ou derrière le temps) et sa
-  dispersion, et ses vélocités varient. Le marqueur juge toujours
-  contre la grille du métronome, jamais contre les notes humanisées de
-  l'accompagnement. Le tirage part d'une graine fixe, pour des tests
-  reproductibles.
+- **L'humanisation**, à venir, appartient au musicien, pas à la
+  pulsation : un décorateur de l'instrument au moment de programmer ses
+  notes. Chaque musicien a son placement (devant, sur ou derrière le
+  temps) et sa dispersion, et ses vélocités varient. Le marqueur juge
+  toujours contre la grille du métronome, jamais contre les notes
+  humanisées de l'accompagnement.
 - **Les sons retenus à l'écoute** : une seule soundfont, GeneralUser GS
   (v2.0.3, licence libre y compris dans un logiciel), et un claquement
   de doigts en WAV (newagesoup sur Freesound, CC0), aucun des kits
   essayés n'en ayant.
   - La contrebasse (0:32) : ronde, sans l'attaque percussive de FluidR3
     ni l'inégalité des pizzicati bruts de VSCO-2.
-  - Le kit Jazz (128:32) : la charleston au pied (touche 44) et la ride,
-    au choix du joueur entre la 1 (touche 51) et la 2 (touche 59), qui
-    ne diffèrent que par la hauteur.
+  - Le kit Jazz (128:32) : la charleston au pied (touche 44) et la ride
+    1 (touche 51) ; la ride 2 (touche 59) ne diffère que par la
+    hauteur.
+  - Les vélocités et les gains du mélange sont des constantes de
+    `sound.go`, réglées à l'oreille ; celui du kit reste à affiner.
   - Plus tard, le joueur pourra charger ses propres soundfonts.
   - Le snap est versionné dans `games/walk/sounds`, avec sa provenance
     (`CREDITS.md`), et embarqué dans l'exécutable. GeneralUser, 32 Mo,
@@ -616,14 +597,6 @@ Ce qui suit est notre lecture des sources.
     l'utilisateur, d'un commit figé, empreinte vérifiée. Sa licence
     permettrait de l'embarquer ; le jour où le jeu se distribuera en
     binaire, on pourra en extraire les seuls presets utiles.
-- **L'accompagnement doit groover**, pas seulement tomber juste : la
-  charleston et le snap jouant la même chose sur 2 et 4 sonnent
-  redondants. Le motif de ride classique (1, 2 et, 3, 4 et, accents sur
-  2 et 4) y pourvoit, sur des croches swing (2/3 du temps). Les
-  instruments entrent l'un après l'autre : la charleston au décompte,
-  la ride et la basse à la mesure 1, le snap quand le bonhomme le
-  gagne. Fait pour le premier jalon, la ride 1 (touche 51) par défaut ;
-  le gain du kit dans le mélange reste à régler à l'oreille.
 
 ## La progression
 
@@ -656,34 +629,33 @@ Ce qui suit est notre lecture des sources.
      (voir « Les notes datées » dans `architecture.md`) ;
    - le **mélangeur** : fait, `synth.Mixer` ;
    - les **soundfonts** : fait, `synth.Sampler` (voir « Les
-     soundfonts » dans `architecture.md`) ; restent l'audition des
-     candidats et une mesure sous charge avec plusieurs instruments ;
+     soundfonts » dans `architecture.md`) ; reste une mesure sous
+     charge avec plusieurs instruments ;
    - les **zones du clavier**.
-4. **La coquille du jeu** (`games/walk`) : défilement, entrée,
-   décompte, affichage, le bonhomme. Première livraison faite : la
-   grille en MuseJazz Text, quatre mesures par ligne, la mesure jouée
-   grisée et un curseur ; le décompte en grand ; la batterie (la
-   charleston au décompte, puis la ride), le snap quand le bonhomme
-   claque des doigts ; la main gauche en contrebasse, la droite en piano ; `-demo`
-   pour la basse de référence ; le clavier à l'écran, le joueur en
-   orange et la démo en bleu. Deuxième livraison faite : les marques
-   des arrivées sur la grille (pastille verte, croix rouge, double
-   trait orange), celle de la dernière note en bas de l'écran, et la
-   phase sans tempo (`-practice`, ou la touche T à l'arrêt). Troisième
-   livraison faite : le bonhomme en bâtons (voir « Le bonhomme »).
+4. **La coquille du jeu** (`games/walk`) : fait pour le premier jalon.
+   La grille en MuseJazz Text, la mesure jouée grisée et un curseur, les
+   marques des arrivées (pastille verte, croix rouge, double trait
+   orange) ; le décompte en grand ; la batterie et le snap ; la main
+   gauche en contrebasse, la droite en piano, et le clavier à l'écran ;
+   la phase sans tempo (`-practice`, ou la touche T à l'arrêt) ; la
+   démo (`-demo`) et l'enregistrement (`-record`) ; le bonhomme en
+   bâtons.
 5. **La progression**, par le dex.
 
 ## Le premier jalon jouable
 
-- Les fondamentales, main gauche seule, sur un blues jazz lu dans un
+Il tourne :
+
+- les fondamentales, main gauche seule, sur un blues jazz lu dans un
   export iReal (le IV en mesure 2, le VI7, un II-V, un turnaround), sur
-  la ride et la charleston, la contrebasse et la batterie en
-  soundfont, le claquement de doigts quand ça tourne.
-- La phase d'entraînement sans tempo.
-- Les marques de temps et de fondamentale, sans progression.
-- Le bonhomme en bâtons.
-- Ensuite, dans l'ordre : la basse en deux, la jauge de tension, le
-  carnet, la basse de référence.
+  la batterie et la contrebasse en soundfont ;
+- la phase d'entraînement sans tempo ;
+- les marques de temps et de fondamentale, sans progression ;
+- le bonhomme en bâtons ;
+- la basse de référence, d'après Siskind.
+
+Ensuite, dans l'ordre : la basse en deux, la jauge de tension, le
+carnet.
 
 ## Ce que gohar a déjà
 

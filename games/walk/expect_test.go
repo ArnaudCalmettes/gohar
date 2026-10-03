@@ -123,16 +123,6 @@ func TestExpectTwoChordsABar(t *testing.T) {
 	}
 }
 
-// The roots of the blues land within the four strings: F2, B♭1, D2,
-// G2, C2; A♭ goes down to G♯1 rather than above G2.
-func TestBassKey(t *testing.T) {
-	for pc, want := range map[harmony.PitchClass]int{5: 41, 10: 34, 2: 38, 7: 43, 0: 36, 8: 32} {
-		if got := bassKey(pc); got != want {
-			t.Errorf("%s: key %d, want %d", noteNames[pc], got, want)
-		}
-	}
-}
-
 // Bar 4 carries on the F7 of bar 3, as two tied whole notes would: its
 // beat 1 holds, and only its beat 1.
 func TestExpectHolds(t *testing.T) {

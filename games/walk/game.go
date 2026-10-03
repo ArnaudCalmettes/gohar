@@ -35,18 +35,42 @@ const (
 
 // The layout: the chart on the right two thirds of the screen, laid
 // out as a Real Book page, four bars a row; the walker on the third
-// left of it, standing level with its last row.
+// left of it, standing level with its last row; the keyboard below
+// (see piano.go).
 const (
-	margin     = 20 // around the screen: the title, the status line, the mode
+	margin  = 20 // around the screen
+	titleY  = 24 // the title, then the tempo, in the margin
+	tempoY  = 40
+	modeY   = 18 // the mode, top right
+	statusY = screenHeight - 28
+
 	barsPerRow = 4
+	chartRows  = 3 // the twelve bars of the blues
 	barW       = 105
+	rowH       = 56 // room for the keyboard below
+	barH       = rowH - 10
 	chartX     = screenWidth - margin - barsPerRow*barW
 	chartY     = 70
-	rowH       = 56 // room for the keyboard below
+
+	// Within a bar: a chord and a mark from the start of their beat.
+	chordDX, chordDY = 8, 14
+	markDX, markDY   = 14, barH - 10
 
 	walkerX     = chartX / 2
-	walkerY     = chartY + 3*rowH - 10
+	walkerY     = chartY + (chartRows-1)*rowH + barH
 	walkerScale = 3
+)
+
+const (
+	// eventBuffer is how many key events wait for the game loop.
+	eventBuffer = 64
+
+	// demoHold is the part of a beat the demo's key stays lit: a root
+	// repeated from one beat to the next pulses, as in the ear.
+	demoHold = 0.8
+
+	// swayPeriod is the walker's own beat at rest, in milliseconds.
+	swayPeriod = 1500
 )
 
 // A cell is one chord written in a bar, at the beat it starts on.
@@ -68,6 +92,7 @@ type game struct {
 	bars       [][]cell // the chart, bar by bar; empty for a chord held from before
 	chorusLen  int      // beats in a chorus
 	band       *band
+	rules      Rules // what the marker and the practice expect
 	events     chan keyboard.Event
 	midi       string // the keyboard's name, empty without one
 	practicing bool   // the phase without tempo
@@ -82,7 +107,7 @@ type game struct {
 	practice *practice
 	lastMark string // what the last note of the bass was
 	last     keyboard.Event
-	down     [128]bool // the keys held, as the events tell
+	down     [midiKeys]bool // the keys held, as the events tell
 	piano    piano
 	walker   walker
 	line     []int     // the reference line, in demo: a key per beat
@@ -100,6 +125,8 @@ func newGame(title string, grid analysis.Changes, bpm float64, choruses int, bd 
 		return nil, err
 	}
 	namer := namerFor(grid)
+	rules := FirstPalier
+	rules.Split = bd.split // -split moves the marker's zone with the sound's
 	return &game{
 		title:      title,
 		bpm:        bpm,
@@ -109,7 +136,8 @@ func newGame(title string, grid analysis.Changes, bpm float64, choruses int, bd 
 		bars:       chart(grid, namer),
 		chorusLen:  len(Expect(grid, NewMetronome(time.Time{}, bpm, perBar), 1)),
 		band:       bd,
-		events:     make(chan keyboard.Event, 64),
+		rules:      rules,
+		events:     make(chan keyboard.Event, eventBuffer),
 		midi:       midi,
 		practicing: practicing,
 		piano:      piano{split: bd.split},
@@ -134,7 +162,7 @@ func (g *game) start(now time.Time) {
 	g.walker = walker{} // each run starts from a walk
 	if g.practicing {
 		// No time: any metronome numbers the beats.
-		g.practice = newPractice(Expect(g.grid, NewMetronome(now, g.bpm, perBar), 1))
+		g.practice = newPractice(g.rules, Expect(g.grid, NewMetronome(now, g.bpm, perBar), 1))
 		return
 	}
 	beat := time.Duration(float64(time.Minute) / g.bpm)
@@ -142,7 +170,7 @@ func (g *game) start(now time.Time) {
 	g.swing = NewSwing(g.m, swingRatio)
 	g.beats = Expect(g.grid, g.m, g.choruses)
 	g.next = -countIn
-	g.marker = NewMarker(FirstPalier, g.m, g.beats)
+	g.marker = NewMarker(g.rules, g.m, g.beats)
 	g.marks = map[int]BeatKind{}
 	g.line, g.heard, g.ending = nil, nil, 0
 	if g.rec != nil {
@@ -191,7 +219,7 @@ func (g *game) Update() error {
 		}
 	}
 
-	var demo [128]bool
+	var demo [midiKeys]bool
 	if k := g.demoKey(now); k > 0 {
 		demo[k] = true
 	}
@@ -238,10 +266,8 @@ func (g *game) Update() error {
 	return nil
 }
 
-// demoKey is the key the reference bass sounds at `now`, 0 for none.
-// It lights for the first four fifths of the beat only, so that a root
-// repeated from one beat to the next pulses on the keyboard as it does
-// in the ear, rather than staying lit.
+// demoKey is the key the reference bass sounds at `now`, 0 for none,
+// lit for the first `demoHold` of the beat only.
 func (g *game) demoKey(now time.Time) int {
 	if g.line == nil || !g.running || g.practicing {
 		return 0
@@ -251,7 +277,7 @@ func (g *game) demoKey(now time.Time) int {
 	switch {
 	case n >= len(g.beats) && g.ending != 0:
 		return g.ending // held to the end
-	case n < 0 || n >= len(g.beats) || x-float64(n) > 0.8:
+	case n < 0 || n >= len(g.beats) || x-float64(n) > demoHold:
 		return 0
 	}
 	return g.line[n]
@@ -306,7 +332,7 @@ func (g *game) record(m NoteMark) {
 // sheet writes the degrees of a chord: the E♭ of F7, never a D♯. In
 // ASCII: the status line is in Go Regular, which has no musical signs.
 func (g *game) noteName(key int, ch analysis.Change) string {
-	pc := harmony.PitchClass(key % 12)
+	pc := harmony.PitchClass(key % octave)
 	n := g.namer.Note(pc)
 	if !ch.Silent {
 		n = naming.SpellOver(g.namer.Note(ch.Chord.Root), ch.Chord.Pattern, pc)
@@ -334,12 +360,12 @@ func (g *game) markAt(n int, chorus int) (BeatKind, bool) {
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(paper)
 	c := canvas{dst: screen, scale: g.scale}
-	c.text(g.title, g.fonts.ui, margin, 24, ink)
+	c.text(g.title, g.fonts.ui, margin, titleY, ink)
 	tempo := fmt.Sprintf("%.0f à la noire", g.bpm)
 	if g.practicing {
 		tempo = "sans tempo : la grille attend la fondamentale"
 	}
-	c.text(tempo, g.fonts.ui, margin, 40, faint)
+	c.text(tempo, g.fonts.ui, margin, tempoY, faint)
 	g.drawMode(c)
 
 	pos := math.Inf(-1)
@@ -368,7 +394,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	case g.lastMark != "":
 		status = g.lastMark + "   " + status
 	}
-	c.text(status, g.fonts.ui, margin, screenHeight-28, faint)
+	c.text(status, g.fonts.ui, margin, statusY, faint)
 }
 
 // drawChart draws the twelve bars, the one being played shaded, and a
@@ -384,37 +410,36 @@ func (g *game) drawChart(c canvas, pos float64) {
 		x := float32(chartX + i%barsPerRow*barW)
 		y := float32(chartY + i/barsPerRow*rowH)
 		if i == playing {
-			c.rect(x, y, barW, rowH-10, pale)
+			c.rect(x, y, barW, barH, pale)
 			frac := math.Mod(pos, perBar) / perBar
 			cx := x + float32(frac)*barW
-			c.line(cx, y, cx, y+rowH-10, 1.5, ink)
+			c.line(cx, y, cx, y+barH, 1.5, ink)
 		}
-		c.line(x, y, x, y+rowH-10, 1, ink)
+		c.line(x, y, x, y+barH, 1, ink)
 		if len(cells) == 0 {
-			c.centred("%", g.fonts.chord, float64(x)+barW/2, float64(y)+14, ink)
+			c.centred("%", g.fonts.chord, float64(x)+barW/2, float64(y)+chordDY, ink)
 		}
 		for _, cl := range cells {
-			cx := float64(x) + 8 + float64(cl.beat)*barW/perBar
-			c.text(cl.name, g.fonts.chord, cx, float64(y)+14, ink)
+			cx := float64(x) + chordDX + float64(cl.beat)*barW/perBar
+			c.text(cl.name, g.fonts.chord, cx, float64(y)+chordDY, ink)
 		}
 		for beat := range perBar {
 			if k, ok := g.markAt(i*perBar+beat, chorus); ok {
-				drawMark(c, k, x+14+float32(beat)*barW/perBar, y+rowH-20)
+				drawMark(c, k, x+markDX+float32(beat)*barW/perBar, y+markDY)
 			}
 		}
 		if i%barsPerRow == barsPerRow-1 || i == bars-1 {
 			end := x + barW
-			c.line(end, y, end, y+rowH-10, 1, ink)
+			c.line(end, y, end, y+barH, 1, ink)
 		}
 	}
 }
 
-// drawWalker draws the stick figure in the header, between the title
-// and the mode: on the beats while the band plays, swaying on a slow
-// clock of his own otherwise.
+// drawWalker draws the stick figure left of the chart: on the beats
+// while the band plays, swaying on a slow clock of his own otherwise.
 func (g *game) drawWalker(c canvas) {
 	now := time.Now()
-	beats := float64(now.UnixMilli()%1_000_000) / 1500 // a slow sway
+	beats := float64(now.UnixMilli()%1_000_000) / swayPeriod
 	tempo := g.running && !g.practicing
 	if tempo {
 		beats = g.m.Beats(now)
@@ -445,7 +470,7 @@ func (g *game) drawMode(c canvas) {
 	}
 	w, h := c.measure(label, g.fonts.ui)
 	const pad = 4
-	x, y := float32(screenWidth-margin-w-2*pad), float32(18)
+	x, y := float32(screenWidth-margin-w-2*pad), float32(modeY)
 	bw, bh := float32(w+2*pad), float32(h+2*pad)
 	fill, text := paper, ink
 	if g.running {
@@ -460,15 +485,21 @@ func (g *game) drawMode(c canvas) {
 // dot when landed, a red cross when missed, two orange strokes when
 // doubled.
 func drawMark(c canvas, k BeatKind, x, y float32) {
+	const (
+		r      = 3.5 // the dot, the arms of the cross
+		apart  = 2   // the two strokes, from the centre
+		half   = 4   // their half length
+		stroke = 1.5
+	)
 	switch k {
 	case Landed:
-		c.circle(x, y, 3.5, landedInk)
+		c.circle(x, y, r, landedInk)
 	case Missed:
-		c.line(x-3.5, y-3.5, x+3.5, y+3.5, 1.5, missedInk)
-		c.line(x-3.5, y+3.5, x+3.5, y-3.5, 1.5, missedInk)
+		c.line(x-r, y-r, x+r, y+r, stroke, missedInk)
+		c.line(x-r, y+r, x+r, y-r, stroke, missedInk)
 	case Doubled:
-		c.line(x-2, y-4, x-2, y+4, 1.5, doubledInk)
-		c.line(x+2, y-4, x+2, y+4, 1.5, doubledInk)
+		c.line(x-apart, y-half, x-apart, y+half, stroke, doubledInk)
+		c.line(x+apart, y-half, x+apart, y+half, stroke, doubledInk)
 	}
 }
 

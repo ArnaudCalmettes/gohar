@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/ArnaudCalmettes/gohar/harmony"
+	"math"
+
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
@@ -30,8 +31,7 @@ type Beat struct {
 	Holds bool
 
 	// PerBar is how many changes start in the bar, the harmonic rhythm:
-	// it picks which of Siskind's rules applies (one, two or four
-	// chords a bar).
+	// 0 for a bar the chord carries on into.
 	PerBar int
 }
 
@@ -90,7 +90,7 @@ func changesInBar(c analysis.Changes, bar, barBeats int) int {
 	var from, to analysis.Ticks
 	if bar < len(c.Bars) {
 		from = c.Bars[bar]
-		to = analysis.Ticks(1 << 62)
+		to = analysis.Ticks(math.MaxInt64) // the last bar runs to the end
 		if bar+1 < len(c.Bars) {
 			to = c.Bars[bar+1]
 		}
@@ -105,15 +105,4 @@ func changesInBar(c analysis.Changes, bar, barBeats int) int {
 		}
 	}
 	return n
-}
-
-// bassKey places a pitch class in the register of the double bass, as a
-// MIDI key: from G♯1 to G2, so that F, B♭ and C land on F2, B♭1 and C2,
-// within the four strings Siskind asks for (p. 116, 204).
-func bassKey(pc harmony.PitchClass) int {
-	k := 36 + int(pc)
-	if k > 43 {
-		k -= 12
-	}
-	return k
 }

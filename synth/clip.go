@@ -92,6 +92,13 @@ func (c *Clip) fill(buf []byte) {
 	}
 }
 
+// The formats of a WAV file this decoder reads, from its "fmt " chunk.
+const (
+	wavPCM        = 1
+	wavFloat      = 3
+	wavExtensible = 0xFFFE // the real format follows, further in the chunk
+)
+
 // decodeWAV returns the frames of a WAV file, mono spread over both
 // channels. Only the chunks it needs are read, "fmt " and "data"; the
 // others, metadata, are skipped.
@@ -114,7 +121,7 @@ func decodeWAV(b []byte) ([][2]float32, error) {
 			channels = int(binary.LittleEndian.Uint16(body[2:]))
 			rate = binary.LittleEndian.Uint32(body[4:])
 			bits = int(binary.LittleEndian.Uint16(body[14:]))
-			if format == 0xFFFE && len(body) >= 26 { // extensible: the real format follows
+			if format == wavExtensible && len(body) >= 26 {
 				format = int(binary.LittleEndian.Uint16(body[24:]))
 			}
 		case "data":
@@ -134,14 +141,14 @@ func decodeWAV(b []byte) ([][2]float32, error) {
 
 	var sample func([]byte) float32
 	switch {
-	case format == 1 && bits == 16:
+	case format == wavPCM && bits == 16:
 		sample = func(s []byte) float32 { return float32(int16(binary.LittleEndian.Uint16(s))) / (1 << 15) }
-	case format == 1 && bits == 24:
+	case format == wavPCM && bits == 24:
 		sample = func(s []byte) float32 {
 			v := int32(uint32(s[0])<<8|uint32(s[1])<<16|uint32(s[2])<<24) >> 8
 			return float32(v) / (1 << 23)
 		}
-	case format == 3 && bits == 32:
+	case format == wavFloat && bits == 32:
 		sample = func(s []byte) float32 { return math.Float32frombits(binary.LittleEndian.Uint32(s)) }
 	default:
 		return nil, fmt.Errorf("format %d in %d bits, want PCM 16 or 24, or float 32", format, bits)
