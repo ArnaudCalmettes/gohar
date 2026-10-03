@@ -131,3 +131,18 @@ func TestWalkLeadsIntoTheNextRoot(t *testing.T) {
 		}
 	})
 }
+
+// The blues loops and says nothing of its end: after the turnaround,
+// G7 C7, the line lands on F, a fifth away at most. A chart that says
+// where it ends stops there.
+func TestWalkEndsOnTheTonic(t *testing.T) {
+	walkBlues(t, func(seed uint64, beats []Beat, line []int) {
+		k := Ending(beats, line, 0)
+		if k%12 != 5 || abs(k-line[len(line)-1]) > maxLeap {
+			t.Errorf("seed %d: after %d, the line ends on %d, want an F nearby", seed, line[len(line)-1], k)
+		}
+		if k := Ending(beats, line, 3); k != 0 {
+			t.Errorf("seed %d: a chart with an end gets a last note, %d", seed, k)
+		}
+	})
+}

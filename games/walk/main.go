@@ -1,9 +1,10 @@
 // Command walk is Walk With Me, the game that teaches the left hand to
 // replace the bassist (docs/walk.md).
 //
-// The first palier: the chart of a jazz blues, two bars of finger snaps
-// to count in, then the snaps on 2 and 4 while the player plays the
-// roots at the MIDI keyboard, and the arrivals marked on the chart. The
+// The first palier: the chart of a jazz blues, two bars of hi-hat to
+// count in, then the ride while the player plays the roots at the MIDI
+// keyboard, and the arrivals marked on the chart. The finger snaps on 2
+// and 4 come when the walker snaps, once it has been rolling. The
 // left hand sounds like a double bass, the right like a piano, split at
 // sol2 (G3). Without tempo, the chart waits for each root instead.
 //

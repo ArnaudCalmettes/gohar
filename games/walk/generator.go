@@ -47,6 +47,24 @@ type path struct {
 	dir int
 }
 
+// Ending returns the key the line ends on, after its last beat, or 0
+// for none. A chart that loops and does not say where it ends (`end`,
+// analysis.Changes.End, is 0) would stop on its turnaround, on a
+// dominant: the line lands on the chord the turnaround leads to, where
+// the chorus would loop back, unless the last chord is already it.
+func Ending(beats []Beat, line []int, end int) int {
+	last := len(beats) - 1
+	if end != 0 || last < 0 {
+		return 0
+	}
+	pc := beats[last].Next.Bass
+	if pc == beats[last].Chord.Bass {
+		return 0
+	}
+	k, _ := step(pc, line[last], 0, pc, anyLeap)
+	return k
+}
+
 // target is the root the line heads for after the beats before `end`:
 // the bass of the chord on the next beat, or the chord after the last
 // one when the run ends there.

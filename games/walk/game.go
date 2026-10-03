@@ -22,8 +22,12 @@ import (
 // "Le son" in docs/walk.md).
 const lookahead = 100 * time.Millisecond
 
-// The count-in: two bars of snaps on 2 and 4, the configuration
-// validated by ear.
+// swingRatio places the ride's "and", the triplet swing of the method
+// books (see Swing).
+const swingRatio = 2.0 / 3
+
+// The count-in: two bars of hi-hat, "1, 3, 1, 2, 3, 4", the time to
+// move the hands from the space bar to the keyboard.
 const (
 	perBar  = 4
 	countIn = 2 * perBar
@@ -63,6 +67,7 @@ type game struct {
 
 	running  bool
 	m        Metronome
+	swing    Swing // the ride's eighths
 	beats    []Beat
 	next     int // the next beat to schedule
 	marker   *Marker
@@ -75,6 +80,7 @@ type game struct {
 	walker   walker
 	line     []int     // the reference line, in demo: a key per beat
 	heard    []Note    // its notes not yet sounded, for the marker
+	ending   int       // the key the demo ends on, after the last beat; 0 for none
 	rec      *recorder // nil without -record
 
 	fonts fonts
@@ -126,17 +132,19 @@ func (g *game) start(now time.Time) {
 	}
 	beat := time.Duration(float64(time.Minute) / g.bpm)
 	g.m = NewMetronome(now.Add(lookahead+countIn*beat), g.bpm, perBar)
+	g.swing = NewSwing(g.m, swingRatio)
 	g.beats = Expect(g.grid, g.m, g.choruses)
 	g.next = -countIn
 	g.marker = NewMarker(FirstPalier, g.m, g.beats)
 	g.marks = map[int]BeatKind{}
-	g.line, g.heard = nil, nil
+	g.line, g.heard, g.ending = nil, nil, 0
 	if g.rec != nil {
 		g.rec.run(now, g.bpm, g.band.demo)
 	}
 	if g.band.demo {
 		seed := uint64(now.UnixNano())
 		g.line = Walk(g.beats, rand.New(rand.NewPCG(seed, seed>>32|1)))
+		g.ending = Ending(g.beats, g.line, g.grid.End)
 	}
 }
 
@@ -204,9 +212,20 @@ func (g *game) Update() error {
 			key = g.line[g.next]
 			g.heard = append(g.heard, Note{Key: key, At: at})
 		}
-		g.band.beat(g.m.Position(g.next), key, at)
+		snap := g.walker.gait(true) == snapping
+		g.band.beat(g.m.Position(g.next), key, at, g.swing.AtBeats(float64(g.next)+0.5), snap)
 	}
-	if now.After(g.m.At(len(g.beats))) {
+	// The demo's last note, on the beat after the last one, held a bar:
+	// the run stops once it has rung.
+	last := len(g.beats)
+	if g.ending != 0 {
+		if g.next == last && end > last {
+			g.band.end(g.ending, g.m.At(last))
+			g.next++
+		}
+		last += perBar
+	}
+	if now.After(g.m.At(last)) {
 		g.stop(now)
 	}
 	return nil
@@ -222,7 +241,10 @@ func (g *game) demoKey(now time.Time) int {
 	}
 	x := g.m.Beats(now)
 	n := int(math.Floor(x))
-	if n < 0 || n >= len(g.beats) || x-float64(n) > 0.8 {
+	switch {
+	case n >= len(g.beats) && g.ending != 0:
+		return g.ending // held to the end
+	case n < 0 || n >= len(g.beats) || x-float64(n) > 0.8:
 		return 0
 	}
 	return g.line[n]
@@ -323,9 +345,14 @@ func (g *game) Draw(screen *ebiten.Image) {
 	g.drawChart(c, pos)
 
 	if !g.practicing && pos < 0 && pos > -countIn {
-		// The count-in, in big: "1, 2, 3, 4".
+		// The count-in, in big, as the hi-hat counts it: "1, 3", then
+		// "1, 2, 3, 4". In the first bar, each number holds two beats.
 		p := g.m.Position(int(math.Floor(pos)))
-		c.centred(fmt.Sprint(p.Beat), g.fonts.count, screenWidth/2, chartY+rowH/2, ink)
+		n := p.Beat
+		if p.Bar < 0 {
+			n -= (n - 1) % 2
+		}
+		c.centred(fmt.Sprint(n), g.fonts.count, screenWidth/2, chartY+rowH/2, ink)
 	}
 
 	g.piano.draw(c)
@@ -388,7 +415,9 @@ func (g *game) drawWalker(c canvas) {
 	tempo := g.running && !g.practicing
 	if tempo {
 		beats = g.m.Beats(now)
-		tempo = beats >= 0 // the count-in: still looking for the tempo
+		// Before the first beat, the count-in, he looks for the tempo;
+		// after the last one, on the demo's last note, he stops.
+		tempo = beats >= 0 && beats < float64(len(g.beats))
 	}
 	var col color.Color = ink
 	if g.band.demo && !g.practicing {

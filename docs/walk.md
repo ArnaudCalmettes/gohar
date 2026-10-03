@@ -33,8 +33,8 @@ Chailley, *40 000 ans de musique*.
 3. **On marque, on ne juge pas.** En retard, hors de l'accord, approche
    résolue : le jeu prend acte, il ne note pas le joueur. Le swing ne se
    juge pas : le feel s'enseigne, s'aide et se fête.
-4. **On entend ce qu'on joue.** Une vraie basse, un vrai piano, de vrais
-   claquements de doigts.
+4. **On entend ce qu'on joue.** Une vraie basse, un vrai piano, une
+   vraie batterie, de vrais claquements de doigts.
 
 ## Le joueur
 
@@ -366,6 +366,14 @@ Ce qui suit est notre lecture des sources.
     tirages, qu'aucune arrivée n'est manquée.
 - La démo se signale : l'étiquette dit « A TEMPO, DÉMO », le bonhomme
   passe en gris, et ses touches s'allument en bleu.
+- **La démo conclut.** Une grille qui boucle sans dire où elle finit
+  (ni « Fine », ni coda, ni point d'orgue) s'arrêterait sur son
+  turnaround, sur une dominante : une fin qui déstabilise. La démo pose
+  alors une dernière note, sur le temps qui suit, tenue une mesure avec
+  un coup de ride : la fondamentale de l'accord vers lequel mène le
+  turnaround, celui où le chorus reboucle (le F du blues en fa, après
+  G7 C7). Ce n'est pas une tonalité détectée, seulement l'accord
+  suivant ; si la grille finit déjà sur lui, rien ne s'ajoute.
 - `-record` écrit dans un fichier chaque note que le marqueur entend,
   celles du joueur ou de la démo : le chorus, la mesure et le temps,
   l'écart au temps, l'accord, la note avec son octave, et sa marque.
@@ -450,7 +458,8 @@ Ce qui suit est notre lecture des sources.
   - l'aisance est une moyenne glissante des arrivées, posées contre
     manquées, où chacune pèse un quart : à peu près les huit
     dernières comptent ;
-  - il cherche le tempo à l'arrêt, au décompte et sans tempo ; il
+  - il cherche le tempo à l'arrêt, au décompte et sans tempo, et
+    s'arrête de marcher sur la dernière note de la démo ; il
     marche par défaut ; il est dedans au-dessus de 0,6 d'aisance, en
     rebondissant entre les temps ; il claque des doigts sur 2 et 4
     au-dessus de 0,85, après huit arrivées posées d'affilée ;
@@ -468,6 +477,10 @@ Ce qui suit est notre lecture des sources.
     sur 2 et 4, la main vers l'avant, où elle claque, des étincelles
     (trois petits traits) au bout des doigts.
   Les seuils sont des valeurs de départ, à régler en jouant.
+- **Plus tard, il parle** : à la fin du run, une bulle où il commente
+  la prestation, avec les mots du jeu (des marques, pas un jugement) :
+  ce qui a tenu, ce qui a lâché, par situation (voir « La boucle de
+  jeu », point 5).
 - **Pour le graphiste**, plus tard : un cycle de marche par état, quatre
   images au moins ; des animations brèves (tendre l'oreille, sauter,
   trébucher et se rattraper) ; une bulle de BD extensible, les
@@ -531,10 +544,18 @@ Ce qui suit est notre lecture des sources.
 
 ## Le son
 
-- **Le métronome, plus humain qu'un clic** : un claquement de doigts sur
-  2 et 4, comme le bonhomme quand ça tourne. Avec la contrebasse qui
-  marche, c'est la première chose qu'un joueur entendra : c'est lui qui
-  pose l'ambiance. La fonction métrique est partagée par la basse et la
+- **Le métronome, plus humain qu'un clic** : la batterie. La
+  charleston au pied au décompte, sur deux mesures comptées « 1, 3, 1,
+  2, 3, 4 » : le temps d'amener les mains de la barre d'espace au
+  clavier. Puis la ride sur
+  chaque temps et sur le « et » swing de 2 et 4, accentuée sur 2 et 4,
+  avec la charleston sur 2 et 4. Avec la contrebasse qui marche, c'est
+  la première chose qu'un joueur entendra : c'est elle qui pose
+  l'ambiance.
+- **Le juice s'entend** : le claquement de doigts ne vient sur 2 et 4
+  que quand le bonhomme claque des doigts, quand ça tourne depuis un
+  moment (voir « Le bonhomme »). Le joueur l'entend arriver avant même
+  de regarder l'écran, et l'entend partir quand il décroche. La fonction métrique est partagée par la basse et la
   batterie, un tandem « souvent alchimique » (Siron, p. 694).
 - Plus tard : batterie et piano quand le joueur travaille la main
   gauche, batterie seule quand il joue à deux mains.
@@ -592,9 +613,11 @@ Ce qui suit est notre lecture des sources.
 - **L'accompagnement doit groover**, pas seulement tomber juste : la
   charleston et le snap jouant la même chose sur 2 et 4 sonnent
   redondants. Le motif de ride classique (1, 2 et, 3, 4 et, accents sur
-  2 et 4) y pourvoit, sur des croches swing. Les instruments entrent
-  l'un après l'autre : la charleston au décompte, la basse à la mesure
-  1, le reste ensuite.
+  2 et 4) y pourvoit, sur des croches swing (2/3 du temps). Les
+  instruments entrent l'un après l'autre : la charleston au décompte,
+  la ride et la basse à la mesure 1, le snap quand le bonhomme le
+  gagne. Fait pour le premier jalon, la ride 1 (touche 51) par défaut ;
+  le gain du kit dans le mélange reste à régler à l'oreille.
 
 ## La progression
 
@@ -633,8 +656,9 @@ Ce qui suit est notre lecture des sources.
 4. **La coquille du jeu** (`games/walk`) : défilement, entrée,
    décompte, affichage, le bonhomme. Première livraison faite : la
    grille en MuseJazz Text, quatre mesures par ligne, la mesure jouée
-   grisée et un curseur ; le décompte en grand ; les claquements sur 2
-   et 4 ; la main gauche en contrebasse, la droite en piano ; `-demo`
+   grisée et un curseur ; le décompte en grand ; la batterie (la
+   charleston au décompte, puis la ride), le snap quand le bonhomme
+   claque des doigts ; la main gauche en contrebasse, la droite en piano ; `-demo`
    pour la basse de référence ; le clavier à l'écran, le joueur en
    orange et la démo en bleu. Deuxième livraison faite : les marques
    des arrivées sur la grille (pastille verte, croix rouge, double
@@ -646,9 +670,9 @@ Ce qui suit est notre lecture des sources.
 ## Le premier jalon jouable
 
 - Les fondamentales, main gauche seule, sur un blues jazz lu dans un
-  export iReal (le IV en mesure 2, le VI7, un II-V, un turnaround), au
-  claquement de doigts sur 2 et 4, la contrebasse et le métronome en
-  soundfont.
+  export iReal (le IV en mesure 2, le VI7, un II-V, un turnaround), sur
+  la ride et la charleston, la contrebasse et la batterie en
+  soundfont, le claquement de doigts quand ça tourne.
 - La phase d'entraînement sans tempo.
 - Les marques de temps et de fondamentale, sans progression.
 - Le bonhomme en bâtons.

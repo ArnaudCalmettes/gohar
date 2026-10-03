@@ -97,10 +97,11 @@ go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 ### walk
 
 *Walk with me*, the game that teaches the left hand to replace the
-bassist. The first palier: the chart of a jazz blues, finger snaps on
-2 and 4 to count in and to keep going, your left hand on a double
+bassist. The first palier: the chart of a jazz blues, the hi-hat to
+count in, then the ride to keep going, your left hand on a double
 bass, your right on a piano, split at G3, and the roots you land on
-each change marked on the chart. Without tempo, the chart waits for
+each change marked on the chart. Land enough of them and the stick
+figure snaps his fingers on 2 and 4: you hear it. Without tempo, the chart waits for
 each root.
 
 ```sh
