@@ -60,7 +60,7 @@ func (g *game) drawChart(c screen.Canvas, pos float64) {
 		if i == playing {
 			fill = pale
 		}
-		g.drawBar(c, cells, x, y, barH, fill, false, i%barsPerRow == barsPerRow-1 || i == bars-1)
+		g.drawBar(c, cells, x, y, barH, fill, g.small, i%barsPerRow == barsPerRow-1 || i == bars-1)
 		if i == playing {
 			cx := x + float32(math.Mod(pos, perBar)/perBar)*barW
 			c.Line(cx, y, cx, y+barH, 1.5, ink)
@@ -77,7 +77,8 @@ func (g *game) drawChart(c screen.Canvas, pos float64) {
 // if not nil, its barline, the closing one too when it ends its row
 // (`last`), and its chords, or the repeat sign for a bar where none
 // starts. Two chords sharing the bar are written small, and all of them
-// when the rows are shrunk (`small`).
+// when the rows are shrunk or the grid has such a bar (`small`): one
+// size for the whole chart.
 func (g *game) drawBar(c screen.Canvas, cells []cell, x, y, h float32, fill color.Color, small, last bool) {
 	if fill != nil {
 		c.Rect(x, y, barW, h, fill)
@@ -87,12 +88,12 @@ func (g *game) drawBar(c screen.Canvas, cells []cell, x, y, h float32, fill colo
 		c.Line(x+barW, y, x+barW, y+h, 1, ink)
 	}
 	dy := float64(y) + min(chordDY, float64(h)/2-10) // about the middle of a shrunk bar
-	if len(cells) == 0 {
-		c.Centred("%", g.fonts.chord, float64(x)+barW/2, dy, ink)
-	}
 	font, raised := g.fonts.chord, g.fonts.chordRaised
 	if small || len(cells) > 1 {
 		font, raised = g.fonts.chordSmall, g.fonts.chordSmallRaised
+	}
+	if len(cells) == 0 {
+		c.Centred("%", font, float64(x)+barW/2, dy, ink)
 	}
 	for _, cl := range cells {
 		cx := float64(x) + chordDX + float64(cl.beat)*barW/perBar

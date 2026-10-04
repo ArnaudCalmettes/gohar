@@ -102,6 +102,7 @@ type game struct {
 	written    map[analysis.Ticks]chordpro.Chord // the chords as the grid writes them, by start
 	bars       [][]cell                          // the chart, bar by bar; empty for a chord held from before
 	formulas   map[analysis.Ticks]formula        // the formulas its chords make, for the review
+	small      bool                              // a bar holds two chords: all are written small
 	chorusLen  int                               // beats in a chorus
 	rules      Rules                             // what the marker and the practice expect
 	practicing bool                              // the phase without tempo
@@ -155,6 +156,10 @@ func (g *game) load(i int) {
 	}
 	g.bars = chart(t)
 	g.formulas = formulasOf(t.grid)
+	g.small = false
+	for _, cells := range g.bars {
+		g.small = g.small || len(cells) > 1
+	}
 	g.chorusLen = len(Expect(t.grid, tempo.NewMetronome(time.Time{}, g.bpm, perBar), 1))
 	g.marks, g.practice = nil, nil
 }

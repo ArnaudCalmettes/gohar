@@ -27,7 +27,8 @@ const (
 
 // formulasOf finds the formulas of `c`, by the start of their chords.
 // The cells of the analysis come first: the II V of an anatole is part
-// of the anatole. A V alone, without its II, is no formula.
+// of the anatole. A V alone, without its II, is no formula; a II V is
+// one, whether or not its V resolves.
 func formulasOf(c analysis.Changes) map[analysis.Ticks]formula {
 	out := map[analysis.Ticks]formula{}
 	mark := func(i int, f formula) {
@@ -56,7 +57,26 @@ func formulasOf(c analysis.Changes) map[analysis.Ticks]formula {
 			mark(i, twoFive)
 		}
 	}
+	// A II V whose V prepares nothing is no block, but a musician hears
+	// it all the same: the first Dm7 G7 of Dm7 G7 | Dm7 G7 in Satin Doll,
+	// whose G7 goes back to its two.
+	for i := 0; i+1 < len(c.Chords); i++ {
+		two, five := c.Chords[i], c.Chords[i+1]
+		if !two.Silent && !five.Silent && isTwo(two.Chord.Pattern) &&
+			five.Chord.Pattern.HasAll(harmony.IntMajorThird, harmony.IntMinorSeventh) &&
+			five.Chord.Root == two.Chord.Root.Transpose(5) {
+			mark(i, twoFive)
+			mark(i+1, twoFive)
+		}
+	}
 	return out
+}
+
+// isTwo tells the qualities of a two: a minor seventh, or a half
+// diminished seventh, as harmony reads them.
+func isTwo(p harmony.ChordPattern) bool {
+	t := p.Tetrad()
+	return t == harmony.ChordMinorSeventh || t == harmony.ChordMinorSeventhNo5 || t == harmony.ChordHalfDiminished
 }
 
 // A feel is how the notes of a run sat on the beat, in one word.

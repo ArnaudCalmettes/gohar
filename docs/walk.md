@@ -303,6 +303,9 @@ Ce qui suit est notre lecture des sources.
 - **Les grilles d'aujourd'hui**, en ChordPro (`games/walk/grids`, voir
   `formats.md`), accords seuls, saisis pour gohar sous licence libre :
   - le blues de douze mesures en F, le premier ;
+  - *Satin Doll*, en C : des II-V partout, à un ton ou un demi-ton l'un
+    de l'autre, puis en F et en G pour le pont. Le terrain idéal pour
+    apprendre à varier ses chemins dans plusieurs tonalités ;
   - *Tune Up*, d'après l'analyse d'*En Harmonie* (t. 1, p. 160) : trois
     II-V-I majeurs un ton plus bas l'un que l'autre ;
   - *Autumn Leaves*, en G mineur : les II-V-I du relatif majeur, puis
@@ -517,7 +520,8 @@ n'a pas de bilan, une démo non plus : le bonhomme n'a rien à se dire.
     les anatoles à ce tempo ». Les formules sont celles que l'analyse
     trouve dans la grille : les anatoles, les III-VI-II-V-I, les
     cadences éoliennes (`analysis.Cells`), puis les II-V-I
-    (`analysis.Blocks`) ; un temps manqué compte pour la formule dont
+    (`analysis.Blocks`), et les II-V dont le V ne résout pas, comme le
+    premier Dm7 G7 de *Satin Doll* ; un temps manqué compte pour la formule dont
     son accord fait partie. Hors de toute formule, le conseil nomme la
     situation : les changements en milieu de mesure, par exemple ;
   - quand les changements et le temps lâchent ensemble : ralentir le
@@ -553,7 +557,9 @@ la partie.
 - **Trois rangées à la fois.** Une grille plus longue tourne ses pages
   d'une rangée à la fois, comme on lit un Real Book : la rangée jouée en
   deuxième position, celle d'avant au-dessus, la suivante en dessous,
-  pour lire en avance. Une mesure à deux accords les écrit plus petits.
+  pour lire en avance. Une mesure à deux accords les écrit plus petits,
+  et alors toute la grille avec eux : une seule taille d'accord par
+  grille, pour que la page se lise d'un œil égal.
 - **Les exposants.** La fondamentale et le type de tétrade restent sur
   la ligne (D7, Am7, Cmaj7) ; la quinte altérée et les extensions
   montent en exposant : Am7<sup>♭5</sup>, D7<sup>(♭13)</sup>. Restent

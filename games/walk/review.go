@@ -140,6 +140,6 @@ func (r *review) drawMap(c screen.Canvas) {
 		case t.expected > 0:
 			fill = consolidateTint
 		}
-		g.drawBar(c, cells, x, y, h-4, fill, h < rowH, i%barsPerRow == barsPerRow-1 || i == len(g.bars)-1)
+		g.drawBar(c, cells, x, y, h-4, fill, h < rowH || g.small, i%barsPerRow == barsPerRow-1 || i == len(g.bars)-1)
 	}
 }

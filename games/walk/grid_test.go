@@ -6,7 +6,8 @@ import (
 )
 
 // The grids of the game, as written: their titles and their length in
-// bars, the repeat of Autumn Leaves played.
+// bars, the repeat of Autumn Leaves played, the A of Satin Doll
+// recalled.
 func TestGrids(t *testing.T) {
 	tunes, err := readTunes()
 	if err != nil {
@@ -17,6 +18,7 @@ func TestGrids(t *testing.T) {
 		bars  int
 	}{
 		{"12 Bar Blues", 12},
+		{"Satin Doll", 32},
 		{"Tune Up", 16},
 		{"Autumn Leaves", 32},
 	}
@@ -30,8 +32,9 @@ func TestGrids(t *testing.T) {
 	}
 }
 
-// On Tune Up and Autumn Leaves as on the blues, the reference line lands
-// every arrival: two chords a bar, II-V-I in major and in minor.
+// On every grid as on the blues, the reference line lands every
+// arrival: two chords a bar, II-V-I in major and in minor, II-V a half
+// tone apart.
 func TestWalkLandsEveryGrid(t *testing.T) {
 	tunes, err := readTunes()
 	if err != nil {

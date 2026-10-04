@@ -16,10 +16,11 @@ import (
 var grids embed.FS
 
 // The grids the game offers, in the order the player goes round them:
-// the blues first, then II-V-I in major, then in major and minor.
+// the blues first, then II-V in many keys, to vary the paths, then
+// II-V-I in major, then in major and minor.
 const jazzBlues = "blues.cho"
 
-var gridFiles = []string{jazzBlues, "tune-up.cho", "autumn-leaves.cho"}
+var gridFiles = []string{jazzBlues, "satin-doll.cho", "tune-up.cho", "autumn-leaves.cho"}
 
 // A tune is a grid to play: its title, its changes, and beside each
 // change the chord as the grid writes it, for the screen.
