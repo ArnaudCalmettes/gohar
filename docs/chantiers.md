@@ -22,13 +22,15 @@ Le détail des modules est dans l'arborescence d'`architecture.md`.
 - [x] `analysis` : la reconnaissance des accords, et l'analyse d'une
       grille à la manière d'*En Harmonie* ; 87 % d'accord avec l'app ou
       l'oreille sur le corpus.
-- [x] `charts` : les grilles iReal Pro, et les commandes `analyse`,
-      `corpus` et `forms`.
+- [x] `charts` : les grilles iReal Pro, le format ouvert en ChordPro
+      (`charts/chordpro`) avec son convertisseur depuis iReal, et les
+      commandes `analyse`, `corpus`, `forms` et `tochordpro`.
 - [x] `dex` : le corps, la persistance JSON.
 - [x] `synth` : moteur sans allocation, notes datées, mélangeur,
       soundfonts, sons enregistrés.
-- [x] `games` : `keyboard`, `keys`, `ear`, le premier jalon de *Walk
-      with me* avec son écran titre, et les paquets communs (`screen`,
+- [x] `games` : `keyboard`, `keys`, `ear`, *Walk with me* (le premier
+      jalon, l'écran titre et ses options, trois grilles en ChordPro,
+      le bilan de fin de run), et les paquets communs (`screen`,
       `tempo`, `settings`, `lang` avec l'internationalisation, `scene`
       le régisseur, `calibrate` la calibration de la latence).
 
@@ -131,7 +133,8 @@ un profil propre à gohar (`formats.md`).
 
 ## L'analyse des grilles
 
-Les règles et les décisions sont dans `grilles.md`.
+Les règles et les décisions sont dans `grilles.md`. Rien n'y presse :
+ces chantiers se grefferont aux jeux, à mesure qu'un jeu en aura besoin.
 
 - [ ] la réécriture des accords par zones, aujourd'hui dans
       `charts/cmd/analyse` (`spell.go`), passée dans la bibliothèque,
@@ -253,36 +256,47 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
   - [x] le décalage mesuré, rangé par couple clavier et sortie, puis
         retranché avant le marqueur ;
   - [x] un menu d'options : le tempo, la langue, la calibration ;
-  - [ ] les autres drapeaux dans les options : le split, le son 8 bits,
-        le nombre de chorus, la démo ;
+  - [ ] les autres drapeaux dans les options : le split et le son
+        8 bits ;
+  - [ ] le nombre de chorus et la démo en réglages du run, à changer à
+        l'arrêt face à la grille, comme la grille et le tempo : le
+        joueur qui ne voit pas comment une grille doit sonner met la
+        démo à 160 pour en saisir la logique et trouver des chemins,
+        avant de la travailler ;
   - [ ] `ear` aux scènes et à `lang` ;
   - [ ] un drapeau pour aller droit à une scène, une fois tous les
         drapeaux repris par les options.
 - [ ] l'ouverture animée de *Walk with me* (« L'écran titre » dans
-      `walk.md`), une fois les transitions entre scènes en place ; pas
-      urgent.
+      `walk.md`) : un gros plan sur la main qui claque, qui recule
+      jusqu'au bonhomme à sa place quand la basse entre. Pour le
+      plaisir, pas urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
-  - **à développer**, dans cet ordre :
-    1. le bilan par fonction harmonique (l'arrivée sur le I après un
+  - **le chantier prioritaire** : le cursus, c'est-à-dire les paliers,
+    la basse en deux et le mode campagne, qui vont ensemble. La
+    campagne prendra le débutant par la main (le tonal d'abord, le
+    modal bien plus tard) et choisira aussi le tempo. Les chantiers du
+    dex et des voicings devraient s'y greffer ;
+  - **à développer ensuite**, dans cet ordre :
+    1. le défilement fluide de la grille, à la place de la tourne de
+       page ;
+    2. le bilan par fonction harmonique (l'arrivée sur le I après un
        V7, sur un II, sur une dominante chromatique), une fois l'analyse
        fonctionnelle branchée sur la grille du jeu (« Le bilan » dans
        `walk.md`) ;
-    2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
+    3. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;
-    3. le défilement fluide, si la tourne de page ne suffit pas ;
     4. les réactions du bonhomme aux motifs (une pédale, une descente),
        avec les niveaux avancés : réharmonisations et techniques plus
        libres ;
-    5. les touches dessinées selon le contrôleur (clavier, manettes),
-       par exemple avec les sprites libres des Input Prompts de Kenney,
-       le jour où le jeu se jouera aussi à la manette ;
+    5. bien plus tard, les touches dessinées selon le contrôleur
+       (clavier, manettes), par exemple avec les sprites libres des
+       Input Prompts de Kenney, le jour où le jeu se jouera aussi à la
+       manette ;
   - **avec des joueurs de tous niveaux** : l'équilibrage des fenêtres de
     temps, des seuils du bonhomme et du mélange ;
-  - **avec le design de la progression générale** : les paliers, la
-    basse en deux, le catalogue de patterns de la basse de référence ;
-    le mode campagne, qui prendra le débutant par la main (le tonal
-    d'abord, le modal bien plus tard) et choisira aussi le tempo.
+  - **avec le cursus** : le catalogue de patterns de la basse de
+    référence.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

@@ -542,19 +542,22 @@ la partie.
   tempo, de 5 en 5. Le tempo des options sert de départ, et ce qu'on
   change en jouant vaut pour la séance, sans toucher aux options ; la
   grille choisie aussi.
+- **Plus tard, au même endroit**, le nombre de chorus et la démo : face
+  à une grille dont il ne voit pas comment elle doit sonner, le joueur
+  met la démo à 160 pour en saisir la logique et trouver des chemins,
+  puis la travaille lui-même.
 
 ## L'écran titre
 
 Une ouverture jouée par le moteur du jeu, sans vidéo :
 
-1. un décompte en claquements de doigts sur 2 et 4, en gros plan sur le
-   seul bout du bras du bonhomme qui claque ;
-2. la basse et la ride entrent, et la caméra recule jusqu'au bonhomme
-   qui marche en claquant des doigts ; une bulle affiche le titre,
-   « Walk With Me » ;
-3. à l'appui d'une touche, la musique continue, le même blues de douze
-   mesures improvisé par la basse de référence ; le bonhomme glisse sur
-   la gauche, grisé, et le menu s'affiche au milieu.
+1. le décompte en claquements de doigts sur 2 et 4, en gros plan sur le
+   seul bout du bras du bonhomme, la main qui claque ;
+2. pendant le décompte, la caméra recule ; elle a fini de reculer au
+   moment où la basse et la ride entrent : le bonhomme est à sa place,
+   à gauche, et marche en claquant des doigts ;
+3. le titre et le menu s'affichent, sur le même blues de douze mesures
+   improvisé par la basse de référence.
 
 C'est purement cosmétique, et cela demande des transitions entre
 scènes : le premier écran titre se contente de la position finale.
