@@ -2,15 +2,15 @@ package main
 
 import (
 	"image/color"
-	"math/rand/v2"
+	"log"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
+	"github.com/ArnaudCalmettes/gohar/games/calibrate"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
-	"github.com/ArnaudCalmettes/gohar/games/tempo"
 )
 
 // The title screen, in the final position of the opening to come (see
@@ -31,25 +31,20 @@ const (
 
 // The items of the menu, in order.
 const (
-	itemPlay = iota
+	itemPlay      = iota
+	itemCalibrate // until a menu of options takes it over
 	itemQuit
 	items
 )
 
-var itemPhrase = [items]string{itemPlay: msgMenuPlay, itemQuit: msgMenuQuit}
+var itemPhrase = [items]string{itemPlay: msgMenuPlay, itemCalibrate: msgMenuCalibrate, itemQuit: msgMenuQuit}
 
-// title is the title scene: the reference bass walks a blues chorus
-// after chorus, with the ride and the walker's snaps, while the player
+// title is the title scene: the jam plays, the reference bass walking
+// the blues with the ride and the walker's snaps, while the player
 // chooses. The keyboard sounds, to play along.
 type title struct {
 	*app
 
-	m      tempo.Metronome
-	swing  tempo.Swing
-	beats  []Beat // one chorus
-	line   []int  // the chorus playing: a key per beat
-	next   int    // the next beat to schedule, counted from the first chorus
-	rng    *rand.Rand
 	walker walker
 	chosen int
 }
@@ -58,23 +53,16 @@ func newTitle(a *app) *title {
 	return &title{app: a, walker: walker{ease: 1, streak: snapStreak}} // at his best: he snaps
 }
 
-// Enter starts the count-in a lookahead from now: two bars of the
-// walker's snaps on 2 and 4, alone, then the band comes in.
+// Enter starts the jam, unless it plays already: back from the
+// calibration, the blues goes on.
 func (t *title) Enter() {
-	now := time.Now()
-	beat := time.Duration(float64(time.Minute) / titleBPM)
-	t.m = tempo.NewMetronome(now.Add(lookahead+countIn*beat), titleBPM, perBar)
-	t.next = -countIn
-	t.swing = tempo.NewSwing(t.m, swingRatio)
-	t.beats = Expect(t.grid, t.m, 1)
-	seed := uint64(now.UnixNano())
-	t.rng = rand.New(rand.NewPCG(seed, seed>>32|1))
+	if t.jam == nil {
+		t.jam = newJam(t.app)
+	}
 }
 
-// Leave releases the bass: the game counts in on its own.
-func (t *title) Leave() {
-	t.band.stop(time.Now())
-}
+// Leave lets the jam play: the next scene takes it over, or stops it.
+func (t *title) Leave() {}
 
 func (t *title) Update() scene.Transition {
 	t.drain(nil) // the keys sound, from the callback; nothing to mark
@@ -86,42 +74,46 @@ func (t *title) Update() scene.Transition {
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown):
 		t.chosen = (t.chosen + 1) % items
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter), inpututil.IsKeyJustPressed(ebiten.KeySpace):
-		if t.chosen == itemQuit {
+		switch t.chosen {
+		case itemQuit:
 			return scene.Quit
+		case itemCalibrate:
+			return t.calibrate()
 		}
 		return scene.Replace(newGame(t.app))
 	}
-	t.schedule(time.Now())
+	t.jam.play(time.Now(), true)
 	return scene.Stay
 }
 
-// schedule queues the beats due within the lookahead of `now`: the
-// snaps of the count-in, then the band, a new line drawn at each chorus.
-// Each chorus is walked on its own: the line does not carry over the
-// double bar yet.
-func (t *title) schedule(now time.Time) {
-	_, end := t.m.Due(now, now.Add(lookahead))
-	for ; t.next < end; t.next++ {
-		if t.next < 0 {
-			if t.m.Position(t.next).Beat%2 == 0 { // 2 and 4
-				t.band.snapAt(t.m.At(t.next))
-			}
-			continue
-		}
-		n := t.next % len(t.beats)
-		if n == 0 {
-			t.line = Walk(t.beats, t.rng)
-		}
-		snap := t.walker.gait(true) == snapping
-		t.band.beat(t.m.Position(t.next), t.line[n], t.m.At(t.next), t.swing.AtBeats(float64(t.next)+0.5), snap)
+// calibrate opens the shared calibration on the jam's clock, its bar on
+// the band's wood blocks: the bass goes on under it, the drums and the
+// snaps stop, and come back once the measure is steady. Back to this
+// very title, the menu where it was.
+func (t *title) calibrate() scene.Transition {
+	s, err := calibrate.New(calibrate.Config{
+		Width: screenWidth,
+		Scale: func() float64 { return t.scale },
+		Lang:  t.lang.Tag(),
+		Clock: t.jam.m,
+		MIDI:  t.midi != "",
+		Drain: t.drain,
+		Tick:  t.band.tick,
+		Play:  func(now time.Time, quiet bool) { t.jam.play(now, !quiet) },
+		Back:  func() scene.Scene { return t },
+	})
+	if err != nil {
+		log.Println("calibration:", err)
+		return scene.Stay
 	}
+	return scene.Replace(s)
 }
 
 func (t *title) Draw(dst *ebiten.Image) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: t.scale}
 	now := time.Now()
-	beats := t.m.Beats(now)
+	beats := t.jam.m.Beats(now)
 	t.walker.draw(c, walkerX, walkerY, walkerScale, t.walker.gait(true), beats, now, faint) // snapping from the count-in
 
 	const mid = screenWidth / 2

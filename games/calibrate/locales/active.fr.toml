@@ -1,0 +1,8 @@
+title = "Calibration"
+ask = "Appuie sur une touche du clavier MIDI en même temps que le quatrième temps."
+nomidi = "Branche un clavier MIDI pour calibrer : c'est lui qu'on mesure."
+tap = "Dernière frappe : {{.Ms}} ms"
+measure = "Décalage moyen : {{.Ms}} ms ({{.Taps}} frappes sur {{.Of}})"
+steady = "Décalage mesuré : {{.Ms}} ms"
+keys = "Échap : retour"
+done = "Terminé ! Appuyez sur n'importe quelle touche pour continuer."

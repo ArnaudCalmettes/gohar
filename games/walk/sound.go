@@ -24,6 +24,11 @@ var jazzKit = synth.Preset{Bank: 128, Patch: 32}
 const (
 	pedalHat = 44
 	ride1    = 51 // or ride 2, 59: they differ only in pitch
+
+	// The calibration's "ta, ta, ta, TI": the low wood block, then the
+	// high one, of the General MIDI map every kit follows.
+	hiWood  = 76
+	lowWood = 77
 )
 
 var acousticGrand = synth.Preset{Bank: 0, Patch: 0}
@@ -37,7 +42,10 @@ const (
 	hatVel      = 0.6 // the hi-hat on 2 and 4
 	endVel      = 0.7 // the ride on the demo's last note
 	snapVel     = 1
+	taVel       = 0.8 // the calibration's beats, well in front
+	tiVel       = 1   // its fourth beat
 	bassVel     = 0.8 // the reference bass
+	underVel    = 0.3 // the same, discreet, under the calibration
 )
 
 // The gains of the mix. With a soundfont, the balance of the renders
@@ -77,6 +85,7 @@ type band struct {
 	bass, piano synth.Instrument // the player's hands, split at `split`
 	split       int
 	hat, ride   int  // the keys of the kit
+	ta, ti      int  // the calibration's
 	chip        bool // the kit is a noise: each stroke needs its release
 
 	demo bool // the band plays the bass itself, the reference line
@@ -86,7 +95,7 @@ type band struct {
 // newBand builds the band on `mix`. A nil soundfont gives the chip
 // sounds.
 func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, split int, demo bool) (*band, error) {
-	b := &band{split: split, demo: demo, hat: pedalHat, ride: ride1}
+	b := &band{split: split, demo: demo, hat: pedalHat, ride: ride1, ta: lowWood, ti: hiWood}
 	if sf == nil {
 		hands, err := synth.NewEngine("triangle", true)
 		if err != nil {
@@ -98,6 +107,7 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 		}
 		b.bass, b.piano, b.snap, b.kit = hands, hands, noise, noise
 		b.hat, b.ride, b.chip = noiseKey, chipRide, true
+		b.ta, b.ti = noiseKey, chipRide
 		mix.Add(hands, chipHandsGain)
 		mix.Add(noise, chipNoiseGain)
 		return b, nil
@@ -159,7 +169,7 @@ func (bd *band) beat(p tempo.Position, key int, at, and time.Time, snap bool) {
 		bd.snapAt(at)
 	}
 	if key != 0 {
-		bd.walk(key, at)
+		bd.walk(key, bassVel, at)
 	}
 }
 
@@ -169,21 +179,31 @@ func (bd *band) snapAt(at time.Time) {
 	bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
 }
 
+// tick schedules a beat of the calibration at `at`: "ta", or "TI" when
+// `accent`. The bass walks under it, discreet (see jam).
+func (bd *band) tick(at time.Time, accent bool) {
+	if accent {
+		bd.strike(bd.ti, tiVel, at)
+		return
+	}
+	bd.strike(bd.ta, taVel, at)
+}
+
 // end plays the demo's last note, `key` at `at`, with a stroke of the
 // ride: the chord the turnaround leads to (see Ending).
 func (bd *band) end(key int, at time.Time) {
 	bd.strike(bd.ride, endVel, at)
-	bd.walk(key, at)
+	bd.walk(key, bassVel, at)
 }
 
-// walk sounds `key` on the reference bass, legato, as Siskind asks: each
-// note holds until the next one, released on the same date it is
-// replaced.
-func (bd *band) walk(key int, at time.Time) {
+// walk sounds `key` on the reference bass at `vel`, legato, as Siskind
+// asks: each note holds until the next one, released on the same date
+// it is replaced.
+func (bd *band) walk(key int, vel float64, at time.Time) {
 	if bd.held != 0 {
 		bd.bass.ScheduleOff(bd.held, at)
 	}
-	bd.bass.ScheduleOn(key, bassVel, at)
+	bd.bass.ScheduleOn(key, vel, at)
 	bd.held = key
 }
 

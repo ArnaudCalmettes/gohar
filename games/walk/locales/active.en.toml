@@ -22,5 +22,6 @@ tempo = "Tempo: {{.BPM}} BPM"
 "record.demo" = "demo"
 
 "menu.play" = "Play"
+"menu.calibrate" = "Calibration"
 "menu.quit" = "Quit"
 "title.keys" = "Up, down: choose   Enter: confirm   Esc: quit"

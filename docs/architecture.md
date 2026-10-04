@@ -84,6 +84,8 @@ gohar/
     settings/                ce que les jeux gardent d'une partie à l'autre
     lang/                    les phrases des jeux, par langue (go-i18n)
     scene/                   le régisseur : la pile des scènes d'un jeu
+    calibrate/               la calibration de la latence, une scène
+                             commune
     ear/                     ear trainer : menu, degrés, tétracordes, modes
     walk/                    Walk with me : temps attendus, marqueur,
                              walking bass générée, batterie,
@@ -354,17 +356,77 @@ bamenn), mais aucune n'offre la pile, et aucune n'est assez mûre pour
 une dépendance. Le paquet `games/scene` est donc à nous, petit et sans
 autre dépendance qu'Ebitengine. Ses tests suivent un écran titre, une
 partie qui le remplace, des paramètres empilés puis refermés : qui
-entre, qui sort, qui se met à jour, qui se dessine. Les transitions animées viendront plus
-tard : le découpage de bamenn (départ, arrivée, fin) est un bon modèle.
+entre, qui sort, qui se met à jour, qui se dessine. Les transitions
+animées viendront plus tard : le découpage de bamenn (départ, arrivée,
+fin) est un bon modèle.
 
 Ce qui sert à plusieurs jeux vit dans un paquet commun (voir
-l'arborescence) ; `calibrate`, la calibration de la latence, une scène
-partagée, viendra s'y ajouter.
+l'arborescence), y compris une scène : `calibrate`.
 
 **La latence appartient à la machine, pas au jeu** : elle dépend de la
 sortie audio et du clavier MIDI. Elle se range dans les réglages
 communs à tous les jeux, rattachée au couple clavier et sortie, de sorte
 qu'un changement de casque ou de clavier invite à recalibrer.
+
+### La calibration
+
+**Ce qu'on mesure.** Le jeu date une note programmée à l'instant où il
+l'écrit, et une touche à l'instant où il la reçoit. Entre les deux, il y
+a le chemin du son jusqu'à l'oreille (« Les notes datées ») et celui du
+doigt jusqu'au programme (le clavier, l'USB, la bibliothèque MIDI). La
+calibration mesure leur somme, plus l'habitude du joueur d'appuyer un
+peu tôt ou un peu tard : c'est exactement ce que le marqueur devra
+retrancher.
+
+**La méthode** vient de *Rhythm Paradise Groove*, dont l'écran de
+calibration a été mis au point par des professionnels du jeu de rythme.
+Une mesure est battue « ta, ta, ta, TI », quatre ronds numérotés à
+l'écran, celui du temps qui sonne grossi, et le joueur appuie sur le
+TI, le quatrième temps. Les trois temps d'avant ancrent la pulsation
+dans sa tête, et sa frappe sur le quatrième en est bien plus précise
+que sur un signal isolé.
+
+**Comment gohar la modélise.**
+
+- La scène, `calibrate.Scene`, est commune aux jeux : chacun lui prête
+  son écran, son clavier, son son (une fonction qui programme un temps,
+  accentué ou non), et la scène où revenir. Quand une musique joue
+  déjà, il lui prête aussi son métronome et de quoi la faire jouer :
+  la mesure battue tombe alors sur ses temps, à son tempo. Ses phrases sont les
+  siennes, en français et en anglais.
+- Le `Meter` rapporte chaque frappe au quatrième temps le plus proche ;
+  une frappe à une demi-pulsation ou plus de tout quatrième temps n'y
+  répond pas et n'est pas gardée.
+- Dans *Walk with me*, le « ta » est le wood block grave du kit, le
+  « TI » le wood block aigu, bien en avant de la basse, au tempo de
+  l'écran titre (160 à la noire) : la musique continue à son allure, et
+  comme seul le quatrième temps se frappe, un tempo enlevé reste
+  facile.
+
+**Ce qui est difficile : savoir quand s'arrêter.** La règle de *Rhythm
+Paradise Groove* n'est pas connue. La nôtre, une première estimation à
+régler avec des joueurs : les huit dernières frappes, quand leur écart
+type passe sous 20 ms. La mesure s'arrête alors, la scène affiche le
+décalage moyen et annonce que c'est terminé : n'importe quelle touche,
+du clavier de l'ordinateur ou du clavier MIDI, ramène au menu.
+
+**Ce qu'on a décidé.**
+
+- La calibration ne s'impose pas. Le jeu se joue sans, même à 140 ou 160
+  à la noire : imposer un écran avant la première note éloignerait le
+  joueur de ce qu'il vient chercher. Elle est une entrée du menu, entre
+  « Jouer » et « Quitter », en attendant un menu d'options.
+- Pour l'instant, le décalage est seulement affiché. Le ranger dans les
+  réglages, rattaché au couple clavier et sortie, puis le retrancher
+  dans le marqueur, est l'étape suivante.
+- En fond, une musique discrète, comme dans l'original, et sans la
+  moindre coupure. Le joueur arrive de l'écran titre, où la basse et la
+  batterie jouent : la ligne de basse continue sur le même temps, plus
+  douce, et la batterie et les claquements se taisent pour laisser la
+  place au « ta, ta, ta, TI », qui part sur le premier temps de la
+  mesure suivante. Une fois la mesure faite, le métronome se tait et la
+  batterie et les claquements reprennent avec la basse ; revenir au
+  titre ne coupe rien non plus.
 
 Restent hors du paquet : Ark, qui servira à l'intérieur d'une scène (la
 foule des marcheurs) et non pour les scènes elles-mêmes, et un lanceur

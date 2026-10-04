@@ -24,6 +24,7 @@ type app struct {
 	fonts  fonts
 	scale  float64   // the window's, set by layout
 	rec    *recorder // nil without -record
+	jam    *jam      // the music of the menus, nil while a game plays
 
 	// The options.
 	title    string

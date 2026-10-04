@@ -126,8 +126,14 @@ func newGame(a *app) *game {
 	}
 }
 
-// Enter has nothing to start: the space bar does.
-func (g *game) Enter() {}
+// Enter stops the music of the menus: the game counts in on its own,
+// at its own tempo. The space bar starts it.
+func (g *game) Enter() {
+	if g.jam != nil {
+		g.jam.stop(time.Now())
+		g.jam = nil
+	}
+}
 
 // Leave stops the run, if any: the bass released, the recording
 // flushed.

@@ -1,0 +1,8 @@
+title = "Calibration"
+ask = "Press a key on the MIDI keyboard together with the fourth beat."
+nomidi = "Plug in a MIDI keyboard to calibrate: it is part of what is measured."
+tap = "Last tap: {{.Ms}} ms"
+measure = "Mean offset: {{.Ms}} ms ({{.Taps}} taps of {{.Of}})"
+steady = "Measured offset: {{.Ms}} ms"
+keys = "Esc: back"
+done = "Done! Press any key to continue."

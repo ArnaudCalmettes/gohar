@@ -196,7 +196,9 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] les allocations de la boucle de jeu, à réduire quand on touche au
       rendu (une collecte toutes les une à deux secondes, sans risque
       pour le son).
-- [ ] la calibration chez le joueur, promise dès le premier jour.
+- [ ] la calibration chez le joueur, promise dès le premier jour : la
+      scène existe (« La calibration » dans `architecture.md`), reste à
+      sauvegarder le décalage et à l'appliquer.
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
 - [ ] la soundfont : GeneralUser GS est retenue (`make sounds`) ;
@@ -213,7 +215,10 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 - [ ] les scènes (« Les scènes » dans `architecture.md`) :
   - [x] le régisseur, `games/scene`, et *Walk with me* en deux scènes,
         le titre et la partie ;
-  - [ ] la calibration, une scène partagée ;
+  - [x] la calibration, une scène partagée, dans le menu du titre ;
+  - [ ] le décalage mesuré, rangé par couple clavier et sortie, puis
+        retranché dans le marqueur ;
+  - [ ] un menu d'options, où la calibration passera ;
   - [ ] `ear` aux scènes et à `lang` ;
   - [ ] un drapeau pour aller droit à une scène, une fois les options
         reprises par un écran de paramètres.
@@ -222,11 +227,10 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
-    1. la calibration de latence, à la manière de *Rhythm Paradise
-       Groove* : un signal régulier, une animation qui compte jusqu'à 4,
-       le joueur appuie en rythme jusqu'à ce que l'écart moyen se
-       stabilise, et il est sauvegardé. Un premier enregistrement montre
-       une avance régulière d'une trentaine de millisecondes ;
+    1. la calibration de latence (« La calibration » dans
+       `architecture.md`) : la scène mesure, reste à sauvegarder et
+       appliquer. Un premier enregistrement montre une avance régulière
+       d'une trentaine de millisecondes ;
     2. les bulles du bonhomme pendant le jeu (« Le bonhomme » dans
        `walk.md`), après la calibration ;
     3. en parallèle, l'affichage qui s'adapte à la grille et défile

@@ -479,8 +479,10 @@ scènes : le premier écran titre se contente de la position finale.
 
 - **Ce qu'on voit** : le bonhomme grisé à gauche, à la place qu'il
   occupe pendant la partie, qui marche en claquant des doigts ; le
-  titre et le menu au milieu, « Jouer » et « Quitter », choisis avec
-  les flèches et validés par Entrée.
+  titre et le menu au milieu, « Jouer », « Calibration » et
+  « Quitter », choisis avec les flèches et validés par Entrée. La
+  calibration (voir `architecture.md`) n'est jamais imposée : le jeu se
+  joue sans.
 - **Ce qu'on entend** : à 160 à la noire, plus enlevé que la partie
   (120 par défaut), car le titre invite, il n'enseigne pas.
   - D'abord deux mesures de décompte, les seuls claquements du
@@ -493,9 +495,12 @@ scènes : le premier écran titre se contente de la position finale.
   tour de grille. Elle ne se raccorde pas encore d'un chorus au
   suivant : la dernière note du chorus ne prépare pas la première du
   suivant.
-- **D'une scène à l'autre** : jouer remplace le titre par la partie, qui
-  lance son propre décompte ; Échap ramène de la partie au titre,
-  et du titre quitte le jeu.
+- **D'une scène à l'autre** : la musique du titre, le `jam`, vit hors
+  des scènes, dans le contexte partagé. Elle passe sans coupure du titre
+  à la calibration et retour, la basse sur le même blues et le même
+  temps. Jouer l'arrête : la partie lance son propre décompte, à son
+  tempo. Échap ramène de la partie au titre, où le blues reprend avec
+  son décompte de claquements, et du titre quitte le jeu.
 - **On passe toujours par le titre**, même avec des options sur la ligne
   de commande. Quand un écran de paramètres les reprendra, en passer au
   programme voudra dire qu'on le teste, et un drapeau permettra d'aller
