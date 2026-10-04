@@ -461,6 +461,23 @@ Ce qui suit est notre lecture des sources.
   quatre mesures par ligne ; le bonhomme dans le tiers gauche ; le
   clavier en dessous, sur toute la largeur.
 
+## L'écran titre
+
+Une ouverture jouée par le moteur du jeu, sans vidéo :
+
+1. un décompte en claquements de doigts sur 2 et 4, en gros plan sur le
+   seul bout du bras du bonhomme qui claque ;
+2. la basse et la ride entrent, et la caméra recule jusqu'au bonhomme
+   qui marche en claquant des doigts ; une bulle affiche le titre,
+   « Walk With Me » ;
+3. à l'appui d'une touche, la musique continue, le même blues de douze
+   mesures improvisé par la basse de référence ; le bonhomme glisse sur
+   la gauche, grisé, et le menu s'affiche au milieu.
+
+C'est purement cosmétique, et cela demande des transitions entre
+scènes : le premier écran titre se contente de la position finale, le
+bonhomme grisé à gauche et le menu au milieu, sur la musique.
+
 ## Les aides
 
 - La note à jouer affichée, puis seulement indiquée, puis rien. Elles

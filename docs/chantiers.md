@@ -213,6 +213,9 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 - [ ] les scènes (« Les scènes » dans `architecture.md`) : le
       régisseur et *Walk with me* en scènes, puis la calibration, puis
       `ear` aux scènes et à `lang`.
+- [ ] l'ouverture animée de *Walk with me* (« L'écran titre » dans
+      `walk.md`), une fois les transitions entre scènes en place ; pas
+      urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
     1. la calibration de latence, à la manière de *Rhythm Paradise
