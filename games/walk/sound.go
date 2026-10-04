@@ -41,14 +41,15 @@ const (
 )
 
 // The gains of the mix. With a soundfont, the balance of the renders
-// validated by ear, bass to snap as 4 to 0.6, a little lower overall;
+// validated by ear, then the snap lowered: alone in the high range, it
+// was all one heard at a low volume;
 // meltysynth plays at half scale, hence the large gains of the samplers.
 // The kit's is a first guess, to set by ear.
 const (
 	bassGain  = 3
 	pianoGain = 2
 	kitGain   = 2
-	snapGain  = 0.45
+	snapGain  = 0.25
 
 	chipHandsGain = 0.6
 	chipNoiseGain = 0.8
@@ -135,8 +136,9 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 //     metronome;
 //   - a finger snap on 2 and 4 when `snap`, the walker snapping his
 //     fingers: the sound of the juice;
-//   - in demo, `key`, the reference line, legato. No key, 0, in the
-//     count-in or out of demo.
+//   - `key`, the reference line, legato, when the band walks the bass:
+//     the demo, the title screen. No key, 0, in the count-in or when
+//     the player walks.
 func (bd *band) beat(p tempo.Position, key int, at, and time.Time, snap bool) {
 	backbeat := p.Beat%2 == 0
 	switch {
@@ -154,12 +156,17 @@ func (bd *band) beat(p tempo.Position, key int, at, and time.Time, snap bool) {
 		bd.strike(bd.ride, vel, at)
 	}
 	if snap && backbeat {
-		bd.snap.ScheduleOn(noiseKey, snapVel, at)
-		bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
+		bd.snapAt(at)
 	}
-	if bd.demo && key != 0 {
+	if key != 0 {
 		bd.walk(key, at)
 	}
+}
+
+// snapAt schedules a finger snap at `at`.
+func (bd *band) snapAt(at time.Time) {
+	bd.snap.ScheduleOn(noiseKey, snapVel, at)
+	bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
 }
 
 // end plays the demo's last note, `key` at `at`, with a stroke of the

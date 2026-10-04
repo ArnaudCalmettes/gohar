@@ -11,7 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
-	"github.com/ArnaudCalmettes/gohar/games/lang"
+	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
 	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/harmony"
@@ -65,9 +65,6 @@ const (
 )
 
 const (
-	// eventBuffer is how many key events wait for the game loop.
-	eventBuffer = 64
-
 	// demoHold is the part of a beat the demo's key stays lit: a root
 	// repeated from one beat to the next pulses, as in the ear.
 	demoHold = 0.8
@@ -82,23 +79,19 @@ type cell struct {
 	beat int // in the bar, from 0
 }
 
-// game is the shell of Walk With Me: the chart, the count-in, the band,
-// the player's hands, and the marks of the first palier. Two phases:
-// with the tempo, the band plays and the marker marks; without, the
-// chart waits for the player (practice).
+// game is the game scene of Walk With Me: the chart, the count-in, the
+// band, the player's hands, and the marks of the first palier. Two
+// phases: with the tempo, the band plays and the marker marks; without,
+// the chart waits for the player (practice). Escape goes back to the
+// title.
 type game struct {
-	title      string
-	bpm        float64
-	choruses   int
-	grid       analysis.Changes
+	*app
+
 	namer      *naming.Namer
 	bars       [][]cell // the chart, bar by bar; empty for a chord held from before
 	chorusLen  int      // beats in a chorus
-	band       *band
-	rules      Rules // what the marker and the practice expect
-	events     chan keyboard.Event
-	midi       string // the keyboard's name, empty without one
-	practicing bool   // the phase without tempo
+	rules      Rules    // what the marker and the practice expect
+	practicing bool     // the phase without tempo
 
 	running  bool
 	m        tempo.Metronome
@@ -108,56 +101,39 @@ type game struct {
 	marker   *Marker
 	marks    map[int]BeatKind // the arrivals marked, by beat
 	practice *practice
-	lastMark string     // what the last note of the bass was
-	lang     *lang.Lang // the game's phrases
+	lastMark string // what the last note of the bass was
 	last     keyboard.Event
 	down     [screen.MIDIKeys]bool // the keys held, as the events tell
 	piano    screen.Piano
 	walker   walker
-	line     []int     // the reference line, in demo: a key per beat
-	heard    []Note    // its notes not yet sounded, for the marker
-	ending   int       // the key the demo ends on, after the last beat; 0 for none
-	rec      *recorder // nil without -record
-
-	fonts fonts
-	scale float64
+	line     []int  // the reference line, in demo: a key per beat
+	heard    []Note // its notes not yet sounded, for the marker
+	ending   int    // the key the demo ends on, after the last beat; 0 for none
 }
 
-func newGame(title string, grid analysis.Changes, bpm float64, choruses int, bd *band, midi string, practicing bool, l *lang.Lang) (*game, error) {
-	fs, err := newFonts()
-	if err != nil {
-		return nil, err
-	}
-	namer := namerFor(grid)
+func newGame(a *app) *game {
+	namer := namerFor(a.grid)
 	rules := FirstPalier
-	rules.Split = bd.split // -split moves the marker's zone with the sound's
+	rules.Split = a.band.split // -split moves the marker's zone with the sound's
 	return &game{
-		title:      title,
-		bpm:        bpm,
-		choruses:   choruses,
-		grid:       grid,
+		app:        a,
 		namer:      namer,
-		bars:       chart(grid, namer),
-		chorusLen:  len(Expect(grid, tempo.NewMetronome(time.Time{}, bpm, perBar), 1)),
-		band:       bd,
-		lang:       l,
+		bars:       chart(a.grid, namer),
+		chorusLen:  len(Expect(a.grid, tempo.NewMetronome(time.Time{}, a.bpm, perBar), 1)),
 		rules:      rules,
-		events:     make(chan keyboard.Event, eventBuffer),
-		midi:       midi,
-		practicing: practicing,
+		practicing: a.untimed,
 		piano:      newPiano(),
-		fonts:      fs,
-	}, nil
+	}
 }
 
-// onKey is the MIDI callback: it sounds the key at once and hands the
-// event to the game loop, never waiting. A full channel drops the
-// event for the display only: the sound has already gone.
-func (g *game) onKey(e keyboard.Event) {
-	g.band.key(e)
-	select {
-	case g.events <- e:
-	default:
+// Enter has nothing to start: the space bar does.
+func (g *game) Enter() {}
+
+// Leave stops the run, if any: the bass released, the recording
+// flushed.
+func (g *game) Leave() {
+	if g.running {
+		g.stop(time.Now())
 	}
 }
 
@@ -200,11 +176,11 @@ func (g *game) stop(now time.Time) {
 	}
 }
 
-func (g *game) Update() error {
+func (g *game) Update() scene.Transition {
 	now := time.Now()
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
-		return ebiten.Termination
+		return scene.Replace(newTitle(g.app))
 	case inpututil.IsKeyJustPressed(ebiten.KeySpace) && g.running:
 		g.stop(now)
 	case inpututil.IsKeyJustPressed(ebiten.KeySpace):
@@ -213,20 +189,15 @@ func (g *game) Update() error {
 		g.practicing = !g.practicing
 	}
 
-	for drained := false; !drained; {
-		select {
-		case e := <-g.events:
-			if e.Down {
-				g.last = e
-				g.mark(e)
-			}
-			if e.Key >= 0 && e.Key < len(g.down) {
-				g.down[e.Key] = e.Down
-			}
-		default:
-			drained = true
+	g.drain(func(e keyboard.Event) {
+		if e.Down {
+			g.last = e
+			g.mark(e)
 		}
-	}
+		if e.Key >= 0 && e.Key < len(g.down) {
+			g.down[e.Key] = e.Down
+		}
+	})
 
 	var demo [screen.MIDIKeys]bool
 	if k := g.demoKey(now); k > 0 {
@@ -235,7 +206,7 @@ func (g *game) Update() error {
 	g.piano.Update(screen.Lit{Down: &g.down, Color: playerLit}, screen.Lit{Down: &demo, Color: demoLit})
 
 	if !g.running || g.practicing {
-		return nil
+		return scene.Stay
 	}
 	// The demo's notes reach the marker when they sound, as the
 	// player's would: a generated line must land every arrival.
@@ -272,7 +243,7 @@ func (g *game) Update() error {
 	if now.After(g.m.At(last)) {
 		g.stop(now)
 	}
-	return nil
+	return scene.Stay
 }
 
 // demoKey is the key the reference bass sounds at `now`, 0 for none,
@@ -508,13 +479,6 @@ func drawMark(c screen.Canvas, k BeatKind, x, y float32) {
 		c.Line(x-apart, y-half, x-apart, y+half, stroke, doubledInk)
 		c.Line(x+apart, y-half, x+apart, y+half, stroke, doubledInk)
 	}
-}
-
-func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	s := ebiten.Monitor().DeviceScaleFactor()
-	w, h := float64(outsideWidth)*s, float64(outsideHeight)*s
-	g.scale = min(w/screenWidth, h/screenHeight)
-	return int(screenWidth * g.scale), int(screenHeight * g.scale)
 }
 
 // namerFor spells in the tonality the analysis hears in `grid`: the

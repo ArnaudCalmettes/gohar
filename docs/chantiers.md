@@ -210,9 +210,13 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 
 ## Les jeux
 
-- [ ] les scènes (« Les scènes » dans `architecture.md`) : le
-      régisseur et *Walk with me* en scènes, puis la calibration, puis
-      `ear` aux scènes et à `lang`.
+- [ ] les scènes (« Les scènes » dans `architecture.md`) :
+  - [x] le régisseur, `games/scene`, et *Walk with me* en deux scènes,
+        le titre et la partie ;
+  - [ ] la calibration, une scène partagée ;
+  - [ ] `ear` aux scènes et à `lang` ;
+  - [ ] un drapeau pour aller droit à une scène, une fois les options
+        reprises par un écran de paramètres.
 - [ ] l'ouverture animée de *Walk with me* (« L'écran titre » dans
       `walk.md`), une fois les transitions entre scènes en place ; pas
       urgent.

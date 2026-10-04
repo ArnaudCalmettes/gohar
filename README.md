@@ -102,12 +102,13 @@ count in, then the ride to keep going, your left hand on a double
 bass, your right on a piano, split at G3, and the roots you land on
 each change marked on the chart. Land enough of them and the stick
 figure snaps his fingers on 2 and 4: you hear it. Without tempo, the
-chart waits for each root.
+chart waits for each root. The title screen plays the blues while you
+choose; Esc goes back to it from the game.
 
 ```sh
 make sounds                    # once, from the repository root
 cd games
-go run ./walk                  # the space bar starts and stops
+go run ./walk                  # the title screen, then the space bar starts and stops
 go run ./walk -demo            # the band walks the bass itself
 go run ./walk -practice        # without tempo; T switches at rest
 go run ./walk -record line.txt # writes down every note heard
@@ -116,7 +117,7 @@ go run ./walk -lang en         # in English; your session's language by default
 
 `-sf2` plays another soundfont, `-list` shows its presets and `-bass`
 picks one (`bank:patch`, `0:32` by default). `-choruses` sets how many
-times the chart goes round, `-bpm` the tempo (100 by default),
+times the chart goes round, `-bpm` the tempo of the game (120 by default),
 `-split` the lowest key of the right hand (55, G3, by default).
 
 ### keys

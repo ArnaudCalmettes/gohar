@@ -48,6 +48,10 @@ const (
 
 	msgPlayer = "record.player" // who plays, in a recording's heading
 	msgDemo   = "record.demo"
+
+	msgMenuPlay  = "menu.play"
+	msgMenuQuit  = "menu.quit"
+	msgTitleKeys = "title.keys" // the keys of the title screen
 )
 
 var phrases = []string{
@@ -56,6 +60,7 @@ var phrases = []string{
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,
 	msgPlayer, msgDemo,
+	msgMenuPlay, msgMenuQuit, msgTitleKeys,
 }
 
 var (

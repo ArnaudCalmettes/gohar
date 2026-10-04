@@ -1,6 +1,6 @@
 tempo = "Tempo : {{.BPM}} BPM"
 "tempo.free" = "sans tempo : la grille attend la fondamentale"
-"status.keys" = "Espace : jouer ou arrêter   T : avec ou sans tempo   Échap : quitter"
+"status.keys" = "Espace : jouer ou arrêter   T : avec ou sans tempo   Échap : menu"
 "status.nomidi" = "sans clavier MIDI"
 "status.mark" = "{{.Note}} : {{.Words}}"
 
@@ -20,3 +20,7 @@ tempo = "Tempo : {{.BPM}} BPM"
 
 "record.player" = "joueur"
 "record.demo" = "démo"
+
+"menu.play" = "Jouer"
+"menu.quit" = "Quitter"
+"title.keys" = "Haut, bas : choisir   Entrée : valider   Échap : quitter"

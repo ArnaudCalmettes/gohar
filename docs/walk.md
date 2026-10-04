@@ -475,8 +475,31 @@ Une ouverture jouée par le moteur du jeu, sans vidéo :
    la gauche, grisé, et le menu s'affiche au milieu.
 
 C'est purement cosmétique, et cela demande des transitions entre
-scènes : le premier écran titre se contente de la position finale, le
-bonhomme grisé à gauche et le menu au milieu, sur la musique.
+scènes : le premier écran titre se contente de la position finale.
+
+- **Ce qu'on voit** : le bonhomme grisé à gauche, à la place qu'il
+  occupe pendant la partie, qui marche en claquant des doigts ; le
+  titre et le menu au milieu, « Jouer » et « Quitter », choisis avec
+  les flèches et validés par Entrée.
+- **Ce qu'on entend** : à 160 à la noire, plus enlevé que la partie
+  (120 par défaut), car le titre invite, il n'enseigne pas.
+  - D'abord deux mesures de décompte, les seuls claquements du
+    bonhomme sur 2 et 4, pendant qu'il marche déjà : un avant-goût de
+    l'ouverture à venir, sans le gros plan.
+  - Puis la basse de référence, la ride et le charley sur 2 et 4,
+    comme pendant la partie, avec les claquements.
+  - Le clavier sonne déjà, pour jouer par-dessus.
+- **Un chorus après l'autre** : la ligne est tirée à neuf à chaque
+  tour de grille. Elle ne se raccorde pas encore d'un chorus au
+  suivant : la dernière note du chorus ne prépare pas la première du
+  suivant.
+- **D'une scène à l'autre** : jouer remplace le titre par la partie, qui
+  lance son propre décompte ; Échap ramène de la partie au titre,
+  et du titre quitte le jeu.
+- **On passe toujours par le titre**, même avec des options sur la ligne
+  de commande. Quand un écran de paramètres les reprendra, en passer au
+  programme voudra dire qu'on le teste, et un drapeau permettra d'aller
+  droit à la scène qui intéresse.
 
 ## Les aides
 

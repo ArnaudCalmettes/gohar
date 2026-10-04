@@ -83,11 +83,13 @@ gohar/
     tempo/                   métronome, swing : la carte du temps musical
     settings/                ce que les jeux gardent d'une partie à l'autre
     lang/                    les phrases des jeux, par langue (go-i18n)
+    scene/                   le régisseur : la pile des scènes d'un jeu
     ear/                     ear trainer : menu, degrés, tétracordes, modes
     walk/                    Walk with me : temps attendus, marqueur,
                              walking bass générée, batterie,
-                             enregistrement, grille et bonhomme à
-                             l'écran, phrases en français et en anglais
+                             enregistrement, écran titre, grille et
+                             bonhomme à l'écran, phrases en français et
+                             en anglais
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio
@@ -320,26 +322,44 @@ joue le rôle du `ebiten.Game` : Ebitengine ne voit que lui.
   refermer rend la main à la partie, intacte. Seule la scène du dessus
   reçoit les touches ; celles du dessous peuvent continuer à se
   dessiner, assombries.
-- **Une transition, rendue par `Update`** : rester, remplacer, empiler,
-  dépiler, quitter. La scène ne connaît pas la pile, elle dit ce qu'elle
-  veut ; le régisseur l'exécute entre deux images.
+- **Une transition, rendue par `Update`** : `Stay`, `Replace`, `Push`,
+  `Pop`, `Quit`. La scène ne connaît pas la pile, elle dit ce qu'elle
+  veut ; le régisseur l'exécute entre deux images. Dépiler la dernière
+  scène termine le jeu, comme `Quit`.
 - **`Enter` et `Leave`**, pour ce qu'une scène prend et rend : le son
   qu'elle programme, par exemple, coupé quand on la quitte.
-- **Un contexte partagé**, passé à chaque scène plutôt que reconstruit
-  par chacune : le canevas et les polices, l'échelle de la fenêtre, le
-  mélangeur, la source MIDI, les réglages, la langue. Le rappel MIDI
-  reste immédiat pour le son ; pour l'écran, le régisseur distribue les
-  événements à la scène active.
+  - `Enter` vient juste avant la première mise à jour, jamais à la
+    construction : la fenêtre peut mettre un moment à s'ouvrir, et une
+    scène qui lance sa musique en entrant partirait en retard, avec
+    une rafale de notes à rattraper.
+  - Une scène recouverte par un `Push` n'est pas quittée : elle attend,
+    intacte, et sa musique continue.
+  - Fermer la fenêtre termine le jeu sans `Quit` : le programme appelle
+    alors `Close`, qui quitte chaque scène encore empilée, de haut en
+    bas, pour qu'aucune note ne reste tenue et qu'aucun fichier ne reste
+    ouvert.
+- **Un contexte partagé**, construit une fois par le jeu et donné à
+  chaque scène qu'il construit : le régisseur n'en sait rien, ce qui
+  le garde petit et commun à tous les jeux. Dans *Walk with me*, c'est
+  `app` : l'orchestre, qui joue d'une scène à l'autre, le clavier MIDI,
+  la langue, les polices, l'échelle de la fenêtre, et les options de la
+  ligne de commande en attendant l'écran des paramètres. Le rappel MIDI
+  reste immédiat pour le son ; pour l'écran, les événements attendent
+  dans un canal que la scène du dessus vide à chaque image, même quand
+  elle n'en fait rien, pour que la suivante ne les reçoive pas en
+  retard.
 
 Les bibliothèques de scènes pour Ebitengine existent (stagehand, gscene,
 bamenn), mais aucune n'offre la pile, et aucune n'est assez mûre pour
 une dépendance. Le paquet `games/scene` est donc à nous, petit et sans
-autre dépendance qu'Ebitengine. Les transitions animées viendront plus
+autre dépendance qu'Ebitengine. Ses tests suivent un écran titre, une
+partie qui le remplace, des paramètres empilés puis refermés : qui
+entre, qui sort, qui se met à jour, qui se dessine. Les transitions animées viendront plus
 tard : le découpage de bamenn (départ, arrivée, fin) est un bon modèle.
 
 Ce qui sert à plusieurs jeux vit dans un paquet commun (voir
-l'arborescence) ; `scene`, le régisseur, et `calibrate`, la calibration
-de la latence, une scène partagée, viendront s'y ajouter.
+l'arborescence) ; `calibrate`, la calibration de la latence, une scène
+partagée, viendra s'y ajouter.
 
 **La latence appartient à la machine, pas au jeu** : elle dépend de la
 sortie audio et du clavier MIDI. Elle se range dans les réglages

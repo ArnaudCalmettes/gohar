@@ -11,7 +11,7 @@
 // The sounds come from GeneralUser GS, which `make sounds` downloads
 // into the user's cache directory; without it, the chip sounds of ear.
 //
-//	go run ./walk                  # play, the space bar starts
+//	go run ./walk                  # the title screen, then play: the space bar starts
 //	go run ./walk -demo            # the band plays the bass itself
 //	go run ./walk -practice        # without tempo, T switches back
 //	go run ./walk -record line.txt # write down the notes heard
@@ -31,11 +31,12 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/lang"
+	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
 func main() {
-	bpm := flag.Float64("bpm", 100, "tempo, in beats per minute")
+	bpm := flag.Float64("bpm", 120, "tempo, in beats per minute")
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
 	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
 	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")
@@ -81,6 +82,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fs, err := newFonts()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// The game runs without a keyboard: the demo needs none.
 	var midiName string
@@ -101,31 +106,42 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	g, err := newGame("12 Bar Blues", grid, *bpm, *choruses, bd, midiName, *practicing, l)
-	if err != nil {
-		log.Fatal(err)
+	a := &app{
+		band:     bd,
+		events:   make(chan keyboard.Event, eventBuffer),
+		midi:     midiName,
+		lang:     l,
+		fonts:    fs,
+		title:    "12 Bar Blues",
+		grid:     grid,
+		bpm:      *bpm,
+		choruses: *choruses,
+		untimed:  *practicing,
 	}
 	if *record != "" {
-		g.rec, err = newRecorder(*record)
+		a.rec, err = newRecorder(*record)
 		if err != nil {
 			log.Fatal(err)
 		}
 		defer func() {
-			if err := g.rec.Close(); err != nil {
+			if err := a.rec.Close(); err != nil {
 				fmt.Fprintln(os.Stderr, "record:", err)
 			}
 		}()
 	}
 	if keys != nil {
-		if err := keys.Listen(g.onKey); err != nil {
+		if err := keys.Listen(a.onKey); err != nil {
 			fmt.Fprintln(os.Stderr, "MIDI:", err)
-			g.midi = ""
+			a.midi = ""
 		}
 	}
 
 	ebiten.SetWindowSize(2*screenWidth, 2*screenHeight)
-	ebiten.SetWindowTitle("Walk With Me")
-	if err := ebiten.RunGame(g); err != nil && err != ebiten.Termination {
+	ebiten.SetWindowTitle(gameTitle)
+	d := scene.New(newTitle(a), a.layout)
+	err = ebiten.RunGame(d)
+	d.Close() // the scenes release what they hold, before the recorder closes
+	if err != nil && err != ebiten.Termination {
 		log.Fatal(err)
 	}
 	if err := out.Err(); err != nil {
