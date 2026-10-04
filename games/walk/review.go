@@ -108,34 +108,16 @@ func (r *review) drawMap(c screen.Canvas) {
 	g := r.g
 	rows := (len(g.bars) + barsPerRow - 1) / barsPerRow
 	h := min(float32(rowH), float32(reviewChart)/float32(rows))
-	font, raised := g.fonts.chord, g.fonts.chordRaised
-	if h < rowH {
-		font, raised = g.fonts.chordSmall, g.fonts.chordSmallRaised
-	}
 	for i, cells := range g.bars {
 		x := float32(chartX + i%barsPerRow*barW)
 		y := float32(chartY) + float32(i/barsPerRow)*h
+		var fill color.Color
 		switch t := r.s.bars[i]; {
 		case t.worked():
-			c.Rect(x, y, barW, h-4, workedTint)
+			fill = workedTint
 		case t.expected > 0:
-			c.Rect(x, y, barW, h-4, consolidateTint)
+			fill = consolidateTint
 		}
-		c.Line(x, y, x, y+h-4, 1, ink)
-		if i%barsPerRow == barsPerRow-1 || i == len(g.bars)-1 {
-			c.Line(x+barW, y, x+barW, y+h-4, 1, ink)
-		}
-		dy := float64(h-4)/2 - 10 // the chord about the middle of its bar
-		if len(cells) == 0 {
-			c.Centred("%", font, float64(x)+barW/2, float64(y)+dy, ink)
-		}
-		f, fr := font, raised
-		if len(cells) > 1 {
-			f, fr = g.fonts.chordSmall, g.fonts.chordSmallRaised
-		}
-		for _, cl := range cells {
-			cx := float64(x) + chordDX + float64(cl.beat)*barW/perBar
-			drawSymbol(c, cl.name, f, fr, cx, float64(y)+dy)
-		}
+		g.drawBar(c, cells, x, y, h-4, fill, h < rowH, i%barsPerRow == barsPerRow-1 || i == len(g.bars)-1)
 	}
 }

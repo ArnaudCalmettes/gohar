@@ -54,14 +54,16 @@ func (t tally) worked() bool {
 type summary struct {
 	situations [situations]tally
 	bars       []tally // by bar of the chart, every chorus together
+	chorusLen  int     // in beats
 
 	notes      int     // the notes a beat claimed
 	sum, sumSq float64 // of their offsets, in milliseconds
 }
 
-// newSummary sums up a run over a chart of `bars` bars.
-func newSummary(bars int) *summary {
-	return &summary{bars: make([]tally, bars)}
+// newSummary sums up a run over a chart of `bars` bars, in choruses of
+// `chorusLen` beats.
+func newSummary(bars, chorusLen int) *summary {
+	return &summary{bars: make([]tally, bars), chorusLen: chorusLen}
 }
 
 // beat takes the mark `k` of beat `b`, the beat `n` of the run.
@@ -70,7 +72,8 @@ func (s *summary) beat(n int, b Beat, k BeatKind) {
 	if !ok {
 		return
 	}
-	bar := &s.bars[n/perBar%len(s.bars)]
+	i, _ := barOf(n, s.chorusLen)
+	bar := &s.bars[i]
 	s.situations[sit].expected++
 	bar.expected++
 	if k == Landed {

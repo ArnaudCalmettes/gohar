@@ -153,3 +153,13 @@ func TestExpectHolds(t *testing.T) {
 		}
 	}
 }
+
+// On the blues, beat 3 of bar 11 in the second chorus: bar 11, chorus
+// 2, counted from 1 as a musician counts them.
+func TestBarOf(t *testing.T) {
+	chorus := 12 * perBar
+	bar, n := barOf(chorus+10*perBar+2, chorus)
+	if bar+1 != 11 || n+1 != 2 {
+		t.Errorf("bar %d of chorus %d, want bar 11 of chorus 2", bar+1, n+1)
+	}
+}

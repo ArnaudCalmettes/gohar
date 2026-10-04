@@ -36,6 +36,14 @@ type Beat struct {
 	PerBar int
 }
 
+// barOf returns the bar of beat `n` of a run within its chorus, and
+// the chorus, both counted from 0, for choruses of `chorusLen` beats.
+// Every chorus is the same: the day the coda is played, the last one
+// will be longer, and this is where to count it.
+func barOf(n, chorusLen int) (bar, chorus int) {
+	return n % chorusLen / perBar, n / chorusLen
+}
+
 // Expect lays `choruses` choruses of `c` out beat by beat, for the
 // metronome `m`. A chart without bars is cut into bars of the
 // metronome's length. Changes that start off the beat count from the
