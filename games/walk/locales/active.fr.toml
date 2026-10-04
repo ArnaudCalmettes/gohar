@@ -1,6 +1,6 @@
 tempo = "Tempo : {{.BPM}} BPM"
 "tempo.free" = "sans tempo : la grille attend la fondamentale"
-"status.keys" = "Espace : jouer ou arrêter   T : avec ou sans tempo   Échap : menu"
+"status.keys" = "Espace : jouer ou arrêter   T : avec ou sans tempo   ↑ ↓ : grille   ← → : tempo   Échap : menu"
 "status.nomidi" = "sans clavier MIDI"
 "status.mark" = "{{.Note}} : {{.Words}}"
 
@@ -24,13 +24,13 @@ tempo = "Tempo : {{.BPM}} BPM"
 "menu.play" = "Jouer"
 "menu.options" = "Options"
 "menu.quit" = "Quitter"
-"title.keys" = "Haut, bas : choisir   Entrée : valider   Échap : quitter"
+"title.keys" = "↑ ↓ : choisir   Entrée : valider   Échap : quitter"
 
 "options.lang" = "Langue : {{.Name}}"
 "lang.name" = "Français"
 "options.calibrate" = "Calibration"
 "options.back" = "Retour"
-"options.keys" = "Haut, bas : choisir   Gauche, droite : changer   Entrée : valider   Échap : retour"
+"options.keys" = "↑ ↓ : choisir   ← → : changer   Entrée : valider   Échap : retour"
 
 "coach.rushing" = "Tu presses"
 "coach.relax" = "Détends-toi"

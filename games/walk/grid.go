@@ -1,40 +1,67 @@
 package main
 
 import (
+	"embed"
 	"fmt"
 
-	"github.com/ArnaudCalmettes/gohar/charts/ireal"
+	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
-// jazzBlues is the grid of the first milestone, as iReal Pro exports
-// it: a twelve bar jazz blues, the IV in bar 2, the VI7 in bar 8, a
-// II-V in bars 9 and 10, and a turnaround, in F. Written for gohar,
-// shared with it.
+// The grids of the game, in gohar's profile of ChordPro (see
+// docs/formats.md): chords alone, written for gohar, under a free
+// licence. Neither melodies nor grids that are someone else's.
 //
-// The chords written small, A♭7 and G♭7, are chromatic dominants on the
-// turnaround: the parser sets them aside, and they are the player's to
-// add once advanced enough.
-const jazzBlues = "irealb://12%20Bar%20Blues=Composer%20Unknown==Medium%20Swing=F=5=1r34LbKcu7X7D%7CQQ%7CBb7QyX%2C7bB%7CQyX7bBQ%7CyX7F%7CQyX7F%7CQyX%7CF6XyyX7F%5ByQ%7CG%2D7XyQ%7CC7XyQ%7CF6%20D7%28Ab7%29LZG7%20C7%28Gb7%29%20%5D%20=Jazz%2DMedium%20Swing=100=30"
+//go:embed grids/*.cho
+var grids embed.FS
 
-// readGrid reads the first song of an iReal Pro link into changes, as
-// written.
-//
-// The field the parser reads as a transposition (5 in jazzBlues) is
-// ignored: the app shows this chart in F. iReal is only a way in for a
-// grid; taking the player through the twelve keys is gohar's own job.
-func readGrid(link string) (analysis.Changes, error) {
-	p, err := ireal.Parse(link)
+// The grids the game offers, in the order the player goes round them:
+// the blues first, then II-V-I in major, then in major and minor.
+const jazzBlues = "blues.cho"
+
+var gridFiles = []string{jazzBlues, "tune-up.cho", "autumn-leaves.cho"}
+
+// A tune is a grid to play: its title, its changes, and beside each
+// change the chord as the grid writes it, for the screen.
+type tune struct {
+	title   string
+	grid    analysis.Changes
+	written []chordpro.Chord
+}
+
+// readTune reads the grid `name` of the game.
+func readTune(name string) (tune, error) {
+	f, err := grids.Open("grids/" + name)
 	if err != nil {
-		return analysis.Changes{}, err
+		return tune{}, err
 	}
-	if len(p.Songs) == 0 {
-		return analysis.Changes{}, fmt.Errorf("walk: no song in the link")
-	}
-	s := p.Songs[0]
-	c, err := ireal.Structure(ireal.Lex(s.Chart)).Changes()
+	defer f.Close()
+	s, err := chordpro.Parse(f)
 	if err != nil {
-		return analysis.Changes{}, fmt.Errorf("walk: %s: %w", s.Title, err)
+		return tune{}, fmt.Errorf("walk: %s: %w", name, err)
 	}
-	return c, nil
+	c, written, err := s.Spelled()
+	if err != nil {
+		return tune{}, fmt.Errorf("walk: %s: %w", name, err)
+	}
+	return tune{title: s.Title, grid: c, written: written}, nil
+}
+
+// readGrid reads the changes of the grid `name`.
+func readGrid(name string) (analysis.Changes, error) {
+	t, err := readTune(name)
+	return t.grid, err
+}
+
+// readTunes reads every grid of the game, in order.
+func readTunes() ([]tune, error) {
+	tunes := make([]tune, len(gridFiles))
+	for i, name := range gridFiles {
+		t, err := readTune(name)
+		if err != nil {
+			return nil, err
+		}
+		tunes[i] = t
+	}
+	return tunes, nil
 }

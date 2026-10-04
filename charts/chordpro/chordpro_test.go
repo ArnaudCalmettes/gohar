@@ -249,3 +249,24 @@ func TestFromIRealCoda(t *testing.T) {
 		t.Errorf("coda %d, end %d; want %d, %d\n%s", got.Coda, got.End, want.Coda, want.End, b.String())
 	}
 }
+
+// The chords as the grid writes them, beside the changes: the C of
+// Cmaj7 and the B♭ of Bbmaj7 in a tune heard in D.
+func TestSpelled(t *testing.T) {
+	s, err := ParseString("{sog}\n| Em7 | A7 | Dmaj7 | Cmaj7 | Bbmaj7 |\n{eog}\n")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c, written, err := s.Spelled()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, ch := range written {
+		got = append(got, ch.String())
+	}
+	check(t, got, []string{"Em7", "A7", "Dmaj7", "Cmaj7", "Bbmaj7"})
+	if len(written) != len(c.Chords) {
+		t.Errorf("%d chords written for %d changes", len(written), len(c.Chords))
+	}
+}

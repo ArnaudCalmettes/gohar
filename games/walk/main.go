@@ -85,7 +85,7 @@ func main() {
 	}
 	defer out.Close()
 
-	grid, err := readGrid(jazzBlues)
+	tunes, err := readTunes()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -119,8 +119,7 @@ func main() {
 		midi:     midiName,
 		lang:     l,
 		fonts:    fs,
-		title:    "12 Bar Blues",
-		grid:     grid,
+		tunes:    tunes,
 		bpm:      *bpm,
 		choruses: *choruses,
 		untimed:  *practicing,

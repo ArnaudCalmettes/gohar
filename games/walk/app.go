@@ -7,7 +7,6 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/lang"
-	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 // eventBuffer is how many key events wait for the scene on top.
@@ -33,9 +32,11 @@ type app struct {
 	pair    string
 	latency time.Duration
 
+	// The grids, and the one chosen last, kept for the session.
+	tunes   []tune
+	current int
+
 	// The options.
-	title    string
-	grid     analysis.Changes
 	bpm      float64
 	choruses int
 	untimed  bool // a game starts without tempo

@@ -99,6 +99,8 @@ gohar/
                              enregistrement, écran titre, grille et
                              bonhomme à l'écran, phrases en français et
                              en anglais
+      grids/                 les grilles du jeu, en ChordPro, sous
+                             licence libre
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio

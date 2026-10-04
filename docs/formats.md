@@ -213,7 +213,8 @@ hésitante se tranche sur les notes du thème, et les grilles modales
 3. Un convertisseur d'iReal vers ChordPro, pour passer un corpus privé
    dans le nouveau format.
 4. Le blues, *Tune Up* et *Autumn Leaves* en ChordPro, accords seuls,
-   sous licence libre, lus par *Walk with me*.
+   sous licence libre, lus par *Walk with me* (`games/walk/grids`). Le
+   jeu montre les accords comme la grille les écrit (`Song.Spelled`).
 5. `charts/abc`, le sous-ensemble d'ABC, et l'alignement sur la grille.
 6. La mélodie dans l'analyse : les ambiguïtés qu'elle lève (voir
    `chantiers.md`).

@@ -127,10 +127,20 @@ func unfold(g *Grid) ([]Bar, error) {
 // does: | F7 | lasts the bar, | Gm7 C7 | is two halves, the shortcut
 // musicians write. Chords joined with ~ share their cell evenly.
 func (s Song) Changes() (analysis.Changes, error) {
+	c, _, err := s.Spelled()
+	return c, err
+}
+
+// Spelled returns the changes as Changes does, and beside them the
+// chords as the grid writes them, one for each change: the B♭ of
+// Bbmaj7, never an A♯. A game shows them so; the analysis spells by the
+// tonality it hears, and a grid that modulates needs more than one.
+func (s Song) Spelled() (analysis.Changes, []Chord, error) {
 	bars, coda, err := s.played()
 	if err != nil {
-		return analysis.Changes{}, err
+		return analysis.Changes{}, nil, err
 	}
+	var written []Chord
 	beats := s.Time.pulses()
 	barLength := analysis.Ticks(beats) * analysis.TicksPerBeat
 	c := analysis.Changes{Loops: true, Bars: make([]analysis.Ticks, len(bars))}
@@ -141,6 +151,7 @@ func (s Song) Changes() (analysis.Changes, error) {
 		}
 		if n := len(c.Chords); n > 0 && c.Chords[n-1].Start == at {
 			c.Chords = c.Chords[:n-1] // two on one beat: the later sounds
+			written = written[:n-1]
 		}
 		if n := len(c.Chords); n > 0 {
 			c.Chords[n-1].Length = at - c.Chords[n-1].Start
@@ -154,6 +165,7 @@ func (s Song) Changes() (analysis.Changes, error) {
 			}
 		}
 		c.Chords = append(c.Chords, change)
+		written = append(written, ch)
 		chord := ch
 		last = &chord
 	}
@@ -187,13 +199,14 @@ func (s Song) Changes() (analysis.Changes, error) {
 		}
 	}
 	if len(c.Chords) == 0 {
-		return c, errors.New("chordpro: no chord")
+		return c, nil, errors.New("chordpro: no chord")
 	}
 	end := analysis.Ticks(len(bars)) * barLength
 	c.Chords[len(c.Chords)-1].Length = end - c.Chords[len(c.Chords)-1].Start
 	if c.Chords[0].Start > 0 {
 		// The silence before the first chord, as charts/ireal keeps it.
 		c.Chords = append([]analysis.Change{{Start: 0, Length: c.Chords[0].Start, Silent: true}}, c.Chords...)
+		written = append([]Chord{{NoChord: true}}, written...)
 		if c.Coda > 0 {
 			c.Coda++
 		}
@@ -201,5 +214,5 @@ func (s Song) Changes() (analysis.Changes, error) {
 	if c.Coda > 0 {
 		c.End = len(c.Chords) - 1
 	}
-	return c, nil
+	return c, written, nil
 }

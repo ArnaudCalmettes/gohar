@@ -1,0 +1,14 @@
+{title: 12 Bar Blues}
+{meta: style Medium Swing}
+{meta: chart_author gohar}
+{meta: chart_license CC0-1.0}
+
+# A twelve bar jazz blues in F, written for gohar: the IV in bar 2, the
+# VI7 in bar 8, a II-V in bars 9 and 10, and a turnaround. The chromatic
+# dominants of the turnaround, A♭7 and G♭7, are optional: the player's
+# to add once advanced enough.
+{start_of_grid shape="4x4"}
+| F7 | Bb7 | F7 | F7 |
+| Bb7 | Bb7 | F6 | D7 |
+| Gm7 | C7 | F6 D7~(Ab7) | G7 C7~(Gb7) |.
+{end_of_grid}

@@ -1,6 +1,6 @@
 tempo = "Tempo: {{.BPM}} BPM"
 "tempo.free" = "no tempo: the chart waits for the root"
-"status.keys" = "Space: play or stop   T: with or without tempo   Esc: menu"
+"status.keys" = "Space: play or stop   T: with or without tempo   ↑ ↓: grid   ← →: tempo   Esc: menu"
 "status.nomidi" = "no MIDI keyboard"
 "status.mark" = "{{.Note}}: {{.Words}}"
 
@@ -24,13 +24,13 @@ tempo = "Tempo: {{.BPM}} BPM"
 "menu.play" = "Play"
 "menu.options" = "Options"
 "menu.quit" = "Quit"
-"title.keys" = "Up, down: choose   Enter: confirm   Esc: quit"
+"title.keys" = "↑ ↓: choose   Enter: confirm   Esc: quit"
 
 "options.lang" = "Language: {{.Name}}"
 "lang.name" = "English"
 "options.calibrate" = "Calibration"
 "options.back" = "Back"
-"options.keys" = "Up, down: choose   Left, right: change   Enter: confirm   Esc: back"
+"options.keys" = "↑ ↓: choose   ← →: change   Enter: confirm   Esc: back"
 
 "coach.rushing" = "You're rushing"
 "coach.relax" = "Relax"

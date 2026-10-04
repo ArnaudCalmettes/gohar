@@ -121,9 +121,8 @@ un profil propre à gohar (`formats.md`).
 - [ ] la table des qualités, aujourd'hui dans `charts/ireal`
       (`HandQuality`), passe dans `naming`, en lecture symétrique de
       `ChordStyle.Symbol`.
-- [ ] les premières grilles libres en ChordPro, accords seuls : le
-      blues (celui de *Walk with me*, F6 mesure 7 et G7 mesure 12, tel
-      qu'il est saisi), *Tune Up*, *Autumn Leaves*.
+- [x] les premières grilles libres en ChordPro, accords seuls : le
+      blues, *Tune Up*, *Autumn Leaves* (`games/walk/grids`).
 - [ ] `charts/abc` : le sous-ensemble d'ABC (hauteurs, durées,
       silences, barres, reprises, chiffrages entre guillemets) et
       l'alignement sur la grille, mesure par mesure.
@@ -134,6 +133,10 @@ un profil propre à gohar (`formats.md`).
 
 Les règles et les décisions sont dans `grilles.md`.
 
+- [ ] la réécriture des accords par zones, aujourd'hui dans
+      `charts/cmd/analyse` (`spell.go`), passée dans la bibliothèque,
+      pour que les jeux épellent comme l'analyse entend : *Walk with me*
+      garde en attendant l'orthographe de la grille.
 - [ ] la mélodie dans l'analyse, une fois `charts/abc` en place : la
       note que le thème appuie sur un accord pour sa couleur, les notes
       du thème pour trancher une tonalité hésitante, et les grilles
@@ -260,12 +263,9 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
-    1. plusieurs grilles, une fois les premières grilles libres en
-       ChordPro : le choix de la grille (↑ ↓) et du tempo (← →) depuis
-       la partie, à l'arrêt, le tempo des options servant de départ et
-       ce qu'on change valant pour la séance ; la grille qui tourne ses
-       pages par rangée, trois rangées visibles ; puis l'écoute de la
-       basse de référence sur *Tune Up* et *Autumn Leaves* ;
+    1. l'écoute de la basse de référence sur *Tune Up* et *Autumn
+       Leaves*, maintenant que la partie choisit sa grille et son tempo
+       et tourne ses pages ;
     2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;

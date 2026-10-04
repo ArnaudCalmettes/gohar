@@ -63,7 +63,7 @@ type bassist struct {
 func newBassist(a *app) *bassist {
 	seed := uint64(time.Now().UnixNano())
 	return &bassist{
-		beats: Expect(a.grid, tempo.NewMetronome(time.Time{}, a.bpm, perBar), 1), // only the numbering
+		beats: Expect(a.tunes[0].grid, tempo.NewMetronome(time.Time{}, a.bpm, perBar), 1), // the blues; the metronome only numbers the beats
 		rng:   rand.New(rand.NewPCG(seed, seed>>32|1)),
 	}
 }

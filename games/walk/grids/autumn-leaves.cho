@@ -1,0 +1,20 @@
+{title: Autumn Leaves}
+{composer: Joseph Kosma}
+{meta: style Medium Swing}
+{meta: chart_author gohar}
+{meta: chart_license CC0-1.0}
+
+# The chords alone, written for gohar, in G minor: a II-V-I to the
+# relative major, B♭, then a II-V-I to G minor, over and over.
+{start_of_grid label="A" shape="4x4"}
+|: Cm7 | F7 | Bbmaj7 | Ebmaj7 |
+| Am7b5 | D7(b13) | Gm6 | Gm6 :|
+{end_of_grid}
+{start_of_grid label="B" shape="4x4"}
+| Am7b5 | D7(b13) | Gm6 | Gm6 |
+| Cm7 | F7 | Bbmaj7 | Ebmaj7 |
+{end_of_grid}
+{start_of_grid label="C" shape="4x4"}
+| Am7b5 | D7(b13) | Gm7 Gb7 | Fm7 E7 |
+| Ebmaj7 | Am7b5 D7(b13) | Gm6 | Gm6 |.
+{end_of_grid}

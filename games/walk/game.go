@@ -10,6 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
+	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
@@ -79,23 +80,30 @@ const (
 
 // A cell is one chord written in a bar, at the beat it starts on.
 type cell struct {
-	name string
+	name symbol
 	beat int // in the bar, from 0
 }
 
 // game is the game scene of Walk With Me: the chart, the count-in, the
 // band, the player's hands, and the marks of the first palier. Two
 // phases: with the tempo, the band plays and the marker marks; without,
-// the chart waits for the player (practice). Escape goes back to the
-// title.
+// the chart waits for the player (practice). At rest, the arrows choose
+// the grid and the tempo; Escape goes back to the title.
 type game struct {
 	*app
 
-	namer      *naming.Namer
-	bars       [][]cell // the chart, bar by bar; empty for a chord held from before
-	chorusLen  int      // beats in a chorus
-	rules      Rules    // what the marker and the practice expect
-	practicing bool     // the phase without tempo
+	// The grid chosen, and the tempo: the options' at first, changed
+	// here for the session.
+	title string
+	grid  analysis.Changes
+	bpm   float64
+
+	namer      *naming.Namer                     // for a note over no chord
+	written    map[analysis.Ticks]chordpro.Chord // the chords as the grid writes them, by start
+	bars       [][]cell                          // the chart, bar by bar; empty for a chord held from before
+	chorusLen  int                               // beats in a chorus
+	rules      Rules                             // what the marker and the practice expect
+	practicing bool                              // the phase without tempo
 
 	running  bool
 	m        tempo.Metronome
@@ -119,18 +127,33 @@ type game struct {
 }
 
 func newGame(a *app) *game {
-	namer := namerFor(a.grid)
 	rules := FirstPalier
 	rules.Split = a.band.split // -split moves the marker's zone with the sound's
-	return &game{
+	g := &game{
 		app:        a,
-		namer:      namer,
-		bars:       chart(a.grid, namer),
-		chorusLen:  len(Expect(a.grid, tempo.NewMetronome(time.Time{}, a.bpm, perBar), 1)),
+		bpm:        a.bpm,
 		rules:      rules,
 		practicing: a.untimed,
 		piano:      newPiano(),
 	}
+	g.load(a.current)
+	return g
+}
+
+// load makes the grid `i` of the game the one played, and remembers it
+// for the session.
+func (g *game) load(i int) {
+	g.current = i
+	t := g.tunes[i]
+	g.title, g.grid = t.title, t.grid
+	g.namer = namerFor(t.grid)
+	g.written = map[analysis.Ticks]chordpro.Chord{}
+	for i, ch := range t.grid.Chords {
+		g.written[ch.Start] = t.written[i]
+	}
+	g.bars = chart(t)
+	g.chorusLen = len(Expect(t.grid, tempo.NewMetronome(time.Time{}, g.bpm, perBar), 1))
+	g.marks, g.practice = nil, nil
 }
 
 // Enter stops the music of the menus: the game counts in on its own,
@@ -201,6 +224,15 @@ func (g *game) Update() scene.Transition {
 		g.start(now)
 	case inpututil.IsKeyJustPressed(ebiten.KeyT) && !g.running:
 		g.practicing = !g.practicing
+	case g.running:
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp):
+		g.load((g.current + len(g.tunes) - 1) % len(g.tunes))
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown):
+		g.load((g.current + 1) % len(g.tunes))
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft):
+		g.bpm = max(g.bpm-bpmStep, minBPM)
+	case inpututil.IsKeyJustPressed(ebiten.KeyArrowRight):
+		g.bpm = min(g.bpm+bpmStep, maxBPM)
 	}
 
 	g.drain(func(e keyboard.Event) {
@@ -341,17 +373,22 @@ func (g *game) record(m NoteMark) {
 	bars := g.chorusLen / perBar
 	chorus := (p.Bar-1)/bars + 1
 	p.Bar = (p.Bar-1)%bars + 1
-	g.rec.note(chorus, p, m.Off, symbol(g.namer, ch), octaveName(g.noteName(m.Key, ch), m.Key), g.markWords(m))
+	g.rec.note(chorus, p, m.Off, symbolOf(g.written[ch.Start]).String(), octaveName(g.noteName(m.Key, ch), m.Key), g.markWords(m))
 }
 
 // noteName spells `key` over the chord it was played on, as a lead
-// sheet writes the degrees of a chord: the E♭ of F7, never a D♯. In
-// ASCII: the status line is in Go Regular, which has no musical signs.
+// sheet writes the degrees of a chord, its root as the grid writes it:
+// the E♭ of F7, never a D♯. In ASCII: the status line is in Go Regular,
+// which has no musical signs.
 func (g *game) noteName(key int, ch analysis.Change) string {
 	pc := harmony.PitchClass(key % octave)
 	n := g.namer.Note(pc)
 	if !ch.Silent {
-		n = naming.SpellOver(g.namer.Note(ch.Chord.Root), ch.Chord.Pattern, pc)
+		root := g.namer.Note(ch.Chord.Root)
+		if w, ok := g.written[ch.Start]; ok && !w.NoChord {
+			root = w.Root
+		}
+		n = naming.SpellOver(root, ch.Chord.Pattern, pc)
 	}
 	return naming.English.Name(n, naming.ASCII)
 }
@@ -410,8 +447,12 @@ func (g *game) Draw(dst *ebiten.Image) {
 	c.Text(status, g.fonts.ui, margin, statusY, faint)
 }
 
-// drawChart draws the twelve bars, the one being played shaded, and a
-// cursor at `pos`, in beats; minus infinity when nothing plays.
+// drawChart draws the bars, the one being played shaded, and a cursor
+// at `pos`, in beats; minus infinity when nothing plays.
+//
+// Three rows show at a time. A longer grid turns its pages a row at a
+// time, as a reader of a Real Book does: the row being played second,
+// the one before it above, the next one below, to read ahead.
 func (g *game) drawChart(c screen.Canvas, pos float64) {
 	bars := len(g.bars)
 	playing, chorus := -1, 0
@@ -419,9 +460,18 @@ func (g *game) drawChart(c screen.Canvas, pos float64) {
 		playing = int(pos) / perBar % bars
 		chorus = int(pos) / g.chorusLen
 	}
+	rows := (bars + barsPerRow - 1) / barsPerRow
+	top := 0
+	if rows > chartRows && playing >= 0 {
+		top = min(max(playing/barsPerRow-1, 0), rows-chartRows)
+	}
 	for i, cells := range g.bars {
+		row := i / barsPerRow
+		if row < top || row >= top+chartRows {
+			continue
+		}
 		x := float32(chartX + i%barsPerRow*barW)
-		y := float32(chartY + i/barsPerRow*rowH)
+		y := float32(chartY + (row-top)*rowH)
 		if i == playing {
 			c.Rect(x, y, barW, barH, pale)
 			frac := math.Mod(pos, perBar) / perBar
@@ -432,16 +482,20 @@ func (g *game) drawChart(c screen.Canvas, pos float64) {
 		if len(cells) == 0 {
 			c.Centred("%", g.fonts.chord, float64(x)+barW/2, float64(y)+chordDY, ink)
 		}
+		font, raised := g.fonts.chord, g.fonts.chordRaised
+		if len(cells) > 1 {
+			font, raised = g.fonts.chordSmall, g.fonts.chordSmallRaised // two chords share the bar
+		}
 		for _, cl := range cells {
 			cx := float64(x) + chordDX + float64(cl.beat)*barW/perBar
-			c.Text(cl.name, g.fonts.chord, cx, float64(y)+chordDY, ink)
+			drawSymbol(c, cl.name, font, raised, cx, float64(y)+chordDY)
 		}
 		for beat := range perBar {
 			if k, ok := g.markAt(i*perBar+beat, chorus); ok {
 				drawMark(c, k, x+markDX+float32(beat)*barW/perBar, y+markDY)
 			}
 		}
-		if i%barsPerRow == barsPerRow-1 || i == bars-1 {
+		if i%barsPerRow == barsPerRow-1 || i == bars-1 { // the end of the row
 			end := x + barW
 			c.Line(end, y, end, y+barH, 1, ink)
 		}
@@ -533,7 +587,9 @@ func drawMark(c screen.Canvas, k BeatKind, x, y float32) {
 }
 
 // namerFor spells in the tonality the analysis hears in `grid`: the
-// tonality is found, never read from the key the chart declares.
+// tonality is found, never read from the key the chart declares. It
+// only spells a note over no chord: the chords keep the spelling of the
+// grid, which follows its modulations (see chart).
 func namerFor(grid analysis.Changes) *naming.Namer {
 	namer, err := naming.NewNamer(naming.English)
 	if err != nil {
@@ -545,34 +601,37 @@ func namerFor(grid analysis.Changes) *naming.Namer {
 	return namer
 }
 
-// chart writes the chords of `grid` bar by bar, spelled by `namer`. A
-// bar where no chord starts is left empty, and drawn as the repeat
-// sign.
-func chart(grid analysis.Changes, namer *naming.Namer) [][]cell {
-	bars := make([][]cell, len(grid.Bars))
-	for _, ch := range grid.Chords {
-		bar := grid.Bar(ch.Start)
+// chart writes the chords of `t` bar by bar, as the grid spells them:
+// one tonality is not enough to spell a grid that modulates, the C of
+// Tune Up's Cmaj7 would be a B♯ in D. A bar where no chord starts is
+// left empty, and drawn as the repeat sign.
+//
+// Respelling by the tonalities the analysis hears, zone by zone, as
+// charts/cmd/analyse does, is for later (see docs/chantiers.md).
+func chart(t tune) [][]cell {
+	bars := make([][]cell, len(t.grid.Bars))
+	for i, ch := range t.grid.Chords {
+		bar := t.grid.Bar(ch.Start)
 		if bar < 0 {
 			continue
 		}
-		beat := int((ch.Start - grid.Bars[bar]) / analysis.TicksPerBeat)
-		bars[bar] = append(bars[bar], cell{name: symbol(namer, ch), beat: beat})
+		beat := int((ch.Start - t.grid.Bars[bar]) / analysis.TicksPerBeat)
+		bars[bar] = append(bars[bar], cell{name: symbolOf(t.written[i]), beat: beat})
 	}
 	return bars
 }
 
-// symbol writes a change as a chart does: B♭7, Gm7, F6, D7/F♯, N.C.
-func symbol(n *naming.Namer, ch analysis.Change) string {
-	if ch.Silent {
-		return "N.C."
+// drawSymbol draws the symbol `s` from (`x`, `y`): its line in `font`,
+// its raised run in the smaller `raised`, a little above, as an
+// exponent.
+func drawSymbol(c screen.Canvas, s symbol, font, raised *screen.Font, x, y float64) {
+	c.Text(s.line, font, x, y, ink)
+	w, _ := c.Measure(s.line, font)
+	x += w
+	if s.raised != "" {
+		c.Text(s.raised, raised, x, y-raisedDY, ink)
+		w, _ = c.Measure(s.raised, raised)
+		x += w
 	}
-	q, ok := naming.ChordStyle{}.Symbol(ch.Chord.Pattern)
-	if !ok {
-		q = "?"
-	}
-	s := n.Name(ch.Chord.Root) + q
-	if ch.Inverted() {
-		s += "/" + n.Name(ch.Bass)
-	}
-	return s
+	c.Text(s.bass, font, x, y, ink)
 }

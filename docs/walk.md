@@ -299,6 +299,15 @@ Ce qui suit est notre lecture des sources.
 - À côté du jeu à vue, le joueur peut apprendre des standards célèbres,
   y revenir et les posséder : un terrain de confort pour rouler entre
   deux défis.
+- **Les grilles d'aujourd'hui**, en ChordPro (`games/walk/grids`, voir
+  `formats.md`), accords seuls, saisis pour gohar sous licence libre :
+  - le blues de douze mesures en F, le premier ;
+  - *Tune Up*, d'après l'analyse d'*En Harmonie* (t. 1, p. 160) : trois
+    II-V-I majeurs un ton plus bas l'un que l'autre ;
+  - *Autumn Leaves*, en G mineur : les II-V-I du relatif majeur, puis
+    ceux du mineur, sur 32 mesures.
+  Elles portent pour l'instant leurs vrais titres, dans leurs tons
+  d'origine.
 
 ## La basse de référence
 
@@ -476,12 +485,30 @@ Ce qui suit est notre lecture des sources.
   (licence SIL OFL 1.1), qui a ♭ ♮ ♯, ø et °. Elle n'a pas de crénage,
   son fichier source ayant été perdu : les paires délicates se règlent
   à la main.
-- Le jeu choisit son `ChordStyle`, et les noms d'accords suivent
+- Le jeu choisit son `ChordStyle`. Les noms d'accords doivent suivre
   l'orthographe de l'analyse (voir « L'orthographe entendue » dans
-  `grilles.md`).
+  `grilles.md`), zone par zone. **Pour l'instant, ils gardent celle de
+  la grille** : une seule tonalité ne suffit pas à épeler une grille qui
+  module, et le C du Cmaj7 de *Tune Up*, entendu en D, s'écrirait B♯.
+  La réécriture par zones existe dans `charts/cmd/analyse` ; il reste à
+  la passer dans la bibliothèque (voir `chantiers.md`).
 - **La mise en page** : la grille sur les deux tiers droits de l'écran,
   quatre mesures par ligne ; le bonhomme dans le tiers gauche ; le
   clavier en dessous, sur toute la largeur.
+- **Trois rangées à la fois.** Une grille plus longue tourne ses pages
+  d'une rangée à la fois, comme on lit un Real Book : la rangée jouée en
+  deuxième position, celle d'avant au-dessus, la suivante en dessous,
+  pour lire en avance. Une mesure à deux accords les écrit plus petits.
+- **Les exposants.** La fondamentale et le type de tétrade restent sur
+  la ligne (D7, Am7, Cmaj7) ; la quinte altérée et les extensions
+  montent en exposant : Am7<sup>♭5</sup>, D7<sup>(♭13)</sup>. Restent
+  encore sur la ligne, à ajuster quand le cas se présentera : le
+  mineur-majeur avec ses extensions, Cm(maj7,9), l'alt du 7alt, et les
+  extensions écrites à la place de la septième, C9, C13.
+- **À l'arrêt, dans la partie**, ↑ et ↓ changent de grille, ← et → de
+  tempo, de 5 en 5. Le tempo des options sert de départ, et ce qu'on
+  change en jouant vaut pour la séance, sans toucher aux options ; la
+  grille choisie aussi.
 
 ## L'écran titre
 

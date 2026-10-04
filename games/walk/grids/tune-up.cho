@@ -1,0 +1,15 @@
+{title: Tune Up}
+{composer: Eddie Vinson}
+{meta: style Medium Up Swing}
+{meta: chart_author gohar}
+{meta: chart_license CC0-1.0}
+{meta: source En Harmonie, tome 1, p. 160}
+
+# The chords alone, written for gohar from the analysis of En Harmonie:
+# three II-V-I a tone apart, to D, to C, to B♭, and back to D.
+{start_of_grid label="A" shape="4x4"}
+| Em7 | A7 | Dmaj7 | Dmaj7 |
+| Dm7 | G7 | Cmaj7 | Cmaj7 |
+| Cm7 | F7 | Bbmaj7 | Gm7 |
+| Em7 | A7 | Dmaj7 | Dmaj7 |.
+{end_of_grid}

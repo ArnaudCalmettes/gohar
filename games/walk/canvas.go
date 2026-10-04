@@ -35,21 +35,35 @@ var (
 // fonts are the faces the game uses: the chart's hand for the chords,
 // the countdown and the walker's bubbles, Go Regular for the rest.
 type fonts struct {
-	chord, count, bubble, ui *screen.Font
+	chord, chordSmall, count, bubble, ui *screen.Font
+	chordRaised, chordSmallRaised        *screen.Font // the exponents of a symbol
 }
 
 // Their sizes, in logical units.
 const (
-	chordSize  = 24
-	countSize  = 64
-	bubbleSize = 14
-	uiSize     = 11
+	chordSize            = 24
+	chordSmallSize       = 18 // two chords in a bar
+	chordRaisedSize      = 16
+	chordSmallRaisedSize = 12
+	raisedDY             = 3 // how far an exponent rises above the line's top
+	countSize            = 64
+	bubbleSize           = 14
+	uiSize               = 11
 )
 
 func newFonts() (fonts, error) {
 	var fs fonts
 	var err error
 	if fs.chord, err = screen.NewFont(chordSize, museJazzText); err != nil {
+		return fs, err
+	}
+	if fs.chordSmall, err = screen.NewFont(chordSmallSize, museJazzText); err != nil {
+		return fs, err
+	}
+	if fs.chordRaised, err = screen.NewFont(chordRaisedSize, museJazzText); err != nil {
+		return fs, err
+	}
+	if fs.chordSmallRaised, err = screen.NewFont(chordSmallRaisedSize, museJazzText); err != nil {
 		return fs, err
 	}
 	if fs.count, err = screen.NewFont(countSize, museJazzText); err != nil {
