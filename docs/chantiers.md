@@ -272,24 +272,21 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       plaisir, pas urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **le chantier prioritaire** : le cursus, c'est-à-dire les paliers,
-    la basse en deux et le mode campagne, qui vont ensemble. La
+    la basse en deux et le mode campagne, qui vont ensemble ; le bilan
+    suivra ce que mesure chaque palier (« Le bilan » dans `walk.md`). La
     campagne prendra le débutant par la main (le tonal d'abord, le
     modal bien plus tard) et choisira aussi le tempo. Les chantiers du
     dex et des voicings devraient s'y greffer ;
   - **à développer ensuite**, dans cet ordre :
     1. le défilement fluide de la grille, à la place de la tourne de
        page ;
-    2. le bilan par fonction harmonique (l'arrivée sur le I après un
-       V7, sur un II, sur une dominante chromatique), une fois l'analyse
-       fonctionnelle branchée sur la grille du jeu (« Le bilan » dans
-       `walk.md`) ;
-    3. les deux chefs d'orchestre, la partie et le `jam`, en un seul
+    2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;
-    4. les réactions du bonhomme aux motifs (une pédale, une descente),
+    3. les réactions du bonhomme aux motifs (une pédale, une descente),
        avec les niveaux avancés : réharmonisations et techniques plus
        libres ;
-    5. bien plus tard, les touches dessinées selon le contrôleur
+    4. bien plus tard, les touches dessinées selon le contrôleur
        (clavier, manettes), par exemple avec les sprites libres des
        Input Prompts de Kenney, le jour où le jeu se jouera aussi à la
        manette ;

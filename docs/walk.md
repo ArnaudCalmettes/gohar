@@ -500,12 +500,34 @@ n'a pas de bilan, une démo non plus : le bonhomme n'a rien à se dire.
 - **Le seuil** : une situation ou une mesure a marché quand trois temps
   attendus sur quatre au moins ont été posés. C'est une valeur de
   départ, à régler en jouant.
-- **Le temps** : l'écart moyen des notes au temps, en avance ou en
-  retard, et leur régularité autour de cet écart (l'écart type), en
-  millisecondes. La latence calibrée est déjà déduite.
-- **Plus tard**, des situations plus musicales : l'arrivée sur le I
-  après un V7, sur un II, sur une dominante chromatique. Elles demandent
-  de brancher l'analyse fonctionnelle sur la grille du jeu.
+- **Le temps**, en un mot plutôt qu'en millisecondes : « Bien en
+  rythme », « Tendance à presser », « Tendance à traîner » ou « À
+  stabiliser ». Le jeu mesure l'écart moyen des notes au temps et leur
+  régularité autour de cet écart (l'écart type), la latence calibrée
+  déduite. Au-delà de 20 ms d'écart moyen, le joueur presse ou traîne ;
+  en deçà, au-delà de 30 ms de dispersion, le placement est à
+  stabiliser. Des valeurs de départ, comme les seuils du bonhomme. Les
+  millisecondes restent dans l'enregistrement. Pas de « tu » dans ce
+  verdict : « tu presses » sonne comme un reproche, « tendance à
+  presser » comme un constat.
+- **Le conseil**, une seule priorité, comme un professeur la donnerait
+  en fin de cours :
+  - quand des changements lâchent et que le temps est bon : travailler
+    la formule qui a le plus lâché, à ce tempo, « Conseil : travaille
+    les anatoles à ce tempo ». Les formules sont celles que l'analyse
+    trouve dans la grille : les anatoles, les III-VI-II-V-I, les
+    cadences éoliennes (`analysis.Cells`), puis les II-V-I
+    (`analysis.Blocks`) ; un temps manqué compte pour la formule dont
+    son accord fait partie. Hors de toute formule, le conseil nomme la
+    situation : les changements en milieu de mesure, par exemple ;
+  - quand les changements et le temps lâchent ensemble : ralentir le
+    tempo ;
+  - quand seul le temps lâche : rester à ce tempo, le temps de le
+    stabiliser ;
+  - quand tout a marché : monter le tempo, de 10 sous 140 à la noire,
+    de 5 au-delà.
+- **Plus tard**, le bilan suivra le cursus : ce qu'il compte découlera
+  de ce que mesure chaque palier.
 
 N'importe quelle touche, du clavier d'ordinateur ou du piano, ramène à
 la partie.

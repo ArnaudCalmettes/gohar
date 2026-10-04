@@ -3,6 +3,8 @@ package main
 import (
 	"math"
 	"time"
+
+	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 // The summary of a run (see "Le bilan" in docs/walk.md): what worked
@@ -53,17 +55,19 @@ func (t tally) worked() bool {
 // A summary gathers the marks of one run.
 type summary struct {
 	situations [situations]tally
-	bars       []tally // by bar of the chart, every chorus together
-	chorusLen  int     // in beats
+	formulas   [formulas]tally            // by formula, the beats out of any under noFormula
+	formulaOf  map[analysis.Ticks]formula // of each chord, by its start
+	bars       []tally                    // by bar of the chart, every chorus together
+	chorusLen  int                        // in beats
 
 	notes      int     // the notes a beat claimed
 	sum, sumSq float64 // of their offsets, in milliseconds
 }
 
 // newSummary sums up a run over a chart of `bars` bars, in choruses of
-// `chorusLen` beats.
-func newSummary(bars, chorusLen int) *summary {
-	return &summary{bars: make([]tally, bars), chorusLen: chorusLen}
+// `chorusLen` beats, whose chords make the formulas `f` (see formulasOf).
+func newSummary(bars, chorusLen int, f map[analysis.Ticks]formula) *summary {
+	return &summary{bars: make([]tally, bars), chorusLen: chorusLen, formulaOf: f}
 }
 
 // beat takes the mark `k` of beat `b`, the beat `n` of the run.
@@ -74,11 +78,14 @@ func (s *summary) beat(n int, b Beat, k BeatKind) {
 	}
 	i, _ := barOf(n, s.chorusLen)
 	bar := &s.bars[i]
+	f := &s.formulas[s.formulaOf[b.Chord.Start]]
 	s.situations[sit].expected++
 	bar.expected++
+	f.expected++
 	if k == Landed {
 		s.situations[sit].landed++
 		bar.landed++
+		f.landed++
 	}
 }
 

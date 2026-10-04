@@ -81,10 +81,24 @@ const (
 	msgReviewMid         = "review.mid"
 	msgReviewHeld        = "review.held"
 	msgReviewTime        = "review.time"
-	msgReviewEarly       = "review.early"  // {{.Ms}}: the mean offset
-	msgReviewLate        = "review.late"   // {{.Ms}}
-	msgReviewSpread      = "review.spread" // {{.Ms}}: the spread around it
+	msgReviewSteady      = "review.steady"
+	msgReviewRushing     = "review.rushing"
+	msgReviewDragging    = "review.dragging"
+	msgReviewUnsteady    = "review.unsteady"
 	msgReviewKeys        = "review.keys"
+
+	// The advice of a review, one priority.
+	msgAdviceWork      = "advice.work"   // {{.What}}: a formula or a situation, below
+	msgAdviceSlower    = "advice.slower" // {{.BPM}}: the tempo to try
+	msgAdviceFaster    = "advice.faster" // {{.BPM}}
+	msgAdviceStay      = "advice.stay"
+	msgFormulaAnatole  = "formula.anatole"
+	msgFormulaThreeSix = "formula.threesix"
+	msgFormulaAeolian  = "formula.aeolian"
+	msgFormulaTwoFive  = "formula.twofive"
+	msgWorkStart       = "work.start"
+	msgWorkMid         = "work.mid"
+	msgWorkHeld        = "work.held"
 )
 
 var phrases = []string{
@@ -99,7 +113,10 @@ var phrases = []string{
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
 	msgReviewTitle, msgReviewWorked, msgReviewConsolidate,
 	msgReviewStart, msgReviewMid, msgReviewHeld,
-	msgReviewTime, msgReviewEarly, msgReviewLate, msgReviewSpread, msgReviewKeys,
+	msgReviewTime, msgReviewSteady, msgReviewRushing, msgReviewDragging, msgReviewUnsteady, msgReviewKeys,
+	msgAdviceWork, msgAdviceSlower, msgAdviceFaster, msgAdviceStay,
+	msgFormulaAnatole, msgFormulaThreeSix, msgFormulaAeolian, msgFormulaTwoFive,
+	msgWorkStart, msgWorkMid, msgWorkHeld,
 }
 
 var (

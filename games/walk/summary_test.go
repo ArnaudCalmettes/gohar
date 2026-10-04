@@ -23,7 +23,7 @@ func TestSummary(t *testing.T) {
 		chorus + 10*perBar + 2: true,
 		chorus + 11*perBar:     true, // bar 12, beat 1: G7, second chorus
 	}
-	s := newSummary(12, chorus)
+	s := newSummary(12, chorus, formulasOf(grid))
 	for n, b := range beats {
 		k := Landed
 		if missed[n] {
@@ -51,7 +51,7 @@ func TestSummary(t *testing.T) {
 // The notes ahead of the beat by 10 and 30 ms: 20 ms early on average,
 // give or take 10. A note between two beats does not count.
 func TestSummaryOffset(t *testing.T) {
-	s := newSummary(12, 12*perBar)
+	s := newSummary(12, 12*perBar, nil)
 	if _, _, ok := s.offset(); ok {
 		t.Error("an offset without a note")
 	}

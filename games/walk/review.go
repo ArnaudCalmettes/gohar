@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image/color"
-	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -44,8 +43,35 @@ const (
 	reviewLine  = 15 // between two lines of text
 	reviewGap   = 10 // between two blocks
 	swatch      = 9  // the square of colour beside a heading
-	reviewChart = statusY - reviewGap - chartY
+	reviewChart = adviceY - reviewGap - chartY
+	adviceY     = statusY - reviewLine - reviewGap // the advice, above the keys
 )
+
+// The words of a review: the feel, the formulas and the situations to
+// work, as the advice names them.
+var (
+	feelPhrase    = [...]string{feelSteady: msgReviewSteady, feelRushing: msgReviewRushing, feelDragging: msgReviewDragging, feelUnsteady: msgReviewUnsteady}
+	formulaPhrase = [formulas]string{anatole: msgFormulaAnatole, threeSix: msgFormulaThreeSix, aeolian: msgFormulaAeolian, twoFive: msgFormulaTwoFive}
+	workPhrase    = [situations]string{barStart: msgWorkStart, midBar: msgWorkMid, held: msgWorkHeld}
+)
+
+// adviceWords says the advice `a`, empty for none.
+func adviceWords(g *game, a advice) string {
+	bpm := fmt.Sprintf("%.0f", a.bpm)
+	switch a.kind {
+	case workFormula:
+		return g.lang.T(msgAdviceWork, "What", g.lang.T(formulaPhrase[a.what]))
+	case workSit:
+		return g.lang.T(msgAdviceWork, "What", g.lang.T(workPhrase[a.sit]))
+	case slower:
+		return g.lang.T(msgAdviceSlower, "BPM", bpm)
+	case faster:
+		return g.lang.T(msgAdviceFaster, "BPM", bpm)
+	case stay:
+		return g.lang.T(msgAdviceStay)
+	}
+	return ""
+}
 
 // situationPhrase names each situation.
 var situationPhrase = [situations]string{barStart: msgReviewStart, midBar: msgReviewMid, held: msgReviewHeld}
@@ -59,20 +85,16 @@ func (r *review) Draw(dst *ebiten.Image) {
 	y := float64(chartY)
 	y = r.drawSituations(c, y, true, msgReviewWorked, workedTint)
 	y = r.drawSituations(c, y, false, msgReviewConsolidate, consolidateTint)
-	if mean, spread, ok := r.s.offset(); ok {
+	if f := r.s.feel(); f != feelNone {
 		c.Text(g.lang.T(msgReviewTime), g.fonts.bubble, margin, y, ink)
 		y += reviewLine + 3
-		side := msgReviewEarly
-		if mean > 0 {
-			side = msgReviewLate
-		}
-		ms := func(d time.Duration) string { return fmt.Sprint(abs(int(d.Milliseconds()))) }
-		c.Text(g.lang.T(side, "Ms", ms(mean)), g.fonts.ui, margin, y, ink)
-		y += reviewLine
-		c.Text(g.lang.T(msgReviewSpread, "Ms", ms(spread)), g.fonts.ui, margin, y, ink)
+		c.Text(g.lang.T(feelPhrase[f]), g.fonts.ui, margin, y, ink)
 	}
 
 	r.drawMap(c)
+	if a := adviceWords(g, advise(r.s, g.bpm)); a != "" {
+		c.Text(a, g.fonts.bubble, margin, adviceY, ink)
+	}
 	c.Text(g.lang.T(msgReviewKeys), g.fonts.ui, margin, statusY, faint)
 }
 
