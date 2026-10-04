@@ -76,6 +76,9 @@ gohar/
     cmd/forms/               la forme de playlists entières, lue par
                              analysis.Sections
 
+    Viendront chordpro/ et abc/, le format ouvert des grilles et de la
+    mélodie (voir formats.md).
+
   games/       go.mod        Ebitengine, ark, MIDI, go-i18n
     keyboard/                port des touches, seul endroit qui voit gomidi
     screen/                  canevas en coordonnées logiques, polices,

@@ -102,12 +102,30 @@ Les décisions sont dans `voicings.md`.
 
 ## La lecture des grilles
 
-- [ ] un format de grille ouvert, mieux conçu que celui d'iReal, qui
-      porterait aussi la mélodie et les couleurs modales.
+Le format retenu est ChordPro pour la grille et ABC pour la mélodie, dans
+un profil propre à gohar (`formats.md`).
+
+- [ ] le profil : trancher les raccourcis de mesure, l'écriture des
+      altérations en sortie, les sections qui reviennent.
+- [ ] `charts/chordpro` : le lecteur et l'exporteur du profil, vers
+      `analysis.Changes`.
+- [ ] un convertisseur d'iReal vers ChordPro, pour un corpus privé.
+- [ ] les premières grilles libres en ChordPro, accords seuls : le
+      blues, *Tune Up*, *Autumn Leaves*.
+- [ ] `charts/abc` : le sous-ensemble d'ABC (hauteurs, durées,
+      silences, barres, reprises, chiffrages entre guillemets) et
+      l'alignement sur la grille, mesure par mesure.
+- [ ] un corpus privé en ChordPro et ABC, relevé dans des partitions au
+      fil des besoins, hors du dépôt.
 
 ## L'analyse des grilles
 
 Les règles et les décisions sont dans `grilles.md`.
+
+- [ ] la mélodie dans l'analyse, une fois `charts/abc` en place : la
+      note que le thème appuie sur un accord pour sa couleur, les notes
+      du thème pour trancher une tonalité hésitante, et les grilles
+      « mises à part » qui attendaient l'information.
 
 - [ ] *Yesterday's Gardenias* entendu en fa♯ ; il est en si♭ majeur.
       La règle du turnaround mis de côté y prend la mauvaise fin
@@ -230,21 +248,28 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
-    1. les bulles du bonhomme pendant le jeu (« Le bonhomme » dans
-       `walk.md`) : la mécanique et les premières répliques sont là,
-       restent les réactions aux motifs (une pédale, une descente) et
-       le réglage des seuils en jouant ;
+    1. plusieurs grilles, une fois les premières grilles libres en
+       ChordPro : le choix de la grille (↑ ↓) et du tempo (← →) depuis
+       la partie, à l'arrêt, le tempo des options servant de départ et
+       ce qu'on change valant pour la séance ; la grille qui tourne ses
+       pages par rangée, trois rangées visibles ; puis l'écoute de la
+       basse de référence sur *Tune Up* et *Autumn Leaves* ;
     2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;
-    3. en parallèle, l'affichage qui s'adapte à la grille et défile
-       quand elle est trop longue (un AABA de 32 mesures), avec quelques
-       grilles de test : un AABA en accords seuls, des II-V serrés, une
-       grille modale ;
+    3. le défilement fluide, si la tourne de page ne suffit pas ;
+    4. les réactions du bonhomme aux motifs (une pédale, une descente),
+       avec les niveaux avancés : réharmonisations et techniques plus
+       libres ;
+    5. les touches dessinées selon le contrôleur (clavier, manettes),
+       par exemple avec les sprites libres des Input Prompts de Kenney,
+       le jour où le jeu se jouera aussi à la manette ;
   - **avec des joueurs de tous niveaux** : l'équilibrage des fenêtres de
     temps, des seuils du bonhomme et du mélange ;
   - **avec le design de la progression générale** : les paliers, la
-    basse en deux, le catalogue de patterns de la basse de référence.
+    basse en deux, le catalogue de patterns de la basse de référence ;
+    le mode campagne, qui prendra le débutant par la main (le tonal
+    d'abord, le modal bien plus tard) et choisira aussi le tempo.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

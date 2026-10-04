@@ -1780,7 +1780,7 @@ pour trancher. Trois listes relues à la main, dans
   pas les couleurs, blues d'une forme que `Blues` ne connaît pas,
   thèmes que rien ne permet de vérifier. On ne bricole pas une grille
   à laquelle il manque l'information : c'est la liste des grilles à
-  réécrire dans un format qui la porte ;
+  réécrire dans un format qui la porte (voir `formats.md`) ;
 - **les fiches** du livre, l'oracle.
 
 Le rapport compare aussi la forme trouvée aux marques de section de la
