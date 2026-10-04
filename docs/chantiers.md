@@ -105,13 +105,25 @@ Les décisions sont dans `voicings.md`.
 Le format retenu est ChordPro pour la grille et ABC pour la mélodie, dans
 un profil propre à gohar (`formats.md`).
 
-- [ ] le profil : trancher les raccourcis de mesure, l'écriture des
-      altérations en sortie, les sections qui reviennent.
-- [ ] `charts/chordpro` : le lecteur et l'exporteur du profil, vers
+- [x] le profil (`formats.md`) : les raccourcis de mesure en lecture
+      comme en écriture, l'ASCII en sortie, le rappel des sections.
+- [x] `charts/chordpro` : le lecteur et l'exporteur du profil, vers
       `analysis.Changes`.
-- [ ] un convertisseur d'iReal vers ChordPro, pour un corpus privé.
+- [x] un convertisseur d'iReal vers ChordPro, pour un corpus privé
+      (`cmd/tochordpro`) ; la forme y est écrite dépliée.
+- [x] la coda dans le profil (`{x_coda}`) et dans la conversion, et un
+      test qui vérifie sur tout le corpus privé que la conversion donne
+      les mêmes accords à l'analyse.
+- [ ] les changements de mesure dans le profil (une quarantaine de
+      grilles du corpus, surtout des musiques de jeux).
+- [ ] le convertisseur garde les reprises et les fins d'une grille
+      iReal, au lieu de déplier la forme.
+- [ ] la table des qualités, aujourd'hui dans `charts/ireal`
+      (`HandQuality`), passe dans `naming`, en lecture symétrique de
+      `ChordStyle.Symbol`.
 - [ ] les premières grilles libres en ChordPro, accords seuls : le
-      blues, *Tune Up*, *Autumn Leaves*.
+      blues (celui de *Walk with me*, F6 mesure 7 et G7 mesure 12, tel
+      qu'il est saisi), *Tune Up*, *Autumn Leaves*.
 - [ ] `charts/abc` : le sous-ensemble d'ABC (hauteurs, durées,
       silences, barres, reprises, chiffrages entre guillemets) et
       l'alignement sur la grille, mesure par mesure.

@@ -76,19 +76,34 @@ valide, qui s'ouvre ailleurs.
    ce qui est écrit reste une annotation, lue en option pour affiner,
    jamais pour remplacer la détection. La même règle vaut pour le `K:`
    qu'ABC rend obligatoire.
-3. **La place des accords dans la mesure** : un accord seul remplit la
-   mesure (`| F7 |`), deux accords la partagent en deux (`| Gm7 C7 |`),
-   et une coupe inégale s'écrit temps par temps (`| F7 . . D7 |`).
+3. **La place des accords dans la mesure**, avec les raccourcis d'usage
+   des grilles de jazz, en lecture comme en écriture : un accord seul
+   remplit la mesure (`| F7 |`), deux accords la partagent en deux
+   (`| Gm7 C7 |`). Seule une coupe inégale s'écrit temps par temps, un
+   point pour un temps où rien ne change (`| F7 . . D7 |`). La spec de
+   ChordPro montre des mesures d'un seul accord sans points, mais ne dit
+   pas comment lire deux accords sans points : l'usage des musiciens
+   tranche.
 4. **Le chiffrage est celui des musiciens**, lu par `naming` : `Bbmaj7`,
    `Am7b5`, `D7(b9)`, `C7alt`, `F/A`, `N.C.`. Les dièses et les bémols
-   s'écrivent en ASCII (`b`, `#`) ou en Unicode (`♭`, `♯`). Le 7alt garde
-   le sens qu'il a dans gohar : le locrien ♭4, C7(♭5, ♭9, ♭10, ♭13).
+   se lisent en ASCII (`b`, `#`) comme en Unicode (`♭`, `♯`), et
+   s'écrivent toujours en ASCII : c'est ce que tous les logiciels
+   ChordPro comprennent, et ce qui se tape le plus facilement à la main.
+   L'Unicode reste pour l'écran. Le 7alt garde le sens qu'il a dans
+   gohar : le locrien ♭4, C7(♭5, ♭9, ♭10, ♭13).
 5. **Les accords optionnels**, ceux qu'un joueur ajoutera une fois plus
-   avancé (les petits accords d'iReal), s'écrivent entre parenthèses
-   dans leur case : `| G7 (Db7) |`. Un autre logiciel les affiche tels
-   quels, ce qui reste lisible.
+   avancé (les petits accords d'iReal), s'écrivent entre parenthèses,
+   joints par `~` à l'accord qu'ils ornent : `| F6 D7~(Ab7) |`. Pour
+   l'analyse, l'accord qu'ils ornent dure comme s'ils n'étaient pas là.
+   Un autre logiciel les affiche tels quels, ce qui reste lisible.
 6. **La forme se joue dans l'ordre du fichier**, section après section,
-   avec leurs reprises et leurs fins.
+   avec leurs reprises et leurs fins. Une section qui revient peut se
+   **rappeler** au lieu d'être recopiée, comme on l'écrit couramment pour
+   un AABA : `{x_play: A}` rejoue la section d'étiquette A à cet endroit.
+   **La coda** vient après `{x_coda}` : le chorus reboucle avant elle,
+   et elle ne se joue qu'une fois, au dernier tour, pour conclure, comme
+   iReal la joue. Les renvois (D.S., D.C.) s'écrivent dépliés : la
+   section rejouée est rappelée, ou recopiée.
 7. **La grille a sa propre licence**, distincte du `{copyright}` de la
    composition : `{meta: chart_author …}` et `{meta: chart_license …}`.
    `meta` étant standard, il est préféré à une directive `x_`.
@@ -108,26 +123,29 @@ Notre blues, écrit dans ce profil :
 {meta: chart_license CC0-1.0}
 
 {start_of_grid label="A" shape="4x4"}
-| F7    | Bb7   | F7    | F7    |
-| Bb7   | Bb7   | F7    | D7    |
-| Gm7   | C7    | F6 D7 (Ab7) | Gm7 C7 (Gb7) |.
+| F7 | Bb7 | F7 | F7 |
+| Bb7 | Bb7 | F6 | D7 |
+| Gm7 | C7 | F6 D7~(Ab7) | G7 C7~(Gb7) |.
 {end_of_grid}
 ```
 
-## Ce qui reste à trancher
+Un AABA, avec son rappel :
 
-- **Les raccourcis de mesure** (point 3) sont dans l'esprit des
-  exemples de ChordPro, mais sa spec ne dit pas explicitement comment
-  lire une mesure de deux accords sans points. Proposition : les
-  accepter en lecture, et toujours écrire les temps en sortie, pour
-  qu'aucun autre logiciel ne s'y trompe.
-- **L'écriture des altérations en sortie** (point 4) : l'ASCII, compris
-  par tous les logiciels ChordPro, ou l'Unicode, plus lisible.
-  Proposition : l'ASCII dans les fichiers, l'Unicode à l'écran.
-- **Les sections qui reviennent** (point 6) : pour un AABA, tout écrire
-  (le A recopié), ou permettre un rappel (`{x_play: A}`, par exemple).
-  Proposition : tout écrire dans un premier temps, simple et sans
-  ambiguïté ; la coda et les renvois plus tard.
+```
+{start_of_grid label="A" shape="4x4"}
+| Bbmaj7 G7 | Cm7 F7 | Dm7 G7 | Cm7 F7 |
+| Fm7 Bb7 | Ebmaj7 Ab7 | Dm7 G7 | Cm7 F7 |.
+{end_of_grid}
+{x_play: A}
+{start_of_grid label="B" shape="4x4"}
+| D7 | % | G7 | % |
+| C7 | % | F7 | % |.
+{end_of_grid}
+{x_play: A}
+```
+
+Le rappel est une extension de gohar : un autre logiciel ChordPro ignore
+`{x_play}`, et n'affiche alors le A qu'une fois.
 
 ## La mélodie
 
@@ -159,9 +177,37 @@ hésitante se tranche sur les notes du thème, et les grilles modales
   restent dans un corpus **privé**, hors du dépôt, comme
   `testdata/local` aujourd'hui.
 
+## Ce que fait gohar aujourd'hui
+
+- **`charts/chordpro`** lit et écrit le profil, et en tire les accords
+  que l'analyse lit (`Song.Changes`), avec les règles de
+  `charts/ireal` : un accord écrit de nouveau continue, une mesure
+  partagée l'est au temps près, arrondie au temps suivant. Une nuance :
+  iReal compare l'écriture (`Bb^7` puis `Bb^` font deux accords), le
+  profil compare l'accord (`Bbmaj7` puis `Bbmaj7` continue, quelle que
+  soit la façon de l'avoir écrit).
+- **Les extensions entre parenthèses** se lisent dans n'importe quel
+  ordre, ajoutées à l'accord qui les précède : `G7sus4(b9)` comme
+  `G7sus(b9)`, `C7(#11,b9)` comme `C7(b9,#11)`.
+- **La conversion depuis iReal** (`chordpro.FromIReal`, et la commande
+  `cmd/tochordpro` pour des playlists entières) écrit la forme **telle
+  qu'elle se joue**, une fois : les reprises, les fins et les sauts d'un
+  D.S. ou d'un D.C. sont dépliés, une section commence à chaque marque
+  de répétition, et la coda vient après `{x_coda}`. Les accords
+  sont ceux de la ligne de temps d'iReal, de sorte qu'une grille
+  convertie donne à l'analyse exactement les mêmes accords que la
+  grille d'origine, coda comprise. Un test le vérifie sur le blues et
+  sur une coda, et un autre sur tout le corpus privé, là où il se
+  trouve. Les petits accords d'iReal deviennent des accords optionnels.
+- **Ce que la conversion ne fait pas encore** : garder les reprises et
+  les fins au lieu de les déplier, et les changements de mesure. Une
+  grille dont la mesure change est laissée de côté, et le dit : une
+  quarantaine sur 1 678 dans le corpus privé, des musiques de jeux pour
+  les trois quarts.
+
 ## Les étapes
 
-1. Ce profil, et ses trois points à trancher.
+1. Ce profil.
 2. `charts/chordpro` : le lecteur et l'exporteur du profil, vers
    `analysis.Changes`, avec des tests qui se lisent en noms d'accords.
 3. Un convertisseur d'iReal vers ChordPro, pour passer un corpus privé

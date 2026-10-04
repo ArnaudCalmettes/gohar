@@ -1,6 +1,10 @@
 package ireal
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/ArnaudCalmettes/gohar/harmony"
+)
 
 // qualityOffsets gives, for each chord quality the app writes, the
 // notes it stands for, in semitones above the root. Positions past the
@@ -132,6 +136,23 @@ var customAliases = map[string]string{
 // seventh at 23, as a fourteenth.
 var handQualities = map[string][]int{
 	"o^7": {3, 6, 9, 23},
+}
+
+// HandQuality reads a quality written by hand, as a musician writes it
+// rather than as the app does: "maj7", "m7b5", "7(b9,#11)", "dim7". It
+// is how the qualities typed freely in a chart are read, and other
+// formats write their chords the same way (see charts/chordpro).
+func HandQuality(quality string) (harmony.ChordPattern, bool) {
+	o, ok := offsets(quality, true)
+	if !ok {
+		return 0, false
+	}
+	st := make([]harmony.Semitones, len(o))
+	for i, n := range o {
+		st[i] = harmony.Semitones(n)
+	}
+	p, err := harmony.NewChordPattern(st...)
+	return p, err == nil
 }
 
 // offsets returns the notes a quality stands for. A quality typed

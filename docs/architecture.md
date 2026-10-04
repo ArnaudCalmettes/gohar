@@ -73,11 +73,15 @@ gohar/
     cmd/analyse/             une grille et son analyse dans le terminal
     cmd/corpus/              l'analyse de playlists entières, comparée
                              à la tonalité que l'app déclare
+    chordpro/                le format ouvert des grilles, profil de
+                             ChordPro : lecture, écriture, conversion
+                             depuis iReal, pont vers analysis.Changes
     cmd/forms/               la forme de playlists entières, lue par
                              analysis.Sections
+    cmd/tochordpro/          des playlists iReal en fichiers ChordPro,
+                             pour un corpus privé
 
-    Viendront chordpro/ et abc/, le format ouvert des grilles et de la
-    mélodie (voir formats.md).
+    Viendra abc/, la mélodie (voir formats.md).
 
   games/       go.mod        Ebitengine, ark, MIDI, go-i18n
     keyboard/                port des touches, seul endroit qui voit gomidi

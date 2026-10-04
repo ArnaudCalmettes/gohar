@@ -183,6 +183,16 @@ cd charts
 go run ./cmd/corpus -aside ireal/testdata/set-aside.txt -keys ireal/testdata/keys.txt ireal/testdata/local/*.html
 ```
 
+The open format of gohar's charts is a profile of ChordPro (see
+`docs/formats.md`), read and written by `charts/chordpro`. To convert
+playlists into it, one `.cho` file per song, for a private corpus kept
+out of the repository as the playlists are:
+
+```sh
+cd charts
+go run ./cmd/tochordpro -out ireal/testdata/local/cho ireal/testdata/local/*.html
+```
+
 ## History
 
 This repository used to be a single module. Its tagged versions remain
