@@ -55,18 +55,13 @@ do2-mi3 l'une des dixièmes les plus graves.
   réalisation hors tessiture est **annotée**, jamais refusée : c'est le
   même principe que le dex, qui constate et ne juge pas.
 - **La table de départ** est celle que Berklee appelle *low interval
-  limits*, à corriger d'après le cours « Les bases de l'harmonisation »
-  d'Étienne Guéreau (2023), qui donne ses propres limites pour les
-  intervalles simples et composés, jusqu'aux dixièmes. Ses hauteurs
-  servent à vérifier la table, pas à la recopier : la table de gohar
-  est celle que l'oreille valide.
-- **Il y a aussi des limites dans l'aigu**, que Berklee ne donne pas :
-  « les limites inférieures peuvent être excédées dans le cas d'un
-  assombrissement intentionnel ; les limites supérieures suggèrent
-  uniquement l'usage d'une position plus adaptée ». La sixte, la seconde
-  et la quarte n'ont pas de limite supérieure. Une réalisation trop
-  haute s'annote donc comme une trop basse, avec une autre suggestion :
-  changer de position, pas éclaircir.
+  limits*, corrigée à l'oreille : la table de gohar est celle que
+  l'oreille valide.
+- **Il y a aussi des limites dans l'aigu**, que Berklee ne donne pas.
+  Une réalisation trop haute s'annote comme une trop basse, avec une
+  autre suggestion : changer de position. Une limite basse peut être
+  franchie pour assombrir à dessein ; une limite haute suggère
+  seulement une position mieux adaptée.
 
 Les octaves se comptent avec do4 pour le do du milieu et la4 = 440 Hz
 (voir `glossaire.md`).
@@ -159,8 +154,7 @@ du moindre mouvement, suivi dans le dex.
 - **La suite du curriculum** après le noyau : a priori, une extension à
   la place de la quinte (1-7-3-13 sur la dominante, par exemple).
 - **Les voicings avec extensions dans le dex** : seulement s'ils vivent
-  dans des enchaînements courants, comme le II-V-I au sus4(♭9) du cours
-  de Guéreau, dont on ne sait pas encore quoi faire.
+  dans des enchaînements courants.
 
 ## Le nom des accords
 

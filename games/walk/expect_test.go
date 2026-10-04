@@ -2,12 +2,19 @@ package main
 
 import (
 	"testing"
+	"time"
 
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
 // The expectations read as a chart: chord names, bars and beats.
+
+var t0 = time.Date(2026, 10, 3, 20, 0, 0, 0, time.UTC)
+
+// At 120, a beat lasts half a second: easy to check by hand.
+func at120() tempo.Metronome { return tempo.NewMetronome(t0, 120, 4) }
 
 var noteNames = [12]string{"C", "D♭", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"}
 
@@ -29,7 +36,7 @@ func chordName(ch analysis.Change) string {
 func beatAt(t *testing.T, beats []Beat, bar, beat int) Beat {
 	t.Helper()
 	for _, b := range beats {
-		if b.Position == (Position{bar, beat}) {
+		if b.Position == (tempo.Position{Bar: bar, Beat: beat}) {
 			return b
 		}
 	}

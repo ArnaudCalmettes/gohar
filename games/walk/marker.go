@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
@@ -111,7 +112,7 @@ var FirstPalier = Rules{
 // A Marker marks the notes of one run.
 type Marker struct {
 	rules Rules
-	m     Metronome
+	m     tempo.Metronome
 	beats []Beat
 
 	claims []claim // per beat: the notes that claimed it
@@ -124,7 +125,7 @@ type claim struct {
 }
 
 // NewMarker marks a run over `beats`, laid out for `m`.
-func NewMarker(r Rules, m Metronome, beats []Beat) *Marker {
+func NewMarker(r Rules, m tempo.Metronome, beats []Beat) *Marker {
 	return &Marker{rules: r, m: m, beats: beats, claims: make([]claim, len(beats))}
 }
 

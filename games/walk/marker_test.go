@@ -3,6 +3,8 @@ package main
 import (
 	"testing"
 	"time"
+
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 )
 
 // Keys in the register of the double bass, named as a bassist reads
@@ -17,7 +19,7 @@ const (
 
 // runOf marks the jazz blues in F at 120: a beat is 500 ms, so the
 // first palier is on time within 62 ms and loose within 166 ms.
-func runOf(t *testing.T, r Rules) (*Marker, Metronome) {
+func runOf(t *testing.T, r Rules) (*Marker, tempo.Metronome) {
 	t.Helper()
 	grid, err := readGrid(jazzBlues)
 	if err != nil {
@@ -28,7 +30,7 @@ func runOf(t *testing.T, r Rules) (*Marker, Metronome) {
 }
 
 // at is bar `bar`, beat `beat`, moved by `ms` milliseconds.
-func at(m Metronome, bar, beat, ms int) time.Time {
+func at(m tempo.Metronome, bar, beat, ms int) time.Time {
 	return m.At((bar-1)*4 + beat - 1).Add(time.Duration(ms) * time.Millisecond)
 }
 

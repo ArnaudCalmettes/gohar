@@ -1,4 +1,8 @@
-package main
+// Package tempo is the map of musical time the games share: which
+// instant each beat falls on, and which beat an instant belongs to,
+// straight or swung. Walk with me schedules its band on it and marks
+// the player against it; the calibration of the latency counts on it.
+package tempo
 
 import (
 	"math"
@@ -34,6 +38,9 @@ func NewMetronome(start time.Time, bpm float64, perBar int) Metronome {
 
 // Beat returns the length of one beat.
 func (m Metronome) Beat() time.Duration { return m.beat }
+
+// PerBar returns the beats in a bar.
+func (m Metronome) PerBar() int { return m.perBar }
 
 // At returns the instant beat `n` falls on.
 func (m Metronome) At(n int) time.Time {
@@ -86,7 +93,7 @@ func (m Metronome) Position(n int) Position {
 // (see "Ce qu'on attend, temps par temps" in docs/walk.md).
 //
 // A stylistic frame decides this, not the pulse: it lives here only
-// until walk has a second style to tell apart.
+// until a game has a second style to tell apart.
 func (m Metronome) Strong(p Position) bool {
 	if m.perBar == 4 {
 		return p.Beat == 1 || p.Beat == 3

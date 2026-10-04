@@ -15,6 +15,7 @@
 //	go run ./walk -demo            # the band plays the bass itself
 //	go run ./walk -practice        # without tempo, T switches back
 //	go run ./walk -record line.txt # write down the notes heard
+//	go run ./walk -lang en         # in English; the session's language by default
 //	go run ./walk -list            # the presets of the soundfont
 //	go run ./walk -sf2 other.sf2 -bass 0:33
 package main
@@ -29,6 +30,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
+	"github.com/ArnaudCalmettes/gohar/games/lang"
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
@@ -46,6 +48,7 @@ func main() {
 	port := flag.String("port", "", "an input's number or part of its name; the first one if empty")
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
 	record := flag.String("record", "", "write down the notes the marker hears, a line each, in this file")
+	language := flag.String("lang", lang.System(), "the language of the game: fr or en")
 	flag.Parse()
 
 	if _, err := os.Stat(*sf2); err != nil && !*chip {
@@ -94,7 +97,11 @@ func main() {
 		}
 	}
 
-	g, err := newGame("12 Bar Blues", grid, *bpm, *choruses, bd, midiName, *practicing)
+	l, err := newLang(*language)
+	if err != nil {
+		log.Fatal(err)
+	}
+	g, err := newGame("12 Bar Blues", grid, *bpm, *choruses, bd, midiName, *practicing, l)
 	if err != nil {
 		log.Fatal(err)
 	}

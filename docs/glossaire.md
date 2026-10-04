@@ -320,6 +320,5 @@ documentation comme dans les messages du jeu.
   naturelle, gamme de référence des tonalités mineures, n'est pas
   l'éolien, même si c'est aussi le mode du sixième degré de la
   majeure. Voir `dex.md`.
-- L'identification des accords est **déterministe**. Les règles de
-  construction tranchent avant toute comparaison ; ce qui ne
-  correspond à aucune tétrade n'est pas un accord. Pas de score.
+- L'identification des accords est **déterministe** (voir
+  `architecture.md`).

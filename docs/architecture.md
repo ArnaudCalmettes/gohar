@@ -44,20 +44,9 @@ gohar/
     naming/                  orthographe, locales, noms des 35 modes,
                              des intervalles et des gammes nommées,
                              symboles d'accords (ChordStyle)
-    analysis/                identification déterministe, moteur,
-                             et l'analyse d'une grille : suite
-                             d'accords (Changes), préparations,
-                             passages, blocs et tonalités annoncées,
-                             II-V consécutifs (Links), cellules
-                             (Cells), seconde écoute (Reread),
-                             phrases et tonalité du morceau
-                             (ReadTune, Tune), tierce picarde,
-                             plages modales, blues, degrés, tonique
-                             pressentie et modulations (Sensed),
-                             zones tonales (TonalAreas), forme par
-                             récurrences (Sections), cadences
-                             conclusives et demi-cadences
-                             (Conclusions), pédales (Pedals)
+    analysis/                identification déterministe des accords,
+                             moteur temps réel, et l'analyse d'une
+                             grille (voir grilles.md)
 
   dex/         go.mod        collection du joueur, dépend de harmony
     notion.go                identité d'une notion, forme persistée
@@ -87,13 +76,18 @@ gohar/
     cmd/forms/               la forme de playlists entières, lue par
                              analysis.Sections
 
-  games/       go.mod        Ebitengine, ark, MIDI
+  games/       go.mod        Ebitengine, ark, MIDI, go-i18n
     keyboard/                port des touches, seul endroit qui voit gomidi
+    screen/                  canevas en coordonnées logiques, polices,
+                             clavier à l'écran
+    tempo/                   métronome, swing : la carte du temps musical
+    settings/                ce que les jeux gardent d'une partie à l'autre
+    lang/                    les phrases des jeux, par langue (go-i18n)
     ear/                     ear trainer : menu, degrés, tétracordes, modes
-    walk/                    Walk with me : métronome, swing, temps
-                             attendus, marqueur, walking bass générée,
-                             batterie, enregistrement, grille, clavier
-                             et bonhomme à l'écran
+    walk/                    Walk with me : temps attendus, marqueur,
+                             walking bass générée, batterie,
+                             enregistrement, grille et bonhomme à
+                             l'écran, phrases en français et en anglais
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio
@@ -107,13 +101,14 @@ est dans `dex.md`.
 Un seul `go.mod` à la racine mettrait Ebitengine dans le graphe de
 dépendances de quiconque importe `harmony` pour transposer trois
 accords. Les frontières de modules sont donc là où les dépendances
-changent, et nulle part ailleurs.
+changent, et nulle part ailleurs : Ebitengine, la pile MIDI et go-i18n
+n'apparaissent que dans le module `games`.
 
-`harmony` n'a aucune dépendance de production. `synth` en a une seule,
-oto, et la raison est plus bas : il possède la sortie audio parce que
-personne d'autre ne peut la régler correctement. La synthèse elle-même
-reste un `io.Reader` sur du PCM, que la bibliothèque standard suffit à
-écrire, et le moteur de jeu qui l'affiche est l'affaire du jeu. C'est la
+`harmony` n'a aucune dépendance de production. `synth` en a deux : oto,
+parce qu'il possède la sortie audio et que personne d'autre ne peut la
+régler correctement (voir plus bas), et go-meltysynth, qui ne fait que
+calculer des échantillons. La synthèse reste un `io.Reader` sur du PCM,
+et le moteur de jeu qui l'affiche est l'affaire du jeu. C'est la
 même discipline que pour les ports : une bibliothèque ne connaît pas la
 techno qui l'appelle.
 
@@ -176,88 +171,41 @@ un bon choix pour jouer un fichier et un mauvais pour un instrument. Une
 nappe de fond gagne à avoir une demi-seconde d'avance ; un clavier la
 paie en mollesse.
 
-### Mesures du 25 septembre 2026
+### Ce que donnent les mesures
 
-Dell XPS 14 9440 sous Linux, PipeWire, Focusrite Scarlett Solo 4e
-génération en USB, profil `output:analog-stereo`.
+Mesuré le 25 septembre 2026 (Linux, PipeWire, interface USB), avec le
+protocole de `games/otolatency` :
 
 | Chemin | Plancher | Flam audible |
 |---|---|---|
 | `ebiten/v2/audio`, ring buffer à 30 ms | 71,5 ms | oui, franc |
 | oto direct, périphérique et ring buffer à 5 ms | 12,5 ms | non |
 
-Gigue de 2,5 ms sur le second, sans dérive ni décrochage. Le matériel
-n'a jamais été en cause : le Scarlett tient 5 ms sans broncher, et le
-quantum de PipeWire n'avait aucun effet tant que la couche au-dessus
-demandait des périodes de 21,3 ms.
+Le chiffre reste un plancher, le matériel ajoutant le sien. La mesure
+qui tranche est le flam : on tape une touche fort, le clic mécanique
+arrive par l'air, le son après, et l'écart s'entend ou ne s'entend pas.
 
-Le protocole de mesure tient dans `games/otolatency`. Le chiffre affiché
-reste un plancher, puisque le matériel ajoute le sien sans qu'on puisse
-le voir. La mesure qui tranche est le flam : on tape une touche fort, le
-clic mécanique arrive par l'air et le son arrive après, et l'écart entre
-les deux s'entend ou ne s'entend pas.
+**Sous charge**, dix minutes d'`ear` à 120 images par seconde avec des
+accords joués par-dessus : p50 à 5 ms, p99 et maximum à 11 ms, un
+plafond structurel (deux périodes de lecture d'oto), et aucun pic
+corrélé aux collectes du ramasse-miettes. Ce qui protège le son :
 
-### Ce qui reste non mesuré
+- **la goroutine audio n'alloue rien** (`Engine.Read`, `Mixer.Read`).
+  Le vrai risque n'est pas la pause du ramasse-miettes, de quelques
+  centaines de microsecondes, mais le *mark assist* : une goroutine qui
+  alloue pendant une collecte se voit facturer du marquage. Une
+  goroutine qui n'alloue rien ne l'est jamais ;
+- **une marge de quelques millisecondes** plutôt que le minimum : la
+  goroutine audio n'est pas un thread temps réel comme celui d'un DAW.
 
-Sous charge. La sonde ne fait rien d'autre qu'attendre, alors qu'un jeu
-dessine soixante fois par seconde et alloue. C'est là qu'on saura si
-5 ms tient.
+Si un craquement apparaît un jour : lire le pire cas après plusieurs
+minutes, jamais la moyenne, et le corréler avec `GODEBUG=gctrace=1`.
+Le levier suivant serait `debug.SetMemoryLimit` avec `GOGC=off`, pas un
+réglage de `GOGC`.
 
-Le sujet est instruit, pas traité, et il n'est pas urgent : avant de
-corriger un craquement toutes les trente secondes, il faut un jeu qui
-mérite qu'on y joue trente secondes. Ce qu'on sait déjà, pour ne pas
-refaire le raisonnement :
-
-**Le mark assist est le vrai risque, pas les pauses.** Les pauses
-stop-the-world de Go tiennent en quelques dizaines à quelques centaines
-de microsecondes et passent sous un buffer de 5 ms. En revanche, une
-goroutine qui alloue pendant une collecte se voit facturer du travail de
-marquage sur place. Une goroutine qui n'alloue rien ne l'est jamais.
-C'est la raison d'être de l'absence d'allocation dans `Engine.Read`, qui
-est une protection et pas un réflexe de performance.
-
-**Le coût du marquage suit le nombre de pointeurs, pas la mémoire.** Un
-ECS par archétypes range les composants en tableaux contigus de
-structures sans pointeurs, ce qui raccourcit chaque phase de marquage en
-plus de réduire les allocations. Deux bénéfices distincts.
-
-**Le levier suivant n'est pas `GOGC`.** C'est `debug.SetMemoryLimit` sur
-une valeur confortable avec `GOGC=off` : le ramasse-miettes cesse alors
-de suivre le taux d'allocation et ne se déclenche qu'en approchant de la
-limite. Deux lignes dans un `main`, pour une empreinte bornée et connue.
-
-**Un plafond qu'aucun réglage ne lève.** La goroutine audio est une
-goroutine ordinaire, pas un thread en priorité temps réel comme celui
-d'un DAW. C'est le meilleur argument pour garder quelques millisecondes
-de marge plutôt que de viser le minimum : 5 ms est un compromis, pas un
-score à battre.
-
-**Comment trancher le jour venu.** Lire le pire cas après plusieurs
-minutes de jeu soutenu, jamais la moyenne, qui cache exactement le
-défaut qu'un musicien entend. Puis corréler avec `GODEBUG=gctrace=1` :
-un pic qui tombe sur une ligne de trace désigne le ramasse-miettes, un
-pic sans corrélation désigne l'ordonnanceur ou l'USB.
-
-**Tranché le 26/09/2026.** Dix minutes de `ear` avec le clavier animé,
-à 120 fps, en jouant des accords au MIDI par-dessus les séquences :
-2 208 événements, p50 à 5 ms, p99 et maximum à 11 ms. Le maximum n'a
-pas bougé entre 324 et 2 208 événements : c'est un plafond structurel,
-à peu près deux périodes de lecture d'oto, et non un accident. La trace
-compte 572 collectes, avec des pauses stop-the-world de 0,46 ms au plus,
-et aucun pic ne s'y corrèle. Le ramasse-miettes ne se fait pas sentir.
-
-Le jeu alloue pourtant beaucoup : une collecte toutes les une à deux
-secondes en fin de session, le tas oscillant entre 14 et 28 Mo. La
-goroutine audio n'en paie rien, puisqu'elle n'alloue pas. C'est du
-gaspillage côté boucle de jeu, à réduire par opportunisme, pas un
-risque pour le son.
-
-L'autre moitié du trajet. Du doigt vers le programme, c'est-à-dire le
-clavier maître, l'USB MIDI et la bibliothèque qui le lit. Probablement
-petit, mais non mesuré, et c'est la somme des deux que le joueur sent.
-
-La calibration reste au programme quoi qu'il arrive : ces chiffres sont
-ceux d'une machine, et rien ne dit qu'ils ressemblent à ceux du joueur.
+Reste non mesurée l'autre moitié du trajet, du doigt au programme
+(clavier, USB MIDI, bibliothèque) : la calibration couvre la somme des
+deux.
 
 ### Les notes datées
 
@@ -295,11 +243,10 @@ large que le pire hoquet de la boucle de jeu évite d'en arriver là.
 ### Le mélangeur
 
 Un `Device` ne prend qu'une source, et un `Engine` ne joue qu'un timbre.
-Un jeu qui fait entendre une contrebasse, une batterie, un claquement de
-doigts et le piano du joueur passe donc par un `Mixer`, qui additionne ses entrées,
-chacune avec son gain, et écrête la somme comme le fait un `Engine` sur
-un accord trop dense. Ses tampons sont alloués une fois pour toutes ;
-une lecture plus longue qu'eux se fait en plusieurs passes.
+Un jeu qui fait entendre une contrebasse, une batterie, un claquement
+de doigts et le piano du joueur passe donc par un `Mixer`, qui
+additionne ses entrées, chacune avec son gain, et écrête la somme comme
+le fait un `Engine` sur un accord trop dense.
 
 Chaque instrument garde sa propre horloge. Le mélangeur les lit l'un
 après l'autre dans le même appel, à quelques microsecondes d'écart :
@@ -352,9 +299,7 @@ vélocité, et il s'éteint seul. La touche n'y change rien, le relâchement
 non plus. Quatre prises peuvent se chevaucher.
 
 Le WAV doit être échantillonné à 48 kHz, comme tout le paquet : une
-autre fréquence est une erreur plutôt qu'un rééchantillonnage. PCM 16 ou
-24 bits, ou flottants 32 bits, en mono ou en stéréo. Le décodeur ne lit
-que les blocs « fmt » et « data », et saute les métadonnées.
+autre fréquence est une erreur plutôt qu'un rééchantillonnage.
 
 ## Les scènes
 
@@ -392,17 +337,9 @@ une dépendance. Le paquet `games/scene` est donc à nous, petit et sans
 autre dépendance qu'Ebitengine. Les transitions animées viendront plus
 tard : le découpage de bamenn (départ, arrivée, fin) est un bon modèle.
 
-**Ce qui passe en commun** avec les scènes, parce que plusieurs jeux en
-ont besoin, et que la calibration, partagée elle aussi, en est le
-troisième client :
-
-- le canevas et les polices, aujourd'hui en double dans `ear` et
-  `walk` ;
-- le clavier à l'écran, copié de `ear` dans `walk` ;
-- le `Metronome` et le `Swing`, qui ne doivent rien à *Walk with me* ;
-- les réglages persistés, aujourd'hui `ear/store.go` ;
-- la langue (voir la section suivante) ;
-- la calibration de la latence, une scène à part entière.
+Ce qui sert à plusieurs jeux vit dans un paquet commun (voir
+l'arborescence) ; `scene`, le régisseur, et `calibrate`, la calibration
+de la latence, une scène partagée, viendront s'y ajouter.
 
 **La latence appartient à la machine, pas au jeu** : elle dépend de la
 sortie audio et du clavier MIDI. Elle se range dans les réglages
@@ -427,27 +364,18 @@ Il y a deux sortes de mots :
   bulles du bonhomme, le bilan d'un run. Elles passent par go-i18n
   (licence MIT, pur Go), la bibliothèque de référence en Go.
 
-go-i18n apporte ce qu'une table de chaînes faite main n'a pas :
+go-i18n apporte les pluriels de toutes les langues du CLDR (« 1
+arrivée posée », « 3 arrivées posées »), des variables nommées que
+chaque langue place à sa guise, et des fichiers TOML embarqués qu'un
+traducteur relit sans toucher au code.
 
-- **les pluriels** de toutes les langues du CLDR : « 1 arrivée posée »,
-  « 3 arrivées posées », et les règles d'autres langues le jour où il y
-  en aura ;
-- **des variables nommées** dans les phrases, que chaque langue place à
-  sa guise ;
-- **des fichiers de traduction** (TOML), embarqués dans l'exécutable,
-  qu'un traducteur peut relire sans toucher au code ;
-- **un outil**, `goi18n`, qui extrait les messages du code et tient les
-  fichiers des langues à jour l'un par rapport à l'autre.
-
-Sa seule faiblesse est d'identifier les messages par des chaînes : une
-faute de frappe ne casse pas la compilation. La parade est un test, dans
-chaque jeu : chaque message employé existe dans chaque langue.
-
-Un petit paquet commun enveloppe la bibliothèque : il choisit la langue
-(celle des réglages, sinon celle du système, l'anglais en repli), charge
-les fichiers embarqués, et donne aux scènes une fonction de traduction.
-`ear` y passera en même temps qu'aux scènes ; ses phrases vivent pour
-l'instant dans une structure par langue (`ear/text.go`).
+Le paquet `lang` l'enveloppe : `T` pour une phrase, `N` pour un
+pluriel, l'anglais en repli. Sa seule faiblesse, des identifiants en
+chaînes qu'une faute de frappe ne fait pas échouer à la compilation, a
+sa parade : dans chaque jeu, un test vérifie que chaque phrase employée
+existe dans chaque langue (`Missing`). La langue vient du drapeau
+`-lang`, sinon de la session, en attendant l'écran des paramètres.
+`ear` y passera avec les scènes.
 
 ## Répartition entre `harmony` et `naming`
 
@@ -473,7 +401,7 @@ l'inverse.**
 | `naming` | `harmony` |
 | `analysis` | `harmony` |
 | `dex` | `harmony` |
-| `synth` | rien du dépôt, et d'externe uniquement oto |
+| `synth` | rien du dépôt, et d'externe uniquement oto et go-meltysynth |
 | `keyboard` | rien du dépôt, et d'externe uniquement gomidi |
 | `charts` | `harmony` et `naming`, pour lire les chiffrages, et `analysis`, pour lui passer une grille (`Changes`) et l'afficher ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
 | `games` | tout |
@@ -491,17 +419,6 @@ que la frontière de paquet est au mauvais endroit.
 Aucune variable de paquet mutable. Pas de `CurrentLocale`, pas
 d'équivalent. Tout ce qui est configurable se passe en paramètre ou se
 porte par une structure construite explicitement.
-
-## Frontière de module
-
-Ebitengine et la pile MIDI ne doivent jamais apparaître dans le `go.mod`
-du noyau. Quelqu'un qui importe la bibliothèque pour transposer trois
-accords ne doit pas tirer une pile graphique.
-
-D'où le module `games/`, qui porte seul ces dépendances.
-
-La lecture du MIDI vit donc dans `games/keyboard`, tranché en l'écrivant
-et détaillé plus bas.
 
 ## Deux surfaces, et deux portes qu'elles gardent ouvertes
 

@@ -4,6 +4,8 @@ import (
 	"image/color"
 	"math"
 	"time"
+
+	"github.com/ArnaudCalmettes/gohar/games/screen"
 )
 
 // The stick figure of the first milestone (see "Le bonhomme" in
@@ -87,7 +89,7 @@ func (w *walker) gait(tempo bool) gait {
 // The hip sits lower with the legs apart, which gives the bounce for
 // free. The reactions are frames held for their length: up for a hop,
 // leaning for a stumble.
-func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, now time.Time, col color.Color) {
+func (w *walker) draw(c screen.Canvas, x, y float32, s float64, g gait, beats float64, now time.Time, col color.Color) {
 	// The sketch, at scale 1: lengths in logical units, angles in
 	// radians from the downward vertical, positive toward the front.
 	const (
@@ -120,7 +122,7 @@ func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, 
 		sparkTo    = 7.0
 	)
 	// Drawn at scale 1 on a canvas `s` times larger.
-	c.scale *= s
+	c.Scale *= s
 	x, y = x/float32(s), y/float32(s)
 
 	beat := int(math.Floor(beats))
@@ -150,7 +152,7 @@ func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, 
 	// vertical, positive toward the front, and returns its end.
 	limb := func(fx, fy, length, angle float64) (float64, float64) {
 		tx, ty := fx+length*math.Sin(angle), fy+length*math.Cos(angle)
-		c.line(float32(fx), float32(fy), float32(tx), float32(ty), stroke, col)
+		c.Line(float32(fx), float32(fy), float32(tx), float32(ty), stroke, col)
 		return tx, ty
 	}
 
@@ -165,8 +167,8 @@ func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, 
 
 	neckX := hipX + torso*math.Sin(tilt)
 	neckY := hipY - torso*math.Cos(tilt)
-	c.line(float32(hipX), float32(hipY), float32(neckX), float32(neckY), stroke, col)
-	c.circle(float32(neckX+head*math.Sin(tilt)), float32(neckY-neckGap*head), float32(head), col)
+	c.Line(float32(hipX), float32(hipY), float32(neckX), float32(neckY), stroke, col)
+	c.Circle(float32(neckX+head*math.Sin(tilt)), float32(neckY-neckGap*head), float32(head), col)
 
 	// The arms, each with its elbow: against the legs on the strong
 	// beats, down on the weak ones.
@@ -194,6 +196,6 @@ func (w *walker) draw(c canvas, x, y float32, s float64, g gait, beats float64, 
 	hx, hy := limb(ex, ey, fore, snapOpen)
 	for _, a := range []float64{-spark, 0, spark} {
 		dx, dy := math.Cos(a), math.Sin(a) // away from the body
-		c.line(float32(hx+sparkFrom*dx), float32(hy+sparkFrom*dy), float32(hx+sparkTo*dx), float32(hy+sparkTo*dy), stroke/2, col)
+		c.Line(float32(hx+sparkFrom*dx), float32(hy+sparkFrom*dy), float32(hx+sparkTo*dx), float32(hy+sparkTo*dy), stroke/2, col)
 	}
 }

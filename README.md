@@ -20,9 +20,9 @@ theory library never pulls in a graphics or audio stack.
 | `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`), and chord symbols in a chosen style (`Cmaj7`, `C-7`, `Cø`). |
 | `harmony/analysis` | Deterministic chord recognition, without scoring, and the analysis of a chord chart after the book *En Harmonie*: preparations, cadences, cells, degrees, the tonic the ear senses and its modulations, the form, half cadences and pedals. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
-| `synth`   | A small polyphonic synthesiser (sine and 8-bit console timbres) and the audio output, tuned for low latency. |
+| `synth`   | The sound: a small polyphonic synthesiser (sine and 8-bit console timbres), soundfonts, recorded sounds, a mixer, notes scheduled to the sample, and the audio output, tuned for low latency. |
 | `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name, and three commands to see their analysis and their form. |
-| `games`   | The playable programs, Ebitengine and MIDI included. |
+| `games`   | The playable programs, Ebitengine and MIDI included, and what they share: the canvas and the keyboard on screen, musical time, settings, languages. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
 for the choices and their reasons, `dex.md` for the collection,
@@ -111,6 +111,7 @@ go run ./walk                  # the space bar starts and stops
 go run ./walk -demo            # the band walks the bass itself
 go run ./walk -practice        # without tempo; T switches at rest
 go run ./walk -record line.txt # writes down every note heard
+go run ./walk -lang en         # in English; your session's language by default
 ```
 
 `-sf2` plays another soundfont, `-list` shows its presets and `-bass`

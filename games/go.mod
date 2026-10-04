@@ -16,10 +16,13 @@ require (
 	github.com/ArnaudCalmettes/gohar/dex v0.0.0
 	github.com/ArnaudCalmettes/gohar/harmony v0.0.0
 	github.com/ArnaudCalmettes/gohar/synth v0.0.0
+	github.com/BurntSushi/toml v1.6.0
 	github.com/ebitengine/oto/v3 v3.5.1
 	github.com/hajimehoshi/ebiten/v2 v2.8.6
+	github.com/nicksnyder/go-i18n/v2 v2.6.1
 	gitlab.com/gomidi/midi/v2 v2.3.24
 	golang.org/x/image v0.20.0
+	golang.org/x/text v0.32.0
 )
 
 require (
@@ -30,7 +33,6 @@ require (
 	github.com/jezek/xgb v1.1.1 // indirect
 	github.com/jfreymuth/pulse v0.1.3 // indirect
 	github.com/sinshu/go-meltysynth v0.0.0-20230205031334-05d311382fc4 // indirect
-	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
 )

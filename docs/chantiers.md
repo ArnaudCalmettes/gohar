@@ -16,31 +16,20 @@ tâche qui la fait mentir.
 
 ## Où on en est
 
-- **`harmony`** : hauteurs, intervalles, gammes, tonalités, accords,
-  fonctions, systèmes, tétracordes, les 35 modes, les préparations d'un
-  accord à l'autre. Testé, benché, vert.
-- **`naming`** : la langue (français, anglais) et la notation (signes,
-  mots), les noms des intervalles, des gammes et des modes, et les
-  symboles d'accords (`ChordStyle`).
-- **`analysis`** : la reconnaissance déterministe des accords, et
-  l'analyse d'une grille à la manière d'*En Harmonie* : blocs, degrés,
-  tonique pressentie et modulations, cellules, forme, fins de section,
-  demi-cadences, pédales, tonalité du morceau. Les fiches du livre et
-  de Siron concordent ; sur le corpus, 87 % d'accord avec l'app ou
-  l'oreille.
-- **`charts`** : la lecture des grilles iReal Pro, de l'URL jusqu'aux
-  accords en ordre de jeu, et trois commandes, `analyse` (une grille
-  annotée et réorthographiée), `corpus` (l'analyse contre l'app sur des
-  playlists entières) et `forms` (la forme).
-- **`dex`** : le corps, la persistance JSON, `Components`.
-- **`synth`** : un moteur polyphonique sans allocation, des timbres
-  8 bits, les notes datées, le mélangeur, les soundfonts (`Sampler`),
-  les sons enregistrés (`Clip`), la sortie audio et un histogramme des
-  délais.
-- **`games`** : `keyboard` (MIDI et séquences rejouées), `keys` (un
-  clavier qui sonne), `ear`, l'entraînement de l'oreille (degrés,
-  tétracordes, modes du système naturel), avec le dex persisté, et
-  `walk`, le premier jalon de *Walk with me*.
+Le détail des modules est dans l'arborescence d'`architecture.md`.
+
+- [x] `harmony`, `naming` : la théorie et sa langue, testées et benchées.
+- [x] `analysis` : la reconnaissance des accords, et l'analyse d'une
+      grille à la manière d'*En Harmonie* ; 87 % d'accord avec l'app ou
+      l'oreille sur le corpus.
+- [x] `charts` : les grilles iReal Pro, et les commandes `analyse`,
+      `corpus` et `forms`.
+- [x] `dex` : le corps, la persistance JSON.
+- [x] `synth` : moteur sans allocation, notes datées, mélangeur,
+      soundfonts, sons enregistrés.
+- [x] `games` : `keyboard`, `keys`, `ear`, le premier jalon de *Walk
+      with me*, et les paquets communs (`screen`, `tempo`, `settings`,
+      `lang`, avec l'internationalisation).
 
 ## Les décisions à ne pas rouvrir
 
@@ -199,7 +188,8 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] Baudoin, *Jazz mode d'emploi* : les blues que `Blues` ne connaît
       pas (*Freddie Freeloader*, *Doxy*, *Watermelon Man*), et les
       réharmonisations.
-- [ ] Siskind, *Jazz Piano Fundamentals*, pour *Walk with me*.
+- [ ] Siskind, *Jazz Piano Fundamentals*, au-delà des Units 8 et 10
+      déjà dépouillées pour *Walk with me*.
 
 ## L'audio
 
@@ -220,39 +210,26 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 
 ## Les jeux
 
-- [ ] les scènes et les paquets communs aux jeux (« Les scènes » et
-      « L'internationalisation » dans `architecture.md`), dans cet
-      ordre : les paquets communs (canevas, polices, clavier à l'écran,
-      métronome, réglages, langue), le régisseur et *Walk with me* en
-      scènes, la calibration, puis `ear`.
-- [ ] *Walk with me* (`walk.md`). Le premier jalon tourne : les
-      fondamentales à la main gauche sur un blues jazz, sur la
-      batterie, marquées sur la grille, avec la phase sans tempo, le
-      bonhomme et une démo qui marche d'après Siskind. La suite, en
-      trois familles :
-      - **à développer**, dans cet ordre :
-        1. la calibration de latence, à la manière de *Rhythm
-           Paradise Groove* : un signal régulier sur un tempo facile,
-           une animation qui compte jusqu'à 4, le joueur appuie en
-           rythme jusqu'à ce que l'écart moyen se stabilise ; c'est la
-           latence, sauvegardée (`oreille.md`). Un premier
-           enregistrement (`-record`) montre des notes en avance d'une
-           trentaine de millisecondes, régulièrement ;
-        2. les bulles du bonhomme, qui commentent pendant le jeu : « tu
-           presses » sur une série de notes en avance, « tu traînes »,
-           un mot quand ça tourne ou quand le joueur se rattrape. Après
-           la calibration, sans quoi la latence elle-même passerait
-           pour de la précipitation ;
-        3. en parallèle, l'affichage qui s'adapte à la grille : le
-           nombre de lignes, les mesures chargées, et le défilement
-           d'une grille trop longue pour l'écran, un AABA de 32
-           mesures par exemple ; avec quelques grilles de test (un
-           AABA en accords seuls, des II-V serrés, une grille modale) ;
-      - **avec des joueurs de tous niveaux** : l'équilibrage des
-        fenêtres de temps, des seuils du bonhomme et du mélange ;
-      - **avec le design de la progression générale** : les paliers,
-        la basse en deux, et le catalogue de patterns de la basse de
-        référence (voir « La basse de référence » dans `walk.md`).
+- [ ] les scènes (« Les scènes » dans `architecture.md`) : le
+      régisseur et *Walk with me* en scènes, puis la calibration, puis
+      `ear` aux scènes et à `lang`.
+- [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
+  - **à développer**, dans cet ordre :
+    1. la calibration de latence, à la manière de *Rhythm Paradise
+       Groove* : un signal régulier, une animation qui compte jusqu'à 4,
+       le joueur appuie en rythme jusqu'à ce que l'écart moyen se
+       stabilise, et il est sauvegardé. Un premier enregistrement montre
+       une avance régulière d'une trentaine de millisecondes ;
+    2. les bulles du bonhomme pendant le jeu (« Le bonhomme » dans
+       `walk.md`), après la calibration ;
+    3. en parallèle, l'affichage qui s'adapte à la grille et défile
+       quand elle est trop longue (un AABA de 32 mesures), avec quelques
+       grilles de test : un AABA en accords seuls, des II-V serrés, une
+       grille modale ;
+  - **avec des joueurs de tous niveaux** : l'équilibrage des fenêtres de
+    temps, des seuils du bonhomme et du mélange ;
+  - **avec le design de la progression générale** : les paliers, la
+    basse en deux, le catalogue de patterns de la basse de référence.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

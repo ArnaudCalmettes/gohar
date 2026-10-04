@@ -1,0 +1,5 @@
+hello = "Bonjour {{.Name}}"
+
+[landed]
+one = "{{.Count}} arrivée posée"
+other = "{{.Count}} arrivées posées"

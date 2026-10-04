@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
@@ -136,7 +137,7 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 //     fingers: the sound of the juice;
 //   - in demo, `key`, the reference line, legato. No key, 0, in the
 //     count-in or out of demo.
-func (bd *band) beat(p Position, key int, at, and time.Time, snap bool) {
+func (bd *band) beat(p tempo.Position, key int, at, and time.Time, snap bool) {
 	backbeat := p.Beat%2 == 0
 	switch {
 	case p.Bar < 0 && backbeat:

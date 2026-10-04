@@ -1,0 +1,6 @@
+hello = "Hello {{.Name}}"
+onlyEnglish = "Only in English"
+
+[landed]
+one = "{{.Count}} arrival landed"
+other = "{{.Count}} arrivals landed"

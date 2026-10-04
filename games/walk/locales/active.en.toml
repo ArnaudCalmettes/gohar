@@ -1,0 +1,22 @@
+tempo = "Tempo: {{.BPM}} BPM"
+"tempo.free" = "no tempo: the chart waits for the root"
+"status.keys" = "Space: play or stop   T: with or without tempo   Esc: quit"
+"status.nomidi" = "no MIDI keyboard"
+"status.mark" = "{{.Note}}: {{.Words}}"
+
+"mode.tempo" = "A TEMPO"
+"mode.free" = "PRACTICE"
+"mode.demo" = "A TEMPO, DEMO"
+"mode.hint" = "{{.Mode}}: Space to start, T to switch"
+
+"timing.ontime" = "on the beat"
+"timing.early" = "early"
+"timing.late" = "late"
+"timing.between" = "between beats"
+
+"pitch.root" = "root"
+"pitch.chordtone" = "chord tone"
+"pitch.outside" = "outside the chord"
+
+"record.player" = "player"
+"record.demo" = "demo"

@@ -3,11 +3,12 @@ package main
 import (
 	"image/color"
 
+	"github.com/ArnaudCalmettes/gohar/games/screen"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 )
 
 // The keyboard on screen: three octaves, C3 to C6, lit by whatever is
-// sounding, from any source.
+// sounding, from any source (see screen.Piano).
 //
 // # What it must never do
 //
@@ -15,46 +16,12 @@ import (
 // note by note, which is what the ear hears anyway. The whole mode is
 // marked on the keys only once it is revealed.
 
-const (
-	pianoLow  = 48 // C3
-	pianoHigh = 84 // C6
+func newPiano() screen.Piano {
+	return screen.Piano{Low: 48, High: 84, X: 40, Y: 262, W: 560, H: 72} // C3 to C6
+}
 
-	pianoX      = 40
-	pianoY      = 262
-	pianoWidth  = 560
-	pianoHeight = 72
-
-	// glowDecay is what a released key keeps of its light each tick:
-	// at 60 ticks a second, it is mostly gone in a quarter of a second,
-	// long enough for the eye to follow a scale, short enough for the
-	// next note to stand out.
-	glowDecay = 0.85
-
-	// ghost dims a key folded in from outside the range: the pedal two
-	// octaves below, or a MIDI keyboard set to another octave. It still
-	// shows which class sounds, without pretending to be that key.
-	ghost = 0.5
-
-	// A key at rest shows its front, a lip a shade darker than its top,
-	// and a key held down hides it under the keys around it: what a
-	// keyboard seen from above and in front shows. The pressed key also
-	// takes a shadow where it goes under the fallboard.
-	whiteLip   = 4
-	blackLip   = 3
-	lipShade   = 0.78
-	shadowRows = 3
-	shadowFrom = 0.55
-)
-
-var (
-	whiteKey  = color.RGBA{0xe8, 0xe6, 0xe0, 0xff}
-	blackKey  = color.RGBA{0x2a, 0x2a, 0x32, 0xff}
-	keyBorder = color.RGBA{0x1c, 0x1c, 0x22, 0xff}
-	lit       = color.RGBA{0xe0, 0xa0, 0x40, 0xff}
-
-	darkLabel  = color.RGBA{0x1c, 0x1c, 0x22, 0xff}
-	lightLabel = color.RGBA{0xe8, 0xe6, 0xe0, 0xff}
-)
+// lit is the light of a key that sounds.
+var lit = color.RGBA{0xe0, 0xa0, 0x40, 0xff}
 
 // A tint is how a revealed key is painted: light on a white key, dark
 // on a black one, so that the two rows stay apart once coloured.
@@ -66,90 +33,6 @@ var (
 	wrongTint  = tint{color.RGBA{0xe8, 0x4a, 0x4a, 0xff}, color.RGBA{0xb0, 0x22, 0x22, 0xff}}
 	sharedTint = tint{color.RGBA{0xc4, 0xc2, 0xbc, 0xff}, color.RGBA{0x5a, 0x5a, 0x64, 0xff}}
 )
-
-// A piano is the keyboard's state from one frame to the next: how lit
-// each MIDI key still is.
-type piano struct {
-	glow [128]float32
-}
-
-// update lights what is down and lets the rest fade.
-func (p *piano) update(down *[128]bool) {
-	for k := range p.glow {
-		if down[k] {
-			p.glow[k] = 1
-		} else {
-			p.glow[k] *= glowDecay
-			if p.glow[k] < 0.01 {
-				p.glow[k] = 0
-			}
-		}
-	}
-}
-
-// fold brings a key into the displayed range by octaves.
-func fold(k int) int {
-	for k < pianoLow {
-		k += 12
-	}
-	for k > pianoHigh {
-		k -= 12
-	}
-	return k
-}
-
-// levels folds every lit key into the range, keeping the brightest
-// light per displayed key.
-func (p *piano) levels() [128]float32 {
-	var out [128]float32
-	for k, g := range p.glow {
-		if g == 0 {
-			continue
-		}
-		d := fold(k)
-		if d != k {
-			g *= ghost
-		}
-		out[d] = max(out[d], g)
-	}
-	return out
-}
-
-func isBlack(k int) bool {
-	switch k % 12 {
-	case 1, 3, 6, 8, 10:
-		return true
-	}
-	return false
-}
-
-// whiteCount is the number of white keys in the range.
-func whiteCount() int {
-	n := 0
-	for k := pianoLow; k <= pianoHigh; k++ {
-		if !isBlack(k) {
-			n++
-		}
-	}
-	return n
-}
-
-// keyRect places key k. A black key sits across the boundary of the
-// white key below it.
-func keyRect(k int) (x, y, w, h float32) {
-	whiteW := float32(pianoWidth) / float32(whiteCount())
-	whites := 0
-	for i := pianoLow; i < k; i++ {
-		if !isBlack(i) {
-			whites++
-		}
-	}
-	if !isBlack(k) {
-		return pianoX + float32(whites)*whiteW, pianoY, whiteW, pianoHeight
-	}
-	bw := whiteW * 0.6
-	return pianoX + float32(whites)*whiteW - bw/2, pianoY, bw, pianoHeight * 0.62
-}
 
 // A reveal says what to mark on the keys once the answer is out: the
 // classes of the right mode, and when the player chose another, the
@@ -188,61 +71,18 @@ func (r reveal) tint(k int) (tint, bool) {
 	return tint{}, false
 }
 
-// draw paints the keyboard: whites, then blacks over them. A revealed
-// key takes its tint whole and its name at the bottom; whatever sounds
-// glows over it, so that playing stays readable after the reveal.
-func (p *piano) draw(c canvas, r reveal, f *font) {
-	levels := p.levels()
-	for _, black := range []bool{false, true} {
-		for k := pianoLow; k <= pianoHigh; k++ {
-			if isBlack(k) != black {
-				continue
-			}
-			x, y, w, h := keyRect(k)
-			base, label := whiteKey, darkLabel
-			if black {
-				base, label = blackKey, lightLabel
-			}
-			if t, ok := r.tint(k); ok {
-				base, label = t.light, darkLabel
-				if black {
-					base, label = t.dark, lightLabel
-				}
-			}
-			top := blend(base, lit, levels[k])
-			lip := float32(whiteLip)
-			if black {
-				lip = blackLip
-			}
-			c.rect(x, y, w, h, keyBorder)
-			if levels[k] > 0.95 {
-				// Down: the lip goes under, the top runs to the edge,
-				// darkened at the back where it sinks.
-				c.rect(x+1, y, w-2, h-1, top)
-				for i := range shadowRows {
-					f := shadowFrom + (1-shadowFrom)*float32(i)/shadowRows
-					c.rect(x+1, y+float32(i), w-2, 1, shade(top, f))
-				}
-			} else {
-				c.rect(x+1, y, w-2, h-1-lip, top)
-				c.rect(x+1, y+h-1-lip, w-2, lip, shade(top, lipShade))
-			}
-
-			if name := r.labels[k%12]; r.on && name != "" {
-				tw, th := c.measure(name, f)
-				c.text(name, f, float64(x)+(float64(w)-tw)/2, float64(y+h)-th-4, label)
-			}
+// dress paints the keys the reveal marks: its tint whole, light on a
+// white key, dark on a black one, and its name in `f` at the bottom.
+func (r reveal) dress(f *screen.Font) func(k int) screen.Dress {
+	return func(k int) screen.Dress {
+		t, ok := r.tint(k)
+		if !ok {
+			return screen.Dress{}
 		}
+		base := t.light
+		if screen.IsBlack(k) {
+			base = t.dark
+		}
+		return screen.Dress{Base: base, Label: r.labels[k%12], Font: f}
 	}
-}
-
-// shade darkens a colour to `f` of its brightness.
-func shade(a color.RGBA, f float32) color.RGBA {
-	return blend(color.RGBA{A: 0xff}, a, f)
-}
-
-// blend moves from a toward b by t, between 0 and 1.
-func blend(a, b color.RGBA, t float32) color.RGBA {
-	mix := func(x, y uint8) uint8 { return uint8(float32(x) + (float32(y)-float32(x))*t) }
-	return color.RGBA{mix(a.R, b.R), mix(a.G, b.G), mix(a.B, b.B), 0xff}
 }

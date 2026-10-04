@@ -1,10 +1,7 @@
 # L'ear trainer
 
-`games/ear`, le jeu d'entraînement de l'oreille. Il est parti d'un
-tracer bullet : une activité étroite, les modes du système naturel, qui
-traverse toutes les couches (`synth`, `keyboard`, `harmony`, `naming`
-en français et en anglais, `dex`, et un premier affichage) pour rendre
-la liste de ce qui coince. Les règles ci-dessous sont nées avec lui et
+`games/ear`, le jeu d'entraînement de l'oreille : quelque chose sonne
+sur une pédale de tonique, et le joueur le nomme. Les règles ci-dessous
 valent pour toutes les activités ; la feuille de route décrit la suite.
 
 ## Les règles, décidées
@@ -36,20 +33,14 @@ valent pour toutes les activités ; la feuille de route décrit la suite.
 - **Langue** : français ou anglais, par `-lang` ou la touche `L`.
 - **Notation** : signes par défaut (si♭, phrygien ♮6), mots en option
   (si bémol, phrygien bécarre 6), par `-notation` ou la touche `N`.
-- **Affichage** : une rangée de boutons numérotés et un clavier
-  vectoriel de do3 à do6,
-  qui s'allume sous ce qui sonne, de n'importe quelle source, et
-  s'éteint en un quart de seconde. Ce qui sort de la plage (la pédale,
-  un clavier MIDI réglé sur une autre octave) est ramené dedans et
-  affiché atténué. À la révélation, les touches du mode se colorent en
-  entier (clair sur les blanches, foncé sur les noires), la tonique en
-  bleu, avec le nom de chaque note orthographié dans le mode (mi♭ et
-  fa♯ en sol mineur harmonique) et toujours en signes, faute de place.
-  Après une erreur, les notes du seul bon mode sont en vert, celles du
-  seul mode choisi en rouge vif, les communes en gris : ce qui les
-  sépare saute aux yeux. Repris de la démo gohareact de l'ancien gohar.
-  La touche `P` masque le clavier pendant la question, pour travailler
-  à l'oreille seule ; il revient pour la révélation et la correction.
+- **Affichage** : une rangée de boutons numérotés et le clavier à
+  l'écran de do3 à do6 (`screen.Piano`), qui s'allume sous ce qui
+  sonne. À la révélation, les touches du mode se colorent, la tonique
+  en bleu, avec le nom de chaque note orthographié dans le mode (mi♭ et
+  fa♯ en sol mineur harmonique). Après une erreur, les notes du seul bon
+  mode sont en vert, celles du seul mode choisi en rouge, les communes
+  en gris : ce qui les sépare saute aux yeux. La touche `P` masque le
+  clavier pendant la question, pour travailler à l'oreille seule.
 - **Boutons** : toute la rangée s'écrit de la même façon, numéro et nom
   côte à côte en grande police si tout tient, sinon en petite, sinon
   le numéro au-dessus du nom.
@@ -75,17 +66,13 @@ valent pour toutes les activités ; la feuille de route décrit la suite.
   sonne est déjà la réponse : en attendant que seul ce que joue le
   joueur s'allume pendant la question (voir `chantiers.md`), la touche
   `P` y pare.
-- **Jouer une séquence à l'heure.** `Engine.NoteOn` n'ordonnance rien :
-  `at` sert à mesurer, pas à différer, et piloter la gamme depuis
-  `Update` donnerait une gigue d'une frame (16,7 ms). Résolu par
-  `keyboard.Sequence`, une `Source` qui rejoue des notes datées sur sa
-  propre goroutine : sa gigue est celle d'un doigt sur le clavier MIDI,
-  le buffer du périphérique. Depuis, `synth` sait aussi jouer des notes
-  datées à l'échantillon près (voir « Les notes datées » dans
+- **Jouer une séquence à l'heure** depuis `Update` donnerait une gigue
+  d'une image (16,7 ms) : `keyboard.Sequence` rejoue les notes datées
+  sur sa propre goroutine (voir aussi « Les notes datées » dans
   `architecture.md`).
-- **Deux sources, un moteur, un affichage.** Le rappel d'une `Source`
-  doit rendre la main tout de suite. Résolu par `onKey`, seul chemin de
-  toute source vers le moteur et l'affichage.
+- **Deux sources, un moteur, un affichage** : le rappel d'une `Source`
+  rend la main tout de suite, et `onKey` est le seul chemin de toute
+  source vers le moteur et l'affichage.
 
 - **Le papier fait paraître compliqué ce que l'oreille trouve
   simple.** Chailley raconte une lecture de Messiaen à Royaumont : les
@@ -99,91 +86,41 @@ valent pour toutes les activités ; la feuille de route décrit la suite.
 ## Ce que le premier playtest a appris
 
 - Sous Linux, le port « Midi Through » arrive en tête de liste et ne
-  joue rien. `OpenMIDI` le saute quand aucun port n'est demandé.
-- Go Regular n'a pas ♭ ♮ ♯, ni le double dièse 𝄪 et le double bémol 𝄫,
-  qui sont des signes à part entière. Une coupe de Noto Music de 2 Ko,
-  embarquée (`games/ear/fonts`), sert de police de secours, et `naming`
-  écrit les doubles avec leur propre signe.
-- Un layout de 640 × 360 agrandi par Ebitengine pixellise tout. Le jeu
-  dessine maintenant à la résolution réelle de la fenêtre, en gardant
-  ses coordonnées logiques (`canvas.go`).
-- Le français écrivait les notes en mots et l'anglais en signes. La
-  notation est devenue un choix du `Namer`, indépendant de la langue,
-  pour les deux langues à la fois : c'est aussi ce qui ouvre la porte à
-  une synthèse vocale.
+  joue rien : `OpenMIDI` le saute quand aucun port n'est demandé.
+- Go Regular n'a pas ♭ ♮ ♯ 𝄪 𝄫 : une coupe de Noto Music de 2 Ko,
+  embarquée (`games/ear/fonts`), sert de police de secours.
+- La notation, signes ou mots, est un choix du `Namer`, indépendant de
+  la langue : c'est aussi ce qui ouvre la porte à une synthèse vocale.
 - Ebitengine désigne les touches par leur place sur un clavier
-  américain. Sur un AZERTY, `M` tombe sur la virgule et `Q` sur le A :
-  le retour au menu est sur Entrée, et seul Échap quitte le jeu. Les
-  lettres restantes (R, H, L, N, P) sont à la même place.
-- Le texte débordait des boutons dès qu'un nom était long. La police se
-  choisit maintenant pour toute la rangée.
-- Les mots manquaient dans `naming` pour les intervalles et les gammes
-  (« ré majeur ») : ils y ont été ajoutés plutôt qu'écrits en dur dans
-  le jeu.
+  américain : sur un AZERTY, `M` tombe sur la virgule et `Q` sur le A.
+  Le retour au menu est donc sur Entrée, et seul Échap quitte le jeu.
 
 ## Ce qu'il ne faut pas fermer, pour WASM
 
 - Le jeu doit tourner sans clavier MIDI. `midi.go` passera derrière un
   build tag (`!js`), avec `webmididrv` plus tard.
 - Le dex ne sait que se sérialiser en JSON. Où le ranger est l'affaire
-  du jeu : un fichier au bureau (`store.go`), `localStorage` dans le
-  navigateur.
+  du jeu : un fichier au bureau (`games/settings`), `localStorage` dans
+  le navigateur.
 - Le navigateur ne démarre l'audio qu'après un geste de l'utilisateur :
   le clic dans le menu en tient lieu.
 - La police des signes est embarquée, pas lue sur le système.
 
-## Le découpage
+## Ce qui reste du premier jalon
 
-Fait :
-
-1. **Persistance du dex**, et suppression de `Fact.Correct`.
-2. **Séquence rejouée** : `keyboard.Sequence`.
-3. **Histogramme des délais** dans `synth.Engine`, à cases fixes, sans
-   allocation sur la goroutine audio.
-4. **Le jeu en texte** : `games/ear`, la boucle complète, dex compris,
-   texte en `text/v2` avec la police de secours. La touche `H` affiche
-   déjà l'histogramme.
-5. **Le clavier vectoriel** : `piano.go`, trois octaves, animation et
-   révélation.
-6. **Charge** : dix minutes de jeu, 2 208 événements, p99 et maximum à
-   11 ms, le ramasse-miettes sans effet sur le son. Détail dans
-   `architecture.md`.
-
-7. **Timbres 8 bits** : impulsions à 12,5 et 25 %, carré, triangle,
-   bruit, enveloppe ADSR. Rendu adouci par défaut, `-authentic` pour
-   le grain brut des consoles. `-timbre` choisit le son.
-
-Reste :
-
-8. **Soundfont** : le `Sampler` de `synth` lit les SF2 par
-   go-meltysynth, derrière la même interface `Instrument`. Reste à le
-   brancher dans `ear` avec un piano SF2 réduit, puis refaire la
-   mesure 6.
-9. **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
+- **Soundfont** : brancher le `Sampler` dans `ear` avec un piano SF2
+  réduit, puis refaire la mesure de charge.
+- **WASM** : build tag sur `midi.go`, stockage dans `localStorage`.
 
 ## La feuille de route
 
-Une fois le tracer bullet bouclé, `ear` devient un ear trainer à part
-entière.
-
-**L'abstraction, faite.** Les activités ont toutes la même forme :
-faire sonner quelque chose, proposer des réponses, émettre des faits.
-Seuls changent ce qui sonne, les réponses et les notions.
-
-- `Question` est une donnée : la tonique, les choix sous forme de
-  notions du dex (le jeu sait les nommer dans toute langue et toute
-  notation), l'index de la bonne réponse. Ce qui sonne, c'est le bon
-  choix, et l'activité ne garde pas d'autre secret.
-- `Activity` est ce qui diffère : planifier une série, reprendre une
-  question après une erreur (autre tonique pour un mode, même tonalité
-  pour un degré), l'énoncé, ce qui sonne, la correction, ce que montre
-  le clavier, les faits d'une bonne réponse.
-- `Series` est générique : l'erreur qui compte pour du beurre, la
-  reprise unique, le rapport. Ce sont les principes du jeu, pas d'une
-  activité.
-- Les activités : les degrés (`degrees.go`), les tétracordes
-  (`tetrachords.go`), les modes (`modes.go`). La correction dit aussi
-  quel choix sonne à quel moment, pour que l'écran le nomme.
+**Les activités ont toutes la même forme** : faire sonner quelque
+chose, proposer des réponses, émettre des faits. `Question` est une
+donnée (la tonique, les choix sous forme de notions du dex, la bonne
+réponse) ; `Activity` est ce qui diffère (la série, la reprise,
+l'énoncé, ce qui sonne, la correction, les faits) ; `Series` porte les
+principes du jeu, l'erreur qui compte pour du beurre, la reprise
+unique, le rapport.
 
 **Les niveaux sont des données** : une activité et ses paramètres
 (quels degrés, quel système, quelle distance entre distracteurs,
@@ -194,15 +131,12 @@ dont il a choisi les paramètres.
 la réponse, ce qui sonne pendant la question elle-même étant ignoré.
 Une bonne réponse jouée est aussi une production.
 
-**Le menu, fait** : toutes les activités jouables d'emblée. Imposer un
-ordre d'étude frustrerait un joueur qui a déjà des bases ; le
-dévoilement attendra un meilleur terrain d'essai. Les activités y sont
-dans l'ordre de la progression, une touche chiffrée chacune. En fin de
-série, Espace relance la même activité et Entrée revient au menu (pas `M`,
-qui tombe sur la virgule d'un clavier AZERTY).
+**Le menu** : toutes les activités jouables d'emblée, dans l'ordre de
+la progression. Imposer un ordre d'étude frustrerait un joueur qui a
+déjà des bases ; le dévoilement attendra un meilleur terrain d'essai.
 
-**Des réglages pour le joueur**, dans un fichier à part du dex :
-l'ambitus et le tempo en premier.
+**Des réglages pour le joueur**, dans un fichier à part du dex
+(`games/settings`) : l'ambitus et le tempo en premier.
 
 **Une progression par compétences d'oreille** :
 

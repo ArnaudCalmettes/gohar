@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 )
 
@@ -31,17 +32,14 @@ func newRecorder(path string) (*recorder, error) {
 	return &recorder{f: f, w: bufio.NewWriter(f)}, nil
 }
 
-// run opens a run with a heading line: when, at which tempo, who plays.
-func (r *recorder) run(at time.Time, bpm float64, demo bool) {
-	who := "joueur"
-	if demo {
-		who = "démo"
-	}
+// run opens a run with a heading line: when, at which tempo, `who`
+// plays, in the game's language.
+func (r *recorder) run(at time.Time, bpm float64, who string) {
 	fmt.Fprintf(r.w, "\n# %s, %g bpm, %s\n", at.Format("2006-01-02 15:04:05"), bpm, who)
 }
 
 // note writes one line.
-func (r *recorder) note(chorus int, p Position, off time.Duration, chord, note, mark string) {
+func (r *recorder) note(chorus int, p tempo.Position, off time.Duration, chord, note, mark string) {
 	fmt.Fprintf(r.w, "%d\t%d.%d\t%+dms\t%s\t%s\t%s\n", chorus, p.Bar, p.Beat, off.Milliseconds(), chord, note, mark)
 }
 

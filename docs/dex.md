@@ -246,8 +246,7 @@ a retenti.
 
 **Aucun fait ne dit qu'une tentative a échoué**, ni qu'une performance
 était bonne. Le premier est punitif, le second est un jugement
-déguisé : ce n'est pas au dex d'évaluer le joueur, c'est au joueur de
-s'évaluer, et il n'obtient un bilan honnête que quand il le demande.
+déguisé (voir « Apprendre au joueur à se passer du jeu »).
 
 **Une erreur compte pour du beurre.** Elle se corrige, elle ne
 s'apprend pas : ce qui s'apprend, c'est la correction que le joueur
@@ -292,5 +291,3 @@ exploration.
   n'est pas dénombrable et ne passe pas le critère d'admission. Il y a
   peut-être une entrée à trouver du côté de « telle couleur sur telle
   fonction ».
-- Le nom du paquet dans le dépôt, qui n'est pas forcément le mot montré
-  au joueur.

@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 
+	"github.com/ArnaudCalmettes/gohar/games/tempo"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 )
 
@@ -15,7 +16,7 @@ import (
 // later, from the analysis.
 type Beat struct {
 	N        int // the metronome's numbering: 0 is bar 1, beat 1
-	Position Position
+	Position tempo.Position
 	Strong   bool
 
 	// Chord is the change sounding at the start of the beat, Next the
@@ -41,13 +42,13 @@ type Beat struct {
 // beat they start in.
 //
 // The coda is not played yet: every chorus is the same.
-func Expect(c analysis.Changes, m Metronome, choruses int) []Beat {
+func Expect(c analysis.Changes, m tempo.Metronome, choruses int) []Beat {
 	if len(c.Chords) == 0 {
 		return nil
 	}
 	last := c.Chords[len(c.Chords)-1]
 	chorusBeats := int((last.Start + last.Length + analysis.TicksPerBeat - 1) / analysis.TicksPerBeat)
-	barBeats := m.perBar
+	barBeats := m.PerBar()
 
 	beats := make([]Beat, 0, choruses*chorusBeats)
 	i := 0 // the change sounding
