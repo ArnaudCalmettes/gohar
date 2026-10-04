@@ -83,8 +83,8 @@ type BeatMark struct {
 type Rules struct {
 	// OnTime and Loose are the half widths of the windows around a beat,
 	// in fractions of a beat, so that they widen as the tempo slows. The
-	// defaults are generous starting points, to be set by ear; there is
-	// no correction for the latency yet.
+	// defaults are generous starting points, to be set by ear. The notes
+	// come corrected for the calibrated latency (see Note).
 	OnTime, Loose float64
 
 	// Split is the lowest key of the right hand: below it, the bass.

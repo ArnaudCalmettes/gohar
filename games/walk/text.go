@@ -53,6 +53,19 @@ const (
 	msgMenuCalibrate = "menu.calibrate"
 	msgMenuQuit      = "menu.quit"
 	msgTitleKeys     = "title.keys" // the keys of the title screen
+
+	// What the walker says (see coach).
+	msgRushing  = "coach.rushing"
+	msgRelax    = "coach.relax"
+	msgDragging = "coach.dragging"
+	msgItDrags  = "coach.itdrags"
+	msgCool     = "coach.cool"
+	msgYeah     = "coach.yeah"
+	msgKeepItUp = "coach.keepitup"
+	msgSwinging = "coach.swinging"
+	msgGroovy   = "coach.groovy"
+	msgGreat    = "coach.great"
+	msgIDig     = "coach.idig"
 )
 
 var phrases = []string{
@@ -62,6 +75,8 @@ var phrases = []string{
 	msgRoot, msgChordTone, msgOutside,
 	msgPlayer, msgDemo,
 	msgMenuPlay, msgMenuCalibrate, msgMenuQuit, msgTitleKeys,
+	msgRushing, msgRelax, msgDragging, msgItDrags,
+	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
 }
 
 var (

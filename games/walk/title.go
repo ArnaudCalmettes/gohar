@@ -100,6 +100,8 @@ func (t *title) calibrate() scene.Transition {
 		Drain: t.drain,
 		Tick:  t.band.tick,
 		Play:  func(now time.Time, quiet bool) { t.jam.play(now, !quiet) },
+		Key:   t.pair,
+		Done:  func(d time.Duration) { t.latency = d },
 		Back:  func() scene.Scene { return t },
 	})
 	if err != nil {

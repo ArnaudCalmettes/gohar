@@ -375,8 +375,10 @@ l'écrit, et une touche à l'instant où il la reçoit. Entre les deux, il y
 a le chemin du son jusqu'à l'oreille (« Les notes datées ») et celui du
 doigt jusqu'au programme (le clavier, l'USB, la bibliothèque MIDI). La
 calibration mesure leur somme, plus l'habitude du joueur d'appuyer un
-peu tôt ou un peu tard : c'est exactement ce que le marqueur devra
-retrancher.
+peu tôt ou un peu tard : c'est exactement ce qu'il faut retrancher
+avant de juger une frappe. Un premier enregistrement, avant toute
+calibration, montrait une avance régulière d'une trentaine de
+millisecondes.
 
 **La méthode** vient de *Rhythm Paradise Groove*, dont l'écran de
 calibration a été mis au point par des professionnels du jeu de rythme.
@@ -416,9 +418,18 @@ du clavier de l'ordinateur ou du clavier MIDI, ramène au menu.
   à la noire : imposer un écran avant la première note éloignerait le
   joueur de ce qu'il vient chercher. Elle est une entrée du menu, entre
   « Jouer » et « Quitter », en attendant un menu d'options.
-- Pour l'instant, le décalage est seulement affiché. Le ranger dans les
-  réglages, rattaché au couple clavier et sortie, puis le retrancher
-  dans le marqueur, est l'étape suivante.
+- Le décalage se range dans `latency.json`, parmi les réglages communs,
+  rattaché au couple clavier et sortie (`calibrate.Key`). Le jeu le lit
+  au lancement, et le reçoit aussitôt après une calibration.
+- Le décalage est retranché en entier de l'instant de chaque frappe,
+  l'habitude du joueur comprise, avant que le marqueur ne la juge : il
+  reçoit l'instant où le joueur a entendu le temps auquel il répondait.
+  Retrancher seulement une part du décalage serait un réglage à régler
+  avec des joueurs.
+- **Une limite** : oto ouvre la sortie par défaut et ne la nomme pas.
+  Ce que le jeu sait d'elle, c'est la taille du tampon (`-device`), qui
+  change la latence ; un casque branché à la place des haut-parleurs ne
+  se voit pas, et demande de recalibrer à la main.
 - En fond, une musique discrète, comme dans l'original, et sans la
   moindre coupure. Le joueur arrive de l'écran titre, où la basse et la
   batterie jouent : la ligne de basse continue sur le même temps, plus

@@ -3,6 +3,7 @@ package calibrate
 import (
 	"fmt"
 	"image/color"
+	"log"
 	"math"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/lang"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
+	"github.com/ArnaudCalmettes/gohar/games/settings"
 	"github.com/ArnaudCalmettes/gohar/games/tempo"
 )
 
@@ -45,6 +47,12 @@ type Config struct {
 	// steady. The scene left, the next one takes the music over.
 	Play func(now time.Time, quiet bool)
 
+	// Key names the pair of keyboard and output measured (see Key): the
+	// offset is saved for it once steady, unless it is empty. Done, if
+	// not nil, hands the offset to the game at once.
+	Key  string
+	Done func(offset time.Duration)
+
 	// Back builds the scene to go back to.
 	Back func() scene.Scene
 }
@@ -69,6 +77,7 @@ const (
 	askY      = 220
 	tapY      = 250
 	measureY  = 270
+	savedY    = 290
 	keysY     = 330
 	bigSize   = 28 // the numbers in the circles
 	textSize  = 12
@@ -98,6 +107,7 @@ type Scene struct {
 	tapped bool
 	result time.Duration
 	done   bool
+	saved  bool // the offset is in the file
 }
 
 func New(cfg Config) (*Scene, error) {
@@ -160,6 +170,7 @@ func (s *Scene) Update() scene.Transition {
 		}
 		if mean, ok := s.meter.Mean(); ok {
 			s.result, s.done = mean, true
+			s.keep()
 		}
 	})
 	if back {
@@ -219,12 +230,31 @@ func (s *Scene) Draw(dst *ebiten.Image) {
 	switch {
 	case s.done:
 		c.Centred(s.lang.T(msgSteady, "Ms", ms(s.result)), s.small, mid, measureY, ink)
+		if s.saved {
+			c.Centred(s.lang.T(msgSaved), s.small, mid, savedY, faint)
+		}
 		return // the keys are said above
 	case s.meter.Taps() > 0:
 		mean, _ := s.meter.Mean()
 		c.Centred(s.lang.T(msgMeasure, "Ms", ms(mean), "Taps", s.meter.Taps(), "Of", window), s.small, mid, measureY, faint)
 	}
 	c.Centred(s.lang.T(msgKeys), s.small, mid, keysY, faint)
+}
+
+// keep saves the offset measured for the pair, and hands it to the
+// game. A file that does not write loses nothing but this measure: the
+// game still applies it until it quits.
+func (s *Scene) keep() {
+	if s.cfg.Key != "" {
+		if err := Save(settings.Path(File), s.cfg.Key, s.result); err != nil {
+			log.Println("calibration:", err)
+		} else {
+			s.saved = true
+		}
+	}
+	if s.cfg.Done != nil {
+		s.cfg.Done(s.result)
+	}
 }
 
 // ms writes `d` in signed milliseconds: +40 late, -30 early.

@@ -1,7 +1,7 @@
 // Package settings keeps what the games remember between two runs, as
 // JSON files in one folder of the user's configuration: the dex of ear,
-// and soon the language and the calibrated latency, shared by every
-// game (see "Les scènes" in docs/architecture.md).
+// the calibrated latency shared by every game (games/calibrate), and
+// soon the language (see "Les scènes" in docs/architecture.md).
 //
 // The desktop keeps files; the browser will keep local storage behind
 // the same two calls.

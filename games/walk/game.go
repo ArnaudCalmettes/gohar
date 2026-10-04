@@ -73,6 +73,14 @@ const (
 	swayPeriod = 1500
 )
 
+// The walker's bubble: how long it stays, and where, above his head.
+const (
+	bubbleHold = 1500 * time.Millisecond
+	bubbleLift = 130 // from his feet to the bottom of the bubble
+	bubbleTail = 6   // the stroke down to his head
+	bubblePad  = 5
+)
+
 // A cell is one chord written in a bar, at the beat it starts on.
 type cell struct {
 	name string
@@ -109,6 +117,10 @@ type game struct {
 	line     []int  // the reference line, in demo: a key per beat
 	heard    []Note // its notes not yet sounded, for the marker
 	ending   int    // the key the demo ends on, after the last beat; 0 for none
+
+	coach    *coach    // what the walker says, the player's runs only
+	bubble   string    // the phrase in his bubble, empty for none
+	bubbleAt time.Time // when he said it
 }
 
 func newGame(a *app) *game {
@@ -147,6 +159,9 @@ func (g *game) start(now time.Time) {
 	g.running = true
 	g.lastMark = ""
 	g.walker = walker{} // each run starts from a walk
+	seed := uint64(now.UnixNano())
+	rng := rand.New(rand.NewPCG(seed, seed>>32|1))
+	g.coach, g.bubble = newCoach(rng), ""
 	if g.practicing {
 		// No time: any metronome numbers the beats.
 		g.practice = newPractice(g.rules, Expect(g.grid, tempo.NewMetronome(now, g.bpm, perBar), 1))
@@ -168,8 +183,7 @@ func (g *game) start(now time.Time) {
 		g.rec.run(now, g.bpm, who)
 	}
 	if g.band.demo {
-		seed := uint64(now.UnixNano())
-		g.line = Walk(g.beats, rand.New(rand.NewPCG(seed, seed>>32|1)))
+		g.line = Walk(g.beats, rng)
 		g.ending = Ending(g.beats, g.line, g.grid.End)
 	}
 }
@@ -225,6 +239,9 @@ func (g *game) Update() scene.Transition {
 	for _, bm := range g.marker.Close(now) {
 		g.marks[bm.Beat] = bm.Kind
 		g.walker.mark(bm.Kind, now)
+		if !g.band.demo {
+			g.speak(g.coach.arrival(bm.Beat, bm.Kind == Landed, g.walker.gait(true) == snapping), now)
+		}
 	}
 	_, end := g.m.Due(now, now.Add(lookahead))
 	for ; g.next < end && g.next < len(g.beats); g.next++ {
@@ -284,12 +301,25 @@ func (g *game) mark(e keyboard.Event) {
 		}
 		return
 	}
-	m, ok := g.marker.Play(Note{Key: e.Key, At: e.At})
+	// The calibrated latency, taken off: the instant the player heard
+	// the beat he answered, rather than the one the game received.
+	m, ok := g.marker.Play(Note{Key: e.Key, At: e.At.Add(-g.latency)})
 	if !ok {
 		return
 	}
 	g.lastMark = g.lang.T(msgMark, "Note", g.noteName(e.Key, g.beats[m.Beat].Chord), "Words", g.markWords(m))
 	g.record(m)
+	if !g.band.demo {
+		g.speak(g.coach.note(m.Off, m.Timing, m.Beat), time.Now())
+	}
+}
+
+// speak puts the phrase `id` in the walker's bubble, at `now`; an empty
+// one leaves the bubble as it is.
+func (g *game) speak(id string, now time.Time) {
+	if id != "" {
+		g.bubble, g.bubbleAt = g.lang.T(id), now
+	}
 }
 
 // markWords says what a note was: its timing, and its pitch when a beat
@@ -370,6 +400,7 @@ func (g *game) Draw(dst *ebiten.Image) {
 	g.piano.Draw(c, nil)
 	drawSplit(c, &g.piano, g.band.split)
 	g.drawWalker(c)
+	g.drawBubble(c)
 
 	status := g.lang.T(msgKeys)
 	switch {
@@ -436,6 +467,23 @@ func (g *game) drawWalker(c screen.Canvas) {
 		col = faint // a silhouette: the band plays, not a player
 	}
 	g.walker.draw(c, walkerX, walkerY, walkerScale, g.walker.gait(onBeat), beats, now, col)
+}
+
+// drawBubble draws what the walker says above his head, for a while: a
+// frame, the phrase in the chart's hand, a stroke down to him.
+func (g *game) drawBubble(c screen.Canvas) {
+	if g.bubble == "" || time.Since(g.bubbleAt) > bubbleHold {
+		return
+	}
+	w, h := c.Measure(g.bubble, g.fonts.bubble)
+	bw, bh := w+2*bubblePad, h+2*bubblePad
+	x := max(float64(margin), walkerX-bw/2) // never off the screen
+	bottom := float64(walkerY - bubbleLift)
+	y := bottom - bh
+	c.Rect(float32(x-1), float32(y-1), float32(bw+2), float32(bh+2), ink)
+	c.Rect(float32(x), float32(y), float32(bw), float32(bh), paper)
+	c.Line(walkerX, float32(bottom), walkerX, float32(bottom+bubbleTail), 1, ink)
+	c.Text(g.bubble, g.fonts.bubble, x+bubblePad, y+bubblePad, ink)
 }
 
 // drawMode draws, top right, the phase the space bar starts or is

@@ -29,8 +29,9 @@ const (
 	msgTap     = "tap"     // {{.Ms}}: the last tap
 	msgMeasure = "measure" // {{.Ms}}, {{.Taps}}, {{.Of}}: so far
 	msgSteady  = "steady"  // {{.Ms}}: the result
+	msgSaved   = "saved"   // kept for this keyboard
 	msgKeys    = "keys"
 	msgDone    = "done" // finished: any key goes back
 )
 
-var phrases = []string{msgTitle, msgAsk, msgNoMIDI, msgTap, msgMeasure, msgSteady, msgKeys, msgDone}
+var phrases = []string{msgTitle, msgAsk, msgNoMIDI, msgTap, msgMeasure, msgSteady, msgSaved, msgKeys, msgDone}

@@ -28,8 +28,9 @@ Le détail des modules est dans l'arborescence d'`architecture.md`.
 - [x] `synth` : moteur sans allocation, notes datées, mélangeur,
       soundfonts, sons enregistrés.
 - [x] `games` : `keyboard`, `keys`, `ear`, le premier jalon de *Walk
-      with me*, et les paquets communs (`screen`, `tempo`, `settings`,
-      `lang`, avec l'internationalisation).
+      with me* avec son écran titre, et les paquets communs (`screen`,
+      `tempo`, `settings`, `lang` avec l'internationalisation, `scene`
+      le régisseur, `calibrate` la calibration de la latence).
 
 ## Les décisions à ne pas rouvrir
 
@@ -196,9 +197,9 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] les allocations de la boucle de jeu, à réduire quand on touche au
       rendu (une collecte toutes les une à deux secondes, sans risque
       pour le son).
-- [ ] la calibration chez le joueur, promise dès le premier jour : la
-      scène existe (« La calibration » dans `architecture.md`), reste à
-      sauvegarder le décalage et à l'appliquer.
+- [x] la calibration chez le joueur, promise dès le premier jour
+      (« La calibration » dans `architecture.md`) ; reste à reconnaître
+      la sortie audio, qu'oto ne nomme pas.
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
 - [ ] la soundfont : GeneralUser GS est retenue (`make sounds`) ;
@@ -216,8 +217,8 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
   - [x] le régisseur, `games/scene`, et *Walk with me* en deux scènes,
         le titre et la partie ;
   - [x] la calibration, une scène partagée, dans le menu du titre ;
-  - [ ] le décalage mesuré, rangé par couple clavier et sortie, puis
-        retranché dans le marqueur ;
+  - [x] le décalage mesuré, rangé par couple clavier et sortie, puis
+        retranché avant le marqueur ;
   - [ ] un menu d'options, où la calibration passera ;
   - [ ] `ear` aux scènes et à `lang` ;
   - [ ] un drapeau pour aller droit à une scène, une fois les options
@@ -227,13 +228,11 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
-    1. la calibration de latence (« La calibration » dans
-       `architecture.md`) : la scène mesure, reste à sauvegarder et
-       appliquer. Un premier enregistrement montre une avance régulière
-       d'une trentaine de millisecondes ;
-    2. les bulles du bonhomme pendant le jeu (« Le bonhomme » dans
-       `walk.md`), après la calibration ;
-    3. en parallèle, l'affichage qui s'adapte à la grille et défile
+    1. les bulles du bonhomme pendant le jeu (« Le bonhomme » dans
+       `walk.md`) : la mécanique et les premières répliques sont là,
+       restent les réactions aux motifs (une pédale, une descente) et
+       le réglage des seuils en jouant ;
+    2. en parallèle, l'affichage qui s'adapte à la grille et défile
        quand elle est trop longue (un AABA de 32 mesures), avec quelques
        grilles de test : un AABA en accords seuls, des II-V serrés, une
        grille modale ;

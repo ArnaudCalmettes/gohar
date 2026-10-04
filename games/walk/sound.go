@@ -42,10 +42,10 @@ const (
 	hatVel      = 0.6 // the hi-hat on 2 and 4
 	endVel      = 0.7 // the ride on the demo's last note
 	snapVel     = 1
-	taVel       = 0.8 // the calibration's beats, well in front
-	tiVel       = 1   // its fourth beat
-	bassVel     = 0.8 // the reference bass
-	underVel    = 0.3 // the same, discreet, under the calibration
+	taVel       = 0.8  // the calibration's beats, well in front
+	tiVel       = 1    // its fourth beat
+	bassVel     = 0.8  // the reference bass
+	underVel    = 0.55 // the same, discreet, under the calibration
 )
 
 // The gains of the mix. With a soundfont, the balance of the renders

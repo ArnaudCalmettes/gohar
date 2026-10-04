@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
@@ -25,6 +27,11 @@ type app struct {
 	scale  float64   // the window's, set by layout
 	rec    *recorder // nil without -record
 	jam    *jam      // the music of the menus, nil while a game plays
+
+	// pair names the keyboard and the output, for the calibration;
+	// latency is the offset measured for it, zero until one is.
+	pair    string
+	latency time.Duration
 
 	// The options.
 	title    string

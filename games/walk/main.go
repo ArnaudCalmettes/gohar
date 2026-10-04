@@ -29,9 +29,11 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 
+	"github.com/ArnaudCalmettes/gohar/games/calibrate"
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/lang"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
+	"github.com/ArnaudCalmettes/gohar/games/settings"
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
@@ -134,6 +136,14 @@ func main() {
 			fmt.Fprintln(os.Stderr, "MIDI:", err)
 			a.midi = ""
 		}
+	}
+	// oto opens the default output and does not name it: the buffer is
+	// what the game knows of it, and what changes its latency.
+	a.pair = calibrate.Key(a.midi, fmt.Sprintf("default output, %v", *device))
+	if d, ok, err := calibrate.Load(settings.Path(calibrate.File), a.pair); err != nil {
+		fmt.Fprintln(os.Stderr, "calibration:", err)
+	} else if ok {
+		a.latency = d
 	}
 
 	ebiten.SetWindowSize(2*screenWidth, 2*screenHeight)

@@ -400,16 +400,36 @@ Ce qui suit est notre lecture des sources.
     écartées ; sur les temps faibles, les jambes qui se croisent ;
   - le claquement de doigts à la manière jazz, du coude ;
   - les seuils sont des valeurs de départ, à régler en jouant.
-- **Plus tard, il parle**, avec les mots du jeu (des marques, pas un
-  jugement) :
-  - pendant le jeu, quand un motif se dessine dans les marques : « tu
-    presses » sur une série de notes en avance, « tu traînes » sur une
-    série en retard, un mot quand ça tourne ou quand le joueur se
-    rattrape. Chaque bulle attend un moment avant de pouvoir revenir,
-    pour qu'il ne radote pas. Elles supposent la latence calibrée :
-    sinon, elle passerait pour de la précipitation ;
-  - à la fin du run, ce qui a tenu et ce qui a lâché, par situation
-    (voir « La boucle de jeu », point 5).
+- **Il parle**, avec les mots du jeu (des marques, pas un jugement),
+  dans une bulle au-dessus de sa tête, écrite à la main de la grille,
+  qui reste une seconde et demie (`coach.go`) :
+  - **rien quand le joueur joue dans les temps** : le claquement de
+    doigts le dit déjà, c'est le juice ;
+  - « Tu presses » ou « Détends-toi » quand les cinq dernières notes
+    tombent en moyenne 25 ms ou plus en avance ; « Tu traînes » ou « Ça
+    traîne » quand elles tombent en retard. C'est une dérive qu'il
+    relève, pas une faute : un bon joueur presse sans sortir de la
+    fenêtre « sur le temps », et une première version, qui comptait les
+    notes hors de cette fenêtre, ne parlait presque jamais une fois la
+    latence calibrée ;
+  - un mot quand ça se met à tourner, au moment où il commence à
+    claquer des doigts, puis toutes les huit arrivées posées d'affilée
+    tant que ça tourne, à peu près une fois par chorus de blues ; et
+    quand le joueur se rattrape, cinq notes revenues à moins de 12 ms
+    du temps en moyenne après une remarque : « Cool ! », « Yeah ! », « Continue
+    comme ça ! », « Ça swingue ! », « Groovy ! », « Super ! », « Ça
+    joue ! » ; en anglais « Keep it up! », « Swingin'! », « I dig
+    that! »… ;
+  - jamais deux fois le même mot de suite, et huit temps de silence
+    après chaque bulle, pour qu'il ne « radote » pas ; la remarque
+    suivante pèse des notes neuves ;
+  - seulement quand le joueur tient la basse : en démo, il se tait ;
+  - tout cela suppose la latence calibrée : sinon, elle passerait pour
+    de la précipitation ;
+  - les seuils (cinq notes, 25 ms, huit arrivées, huit temps) sont des
+    valeurs de départ, à régler en jouant.
+- **Plus tard**, à la fin du run, ce qui a tenu et ce qui a lâché, par
+  situation (voir « La boucle de jeu », point 5).
 - **Pour le graphiste**, plus tard : un cycle de marche par état, quatre
   images au moins ; des animations brèves (tendre l'oreille, sauter,
   trébucher et se rattraper) ; une bulle de BD extensible, les

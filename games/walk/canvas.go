@@ -32,17 +32,18 @@ var (
 	doubledInk = color.RGBA{0xe0, 0x8a, 0x1e, 0xff}
 )
 
-// fonts are the faces the game uses: the chart's hand for the chords
-// and the countdown, Go Regular for the rest.
+// fonts are the faces the game uses: the chart's hand for the chords,
+// the countdown and the walker's bubbles, Go Regular for the rest.
 type fonts struct {
-	chord, count, ui *screen.Font
+	chord, count, bubble, ui *screen.Font
 }
 
 // Their sizes, in logical units.
 const (
-	chordSize = 24
-	countSize = 64
-	uiSize    = 11
+	chordSize  = 24
+	countSize  = 64
+	bubbleSize = 14
+	uiSize     = 11
 )
 
 func newFonts() (fonts, error) {
@@ -52,6 +53,9 @@ func newFonts() (fonts, error) {
 		return fs, err
 	}
 	if fs.count, err = screen.NewFont(countSize, museJazzText); err != nil {
+		return fs, err
+	}
+	if fs.bubble, err = screen.NewFont(bubbleSize, museJazzText, screen.GoRegular); err != nil { // Go Regular for any letter the hand lacks
 		return fs, err
 	}
 	fs.ui, err = screen.NewFont(uiSize, screen.GoRegular)
