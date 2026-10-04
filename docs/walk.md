@@ -457,10 +457,16 @@ Ce qui suit est notre lecture des sources.
     sur 2 et 4, la main vers l'avant, où elle claque, des étincelles
     (trois petits traits) au bout des doigts.
   Les seuils sont des valeurs de départ, à régler en jouant.
-- **Plus tard, il parle** : à la fin du run, une bulle où il commente
-  la prestation, avec les mots du jeu (des marques, pas un jugement) :
-  ce qui a tenu, ce qui a lâché, par situation (voir « La boucle de
-  jeu », point 5).
+- **Plus tard, il parle**, avec les mots du jeu (des marques, pas un
+  jugement) :
+  - pendant le jeu, quand un motif se dessine dans les marques : « tu
+    presses » sur une série de notes en avance, « tu traînes » sur une
+    série en retard, un mot quand ça tourne ou quand le joueur se
+    rattrape. Chaque bulle attend un moment avant de pouvoir revenir,
+    pour qu'il ne radote pas. Elles supposent la latence calibrée :
+    sinon, elle passerait pour de la précipitation ;
+  - à la fin du run, ce qui a tenu et ce qui a lâché, par situation
+    (voir « La boucle de jeu », point 5).
 - **Pour le graphiste**, plus tard : un cycle de marche par état, quatre
   images au moins ; des animations brèves (tendre l'oreille, sauter,
   trébucher et se rattraper) ; une bulle de BD extensible, les

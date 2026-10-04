@@ -356,6 +356,99 @@ autre fréquence est une erreur plutôt qu'un rééchantillonnage. PCM 16 ou
 24 bits, ou flottants 32 bits, en mono ou en stéréo. Le décodeur ne lit
 que les blocs « fmt » et « data », et saute les métadonnées.
 
+## Les scènes
+
+Un jeu n'est pas qu'un écran de jeu. *Walk with me* en aura vite
+plusieurs : l'écran titre, le choix des niveaux, la partie, les
+paramètres, la calibration de la latence, les leçons. Tant qu'il n'y en
+avait qu'un ou deux, un état et quelques `switch` suffisaient, comme dans
+`ear` (menu, question, réponse, fin). Au-delà, chaque écran ajouté
+touche à tous les autres.
+
+Une **scène** est un écran avec sa propre logique : elle reçoit les
+touches, se met à jour, se dessine. Un **régisseur** tient les scènes et
+joue le rôle du `ebiten.Game` : Ebitengine ne voit que lui.
+
+- **Une pile, pas une simple succession.** Naviguer remplace la scène
+  (de l'écran titre à la partie) ; ouvrir les paramètres ou la
+  calibration pendant une partie empile une scène par-dessus, et la
+  refermer rend la main à la partie, intacte. Seule la scène du dessus
+  reçoit les touches ; celles du dessous peuvent continuer à se
+  dessiner, assombries.
+- **Une transition, rendue par `Update`** : rester, remplacer, empiler,
+  dépiler, quitter. La scène ne connaît pas la pile, elle dit ce qu'elle
+  veut ; le régisseur l'exécute entre deux images.
+- **`Enter` et `Leave`**, pour ce qu'une scène prend et rend : le son
+  qu'elle programme, par exemple, coupé quand on la quitte.
+- **Un contexte partagé**, passé à chaque scène plutôt que reconstruit
+  par chacune : le canevas et les polices, l'échelle de la fenêtre, le
+  mélangeur, la source MIDI, les réglages, la langue. Le rappel MIDI
+  reste immédiat pour le son ; pour l'écran, le régisseur distribue les
+  événements à la scène active.
+
+Les bibliothèques de scènes pour Ebitengine existent (stagehand, gscene,
+bamenn), mais aucune n'offre la pile, et aucune n'est assez mûre pour
+une dépendance. Le paquet `games/scene` est donc à nous, petit et sans
+autre dépendance qu'Ebitengine. Les transitions animées viendront plus
+tard : le découpage de bamenn (départ, arrivée, fin) est un bon modèle.
+
+**Ce qui passe en commun** avec les scènes, parce que plusieurs jeux en
+ont besoin, et que la calibration, partagée elle aussi, en est le
+troisième client :
+
+- le canevas et les polices, aujourd'hui en double dans `ear` et
+  `walk` ;
+- le clavier à l'écran, copié de `ear` dans `walk` ;
+- le `Metronome` et le `Swing`, qui ne doivent rien à *Walk with me* ;
+- les réglages persistés, aujourd'hui `ear/store.go` ;
+- la langue (voir la section suivante) ;
+- la calibration de la latence, une scène à part entière.
+
+**La latence appartient à la machine, pas au jeu** : elle dépend de la
+sortie audio et du clavier MIDI. Elle se range dans les réglages
+communs à tous les jeux, rattachée au couple clavier et sortie, de sorte
+qu'un changement de casque ou de clavier invite à recalibrer.
+
+Restent hors du paquet : Ark, qui servira à l'intérieur d'une scène (la
+foule des marcheurs) et non pour les scènes elles-mêmes, et un lanceur
+commun à tous les jeux : chacun garde son exécutable.
+
+## L'internationalisation
+
+Les jeux se jouent en français et en anglais dès le départ : ajouter
+une langue à un jeu qui a grossi, c'est reprendre chaque écran.
+
+Il y a deux sortes de mots :
+
+- **le vocabulaire musical** : les notes, les accords, les intervalles,
+  les modes, leur orthographe. C'est le métier de `naming`, déjà
+  bilingue, et il le reste ;
+- **les phrases du jeu** : les menus, la ligne d'état, les marques, les
+  bulles du bonhomme, le bilan d'un run. Elles passent par go-i18n
+  (licence MIT, pur Go), la bibliothèque de référence en Go.
+
+go-i18n apporte ce qu'une table de chaînes faite main n'a pas :
+
+- **les pluriels** de toutes les langues du CLDR : « 1 arrivée posée »,
+  « 3 arrivées posées », et les règles d'autres langues le jour où il y
+  en aura ;
+- **des variables nommées** dans les phrases, que chaque langue place à
+  sa guise ;
+- **des fichiers de traduction** (TOML), embarqués dans l'exécutable,
+  qu'un traducteur peut relire sans toucher au code ;
+- **un outil**, `goi18n`, qui extrait les messages du code et tient les
+  fichiers des langues à jour l'un par rapport à l'autre.
+
+Sa seule faiblesse est d'identifier les messages par des chaînes : une
+faute de frappe ne casse pas la compilation. La parade est un test, dans
+chaque jeu : chaque message employé existe dans chaque langue.
+
+Un petit paquet commun enveloppe la bibliothèque : il choisit la langue
+(celle des réglages, sinon celle du système, l'anglais en repli), charge
+les fichiers embarqués, et donne aux scènes une fonction de traduction.
+`ear` y passera en même temps qu'aux scènes ; ses phrases vivent pour
+l'instant dans une structure par langue (`ear/text.go`).
+
 ## Répartition entre `harmony` et `naming`
 
 `harmony` porte **toutes les opérations d'usage courant**. Retrouver la

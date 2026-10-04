@@ -34,10 +34,13 @@ tâche qui la fait mentir.
   playlists entières) et `forms` (la forme).
 - **`dex`** : le corps, la persistance JSON, `Components`.
 - **`synth`** : un moteur polyphonique sans allocation, des timbres
-  8 bits, la sortie audio et un histogramme des délais.
+  8 bits, les notes datées, le mélangeur, les soundfonts (`Sampler`),
+  les sons enregistrés (`Clip`), la sortie audio et un histogramme des
+  délais.
 - **`games`** : `keyboard` (MIDI et séquences rejouées), `keys` (un
-  clavier qui sonne), et `ear`, l'entraînement de l'oreille (degrés,
-  tétracordes, modes du système naturel), avec le dex persisté.
+  clavier qui sonne), `ear`, l'entraînement de l'oreille (degrés,
+  tétracordes, modes du système naturel), avec le dex persisté, et
+  `walk`, le premier jalon de *Walk with me*.
 
 ## Les décisions à ne pas rouvrir
 
@@ -217,21 +220,39 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 
 ## Les jeux
 
+- [ ] les scènes et les paquets communs aux jeux (« Les scènes » et
+      « L'internationalisation » dans `architecture.md`), dans cet
+      ordre : les paquets communs (canevas, polices, clavier à l'écran,
+      métronome, réglages, langue), le régisseur et *Walk with me* en
+      scènes, la calibration, puis `ear`.
 - [ ] *Walk with me* (`walk.md`). Le premier jalon tourne : les
       fondamentales à la main gauche sur un blues jazz, sur la
       batterie, marquées sur la grille, avec la phase sans tempo, le
-      bonhomme et une démo qui marche d'après Siskind. Restent :
-      - régler à l'oreille les fenêtres, les seuils du bonhomme et le
-        gain du kit ;
-      - la correction de latence (`oreille.md`) : un premier
-        enregistrement (`-record`) montre les notes en avance d'une
-        trentaine de millisecondes, régulièrement ;
-      - le commentaire du bonhomme en fin de run ;
-      - trancher le modèle de paliers avant le deuxième, la basse en
-        deux ;
-      - d'autres grilles ;
-      - un catalogue de patterns pour la basse de référence (voir « La
-        basse de référence » dans `walk.md`).
+      bonhomme et une démo qui marche d'après Siskind. La suite, en
+      trois familles :
+      - **à développer**, dans cet ordre :
+        1. la calibration de latence, à la manière de *Rhythm
+           Paradise Groove* : un signal régulier sur un tempo facile,
+           une animation qui compte jusqu'à 4, le joueur appuie en
+           rythme jusqu'à ce que l'écart moyen se stabilise ; c'est la
+           latence, sauvegardée (`oreille.md`). Un premier
+           enregistrement (`-record`) montre des notes en avance d'une
+           trentaine de millisecondes, régulièrement ;
+        2. les bulles du bonhomme, qui commentent pendant le jeu : « tu
+           presses » sur une série de notes en avance, « tu traînes »,
+           un mot quand ça tourne ou quand le joueur se rattrape. Après
+           la calibration, sans quoi la latence elle-même passerait
+           pour de la précipitation ;
+        3. en parallèle, l'affichage qui s'adapte à la grille : le
+           nombre de lignes, les mesures chargées, et le défilement
+           d'une grille trop longue pour l'écran, un AABA de 32
+           mesures par exemple ; avec quelques grilles de test (un
+           AABA en accords seuls, des II-V serrés, une grille modale) ;
+      - **avec des joueurs de tous niveaux** : l'équilibrage des
+        fenêtres de temps, des seuils du bonhomme et du mélange ;
+      - **avec le design de la progression générale** : les paliers,
+        la basse en deux, et le catalogue de patterns de la basse de
+        référence (voir « La basse de référence » dans `walk.md`).
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres
