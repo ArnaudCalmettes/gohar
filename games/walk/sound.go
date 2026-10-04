@@ -33,19 +33,11 @@ const (
 
 var acousticGrand = synth.Preset{Bank: 0, Patch: 0}
 
-// The velocities of the band, 0 to 1, set by ear.
+// The velocities of the calibration's bar, 0 to 1, set by ear; the
+// band's parts have theirs in parts.go.
 const (
-	countVel    = 0.7 // the hi-hat of the count-in
-	backbeatVel = 0.7 // the ride on 2 and 4
-	beatVel     = 0.4 // the ride on 1 and 3
-	andVel      = 0.5 // the ride on the "and" of 2 and 4
-	hatVel      = 0.6 // the hi-hat on 2 and 4
-	endVel      = 0.7 // the ride on the demo's last note
-	snapVel     = 1
-	taVel       = 0.8  // the calibration's beats, well in front
-	tiVel       = 1    // its fourth beat
-	bassVel     = 0.8  // the reference bass
-	underVel    = 0.55 // the same, discreet, under the calibration
+	taVel = 0.8 // its beats, well in front
+	tiVel = 1   // its fourth beat
 )
 
 // The gains of the mix. With a soundfont, the balance of the renders
@@ -137,63 +129,34 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 	return b, nil
 }
 
-// beat schedules what the band plays on the beat at `p`, at `at`, `and`
-// being the swung "and" after it:
-//   - in the count-in, the hi-hat on 1 and 3 of its first bar, then on
-//     every beat of the second: "1, 3, 1, 2, 3, 4";
-//   - from bar 1, the ride on every beat and on the "and" of 2 and 4,
-//     the accents on 2 and 4, with the hi-hat on 2 and 4: the
-//     metronome;
-//   - a finger snap on 2 and 4 when `snap`, the walker snapping his
-//     fingers: the sound of the juice;
-//   - `key`, the reference line, legato, when the band walks the bass:
-//     the demo, the title screen. No key, 0, in the count-in or when
-//     the player walks.
-func (bd *band) beat(p tempo.Position, key int, at, and time.Time, snap bool) {
-	backbeat := p.Beat%2 == 0
-	switch {
-	case p.Bar < 0 && backbeat:
-		// the first bar of the count-in: 1 and 3 only
-	case p.Bar <= 0:
-		bd.strike(bd.hat, countVel, at)
-	default:
-		vel := beatVel
-		if backbeat {
-			vel = backbeatVel
-			bd.strike(bd.hat, hatVel, at)
-			bd.strike(bd.ride, andVel, and)
+// play schedules `strokes`, the parts of beat `n` of `m`, each at its
+// place in the beat: the band only plays them, the parts decide (see
+// parts.go).
+func (bd *band) play(strokes []stroke, n int, m tempo.Metronome) {
+	for _, s := range strokes {
+		at := m.AtBeats(float64(n) + s.at)
+		switch s.sound {
+		case hatSound:
+			bd.strike(bd.hat, s.vel, at)
+		case rideSound:
+			bd.strike(bd.ride, s.vel, at)
+		case snapSound:
+			bd.snap.ScheduleOn(noiseKey, s.vel, at)
+			bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
+		case bassSound:
+			bd.walk(s.key, s.vel, at)
 		}
-		bd.strike(bd.ride, vel, at)
 	}
-	if snap && backbeat {
-		bd.snapAt(at)
-	}
-	if key != 0 {
-		bd.walk(key, bassVel, at)
-	}
-}
-
-// snapAt schedules a finger snap at `at`.
-func (bd *band) snapAt(at time.Time) {
-	bd.snap.ScheduleOn(noiseKey, snapVel, at)
-	bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
 }
 
 // tick schedules a beat of the calibration at `at`: "ta", or "TI" when
-// `accent`. The bass walks under it, discreet (see jam).
+// `accent`. The calibration schedules it itself, on its own beats.
 func (bd *band) tick(at time.Time, accent bool) {
 	if accent {
 		bd.strike(bd.ti, tiVel, at)
 		return
 	}
 	bd.strike(bd.ta, taVel, at)
-}
-
-// end plays the demo's last note, `key` at `at`, with a stroke of the
-// ride: the chord the turnaround leads to (see Ending).
-func (bd *band) end(key int, at time.Time) {
-	bd.strike(bd.ride, endVel, at)
-	bd.walk(key, bassVel, at)
 }
 
 // walk sounds `key` on the reference bass at `vel`, legato, as Siskind

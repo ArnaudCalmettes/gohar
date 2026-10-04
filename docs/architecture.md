@@ -416,8 +416,7 @@ du clavier de l'ordinateur ou du clavier MIDI, ramène au menu.
 
 - La calibration ne s'impose pas. Le jeu se joue sans, même à 140 ou 160
   à la noire : imposer un écran avant la première note éloignerait le
-  joueur de ce qu'il vient chercher. Elle est une entrée du menu, entre
-  « Jouer » et « Quitter », en attendant un menu d'options.
+  joueur de ce qu'il vient chercher. Elle est une entrée des options.
 - Le décalage se range dans `latency.json`, parmi les réglages communs,
   rattaché au couple clavier et sortie (`calibrate.Key`). Le jeu le lit
   au lancement, et le reçoit aussitôt après une calibration.
@@ -431,13 +430,12 @@ du clavier de l'ordinateur ou du clavier MIDI, ramène au menu.
   change la latence ; un casque branché à la place des haut-parleurs ne
   se voit pas, et demande de recalibrer à la main.
 - En fond, une musique discrète, comme dans l'original, et sans la
-  moindre coupure. Le joueur arrive de l'écran titre, où la basse et la
-  batterie jouent : la ligne de basse continue sur le même temps, plus
-  douce, et la batterie et les claquements se taisent pour laisser la
-  place au « ta, ta, ta, TI », qui part sur le premier temps de la
-  mesure suivante. Une fois la mesure faite, le métronome se tait et la
-  batterie et les claquements reprennent avec la basse ; revenir au
-  titre ne coupe rien non plus.
+  moindre coupure. Le joueur arrive des options, où la basse et le
+  charley jouent : la ligne de basse continue sur le même temps, plus
+  douce, et le charley se tait pour laisser la place au « ta, ta, ta,
+  TI », qui part sur le premier temps de la mesure suivante. Une fois
+  la mesure faite, le métronome se tait et le charley reprend avec la
+  basse ; revenir aux options, puis au titre, ne coupe rien non plus.
 
 Restent hors du paquet : Ark, qui servira à l'intérieur d'une scène (la
 foule des marcheurs) et non pour les scènes elles-mêmes, et un lanceur

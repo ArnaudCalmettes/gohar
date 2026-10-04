@@ -49,10 +49,16 @@ const (
 	msgPlayer = "record.player" // who plays, in a recording's heading
 	msgDemo   = "record.demo"
 
-	msgMenuPlay      = "menu.play"
-	msgMenuCalibrate = "menu.calibrate"
-	msgMenuQuit      = "menu.quit"
-	msgTitleKeys     = "title.keys" // the keys of the title screen
+	msgMenuPlay    = "menu.play"
+	msgMenuOptions = "menu.options"
+	msgMenuQuit    = "menu.quit"
+	msgTitleKeys   = "title.keys" // the keys of the title screen
+
+	msgOptLang      = "options.lang" // {{.Name}}: the language spoken
+	msgLangName     = "lang.name"    // each language's own name for itself
+	msgOptCalibrate = "options.calibrate"
+	msgOptBack      = "options.back"
+	msgOptKeys      = "options.keys"
 
 	// What the walker says (see coach).
 	msgRushing  = "coach.rushing"
@@ -74,7 +80,8 @@ var phrases = []string{
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,
 	msgPlayer, msgDemo,
-	msgMenuPlay, msgMenuCalibrate, msgMenuQuit, msgTitleKeys,
+	msgMenuPlay, msgMenuOptions, msgMenuQuit, msgTitleKeys,
+	msgOptLang, msgLangName, msgOptCalibrate, msgOptBack, msgOptKeys,
 	msgRushing, msgRelax, msgDragging, msgItDrags,
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
 }

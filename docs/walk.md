@@ -401,12 +401,14 @@ Ce qui suit est notre lecture des sources.
   - le claquement de doigts à la manière jazz, du coude ;
   - les seuils sont des valeurs de départ, à régler en jouant.
 - **Il parle**, avec les mots du jeu (des marques, pas un jugement),
-  dans une bulle au-dessus de sa tête, écrite à la main de la grille,
-  qui reste une seconde et demie (`coach.go`) :
+  au-dessus de sa tête, écrit à la main de la grille et tenu une
+  seconde et demie (`coach.go`). Pas de bulle fermée : un trait sous la
+  phrase et un trait qui descend vers lui, à la manière d'une BD dessinée
+  en bâtons comme lui :
   - **rien quand le joueur joue dans les temps** : le claquement de
     doigts le dit déjà, c'est le juice ;
   - « Tu presses » ou « Détends-toi » quand les cinq dernières notes
-    tombent en moyenne 25 ms ou plus en avance ; « Tu traînes » ou « Ça
+    tombent en moyenne 30 ms ou plus en avance ; « Tu traînes » ou « Ça
     traîne » quand elles tombent en retard. C'est une dérive qu'il
     relève, pas une faute : un bon joueur presse sans sortir de la
     fenêtre « sur le temps », et une première version, qui comptait les
@@ -415,7 +417,7 @@ Ce qui suit est notre lecture des sources.
   - un mot quand ça se met à tourner, au moment où il commence à
     claquer des doigts, puis toutes les huit arrivées posées d'affilée
     tant que ça tourne, à peu près une fois par chorus de blues ; et
-    quand le joueur se rattrape, cinq notes revenues à moins de 12 ms
+    quand le joueur se rattrape, cinq notes revenues à 15 ms ou moins
     du temps en moyenne après une remarque : « Cool ! », « Yeah ! », « Continue
     comme ça ! », « Ça swingue ! », « Groovy ! », « Super ! », « Ça
     joue ! » ; en anglais « Keep it up! », « Swingin'! », « I dig
@@ -426,7 +428,7 @@ Ce qui suit est notre lecture des sources.
   - seulement quand le joueur tient la basse : en démo, il se tait ;
   - tout cela suppose la latence calibrée : sinon, elle passerait pour
     de la précipitation ;
-  - les seuils (cinq notes, 25 ms, huit arrivées, huit temps) sont des
+  - les seuils (cinq notes, 30 ms, huit arrivées, huit temps) sont des
     valeurs de départ, à régler en jouant.
 - **Plus tard**, à la fin du run, ce qui a tenu et ce qui a lâché, par
   situation (voir « La boucle de jeu », point 5).
@@ -499,10 +501,8 @@ scènes : le premier écran titre se contente de la position finale.
 
 - **Ce qu'on voit** : le bonhomme grisé à gauche, à la place qu'il
   occupe pendant la partie, qui marche en claquant des doigts ; le
-  titre et le menu au milieu, « Jouer », « Calibration » et
-  « Quitter », choisis avec les flèches et validés par Entrée. La
-  calibration (voir `architecture.md`) n'est jamais imposée : le jeu se
-  joue sans.
+  titre et le menu au milieu, « Jouer », « Options » et « Quitter »,
+  choisis avec les flèches et validés par Entrée.
 - **Ce qu'on entend** : à 160 à la noire, plus enlevé que la partie
   (120 par défaut), car le titre invite, il n'enseigne pas.
   - D'abord deux mesures de décompte, les seuls claquements du
@@ -516,15 +516,30 @@ scènes : le premier écran titre se contente de la position finale.
   suivant : la dernière note du chorus ne prépare pas la première du
   suivant.
 - **D'une scène à l'autre** : la musique du titre, le `jam`, vit hors
-  des scènes, dans le contexte partagé. Elle passe sans coupure du titre
-  à la calibration et retour, la basse sur le même blues et le même
-  temps. Jouer l'arrête : la partie lance son propre décompte, à son
-  tempo. Échap ramène de la partie au titre, où le blues reprend avec
-  son décompte de claquements, et du titre quitte le jeu.
-- **On passe toujours par le titre**, même avec des options sur la ligne
-  de commande. Quand un écran de paramètres les reprendra, en passer au
-  programme voudra dire qu'on le teste, et un drapeau permettra d'aller
-  droit à la scène qui intéresse.
+  des scènes, dans le contexte partagé (voir « L'orchestre »). Elle passe sans coupure du titre
+  aux options et à la calibration, et retour, la basse sur le même
+  blues et le même temps ; seule l'orchestration change d'un écran à
+  l'autre :
+  - au titre, la ride, le charley et les claquements ;
+  - dans les options, la basse et le charley sur 2 et 4 seulement, le
+    bonhomme qui marche dans le rythme sans claquer des doigts ;
+  - sous la mesure battue de la calibration, la basse seule, plus douce.
+
+  Jouer l'arrête : la partie lance son propre décompte, à son tempo.
+  Échap ramène de la partie au titre, où le blues reprend avec son
+  décompte de claquements, et du titre quitte le jeu.
+- **Les options** : le tempo de la partie, de 5 en 5 entre 60 et 240,
+  la langue, qui change tout de suite, et la calibration (voir
+  `architecture.md`), qui n'est jamais imposée : le jeu se joue sans.
+  Les flèches gauche et droite changent une valeur. Le tempo et la
+  langue sont gardés d'une séance à l'autre (`walk.json`, parmi les
+  réglages communs) ; ils servent de valeurs par défaut aux drapeaux
+  `-bpm` et `-lang`, de sorte qu'un drapeau passé au programme
+  l'emporte encore.
+- **On passe toujours par le titre**, même avec des drapeaux sur la
+  ligne de commande. Quand les options auront repris tous les
+  drapeaux, en passer au programme voudra dire qu'on le teste, et un
+  drapeau permettra d'aller droit à la scène qui intéresse.
 
 ## Les aides
 
@@ -578,6 +593,146 @@ scènes : le premier écran titre se contente de la position finale.
   kit n'en ayant. Le snap est versionné dans `games/walk/sounds` ;
   GeneralUser, 32 Mo, ne l'est pas : `make sounds` la télécharge dans
   le cache de l'utilisateur, d'un commit figé, empreinte vérifiée.
+
+## L'orchestre
+
+Derrière le joueur joue un petit orchestre : une contrebasse, une
+batterie réduite à la ride et à la charleston, et les claquements de
+doigts du bonhomme. Il accompagne la partie, mais aussi les menus, où
+il ne s'arrête jamais d'un écran à l'autre. Le faire jouer juste, à la
+milliseconde, sur une boucle de jeu qui ne tourne que soixante fois par
+seconde, demande quatre étages, chacun avec un seul métier.
+
+### Le synthé : jouer à l'échantillon près
+
+Tout en bas, les instruments du paquet `synth` reçoivent deux sortes
+d'ordres :
+
+- les ordres **immédiats** (`NoteOn`, `NoteOff`), appliqués au début du
+  prochain tampon audio : c'est le chemin des touches du joueur, qui
+  doivent sonner sans attendre ;
+- les ordres **datés** (`ScheduleOn`, `ScheduleOff`), que la goroutine
+  audio applique sur l'échantillon qui correspond à leur date (voir
+  « Les notes datées » dans `architecture.md`).
+
+Les ordres datés existent parce que la boucle d'Ebiten tourne toutes
+les 16,7 ms : une ride envoyée depuis elle tomberait n'importe où dans
+cet intervalle, et cette gigue s'entend. On programme donc chaque son
+un peu à l'avance, avec sa date exacte.
+
+### Les parties : qui joue quoi sur un temps
+
+Un musicien de l'orchestre, la ride par exemple, sait ce qu'il joue sur
+chaque temps sans regarder l'horloge : « ding, ding-da, ding,
+ding-da », appuyé sur 2 et 4. Le jeu le modélise ainsi (`parts.go`) :
+
+- une **partie** est une fonction pure : on lui dit où l'on est dans la
+  mesure, quelle note la ligne de basse a sur ce temps, si le bonhomme
+  claque des doigts ; elle répond par des **coups** : un son, une
+  vélocité, et une place dans le temps, 0 sur le temps, deux tiers pour
+  le « et » swingué ;
+- un **arrangement** est une liste de parties qui jouent ensemble.
+
+Les parties d'aujourd'hui :
+
+| Partie | Ce qu'elle joue |
+|---|---|
+| le décompte à la charleston | 1 et 3 dans la première mesure, chaque temps dans la seconde : « 1, 3, 1, 2, 3, 4 » |
+| le décompte en claquements | les claquements seuls, sur 2 et 4 |
+| la ride | chaque temps, plus fort sur 2 et 4, et le « et » swingué après 2 et 4 |
+| la charleston | fermée au pied sur 2 et 4 |
+| les claquements | sur 2 et 4, quand le bonhomme claque des doigts |
+| la basse | la note de la ligne, quand l'orchestre en a une |
+| la basse douce | la même, plus discrète |
+| la ride de fin | un coup, sur la dernière note de la démo |
+
+Et les arrangements qu'elles composent :
+
+| Arrangement | Parties | Où |
+|---|---|---|
+| complet | ride, charleston, claquements, basse | la partie, l'écran titre |
+| léger | charleston, basse | les options |
+| basse seule | basse douce | sous la mesure battue de la calibration |
+| décompte | décompte à la charleston | avant la partie |
+| ouverture | décompte en claquements | avant la musique du titre |
+| fin | ride de fin, basse | la dernière tonique de la démo |
+
+Parce qu'elles sont pures, les parties se testent comme un musicien
+les décrirait : « sur le temps 2, la charleston, la ride appuyée, son
+"et" swingué, le claquement et la basse ». Et un nouvel arrangement, une
+ambiance de plus pour un nouvel écran, tient en une ligne.
+
+### L'orchestre : jouer les coups
+
+Le `band` (`sound.go`) possède les instruments : la contrebasse et le
+piano de la soundfont, le kit Jazz, le claquement enregistré, ou les
+voix 8 bits sans soundfont. Il ne décide de rien : `band.play` reçoit
+les coups d'un temps et les traduit en ordres datés.
+
+- **La basse est legato**, comme le demande Siskind : chaque note tient
+  jusqu'à la suivante, relâchée à la date même où l'autre attaque. Il
+  n'y a qu'une voix de basse pour tout le jeu, d'où la note tenue que
+  l'orchestre retient, et qu'il relâche quand la musique s'arrête.
+- **Une cymbale sonne jusqu'à ce qu'on la refrappe** : chaque coup
+  relâche d'abord le précédent, pour que la ride ne s'empile pas sur
+  elle-même.
+- **Les touches du joueur** passent à côté : elles sonnent tout de suite,
+  la contrebasse sous le split, le piano au-dessus, depuis la goroutine
+  MIDI, sans attendre la boucle de jeu.
+
+### Le chef d'orchestre : quand jouer
+
+Reste à savoir quand appeler les parties. Un chef tient un métronome
+(un instant de départ et la durée d'un temps) et le numéro du prochain
+temps à programmer. À chaque image, il demande quels temps tombent dans
+les 100 prochaines millisecondes, et programme chacun une seule fois,
+même si une image arrive en retard. Les temps négatifs sont le
+décompte.
+
+Il y a aujourd'hui deux chefs :
+
+- **la partie**, pendant un run : l'arrangement complet, précédé du
+  décompte, et ce qui est propre au jeu : les notes de la démo
+  transmises au marqueur à l'instant où elles sonnent, la fin au bout
+  des chorus, la dernière tonique ;
+- **le `jam`** (`music.go`), la musique des menus.
+
+### Le `jam` : une musique qui ne s'arrête pas
+
+Le `jam` est un chef d'orchestre avec sa basse : un métronome à 160, et
+un bassiste qui tire une ligne neuve à chaque tour de grille, avec le
+générateur de la basse de référence.
+
+**Il vit hors des scènes**, dans le contexte partagé du jeu. Son
+métronome est un instant absolu, qui ne dépend de personne : peu
+importe donc quelle scène le fait jouer. À chaque image, la scène du
+dessus l'appelle avec son arrangement : complet au titre, léger dans
+les options, basse seule sous la calibration. Quand on passe d'un écran
+à l'autre, la nouvelle scène reprend au temps exact où l'ancienne
+s'était arrêtée ; et comme les 100 ms suivantes étaient déjà
+programmées, rien ne manque à l'oreille. La basse ne s'interrompt
+jamais ; seule l'orchestration change, sur le temps.
+
+- **La calibration** ne connaît ni le `jam` ni l'orchestre : le jeu lui
+  prête le métronome du `jam` et une fonction qui le fait jouer. Sa
+  mesure battue tombe ainsi sur les temps de la musique, et part sur le
+  premier temps de la mesure suivante.
+- **Jouer l'arrête** : la partie lance son propre décompte, à son
+  tempo. En revenant au titre, un `jam` neuf repart avec son ouverture
+  en claquements.
+
+### Ce qui reste à faire
+
+- **Les deux chefs se ressemblent**, et la boucle qui programme les
+  temps est écrite deux fois. Les fusionner maintenant, ce serait
+  deviner leur interface commune ; le besoin qui la dessinera viendra
+  avec une partie qui démarre sans couper la musique du titre, ou qui
+  enchaîne les grilles.
+- **Le piano** entrera comme une partie de plus, à deux conditions que
+  le modèle respecte déjà : un coup peut tomber ailleurs que sur le
+  temps (les anticipations, le rythme de Charleston), et une partie
+  devra recevoir l'accord du moment, que le repère d'un temps (`cue`)
+  pourra porter à côté de la note de basse.
 
 ## La progression
 

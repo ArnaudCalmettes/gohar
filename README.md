@@ -103,7 +103,9 @@ bass, your right on a piano, split at G3, and the roots you land on
 each change marked on the chart. Land enough of them and the stick
 figure snaps his fingers on 2 and 4: you hear it. Without tempo, the
 chart waits for each root. The title screen plays the blues while you
-choose; Esc goes back to it from the game.
+choose; Esc goes back to it from the game. The options set the tempo
+and the language, kept from one run to the next, and open the latency
+calibration.
 
 ```sh
 make sounds                    # once, from the repository root
@@ -117,7 +119,8 @@ go run ./walk -lang en         # in English; your session's language by default
 
 `-sf2` plays another soundfont, `-list` shows its presets and `-bass`
 picks one (`bank:patch`, `0:32` by default). `-choruses` sets how many
-times the chart goes round, `-bpm` the tempo of the game (120 by default),
+times the chart goes round, `-bpm` the tempo of the game (the one the
+options keep, 120 at first),
 `-split` the lowest key of the right hand (55, G3, by default).
 
 ### keys

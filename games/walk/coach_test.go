@@ -24,11 +24,11 @@ func play(c *coach, from int, offs ...int) map[int]string {
 	return said
 }
 
-// Within the window on the beat, but drifting ahead, 30 ms on average:
+// Within the window on the beat, but drifting ahead, 40 ms on average:
 // "tu presses" or "détends-toi", once, then silence for a while.
 func TestRushing(t *testing.T) {
 	c := testCoach()
-	said := play(c, 0, -20, -40, -25, -35, -30, -30, -30)
+	said := play(c, 0, -30, -50, -35, -45, -40, -40, -40)
 	if len(said) != 1 || !slices.Contains(rushing, said[4]) {
 		t.Errorf("got %v, want a remark on rushing at the fifth note, and no more", said)
 	}
@@ -37,7 +37,7 @@ func TestRushing(t *testing.T) {
 // Drifting behind: "tu traînes" or "ça traîne".
 func TestDragging(t *testing.T) {
 	c := testCoach()
-	said := play(c, 0, 20, 30, 40, 25, 35)
+	said := play(c, 0, 30, 40, 50, 35, 45)
 	if !slices.Contains(dragging, said[4]) {
 		t.Errorf("got %v, want a remark on dragging", said)
 	}
@@ -65,7 +65,7 @@ func TestBetweenDoesNotCount(t *testing.T) {
 // After a remark, five notes back around the beat: a word of praise.
 func TestBackOnTheBeat(t *testing.T) {
 	c := testCoach()
-	play(c, 0, -40, -40, -40, -40, -40)
+	play(c, 0, -50, -50, -50, -50, -50)
 	said := play(c, 8, -10, 5, 0, -5, 10)
 	if !slices.Contains(praise, said[12]) {
 		t.Errorf("got %v, want praise at the fifth note back on the beat", said)

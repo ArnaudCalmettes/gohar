@@ -216,13 +216,15 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
 - [ ] les scènes (« Les scènes » dans `architecture.md`) :
   - [x] le régisseur, `games/scene`, et *Walk with me* en deux scènes,
         le titre et la partie ;
-  - [x] la calibration, une scène partagée, dans le menu du titre ;
+  - [x] la calibration, une scène partagée, dans les options ;
   - [x] le décalage mesuré, rangé par couple clavier et sortie, puis
         retranché avant le marqueur ;
-  - [ ] un menu d'options, où la calibration passera ;
+  - [x] un menu d'options : le tempo, la langue, la calibration ;
+  - [ ] les autres drapeaux dans les options : le split, le son 8 bits,
+        le nombre de chorus, la démo ;
   - [ ] `ear` aux scènes et à `lang` ;
-  - [ ] un drapeau pour aller droit à une scène, une fois les options
-        reprises par un écran de paramètres.
+  - [ ] un drapeau pour aller droit à une scène, une fois tous les
+        drapeaux repris par les options.
 - [ ] l'ouverture animée de *Walk with me* (« L'écran titre » dans
       `walk.md`), une fois les transitions entre scènes en place ; pas
       urgent.
@@ -232,7 +234,10 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
        `walk.md`) : la mécanique et les premières répliques sont là,
        restent les réactions aux motifs (une pédale, une descente) et
        le réglage des seuils en jouant ;
-    2. en parallèle, l'affichage qui s'adapte à la grille et défile
+    2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
+       (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
+       sans couper la musique du titre ou enchaîner les grilles ;
+    3. en parallèle, l'affichage qui s'adapte à la grille et défile
        quand elle est trop longue (un AABA de 32 mesures), avec quelques
        grilles de test : un AABA en accords seuls, des II-V serrés, une
        grille modale ;

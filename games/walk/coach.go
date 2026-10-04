@@ -21,7 +21,7 @@ import (
 // harp on. The figures are starting points, to set by playing.
 const (
 	heard       = 5                     // the last notes weighed
-	drift       = 25 * time.Millisecond // their mean offset, ahead or behind: a remark
+	drift       = 30 * time.Millisecond // their mean offset, ahead or behind: a remark
 	back        = drift / 2             // within it again, after a remark: praise
 	praiseEvery = 8                     // arrivals landed in a row, snapping
 	quiet       = 8                     // beats of silence after a phrase

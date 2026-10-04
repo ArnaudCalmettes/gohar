@@ -38,7 +38,12 @@ import (
 )
 
 func main() {
-	bpm := flag.Float64("bpm", 120, "tempo, in beats per minute")
+	// The options saved are the flags' defaults: a flag given wins.
+	saved, err := loadPrefs(lang.System())
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "options:", err)
+	}
+	bpm := flag.Float64("bpm", saved.BPM, "tempo of the game, in beats per minute")
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
 	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
 	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")
@@ -51,7 +56,7 @@ func main() {
 	port := flag.String("port", "", "an input's number or part of its name; the first one if empty")
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
 	record := flag.String("record", "", "write down the notes the marker hears, a line each, in this file")
-	language := flag.String("lang", lang.System(), "the language of the game: fr or en")
+	language := flag.String("lang", saved.Lang, "the language of the game: fr or en")
 	flag.Parse()
 
 	if _, err := os.Stat(*sf2); err != nil && !*chip {

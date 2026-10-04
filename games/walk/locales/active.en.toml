@@ -22,9 +22,15 @@ tempo = "Tempo: {{.BPM}} BPM"
 "record.demo" = "demo"
 
 "menu.play" = "Play"
-"menu.calibrate" = "Calibration"
+"menu.options" = "Options"
 "menu.quit" = "Quit"
 "title.keys" = "Up, down: choose   Enter: confirm   Esc: quit"
+
+"options.lang" = "Language: {{.Name}}"
+"lang.name" = "English"
+"options.calibrate" = "Calibration"
+"options.back" = "Back"
+"options.keys" = "Up, down: choose   Left, right: change   Enter: confirm   Esc: back"
 
 "coach.rushing" = "You're rushing"
 "coach.relax" = "Relax"

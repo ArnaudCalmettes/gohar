@@ -25,10 +25,6 @@ import (
 // "Le son" in docs/walk.md).
 const lookahead = 100 * time.Millisecond
 
-// swingRatio places the ride's "and", the triplet swing of the method
-// books (see tempo.Swing).
-const swingRatio = 2.0 / 3
-
 // The count-in: two bars of hi-hat, "1, 3, 1, 2, 3, 4", the time to
 // move the hands from the space bar to the keyboard.
 const (
@@ -76,9 +72,9 @@ const (
 // The walker's bubble: how long it stays, and where, above his head.
 const (
 	bubbleHold = 1500 * time.Millisecond
-	bubbleLift = 130 // from his feet to the bottom of the bubble
-	bubbleTail = 6   // the stroke down to his head
-	bubblePad  = 5
+	bubbleLift = 130 // from his feet to the line under the phrase
+	bubbleTail = 6   // the stroke from that line down to his head
+	bubbleGap  = 3   // between the phrase and its line
 )
 
 // A cell is one chord written in a bar, at the beat it starts on.
@@ -103,7 +99,6 @@ type game struct {
 
 	running  bool
 	m        tempo.Metronome
-	swing    tempo.Swing // the ride's eighths
 	beats    []Beat
 	next     int // the next beat to schedule
 	marker   *Marker
@@ -169,7 +164,6 @@ func (g *game) start(now time.Time) {
 	}
 	beat := time.Duration(float64(time.Minute) / g.bpm)
 	g.m = tempo.NewMetronome(now.Add(lookahead+countIn*beat), g.bpm, perBar)
-	g.swing = tempo.NewSwing(g.m, swingRatio)
 	g.beats = Expect(g.grid, g.m, g.choruses)
 	g.next = -countIn
 	g.marker = NewMarker(g.rules, g.m, g.beats)
@@ -250,15 +244,19 @@ func (g *game) Update() scene.Transition {
 			key = g.line[g.next]
 			g.heard = append(g.heard, Note{Key: key, At: at})
 		}
-		snap := g.walker.gait(true) == snapping
-		g.band.beat(g.m.Position(g.next), key, at, g.swing.AtBeats(float64(g.next)+0.5), snap)
+		c := cue{pos: g.m.Position(g.next), key: key, snap: g.walker.gait(true) == snapping}
+		a := full
+		if g.next < 0 {
+			a = hatCountIn
+		}
+		g.band.play(a.strokes(c), g.next, g.m)
 	}
 	// The demo's last note, on the beat after the last one, held a bar:
 	// the run stops once it has rung.
 	last := len(g.beats)
 	if g.ending != 0 {
 		if g.next == last && end > last {
-			g.band.end(g.ending, g.m.At(last))
+			g.band.play(ending.strokes(cue{key: g.ending}), last, g.m)
 			g.next++
 		}
 		last += perBar
@@ -469,21 +467,20 @@ func (g *game) drawWalker(c screen.Canvas) {
 	g.walker.draw(c, walkerX, walkerY, walkerScale, g.walker.gait(onBeat), beats, now, col)
 }
 
-// drawBubble draws what the walker says above his head, for a while: a
-// frame, the phrase in the chart's hand, a stroke down to him.
+// drawBubble draws what the walker says above his head, for a while,
+// the way a comic strip drawn in strokes does: the phrase in the
+// chart's hand, a line under it, and a stroke from that line down to
+// him. No frame.
 func (g *game) drawBubble(c screen.Canvas) {
 	if g.bubble == "" || time.Since(g.bubbleAt) > bubbleHold {
 		return
 	}
 	w, h := c.Measure(g.bubble, g.fonts.bubble)
-	bw, bh := w+2*bubblePad, h+2*bubblePad
-	x := max(float64(margin), walkerX-bw/2) // never off the screen
-	bottom := float64(walkerY - bubbleLift)
-	y := bottom - bh
-	c.Rect(float32(x-1), float32(y-1), float32(bw+2), float32(bh+2), ink)
-	c.Rect(float32(x), float32(y), float32(bw), float32(bh), paper)
-	c.Line(walkerX, float32(bottom), walkerX, float32(bottom+bubbleTail), 1, ink)
-	c.Text(g.bubble, g.fonts.bubble, x+bubblePad, y+bubblePad, ink)
+	x := max(float64(margin), walkerX-w/2) // never off the screen
+	under := float64(walkerY - bubbleLift)
+	c.Text(g.bubble, g.fonts.bubble, x, under-bubbleGap-h, ink)
+	c.Line(float32(x), float32(under), float32(x+w), float32(under), 1, ink)
+	c.Line(walkerX, float32(under), walkerX, float32(under+bubbleTail), 1, ink)
 }
 
 // drawMode draws, top right, the phase the space bar starts or is
