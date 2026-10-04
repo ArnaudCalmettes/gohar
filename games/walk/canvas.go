@@ -26,6 +26,10 @@ var (
 	pale  = color.RGBA{0xe8, 0xe8, 0xe8, 0xff} // the bar being played
 	faint = color.RGBA{0x88, 0x88, 0x88, 0xff} // what is said rather than shown
 
+	// The bars of the review: what worked, what is to consolidate.
+	workedTint      = color.RGBA{0xcf, 0xec, 0xd9, 0xff}
+	consolidateTint = color.RGBA{0xf8, 0xe0, 0xbf, 0xff}
+
 	// The marks of the arrivals: landed, missed, doubled.
 	landedInk  = color.RGBA{0x2a, 0x9d, 0x5a, 0xff}
 	missedInk  = color.RGBA{0xc0, 0x39, 0x2b, 0xff}

@@ -121,6 +121,7 @@ type game struct {
 	heard    []Note // its notes not yet sounded, for the marker
 	ending   int    // the key the demo ends on, after the last beat; 0 for none
 
+	summary  *summary  // the marks of the run, for its review
 	coach    *coach    // what the walker says, the player's runs only
 	bubble   string    // the phrase in his bubble, empty for none
 	bubbleAt time.Time // when he said it
@@ -191,6 +192,7 @@ func (g *game) start(now time.Time) {
 	g.next = -countIn
 	g.marker = NewMarker(g.rules, g.m, g.beats)
 	g.marks = map[int]BeatKind{}
+	g.summary = newSummary(len(g.bars))
 	g.line, g.heard, g.ending = nil, nil, 0
 	if g.rec != nil {
 		who := g.lang.T(msgPlayer)
@@ -264,6 +266,7 @@ func (g *game) Update() scene.Transition {
 	}
 	for _, bm := range g.marker.Close(now) {
 		g.marks[bm.Beat] = bm.Kind
+		g.summary.beat(bm.Beat, g.beats[bm.Beat], bm.Kind)
 		g.walker.mark(bm.Kind, now)
 		if !g.band.demo {
 			g.speak(g.coach.arrival(bm.Beat, bm.Kind == Landed, g.walker.gait(true) == snapping), now)
@@ -293,8 +296,11 @@ func (g *game) Update() scene.Transition {
 		}
 		last += perBar
 	}
-	if now.After(g.m.At(last)) {
+	if now.After(g.m.At(last)) { // played through: the player's run gets its review
 		g.stop(now)
+		if !g.band.demo {
+			return scene.Push(newReview(g))
+		}
 	}
 	return scene.Stay
 }
@@ -339,6 +345,7 @@ func (g *game) mark(e keyboard.Event) {
 	}
 	g.lastMark = g.lang.T(msgMark, "Note", g.noteName(e.Key, g.beats[m.Beat].Chord), "Words", g.markWords(m))
 	g.record(m)
+	g.summary.note(m)
 	if !g.band.demo {
 		g.speak(g.coach.note(m.Off, m.Timing, m.Beat), time.Now())
 	}

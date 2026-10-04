@@ -263,9 +263,10 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       urgent.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **à développer**, dans cet ordre :
-    1. l'écoute de la basse de référence sur *Tune Up* et *Autumn
-       Leaves*, maintenant que la partie choisit sa grille et son tempo
-       et tourne ses pages ;
+    1. le bilan par fonction harmonique (l'arrivée sur le I après un
+       V7, sur un II, sur une dominante chromatique), une fois l'analyse
+       fonctionnelle branchée sur la grille du jeu (« Le bilan » dans
+       `walk.md`) ;
     2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;

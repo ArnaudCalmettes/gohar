@@ -54,7 +54,8 @@ Chailley, *40 000 ans de musique*.
    comme sur un pupitre, et le joueur prend la main.
 4. Chaque note reçoit une marque, et le juice suit : il encourage quand
    ça tourne, il signale discrètement quand ça décroche.
-5. En fin de run, ce qui a tenu et ce qui a lâché, par situation.
+5. En fin de run, ce qui a marché et ce qui est à consolider, par
+   situation (voir « Le bilan »).
 6. Les marques partent au dex, qui décide de la suite.
 
 **La phase de déchiffrage, sans tempo** : la grille attend le joueur et
@@ -439,8 +440,6 @@ Ce qui suit est notre lecture des sources.
     de la précipitation ;
   - les seuils (cinq notes, 30 ms, huit arrivées, huit temps) sont des
     valeurs de départ, à régler en jouant.
-- **Plus tard**, à la fin du run, ce qui a tenu et ce qui a lâché, par
-  situation (voir « La boucle de jeu », point 5).
 - **Pour le graphiste**, plus tard : un cycle de marche par état, quatre
   images au moins ; des animations brèves (tendre l'oreille, sauter,
   trébucher et se rattraper) ; une bulle de BD extensible, les
@@ -476,6 +475,40 @@ Ce qui suit est notre lecture des sources.
 - Les passages qui ont fait réagir la jauge sont mis de côté : ses
   bonnes idées et ses découvertes. On peut les réécouter et les
   exporter en MIDI.
+
+## Le bilan
+
+À la fin d'un run joué jusqu'au bout, et seulement alors, le jeu montre
+ce qui a marché et ce qui est à consolider. Un run arrêté avec Espace
+n'a pas de bilan, une démo non plus : le bonhomme n'a rien à se dire.
+
+- **Le principe** est celui du marqueur et du dex : le bilan prend acte
+  et ne juge pas. Il dit les comptes tels qu'ils sont, « 22 sur 24 »,
+  et ne relance pas le joueur.
+- **Les situations** sont, pour l'instant, la place du changement dans
+  la grille :
+  - un accord qui arrive en début de mesure ;
+  - un accord qui arrive au milieu de la mesure, quand deux accords se
+    la partagent : c'est la plus difficile, le moment où la main doit
+    changer de fondamentale à mi-chemin ;
+  - le temps 1 d'un accord qui dure.
+- **La carte de la grille** montre la grille entière, ses rangées
+  resserrées si elle est longue, chaque mesure teintée en vert si elle
+  a marché, en orange si elle est à consolider, sur tous les chorus
+  ensemble. Un musicien y voit d'un coup d'œil où ça a coincé : les
+  deux mesures du turnaround, le II-V qui module.
+- **Le seuil** : une situation ou une mesure a marché quand trois temps
+  attendus sur quatre au moins ont été posés. C'est une valeur de
+  départ, à régler en jouant.
+- **Le temps** : l'écart moyen des notes au temps, en avance ou en
+  retard, et leur régularité autour de cet écart (l'écart type), en
+  millisecondes. La latence calibrée est déjà déduite.
+- **Plus tard**, des situations plus musicales : l'arrivée sur le I
+  après un V7, sur un II, sur une dominante chromatique. Elles demandent
+  de brancher l'analyse fonctionnelle sur la grille du jeu.
+
+N'importe quelle touche, du clavier d'ordinateur ou du piano, ramène à
+la partie.
 
 ## L'affichage
 
@@ -782,8 +815,14 @@ en soundfont ; les marques de temps et de fondamentale sur la grille ;
 la phase de déchiffrage sans tempo ; le bonhomme en bâtons ; la basse de
 référence ; l'enregistrement (`-record`) ; le français et l'anglais.
 
-La suite est dans `chantiers.md` : la calibration, les bulles du
-bonhomme, l'affichage de grilles plus longues, puis les paliers.
+Depuis, le jeu a gagné un écran titre et ses options, la calibration de
+la latence, une musique qui ne s'arrête pas entre les écrans, les
+bulles du bonhomme, trois grilles en ChordPro (le blues, *Tune Up*,
+*Autumn Leaves*) choisies depuis la partie avec leur tempo, la grille
+qui tourne ses pages, les accords avec leurs exposants, et le bilan de
+fin de run.
+
+La suite est dans `chantiers.md`, avant tout les paliers.
 
 ## Les questions ouvertes
 

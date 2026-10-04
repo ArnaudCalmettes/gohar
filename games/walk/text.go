@@ -72,6 +72,19 @@ const (
 	msgGroovy   = "coach.groovy"
 	msgGreat    = "coach.great"
 	msgIDig     = "coach.idig"
+
+	// The review of a run.
+	msgReviewTitle       = "review.title" // {{.Title}}: the grid's
+	msgReviewWorked      = "review.worked"
+	msgReviewConsolidate = "review.consolidate"
+	msgReviewStart       = "review.start" // {{.Landed}}, {{.Expected}}: the beats
+	msgReviewMid         = "review.mid"
+	msgReviewHeld        = "review.held"
+	msgReviewTime        = "review.time"
+	msgReviewEarly       = "review.early"  // {{.Ms}}: the mean offset
+	msgReviewLate        = "review.late"   // {{.Ms}}
+	msgReviewSpread      = "review.spread" // {{.Ms}}: the spread around it
+	msgReviewKeys        = "review.keys"
 )
 
 var phrases = []string{
@@ -84,6 +97,9 @@ var phrases = []string{
 	msgOptLang, msgLangName, msgOptCalibrate, msgOptBack, msgOptKeys,
 	msgRushing, msgRelax, msgDragging, msgItDrags,
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
+	msgReviewTitle, msgReviewWorked, msgReviewConsolidate,
+	msgReviewStart, msgReviewMid, msgReviewHeld,
+	msgReviewTime, msgReviewEarly, msgReviewLate, msgReviewSpread, msgReviewKeys,
 }
 
 var (
