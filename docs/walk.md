@@ -684,6 +684,18 @@ scènes : le premier écran titre se contente de la position finale.
   kit n'en ayant. Le snap est versionné dans `games/walk/sounds` ;
   GeneralUser, 32 Mo, ne l'est pas : `make sounds` la télécharge dans
   le cache de l'utilisateur, d'un commit figé, empreinte vérifiée.
+- **La soundfont réduite** : `make slim` en tire `walk.sf2`, à côté
+  d'elle dans le cache, réduite à ce que le jeu joue : la contrebasse
+  (0:32), le piano (0:0) et quatre touches du kit Jazz (128:32 : la
+  charleston au pied, la ride 1, les deux wood blocks de la
+  calibration). C'est `synth/sf2` qui découpe : il garde les presets
+  demandés, leurs instruments et leurs échantillons, et pour un kit les
+  seules zones des touches frappées. Un test vérifie, sur GeneralUser
+  quand il est là, que chaque note gardée sonne comme avant, échantillon
+  pour échantillon. Pour l'écouter : `go run ./walk -sf2
+  ~/.cache/gohar/walk.sf2`. Reste à vérifier que la licence de
+  GeneralUser GS permet d'en publier une version réduite, avant de la
+  versionner et de l'embarquer, pour le jeu dans le navigateur.
 
 ## L'orchestre
 

@@ -238,9 +238,12 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
       la sortie audio, qu'oto ne nomme pas.
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
-- [ ] la soundfont : GeneralUser GS est retenue (`make sounds`) ;
-      restent un meilleur piano, Salamander réduit avec Polyphone par
-      exemple, et une mesure sous charge.
+- [ ] la soundfont : GeneralUser GS est retenue (`make sounds`), et
+      `make slim` la réduit à ce que joue *Walk with me* (`synth/sf2`) ;
+      restent la licence d'une version réduite, avant de l'embarquer,
+      le rééchantillonnage ou le SF3 si le navigateur le demande, un
+      meilleur piano (Salamander réduit, par exemple), et une mesure
+      sous charge.
 
 Deux portes ouvertes, décrites dans `architecture.md` : un lecteur MIDI
 en pur Go et la cible navigateur. Elles ne coûtent que la règle des

@@ -37,6 +37,16 @@ $(CACHE)/GeneralUser-GS.sf2:
 	@mv $@.part $@
 	@echo "GeneralUser GS v2.0.3 dans $@"
 
+# La soundfont de Walk with me, réduite à ce qu'il joue : la
+# contrebasse, le piano, et quatre touches du kit Jazz (la charleston au
+# pied, la ride, les deux wood blocks de la calibration). Voir
+# synth/sf2 et « Le son » dans docs/walk.md.
+.PHONY: slim
+slim: $(CACHE)/walk.sf2
+
+$(CACHE)/walk.sf2: $(CACHE)/GeneralUser-GS.sf2
+	cd synth && go run ./cmd/sfslim -keep 0:32 -keep 0:0 -keep 128:32/44,51,76,77 -o $@ $<
+
 # La latence audio ne se mesure pas en test : elle se joue et s'écoute.
 .PHONY: latency
 latency:

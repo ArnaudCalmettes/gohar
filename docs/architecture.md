@@ -65,6 +65,10 @@ gohar/
     clip.go                  un son enregistré en WAV, Clip
     histogram.go             histogramme des délais
     device.go                ouverture d'oto et discipline des buffers
+    sf2/                     lecture et écriture des tables d'un SF2,
+                             et Slim, la soundfont réduite à ce qu'un
+                             jeu joue
+    cmd/sfslim/              la commande de Slim, pour make slim
 
   charts/      go.mod        grilles venues d'autres logiciels
     ireal/                   URL iReal Pro : playlist, jetons, mesures,
@@ -501,7 +505,7 @@ l'inverse.**
 | `naming` | `harmony` |
 | `analysis` | `harmony` |
 | `dex` | `harmony` |
-| `synth` | rien du dépôt, et d'externe uniquement oto et go-meltysynth |
+| `synth` | rien du dépôt, et d'externe uniquement oto et go-meltysynth ; `synth/sf2`, la bibliothèque standard seule, meltysynth n'y servant qu'aux tests |
 | `keyboard` | rien du dépôt, et d'externe uniquement gomidi |
 | `charts` | `harmony` et `naming`, pour lire les chiffrages, et `analysis`, pour lui passer une grille (`Changes`) et l'afficher ; le reste de la lecture d'un format n'utilise que la bibliothèque standard |
 | `games` | tout |
