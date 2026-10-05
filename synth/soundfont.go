@@ -1,3 +1,5 @@
+//go:build !js
+
 package synth
 
 import (
@@ -16,15 +18,6 @@ import (
 // once, before the game starts, and share the result between samplers.
 type SoundFont struct {
 	sf *meltysynth.SoundFont
-}
-
-// A Preset names one instrument of a soundfont the way General MIDI
-// does: a bank and a patch number, 0 to 127. Bank 128 holds the drum
-// kits, where each key is a different percussion.
-type Preset struct {
-	Name  string
-	Bank  int
-	Patch int
 }
 
 // LoadSoundFont parses an SF2 file.
@@ -137,11 +130,4 @@ const maxVelocity = 127
 
 func midiVelocity(v float64) int32 {
 	return int32(max(1, min(maxVelocity, math.Round(v*maxVelocity))))
-}
-
-// writeStereo writes a frame, clamped: a soundfont recorded hot, or a
-// chord struck hard, may exceed full scale.
-func writeStereo(buf []byte, l, r float32) {
-	writeSample(buf[0:], float32(clamp(float64(l))))
-	writeSample(buf[bytesPerSample:], float32(clamp(float64(r))))
 }

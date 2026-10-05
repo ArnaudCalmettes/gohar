@@ -282,6 +282,13 @@ func writeFrame(buf []byte, v float32) {
 	writeSample(buf[bytesPerSample:], v)
 }
 
+// writeStereo writes a frame, clamped: a soundfont recorded hot, or a
+// chord struck hard, may exceed full scale.
+func writeStereo(buf []byte, l, r float32) {
+	writeSample(buf[0:], float32(clamp(float64(l))))
+	writeSample(buf[bytesPerSample:], float32(clamp(float64(r))))
+}
+
 func writeSample(buf []byte, v float32) {
 	binary.LittleEndian.PutUint32(buf, math.Float32bits(v))
 }

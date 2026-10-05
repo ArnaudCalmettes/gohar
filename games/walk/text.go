@@ -26,16 +26,22 @@ func newLang(tag string) (*lang.Lang, error) {
 // The IDs of the phrases. Every one is in each file of locales/, which
 // TestPhrases checks: call them through these names only.
 const (
-	msgTempo     = "tempo"       // {{.BPM}}
-	msgFreeTempo = "tempo.free"  // the chart waits for the root
-	msgKeys      = "status.keys" // the keys of the game
-	msgNoMIDI    = "status.nomidi"
-	msgMark      = "status.mark" // {{.Note}}, {{.Words}}: what a note was
+	msgTempo      = "tempo"      // {{.BPM}}
+	msgFreeTempo  = "tempo.free" // the chart waits for the root
+	msgKeyPlay    = "keys.play"  // the keys of the game, each as it stands
+	msgKeyStop    = "keys.stop"
+	msgKeyFree    = "keys.free"  // T, to the phase without tempo
+	msgKeyTempo   = "keys.tempo" // T, back to the tempo
+	msgKeyDemoOn  = "keys.demo.on"
+	msgKeyDemoOff = "keys.demo.off"
+	msgKeyGrid    = "keys.grid" // the arrows: the grid and the tempo
+	msgKeyMenu    = "keys.menu"
+	msgNoMIDI     = "status.nomidi"
+	msgMark       = "status.mark" // {{.Note}}, {{.Words}}: what a note was
 
 	msgModeTempo = "mode.tempo"
 	msgModeFree  = "mode.free"
 	msgModeDemo  = "mode.demo"
-	msgModeHint  = "mode.hint" // {{.Mode}}, at rest
 
 	msgOnTime  = "timing.ontime"
 	msgEarly   = "timing.early"
@@ -102,8 +108,9 @@ const (
 )
 
 var phrases = []string{
-	msgTempo, msgFreeTempo, msgKeys, msgNoMIDI, msgMark,
-	msgModeTempo, msgModeFree, msgModeDemo, msgModeHint,
+	msgTempo, msgFreeTempo, msgNoMIDI, msgMark,
+	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeyGrid, msgKeyMenu,
+	msgModeTempo, msgModeFree, msgModeDemo,
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,
 	msgPlayer, msgDemo,

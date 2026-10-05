@@ -107,7 +107,9 @@ drag, or swing. Without tempo, the chart waits for each root.
 
 Four charts for now, chords only, written for gohar: a jazz blues in
 F, *Satin Doll*, *Tune Up* and *Autumn Leaves*. At rest, ↑ and ↓ choose
-the chart, ← and → the tempo, for the session. A chart longer than
+the chart, ← and → the tempo, for the session, and D lets the stick
+figure play the bass himself, the demo, on from the start without a
+MIDI keyboard. A chart longer than
 three rows turns its pages a row at a time. A run played through ends
 on its review: what worked and what to consolidate, bar by bar on the
 chart, how the notes sat on the beat, and one piece of advice.
@@ -160,7 +162,14 @@ make vet
 make fmt
 make bench   # harmony benchmarks
 make slim    # remake the soundfont of Walk with me, after make sounds
+make wasm    # Walk with me in WebAssembly, into build/web
+make serve   # serve it on http://localhost:8080, for Chrome or Edge
 ```
+
+Every push to `main` publishes the browser version on GitHub Pages
+(`.github/workflows/pages.yml`), at
+<https://arnaudcalmettes.github.io/gohar/>. The repository's Pages
+setting must name "GitHub Actions" as its source.
 
 `make slim` is only needed when the game plays a new sound: it cuts
 GeneralUser GS down again to the presets and drum keys listed in the

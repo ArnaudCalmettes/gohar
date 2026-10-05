@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 	"math/rand/v2"
+	"strings"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -233,6 +234,8 @@ func (g *game) Update() scene.Transition {
 		g.start(now)
 	case inpututil.IsKeyJustPressed(ebiten.KeyT) && !g.running:
 		g.practicing = !g.practicing
+	case inpututil.IsKeyJustPressed(ebiten.KeyD) && !g.running && !g.practicing:
+		g.band.demo = !g.band.demo
 	case g.running:
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp):
 		g.load((g.current + len(g.tunes) - 1) % len(g.tunes))
@@ -450,7 +453,7 @@ func (g *game) Draw(dst *ebiten.Image) {
 	g.drawWalker(c)
 	g.drawBubble(c)
 
-	status := g.lang.T(msgKeys)
+	status := g.keys()
 	switch {
 	case g.midi == "":
 		status = g.lang.T(msgNoMIDI) + "   " + status
@@ -495,6 +498,30 @@ func (g *game) drawBubble(c screen.Canvas) {
 	c.Line(walkerX, float32(under), walkerX, float32(under+bubbleTail), 1, ink)
 }
 
+// keys says the keys of the game as they stand, each with what it does
+// now: Space starts or stops; at rest, T and D name the phase and the
+// demo they switch to, and the arrows choose the grid and the tempo. D
+// only means something with the tempo: without, the chart waits for
+// the player.
+func (g *game) keys() string {
+	if g.running {
+		return g.lang.T(msgKeyStop) + "   " + g.lang.T(msgKeyMenu)
+	}
+	keys := []string{g.lang.T(msgKeyPlay)}
+	if g.practicing {
+		keys = append(keys, g.lang.T(msgKeyTempo))
+	} else {
+		keys = append(keys, g.lang.T(msgKeyFree))
+		demo := msgKeyDemoOn
+		if g.band.demo {
+			demo = msgKeyDemoOff
+		}
+		keys = append(keys, g.lang.T(demo))
+	}
+	keys = append(keys, g.lang.T(msgKeyGrid), g.lang.T(msgKeyMenu))
+	return strings.Join(keys, "   ")
+}
+
 // drawMode draws, top right, the phase the space bar starts or is
 // playing: a framed label, filled while it plays, so that the mode
 // reads before the first note.
@@ -505,9 +532,6 @@ func (g *game) drawMode(c screen.Canvas) {
 		label = g.lang.T(msgModeFree)
 	case g.band.demo:
 		label = g.lang.T(msgModeDemo)
-	}
-	if !g.running {
-		label = g.lang.T(msgModeHint, "Mode", label)
 	}
 	w, h := c.Measure(label, g.fonts.ui)
 	const pad = 4

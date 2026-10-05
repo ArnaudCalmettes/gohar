@@ -22,10 +22,8 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 
@@ -57,31 +55,22 @@ func main() {
 	useMIDI := flag.Bool("midi", true, "listen to a MIDI keyboard if there is one")
 	port := flag.String("port", "", "an input's number or part of its name; the first one if empty")
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
+	gain := flag.Float64("gain", 0, "in the browser, the master gain of the band; 0 for its default")
 	record := flag.String("record", "", "write down the notes the marker hears, a line each, in this file")
 	language := flag.String("lang", saved.Lang, "the language of the game: fr or en")
 	flag.Parse()
 
-	var sf *synth.SoundFont
-	if !*chip {
-		sf = load(*sf2)
-		if *list {
-			for _, p := range sf.Presets() {
-				fmt.Printf("%3d:%-3d %s\n", p.Bank, p.Patch, p.Name)
-			}
-			return
-		}
-	}
-
-	var mix synth.Mixer
-	bd, err := newBand(&mix, sf, preset(*bassPreset), *split, *demo)
+	bd, closeAudio, err := openAudio(audioFlags{
+		sf2: *sf2, chip: *chip, list: *list,
+		bass: preset(*bassPreset), split: *split, demo: *demo, device: *device, gain: *gain,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	out, err := synth.Open(&mix, synth.Options{Device: *device})
-	if err != nil {
-		log.Fatal(err)
+	if bd == nil {
+		return // -list has listed the presets
 	}
-	defer out.Close()
+	defer closeAudio()
 
 	tunes, err := readTunes()
 	if err != nil {
@@ -139,6 +128,11 @@ func main() {
 			a.midi = ""
 		}
 	}
+	// Without a keyboard, the walker plays and the player listens: the
+	// demo is on, and D turns it off at rest.
+	if a.midi == "" {
+		bd.demo = true
+	}
 	// oto opens the default output and does not name it: the buffer is
 	// what the game knows of it, and what changes its latency.
 	a.pair = calibrate.Key(a.midi, fmt.Sprintf("default output, %v", *device))
@@ -156,29 +150,6 @@ func main() {
 	if err != nil && err != ebiten.Termination {
 		log.Fatal(err)
 	}
-	if err := out.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "audio:", err)
-	}
-}
-
-// load reads the soundfont at `path`, or the one embedded when `path`
-// is empty. A path given that cannot be read stops the game: the player
-// asked for those sounds.
-func load(path string) *synth.SoundFont {
-	var r io.Reader = bytes.NewReader(walkSF2)
-	if path != "" {
-		f, err := os.Open(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-		r = f
-	}
-	sf, err := synth.LoadSoundFont(r)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return sf
 }
 
 func preset(s string) synth.Preset {

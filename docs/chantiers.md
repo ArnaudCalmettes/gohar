@@ -261,11 +261,8 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
   - [x] un menu d'options : le tempo, la langue, la calibration ;
   - [ ] les autres drapeaux dans les options : le split et le son
         8 bits ;
-  - [ ] le nombre de chorus et la démo en réglages du run, à changer à
-        l'arrêt face à la grille, comme la grille et le tempo : le
-        joueur qui ne voit pas comment une grille doit sonner met la
-        démo à 160 pour en saisir la logique et trouver des chemins,
-        avant de la travailler ;
+  - [ ] le nombre de chorus en réglage du run, à changer à l'arrêt
+        face à la grille, comme la démo (D), la grille et le tempo ;
   - [ ] `ear` aux scènes et à `lang` ;
   - [ ] un drapeau pour aller droit à une scène, une fois tous les
         drapeaux repris par les options.
@@ -314,7 +311,16 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       `games/keyboard`), `games/settings` sur `localStorage`, les
       drapeaux et `-record` laissés au bureau, `make wasm` et `make
       serve`, une page qui démarre l'audio au clic et prévient quand le
-      navigateur n'a pas la Web MIDI. Puis `ear`, de la même façon.
+      navigateur n'a pas la Web MIDI. Le premier essai est construit
+      (« Le navigateur » dans `architecture.md`). Le son et le MIDI
+      marchent dans Chrome ; le son passe par FluidSynth sur le fil audio
+      (`synth/web`), la latence du synthé en Go sur le fil principal
+      étant injouable. La version en ligne se publie sur GitHub Pages à
+      chaque push (`.github/workflows/pages.yml`). Restent l'équilibre
+      du mix dans le navigateur (`?gain=`), un son plus brillant qu'au
+      bureau (le filtre des instruments, chez FluidSynth), et la
+      calibration.
+      Puis `ear`, de la même façon.
 - [ ] les cibles, telles qu'elles se dessinent : le navigateur pour
       tous (Chrome, Edge ou Firefox ; Safari, sur Mac comme sur iPad,
       n'a pas la Web MIDI) ; les tablettes Android par le même chemin,

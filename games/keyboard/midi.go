@@ -1,7 +1,9 @@
 package keyboard
 
-// The only file in the repository that imports a MIDI library. Keep it
-// that way: everything above talks to Source.
+// The only file in the repository that uses a MIDI library, with the
+// two that pick its driver: driver_desktop.go (RtMidi) and driver_js.go
+// (Web MIDI, in the browser). Keep it that way: everything above talks
+// to Source.
 
 import (
 	"errors"
@@ -12,7 +14,6 @@ import (
 
 	"gitlab.com/gomidi/midi/v2"
 	"gitlab.com/gomidi/midi/v2/drivers"
-	_ "gitlab.com/gomidi/midi/v2/drivers/rtmididrv"
 )
 
 // Ports lists the MIDI inputs, in the order OpenMIDI numbers them.

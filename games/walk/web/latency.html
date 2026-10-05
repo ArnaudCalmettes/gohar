@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walk with me : sonde de latence</title>
+<style>
+  html, body { margin: 0; background: #fff; color: #000; font-family: sans-serif; }
+  main { max-width: 40em; margin: 2em auto; padding: 0 1em; }
+  button { font-size: 1.2em; padding: .3em 1.2em; cursor: pointer; }
+  pre { background: #f4f4f4; padding: .8em; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<!--
+  A probe, not the game: does a soundfont synthesiser running on the
+  audio thread make the browser playable? FluidSynth, compiled to
+  WebAssembly by js-synthesizer, runs in an AudioWorklet; the MIDI
+  keyboard plays walk.sf2 through it, the double bass below G3 and the
+  piano from it, as in the game. No Go: the main thread only passes the
+  notes on. See make latency-web.
+-->
+<main>
+  <h1>Sonde de latence</h1>
+  <p>FluidSynth sur le fil audio du navigateur, avec la soundfont du jeu :
+     la contrebasse sous sol2 (G3), le piano au-dessus. Joue, et compare
+     au jeu sur le bureau.</p>
+  <button id="start">Démarrer</button>
+  <pre id="log"></pre>
+</main>
+<script src="js-synthesizer.min.js"></script>
+<script>
+  const SPLIT = 55;                 // G3, the game's split
+  const BASS = 0, PIANO = 1;        // the MIDI channels used
+  const log = (s) => { document.getElementById("log").textContent += s + "\n"; };
+
+  document.getElementById("start").onclick = async () => {
+    document.getElementById("start").disabled = true;
+    try {
+      // "interactive" asks the browser for its lowest latency.
+      const ctx = new AudioContext({ latencyHint: "interactive" });
+      await ctx.audioWorklet.addModule("libfluidsynth-2.4.6.js");
+      await ctx.audioWorklet.addModule("js-synthesizer.worklet.min.js");
+      const synth = new JSSynth.AudioWorkletNodeSynthesizer();
+      synth.init(ctx.sampleRate);
+      synth.createAudioNode(ctx).connect(ctx.destination);
+
+      const sf = await (await fetch("walk.sf2")).arrayBuffer();
+      const id = await synth.loadSFont(sf);
+      synth.midiProgramSelect(BASS, id, 0, 32);
+      synth.midiProgramSelect(PIANO, id, 0, 0);
+      log(`audio : ${ctx.sampleRate} Hz, base ${(ctx.baseLatency * 1000).toFixed(1)} ms` +
+          (ctx.outputLatency ? `, sortie ${(ctx.outputLatency * 1000).toFixed(1)} ms` : ""));
+
+      const access = await navigator.requestMIDIAccess({ sysex: false });
+      for (const input of access.inputs.values()) {
+        log(`clavier : ${input.name}`);
+        input.onmidimessage = (e) => {
+          const [status, key, vel] = e.data;
+          const ch = key < SPLIT ? BASS : PIANO;
+          switch (status & 0xf0) {
+          case 0x90:
+            if (vel > 0) { synth.midiNoteOn(ch, key, vel); break; }
+            // a note on at velocity 0 is a note off
+          case 0x80:
+            synth.midiNoteOff(ch, key);
+          }
+        };
+      }
+      if (access.inputs.size === 0) log("aucun clavier MIDI");
+      log("prêt : joue !");
+    } catch (err) {
+      log(`erreur : ${err}`);
+    }
+  };
+</script>
+</body>
+</html>

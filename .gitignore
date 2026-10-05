@@ -3,6 +3,9 @@
 /games/latency/latency
 /games/otolatency/otolatency
 
+# ce que make wasm produit
+/build/
+
 # profils et couverture
 *.test
 *.out

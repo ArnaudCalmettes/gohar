@@ -570,10 +570,16 @@ la partie.
   tempo, de 5 en 5. Le tempo des options sert de départ, et ce qu'on
   change en jouant vaut pour la séance, sans toucher aux options ; la
   grille choisie aussi.
-- **Plus tard, au même endroit**, le nombre de chorus et la démo : face
-  à une grille dont il ne voit pas comment elle doit sonner, le joueur
-  met la démo à 160 pour en saisir la logique et trouver des chemins,
-  puis la travaille lui-même.
+- **La démo, au même endroit** : D l'allume ou l'éteint, avec le
+  tempo seulement. Face à une grille dont il ne voit pas comment elle
+  doit sonner, le joueur met la démo à 160 pour en saisir la logique et
+  trouver des chemins, puis la travaille lui-même. Sans clavier MIDI,
+  elle est allumée d'office : le bonhomme joue, le joueur écoute. Le
+  nombre de chorus viendra au même endroit.
+- **La ligne d'état dit les touches telles qu'elles sont** : « Espace :
+  jouer » à l'arrêt, « Espace : arrêter » pendant un run ; T et D
+  nomment ce vers quoi ils basculent (« T : déchiffrage », « D : démo
+  ON »).
 
 ## L'écran titre
 

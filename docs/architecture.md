@@ -65,6 +65,9 @@ gohar/
     clip.go                  un son enregistré en WAV, Clip
     histogram.go             histogramme des délais
     device.go                ouverture d'oto et discipline des buffers
+    web/                     dans le navigateur : FluidSynth sur le fil
+                             audio (js-synthesizer), les instruments
+                             d'un SF2 et les sons enregistrés
     sf2/                     lecture et écriture des tables d'un SF2,
                              et Slim, la soundfont réduite à ce qu'un
                              jeu joue
@@ -88,11 +91,14 @@ gohar/
     Viendra abc/, la mélodie (voir formats.md).
 
   games/       go.mod        Ebitengine, ark, MIDI, go-i18n
-    keyboard/                port des touches, seul endroit qui voit gomidi
+    keyboard/                port des touches, seul endroit qui voit gomidi,
+                             son pilote selon la cible
     screen/                  canevas en coordonnées logiques, polices,
                              clavier à l'écran
     tempo/                   métronome, swing : la carte du temps musical
-    settings/                ce que les jeux gardent d'une partie à l'autre
+    settings/                ce que les jeux gardent d'une partie à l'autre :
+                             fichiers JSON, ou localStorage dans le
+                             navigateur
     lang/                    les phrases des jeux, par langue (go-i18n)
     scene/                   le régisseur : la pile des scènes d'un jeu
     calibrate/               la calibration de la latence, une scène
@@ -534,7 +540,8 @@ par **un seul fichier**, hors des sondes de mesure (`games/latency`,
 | Bibliothèque | Unique point d'entrée | Devant |
 |---|---|---|
 | oto | `synth/device.go` | `synth.Device` |
-| gomidi | `games/keyboard/midi.go` | `keyboard.Source` |
+| js-synthesizer, Web Audio | `synth/web`, dans le navigateur | `synth.Instrument` |
+| gomidi | `games/keyboard/midi.go`, son pilote choisi par `driver_desktop.go` ou `driver_js.go` | `keyboard.Source` |
 
 Ce n'est pas de la propreté décorative, c'est ce qui garde deux
 possibilités ouvertes à coût faible, et il faut le maintenir même quand
@@ -545,6 +552,58 @@ en `js/wasm`, oto a un pilote Web Audio, gomidi a `webmididrv` qui
 attaque l'API Web MIDI en pur Go. Le choix se fait par balise de
 compilation. Une bibliothèque appelée depuis dix endroits rendrait cette
 cible théorique ; appelée depuis un fichier, elle reste atteignable.
+
+C'est ce qui a permis le premier essai de *Walk with me* dans le
+navigateur à peu de frais : trois paquets ont chacun deux fichiers selon
+la cible, et rien d'autre ne change.
+
+- `games/keyboard` : `driver_desktop.go` importe `rtmididrv`,
+  `driver_js.go` `webmididrv`. Le pilote web demande l'accès au MIDI dès
+  le démarrage, ce qui montre l'invite du navigateur, et en attend la
+  réponse.
+- `games/settings` : des fichiers JSON sur le bureau (`files.go`), le
+  `localStorage` de la page dans le navigateur (`storage_js.go`), derrière
+  les mêmes `Path`, `Load` et `Save`.
+- `games/lang` : la langue de la session vient des variables
+  d'environnement sur le bureau, de `navigator.language` dans le
+  navigateur.
+
+Le son, lui, ne pouvait pas suivre tel quel. Dans le navigateur, oto
+prend ses échantillons au fil principal, celui qui fait aussi tourner Go
+et dessiner le jeu ; pour enjamber une image, il lui faut deux réserves
+de 50 ms, et le joueur entend sa note un dixième de seconde trop tard.
+`synth/web` remplace donc le synthé par FluidSynth, compilé en
+WebAssembly par js-synthesizer, qui tourne dans un AudioWorklet, sur le
+fil audio : Go ne fait plus que lui envoyer les notes, tout de suite pour
+les touches du joueur, datées par le séquenceur de FluidSynth pour
+l'orchestre. Le snap enregistré est un tampon Web Audio, lancé à sa date
+par le navigateur. Ce sont des `synth.Instrument` comme les autres :
+l'orchestre de *Walk with me* ne voit pas la différence, seul son
+assemblage change (`audio_desktop.go`, `audio_js.go`). Mesuré dans
+Chrome sous Linux : 10 ms de latence de base, et ce que le système audio
+ajoute à la sortie. Les voix 8 bits restent au bureau.
+
+Dans le navigateur, `synth` laisse de côté les deux fichiers qui
+importent oto et meltysynth (`device.go`, `soundfont.go`, balisés
+`!js`) : la version web n'en a pas l'usage. La taille de `walk.wasm`
+n'y gagne presque rien, l'éditeur de liens de Go écartant déjà le code
+qu'on n'appelle pas ; ses 20 Mo (6,5 Mo une fois compressés pour le
+transfert) sont surtout ceux d'Ebitengine, du runtime de Go et de la
+soundfont embarquée. La règle est ailleurs : ce que la version web
+compile, elle le joue.
+
+**En ligne.** À chaque push sur `main`, un workflow
+(`.github/workflows/pages.yml`) construit la version web et la publie
+sur GitHub Pages, en HTTPS, ce que la Web MIDI exige hors de
+`localhost`.
+
+La page (`games/walk/web/index.html`) démarre le jeu au clic : un
+navigateur ne joue aucun son avant un geste du joueur. Un navigateur sans
+Web MIDI, Safari, ferait paniquer le pilote au démarrage ; la page
+remplace d'abord l'API absente par un refus, et le jeu démarre sans
+clavier, en le disant. `make wasm` construit le tout dans `build/web`,
+`make serve` le sert sur `localhost`, qui compte comme un contexte sûr,
+ce que la Web MIDI exige.
 
 **Sortir du C++.** `rtmididrv` passe par RtMidi, qui est du C++ et traîne
 `libstdc++`. Sous Linux, un clavier MIDI USB est aussi un simple

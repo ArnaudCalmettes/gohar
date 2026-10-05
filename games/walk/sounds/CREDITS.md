@@ -28,3 +28,14 @@ pedal hi-hat, ride 1, the high and low wood blocks), 2.5 MB rather than
 32. `make slim` makes it from GeneralUser GS, which `make sounds`
 downloads into the user's cache directory and checks its hash; every
 note kept sounds as in the full soundfont (synth/sf2, TestGeneralUser).
+
+## In the browser
+
+The browser plays the same soundfont through FluidSynth
+(<https://www.fluidsynth.org>), compiled to WebAssembly by
+fluidsynth-emscripten and driven by js-synthesizer, by jet2jet
+(<https://github.com/jet2jet/js-synthesizer>). js-synthesizer is under
+the BSD 3-Clause license, FluidSynth under the GNU Lesser General Public
+License 2.1. Neither is kept in the repository: `make wasm` downloads
+version 1.11.0 of js-synthesizer's npm package and checks the hashes of
+the three files it serves.

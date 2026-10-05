@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Walk with me</title>
+<link rel="icon" href="data:,">
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; color: #000; font-family: sans-serif; }
+  #start { position: fixed; inset: 0; display: flex; flex-direction: column;
+           align-items: center; justify-content: center; gap: 1em; text-align: center; padding: 1em; }
+  #start h1 { margin: 0; font-size: 2.5em; }
+  #start button { font-size: 1.5em; padding: .4em 1.6em; cursor: pointer; }
+  #midi { max-width: 32em; color: #a33; }
+  #loading { display: none; color: #888; }
+</style>
+</head>
+<body>
+<!--
+  The page of Walk with me in the browser (see make wasm and make serve).
+
+  The game starts on a click: browsers start no sound before a gesture
+  of the player, and the click is that gesture. Starting the program
+  also asks for the MIDI keyboard, which shows the browser's prompt.
+
+  A browser without Web MIDI (Safari, on the Mac as on the iPad) would
+  make the MIDI driver panic as the program starts: the page stubs the
+  API with a refusal first, and the game starts without a keyboard.
+
+  The sound is FluidSynth on the audio thread, through js-synthesizer:
+  the page loads its main script, and the game loads libfluidsynth and
+  the worklet from this folder (see synth/web).
+
+  The parameters of the address are the game's flags, to try them
+  without building again: ?gain=0.6 is -gain=0.6, the band's volume in
+  the browser; ?demo is -demo; ?gain=0.6&lang=en both.
+-->
+<div id="start">
+  <h1>Walk with me</h1>
+  <p id="midi"></p>
+  <button id="play">Jouer · Play</button>
+  <p id="loading">Chargement… · Loading…</p>
+</div>
+<script src="js-synthesizer.min.js"></script>
+<script src="wasm_exec.js"></script>
+<script>
+  if (!navigator.requestMIDIAccess) {
+    document.getElementById("midi").textContent =
+      "Ce navigateur ne gère pas les claviers MIDI : pour jouer avec le tien, ouvre cette page dans Chrome, Edge ou Firefox. " +
+      "This browser does not support MIDI keyboards: to play with yours, open this page in Chrome, Edge or Firefox.";
+    navigator.requestMIDIAccess = () => Promise.reject(new Error("no Web MIDI in this browser"));
+  }
+  document.getElementById("play").onclick = async () => {
+    document.getElementById("play").disabled = true;
+    document.getElementById("loading").style.display = "block";
+    const go = new Go();
+    const flags = [...new URLSearchParams(location.search)].map(([k, v]) => v ? `-${k}=${v}` : `-${k}`);
+    go.argv = ["walk", ...flags];
+    const { instance } = await WebAssembly.instantiateStreaming(fetch("walk.wasm"), go.importObject);
+    document.getElementById("start").remove();
+    go.run(instance);
+  };
+</script>
+</body>
+</html>

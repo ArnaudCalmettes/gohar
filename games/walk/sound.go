@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	_ "embed"
 	"time"
 
@@ -89,51 +88,6 @@ type band struct {
 
 	demo bool // the band plays the bass itself, the reference line
 	held int  // the key the reference bass holds, 0 for none
-}
-
-// newBand builds the band on `mix`. A nil soundfont gives the chip
-// sounds.
-func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, split int, demo bool) (*band, error) {
-	b := &band{split: split, demo: demo, hat: pedalHat, ride: ride1, ta: lowWood, ti: hiWood}
-	if sf == nil {
-		hands, err := synth.NewEngine("triangle", true)
-		if err != nil {
-			return nil, err
-		}
-		noise, err := synth.NewEngine("noise", true)
-		if err != nil {
-			return nil, err
-		}
-		b.bass, b.piano, b.snap, b.kit = hands, hands, noise, noise
-		b.hat, b.ride, b.chip = noiseKey, chipRide, true
-		b.ta, b.ti = noiseKey, chipRide
-		mix.Add(hands, chipHandsGain)
-		mix.Add(noise, chipNoiseGain)
-		return b, nil
-	}
-
-	bass, err := synth.NewSampler(sf, bassPreset)
-	if err != nil {
-		return nil, err
-	}
-	piano, err := synth.NewSampler(sf, acousticGrand)
-	if err != nil {
-		return nil, err
-	}
-	kit, err := synth.NewSampler(sf, jazzKit)
-	if err != nil {
-		return nil, err
-	}
-	snap, err := synth.LoadClip(bytes.NewReader(snapWAV))
-	if err != nil {
-		return nil, err
-	}
-	b.bass, b.piano, b.kit, b.snap = bass, piano, kit, snap
-	mix.Add(bass, bassGain)
-	mix.Add(piano, pianoGain)
-	mix.Add(kit, kitGain)
-	mix.Add(snap, snapGain)
-	return b, nil
 }
 
 // play schedules `strokes`, the parts of beat `n` of `m`, each at its

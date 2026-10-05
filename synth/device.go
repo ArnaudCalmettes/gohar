@@ -1,3 +1,5 @@
+//go:build !js
+
 package synth
 
 import (
@@ -37,10 +39,6 @@ type Options struct {
 	// playback starts. Zero means the same as Device.
 	Player time.Duration
 }
-
-// DefaultBuffer is the starting point, not a recommendation. Raise it
-// when a machine crackles, and expect to have to.
-const DefaultBuffer = 10 * time.Millisecond
 
 // A Device is an open audio output. One per process: oto refuses a
 // second context, and so would the sound card.
