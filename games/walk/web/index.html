@@ -7,25 +7,35 @@
 <link rel="icon" href="data:,">
 <style>
   html, body { margin: 0; height: 100%; background: #fff; color: #000; font-family: sans-serif; }
-  #start { position: fixed; inset: 0; display: flex; flex-direction: column;
-           align-items: center; justify-content: center; gap: 1em; text-align: center; padding: 1em; }
+  #start { position: fixed; inset: 0; z-index: 1; background: #fff; display: flex; flex-direction: column;
+           align-items: center; justify-content: center; gap: 1em; padding: 1em; overflow: auto; }
   #start h1 { margin: 0; font-size: 2.5em; }
+  #start .tagline { margin: 0; color: #555; text-align: center; }
+  #howto { max-width: 34em; margin: 0; padding-left: 1.2em; line-height: 1.45; }
+  #warning { max-width: 34em; margin: 0; color: #a33; text-align: center; }
   #start button { font-size: 1.5em; padding: .4em 1.6em; cursor: pointer; }
-  #midi { max-width: 32em; color: #a33; }
-  #loading { display: none; color: #888; }
+  #progress { display: none; width: 20em; max-width: 80vw; }
+  #progress progress { width: 100%; height: 1em; }
+  #status { color: #666; text-align: center; min-height: 1.4em; margin: 0; }
 </style>
 </head>
 <body>
 <!--
   The page of Walk with me in the browser (see make wasm and make serve).
 
-  The game starts on a click: browsers start no sound before a gesture
-  of the player, and the click is that gesture. Starting the program
-  also asks for the MIDI keyboard, which shows the browser's prompt.
+  It explains first, then loads on a click: browsers start no sound
+  before a gesture of the player, and the click is that gesture. The
+  program, some 20 MB, is fetched with a progress bar: the bytes read
+  are counted against its size, which make wasm writes in place of
+  @WASM_SIZE@ (the size the server sends, compressed, would not match
+  the bytes the browser hands over, decompressed). The game then asks
+  for the MIDI keyboard, which shows the browser's prompt, and waits for
+  the answer: the page says so, and steps aside once the game draws.
 
   A browser without Web MIDI (Safari, on the Mac as on the iPad) would
   make the MIDI driver panic as the program starts: the page stubs the
-  API with a refusal first, and the game starts without a keyboard.
+  API with a refusal first, and the game starts without a keyboard, in
+  demo.
 
   The sound is FluidSynth on the audio thread, through js-synthesizer:
   the page loads its main script, and the game loads libfluidsynth and
@@ -37,28 +47,105 @@
 -->
 <div id="start">
   <h1>Walk with me</h1>
-  <p id="midi"></p>
-  <button id="play">Jouer · Play</button>
-  <p id="loading">Chargement… · Loading…</p>
+  <p class="tagline" data-text="tagline"></p>
+  <ul id="howto"></ul>
+  <p id="warning"></p>
+  <button id="play" data-text="play"></button>
+  <div id="progress"><progress max="1" value="0"></progress></div>
+  <p id="status"></p>
 </div>
 <script src="js-synthesizer.min.js"></script>
 <script src="wasm_exec.js"></script>
 <script>
+  const WASM_SIZE = Number("@WASM_SIZE@") || 0; // written by make wasm
+
+  const texts = {
+    fr: {
+      tagline: "Apprends à ta main gauche à remplacer le bassiste.",
+      howto: [
+        "Joue dans <b>Chrome</b> ou <b>Edge</b>. Firefox demande une autorisation à part ; Safari ne gère pas les claviers MIDI.",
+        "Branche ton <b>clavier MIDI</b> avant de cliquer sur Jouer.",
+        "Le navigateur va demander l'accès à tes <b>appareils MIDI</b> : accepte.",
+        "Sans clavier, le jeu démarre en <b>démo</b> : le bonhomme joue la basse à ta place.",
+        "Préfère un casque ou des enceintes <b>avec fil</b> : le Bluetooth ajoute du retard. La <b>calibration</b>, dans les options, mesure le reste.",
+      ],
+      noMIDI: "Ce navigateur ne gère pas les claviers MIDI : le jeu démarrera en démo. Pour jouer avec ton clavier, ouvre cette page dans Chrome ou Edge.",
+      play: "Jouer",
+      loading: (got, of) => of ? `Chargement… ${mb(got)} / ${mb(of)} Mo` : `Chargement… ${mb(got)} Mo`,
+      starting: "Démarrage… Si le navigateur demande l'accès aux appareils MIDI, accepte.",
+      failed: "Le chargement a échoué : ",
+    },
+    en: {
+      tagline: "Teach your left hand to replace the bass player.",
+      howto: [
+        "Play in <b>Chrome</b> or <b>Edge</b>. Firefox asks for a permission of its own; Safari does not support MIDI keyboards.",
+        "Plug in your <b>MIDI keyboard</b> before you click Play.",
+        "The browser will ask for access to your <b>MIDI devices</b>: allow it.",
+        "Without a keyboard, the game starts in <b>demo</b>: the stick figure plays the bass for you.",
+        "Prefer <b>wired</b> headphones or speakers: Bluetooth adds a delay. The <b>calibration</b>, in the options, measures the rest.",
+      ],
+      noMIDI: "This browser does not support MIDI keyboards: the game will start in demo. To play with your keyboard, open this page in Chrome or Edge.",
+      play: "Play",
+      loading: (got, of) => of ? `Loading… ${mb(got)} / ${mb(of)} MB` : `Loading… ${mb(got)} MB`,
+      starting: "Starting… If the browser asks for access to MIDI devices, allow it.",
+      failed: "Loading failed: ",
+    },
+  };
+  const mb = (n) => (n / 1e6).toFixed(1);
+  const params = new URLSearchParams(location.search);
+  const lang = (params.get("lang") || navigator.language || "en").startsWith("fr") ? "fr" : "en";
+  const t = texts[lang];
+  document.documentElement.lang = lang;
+  for (const el of document.querySelectorAll("[data-text]")) el.textContent = t[el.dataset.text];
+  document.getElementById("howto").innerHTML = t.howto.map((s) => `<li>${s}</li>`).join("");
+
   if (!navigator.requestMIDIAccess) {
-    document.getElementById("midi").textContent =
-      "Ce navigateur ne gère pas les claviers MIDI : pour jouer avec le tien, ouvre cette page dans Chrome, Edge ou Firefox. " +
-      "This browser does not support MIDI keyboards: to play with yours, open this page in Chrome, Edge or Firefox.";
+    document.getElementById("warning").textContent = t.noMIDI;
     navigator.requestMIDIAccess = () => Promise.reject(new Error("no Web MIDI in this browser"));
   }
+  const status = (s) => { document.getElementById("status").textContent = s; };
+
+  // fetchWithProgress reads the response bit by bit, to show how far
+  // the download has gone.
+  async function fetchWithProgress(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${url}: ${res.status}`);
+    const reader = res.body.getReader();
+    const bar = document.querySelector("#progress progress");
+    const chunks = [];
+    let got = 0;
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      got += value.length;
+      if (WASM_SIZE) bar.value = Math.min(got / WASM_SIZE, 1);
+      status(t.loading(got, WASM_SIZE));
+    }
+    return new Blob(chunks).arrayBuffer();
+  }
+
   document.getElementById("play").onclick = async () => {
-    document.getElementById("play").disabled = true;
-    document.getElementById("loading").style.display = "block";
-    const go = new Go();
-    const flags = [...new URLSearchParams(location.search)].map(([k, v]) => v ? `-${k}=${v}` : `-${k}`);
-    go.argv = ["walk", ...flags];
-    const { instance } = await WebAssembly.instantiateStreaming(fetch("walk.wasm"), go.importObject);
-    document.getElementById("start").remove();
-    go.run(instance);
+    const start = document.getElementById("start");
+    document.getElementById("play").style.display = "none";
+    document.getElementById("howto").style.display = "none";
+    document.getElementById("progress").style.display = "block";
+    try {
+      const bytes = await fetchWithProgress("walk.wasm");
+      status(t.starting);
+      const go = new Go();
+      const flags = [...params].map(([k, v]) => v ? `-${k}=${v}` : `-${k}`);
+      go.argv = ["walk", ...flags];
+      const { instance } = await WebAssembly.instantiate(bytes, go.importObject);
+      // The page steps aside once the game draws: Ebitengine adds its
+      // canvas when the program has started, after the MIDI prompt.
+      new MutationObserver((_, obs) => {
+        if (document.querySelector("canvas")) { start.remove(); obs.disconnect(); }
+      }).observe(document.body, { childList: true, subtree: true });
+      go.run(instance);
+    } catch (err) {
+      status(t.failed + err);
+    }
   };
 </script>
 </body>

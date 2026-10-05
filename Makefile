@@ -77,7 +77,7 @@ jssynth:
 wasm: jssynth
 	cd games && GOOS=js GOARCH=wasm go build -ldflags="-s -w" -o ../$(WEB)/walk.wasm ./walk
 	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(WEB)/
-	cp games/walk/web/index.html $(WEB)/
+	sed "s/@WASM_SIZE@/$$(wc -c < $(WEB)/walk.wasm)/" games/walk/web/index.html > $(WEB)/index.html
 	@ls -lh $(WEB)/walk.wasm
 
 serve: wasm

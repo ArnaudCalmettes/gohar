@@ -316,10 +316,10 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       marchent dans Chrome ; le son passe par FluidSynth sur le fil audio
       (`synth/web`), la latence du synthé en Go sur le fil principal
       étant injouable. La version en ligne se publie sur GitHub Pages à
-      chaque push (`.github/workflows/pages.yml`). Restent l'équilibre
-      du mix dans le navigateur (`?gain=`), un son plus brillant qu'au
-      bureau (le filtre des instruments, chez FluidSynth), et la
-      calibration.
+      chaque push (`.github/workflows/pages.yml`). Le mix (gain 0,5) et
+      la calibration y sont bons ; la page explique et montre le
+      chargement. Reste un son plus brillant qu'au bureau (le filtre des
+      instruments, chez FluidSynth), qui ne gêne pas.
       Puis `ear`, de la même façon.
 - [ ] les cibles, telles qu'elles se dessinent : le navigateur pour
       tous (Chrome, Edge ou Firefox ; Safari, sur Mac comme sur iPad,
