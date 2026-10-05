@@ -7,7 +7,7 @@ redécouvrir et sans rouvrir un débat déjà tranché. Les raisons des choix
 sont dans `architecture.md`, le vocabulaire dans `glossaire.md`, la
 collection dans `dex.md`, l'ear trainer dans `oreille.md`, les voicings
 dans `voicings.md`, l'analyse des grilles dans `grilles.md`, *Walk with
-me* dans `walk.md`. Ici, seulement ce qui reste à faire, les décisions à
+me* dans `walk.md`, le cours des grands débutants dans `debutants.md`. Ici, seulement ce qui reste à faire, les décisions à
 ne pas rouvrir, et un bref état des lieux. Une entrée terminée s'en va :
 ce qu'elle a tranché vit dans la doc de son sujet.
 
@@ -270,6 +270,12 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       `walk.md`) : un gros plan sur la main qui claque, qui recule
       jusqu'au bonhomme à sa place quand la basse entre. Pour le
       plaisir, pas urgent.
+- [ ] le cours des grands débutants (`debutants.md`) : les cinq leçons de
+      l'escalier, le palier 0 et sa casserole, la gamme majeure dans les
+      douze tons en alternant dièses et bémols, le microdex des
+      prérequis, les petites grilles ; à éprouver avec de vrais
+      débutants. Reste à décider où ranger le microdex dans le dépôt, et
+      son nom.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **le chantier prioritaire** : le cursus, c'est-à-dire les paliers,
     la basse en deux et le mode campagne, qui vont ensemble ; le bilan
