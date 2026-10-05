@@ -20,8 +20,8 @@ theory library never pulls in a graphics or audio stack.
 | `harmony/naming` | Words for the numbers: note spelling, mode, interval and scale names in French and English, as signs (`phrygien ♮6`, `ré♭ majeur`) or words (`phrygien bécarre 6`), and chord symbols in a chosen style (`Cmaj7`, `C-7`, `Cø`). |
 | `harmony/analysis` | Deterministic chord recognition, without scoring, and the analysis of a chord chart after the book *En Harmonie*: preparations, cadences, cells, degrees, the tonic the ear senses and its modulations, the form, half cadences and pedals. |
 | `dex`     | The player's collection of musical notions, shared by every game. |
-| `synth`   | The sound: a small polyphonic synthesiser (sine and 8-bit console timbres), soundfonts, recorded sounds, a mixer, notes scheduled to the sample, and the audio output, tuned for low latency. |
-| `charts`  | Reading chord charts from other software: iReal Pro playlists for now, down to the chords they name, and three commands to see their analysis and their form. |
+| `synth`   | The sound: a small polyphonic synthesiser (sine and 8-bit console timbres), soundfonts, recorded sounds, a mixer, notes scheduled to the sample, and the audio output, tuned for low latency. `synth/sf2` slims a soundfont down to what a game plays. |
+| `charts`  | Chord charts: gohar's open format, a profile of ChordPro, read and written; iReal Pro playlists read and converted into it; and commands to see their analysis and their form. |
 | `games`   | The playable programs, Ebitengine and MIDI included, and what they share: the canvas and the keyboard on screen, musical time, settings, languages. |
 
 Design notes, in French, live in [`docs/`](docs/): `architecture.md`
@@ -44,9 +44,9 @@ for the vocabulary, `chantiers.md` for what is open.
   ```
 
 - A MIDI keyboard is recommended, not required.
-- The sounds of *Walk with me*: `make sounds` downloads GeneralUser GS
-  (32 MB) into your cache directory (`~/.cache/gohar`), where the game
-  looks for it. Without it, the game falls back to 8-bit sounds.
+- Nothing to download for the sounds: *Walk with me* embeds a soundfont
+  of its own, GeneralUser GS slimmed down to the instruments it plays
+  (2.5 MB rather than 32).
 
 Developed and tested on Linux. Other platforms supported by Ebitengine
 should work but have not been tried.
@@ -98,18 +98,25 @@ go run ./ear -timbre square -authentic   # with the consoles' raw aliasing
 ### walk
 
 *Walk with me*, the game that teaches the left hand to replace the
-bassist. The first palier: the chart of a jazz blues, the hi-hat to
-count in, then the ride to keep going, your left hand on a double
-bass, your right on a piano, split at G3, and the roots you land on
-each change marked on the chart. Land enough of them and the stick
-figure snaps his fingers on 2 and 4: you hear it. Without tempo, the
-chart waits for each root. The title screen plays the blues while you
-choose; Esc goes back to it from the game. The options set the tempo
-and the language, kept from one run to the next, and open the latency
-calibration.
+bassist. The first palier: a chord chart, the hi-hat to count in, then
+the ride to keep going, your left hand on a double bass, your right on
+a piano, split at G3, and the roots you land on each change marked on
+the chart. Land enough of them and the stick figure snaps his fingers
+on 2 and 4: you hear it. He says a word now and then, when you rush,
+drag, or swing. Without tempo, the chart waits for each root.
+
+Four charts for now, chords only, written for gohar: a jazz blues in
+F, *Satin Doll*, *Tune Up* and *Autumn Leaves*. At rest, ↑ and ↓ choose
+the chart, ← and → the tempo, for the session. A chart longer than
+three rows turns its pages a row at a time. A run played through ends
+on its review: what worked and what to consolidate, bar by bar on the
+chart, how the notes sat on the beat, and one piece of advice.
+
+The title screen plays the blues while you choose; Esc goes back to it
+from the game. The options set the tempo and the language, kept from
+one run to the next, and open the latency calibration.
 
 ```sh
-make sounds                    # once, from the repository root
 cd games
 go run ./walk                  # the title screen, then the space bar starts and stops
 go run ./walk -demo            # the band walks the bass itself
@@ -118,8 +125,10 @@ go run ./walk -record line.txt # writes down every note heard
 go run ./walk -lang en         # in English; your session's language by default
 ```
 
-`-sf2` plays another soundfont, `-list` shows its presets and `-bass`
-picks one (`bank:patch`, `0:32` by default). `-choruses` sets how many
+`-sf2` plays another soundfont than the one embedded, `-list` shows
+its presets and `-bass` picks one (`bank:patch`, `0:32` by default):
+`make sounds` downloads the whole of GeneralUser GS into
+`~/.cache/gohar` for that. `-choruses` sets how many
 times the chart goes round, `-bpm` the tempo of the game (the one the
 options keep, 120 at first),
 `-split` the lowest key of the right hand (55, G3, by default).
@@ -150,7 +159,12 @@ make test    # every module
 make vet
 make fmt
 make bench   # harmony benchmarks
+make slim    # remake the soundfont of Walk with me, after make sounds
 ```
+
+`make slim` is only needed when the game plays a new sound: it cuts
+GeneralUser GS down again to the presets and drum keys listed in the
+Makefile, into `games/walk/sounds/walk.sf2`.
 
 The iReal Pro reader is checked against real playlists that are not
 ours to publish. Export yours from the app as HTML into
