@@ -592,7 +592,7 @@ transfert) sont surtout ceux d'Ebitengine, du runtime de Go et de la
 soundfont embarquée. La règle est ailleurs : ce que la version web
 compile, elle le joue.
 
-**En ligne.** À chaque push sur `main`, un workflow
+**En ligne.** À chaque push sur `master`, un workflow
 (`.github/workflows/pages.yml`) construit la version web et la publie
 sur GitHub Pages, en HTTPS, ce que la Web MIDI exige hors de
 `localhost`.

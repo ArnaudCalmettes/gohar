@@ -166,7 +166,7 @@ make wasm    # Walk with me in WebAssembly, into build/web
 make serve   # serve it on http://localhost:8080, for Chrome or Edge
 ```
 
-Every push to `main` publishes the browser version on GitHub Pages
+Every push to `master` publishes the browser version on GitHub Pages
 (`.github/workflows/pages.yml`), at
 <https://arnaudcalmettes.github.io/gohar/>. The repository's Pages
 setting must name "GitHub Actions" as its source.

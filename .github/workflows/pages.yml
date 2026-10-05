@@ -1,4 +1,4 @@
-# Walk with me in the browser, on GitHub Pages: on every push to main,
+# Walk with me in the browser, on GitHub Pages: on every push to master,
 # the game is built to WebAssembly (make wasm) and build/web published.
 # GitHub Pages serves it over HTTPS, which Web MIDI requires anywhere
 # but on localhost. The repository's Pages setting must say
@@ -7,7 +7,7 @@ name: Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
