@@ -187,6 +187,36 @@ droits comme toutes les grilles de gohar :
   nomme ensuite. C'est le mécanisme d'`Overheard` dans le dex, appliqué
   au débutant.
 - **Des séances courtes**, de trois à cinq minutes par leçon.
+- ***Au clair de la lune* en neuvièmes mineures**, un gag éprouvé de
+  la leçon des intervalles. Le bonhomme joue d'abord la première phrase
+  en octaves, do à gauche et do à droite : ça sonne plein, rassurant.
+  Puis, arrivé à la neuvième mineure, le demi-ton écarté d'une octave,
+  il la rejoue sur cet intervalle : en do à gauche, en do♯ à droite. On
+  entend d'un coup ce qu'est une dissonance, et tout le monde rit, les
+  adultes aussi. Le joueur peut ensuite tenir une des deux mains,
+  pendant que le bonhomme joue l'autre. La chanson est dans le domaine
+  public.
+- **La sensible par l'attente.** *Shave and a Haircut*, la formule de
+  fin que tout le monde connaît (« tagada tsoin tsoin » en français),
+  traditionnelle et libre : sol, sol-sol-la, sol, … si, do. Le bonhomme
+  s'arrête sur le si et ne joue pas le do : le joueur sent la tension,
+  la note qui manque. C'est lui qui joue le do, et « ah ! ça va mieux ».
+  Le si est la sensible : la note qui tire vers la tonique, un demi-ton
+  au-dessous. Le gag a sa place juste avant la règle du cycle des
+  quintes (voir « La gamme dans les douze tons »), qui parle de créer
+  et de détruire une sensible : le joueur sait déjà, à l'oreille, ce
+  qu'elle est.
+- **Un easter egg, pour qui fait exprès de rater.** Seulement sur les
+  demandes où l'on ne peut pas se tromper de bonne foi, comme « appuie
+  sur les deux touches noires d'une paire » : là, dix casseroles d'affilée,
+  c'est forcément exprès. Le bonhomme s'agace par paliers : un « Hé… »
+  d'abord, puis « Tu le fais exprès ? », et à la dixième : « Bon, j'en
+  ai marre ! Je peux pas travailler dans ces conditions. » Il part à
+  pied vers la droite, sort de l'écran, et un GAME OVER s'affiche. Une
+  touche, et il revient en traînant les pieds (« Bon, d'accord. Mais
+  c'est la dernière fois ! ») : la leçon reprend où elle en était, rien
+  n'est perdu. Une étape le permet ou non ; le compte repart de zéro à
+  la première bonne note.
 
 ## Plus loin
 
@@ -206,6 +236,122 @@ Un paquet de leçons, chacune une scène (`games/scene`) avec ses phrases
   avant le premier run ;
 - **autonome** : un programme qui enchaîne les leçons dans l'ordre de
   l'escalier.
+
+## Le bonhomme professeur
+
+Les leçons, c'est le bonhomme de *Walk with me* qui les donne, dans ses
+bulles, en tutoyant, comme un copain musicien : jamais un juge.
+
+**Apprendre en faisant.** Une leçon est une suite d'étapes courtes, qui
+finissent par un geste au clavier plutôt que par « appuie sur Entrée ».
+Une règle la tient : jamais plus de deux bulles sans que le joueur joue
+quelque chose.
+
+| Étape | Ce que fait le bonhomme | Ce qui fait avancer |
+|---|---|---|
+| Dire | Une bulle d'explication | Le temps de lecture, ou une touche |
+| Montrer | Il allume des touches sur le clavier à l'écran | Rien : il prépare l'étape suivante |
+| Jouer | Il joue une note ou une phrase, qu'on entend et qu'on voit | La fin de la phrase |
+| Demander | « Trouve le do », « joue la quinte de F » | La bonne réponse ; un raté, c'est la casserole et la bonne touche montrée |
+| Répéter après lui | Il joue, le joueur reproduit | La phrase rejouée juste |
+| Jouer ensemble | L'orchestre tourne, il annonce ce qu'on fait | Un nombre de réussites d'affilée |
+
+« Demander » est le palier 0 ; « Jouer ensemble », une mini-partie sur
+une petite grille. R fait réentendre ou relire la dernière étape ; une
+touche saute ce que le joueur sait déjà.
+
+Par exemple, la leçon 1. Elle mobilise l'oreille le plus tôt possible :
+le joueur chante ce qu'il joue.
+
+1. *Dire* : « Salut ! Avant de jouer ensemble, faisons connaissance
+   avec le clavier. »
+2. *Montrer* : toutes les paires de touches noires s'allument. « Tu vois
+   ces paires de touches noires ? Il y en a partout. »
+3. *Demander* : « Appuie sur les deux touches noires d'une paire,
+   ensemble. » Il claque des doigts. Puis : « Et maintenant, les trois
+   d'un groupe de trois. » Le joueur prend en main la géographie du
+   clavier, deux et trois doigts posés, avant le premier nom de note.
+4. *Do et fa*, ensemble et dès le départ : do à gauche d'une paire, fa
+   à gauche d'un trio, chacun en do ré mi et en lettres (C, F). Des
+   débutants les confondent au début ; les apprendre l'un contre
+   l'autre, par leur groupe, coupe court à la confusion. « Trouve un
+   do », « trouve un fa », mélangés.
+5. *Do ré mi fa sol*, à partir du do : le joueur les joue en les
+   chantant. Cinq notes, pas sept : elles tiennent sous une main, et
+   C D E F G se suivent dans l'alphabet, ce qui aide à retenir les
+   lettres.
+6. *Les motifs*, avec les deux mains : do-ré-do, do-mi-do, do-fa-do,
+   do-sol-do, en « répète après moi », toujours en chantant. Le do reste
+   sous un doigt de la main gauche, l'index de préférence, et la main
+   droite joue l'autre note : elle n'a qu'à se décaler de touche blanche
+   en touche blanche, d'un motif au suivant. Le
+   bonhomme conseille de chanter sans dire pourquoi : le joueur retient
+   ainsi, en même temps que les notes, la seconde, la tierce, la quarte
+   et la quinte, qu'il retrouvera nommées à la leçon 3.
+7. *Pour finir la séance*, les mêmes motifs, un peu plus longs, avec
+   une batterie, la plus simple possible, tout à la fin. Le rythme
+   n'est pas encore le sujet : c'est l'avant-goût de la leçon 2.
+
+La et si viendront ensuite.
+
+**L'activité de la leçon.** Une leçon se donne une fois ; elle ouvre une
+activité, sur laquelle le joueur s'entraîne aussi longtemps et aussi
+souvent qu'il veut, avant de passer à la leçon suivante. L'activité de
+la leçon 1 reprend ses motifs, do-ré-do, do-mi-do, do-fa-do,
+do-sol-do, sans tempo, de trois façons :
+
+- **montrés** : le bonhomme joue le motif, le joueur le répète ;
+- **dits en do ré mi** : « do, mi, do », sans rien jouer ni allumer ;
+- **dits en lettres** : « C, E, C ».
+
+Dans les deux façons dites, le clavier à l'écran n'allume rien et
+masque ses étiquettes « do / C » : le joueur cherche les touches, il ne
+les lit pas.
+
+Chaque façon passe d'abord les motifs dans l'ordre (ré, puis mi, puis
+fa, puis sol), puis mélangés. Viennent ensuite les trois façons
+mélangées entre elles. Le conseil de chanter revient au fil de
+l'activité.
+
+**Le passage à la leçon suivante**, c'est le joueur qui le décide, quand
+il se sent prêt. Une leçon donnée est marquée faite, d'une coche verte ;
+la suivante apparaît, prête à être lancée quand il le voudra. Une leçon
+faite se rejoue à volonté, et son activité reste ouverte.
+
+**Chanter est un conseil, jamais une obligation.** Le jeu n'écoute pas
+et n'écoutera pas : pas de micro. Certains joueurs sont mal à l'aise à
+l'idée de chanter, d'autres jouent au casque avec du monde autour ; ce
+qu'on se permet dans une vraie leçon de piano serait intrusif dans un
+jeu. Le bonhomme le conseille, et le reconseille souvent, d'une leçon à
+l'autre, sans jamais le vérifier.
+
+**L'écran** ressemble à celui de la partie : le bonhomme à la même
+place, à gauche, et le clavier en bas. La grille n'apparaît que quand
+la leçon en a besoin. Le clavier peut se réduire à deux ou trois
+octaves, pour être plus gros et plus lisible.
+
+**Le clavier du joueur.** Le MIDI ne dit pas combien de touches compte
+un clavier. Le plus simple est de le demander en jouant, et c'est une
+bonne première étape : « joue la touche la plus grave de ton clavier,
+puis la plus aiguë ». Le jeu garde l'étendue dans les réglages, et
+l'affine s'il entend une note au-delà. Le nom du clavier, qui contient
+parfois son nombre de touches (« Keystation 49 »), ne s'y fie pas : rien
+ne l'oblige.
+
+**Du texte**, pour l'instant : enregistrer des voix est hors de portée,
+et deux langues en doublent le coût. Une synthèse vocale, plus tard,
+peut-être ; le navigateur en offre une.
+
+**Le code.** Les leçons s'écrivent d'abord en Go : leurs conditions
+(« un do », « la quinte de F ») sont du code, et un format de données
+n'a de sens qu'une fois les types d'étapes stabilisés. Elles vivent
+d'emblée dans un paquet à elles, `games/walk/lessons`, tant que seul
+*Walk with me* s'en sert. Ce paquet ne connaît pas *Walk with
+me* : il décrit les étapes et juge les notes, et le jeu lui prête une
+scène (une interface : dire dans une bulle, allumer des touches, jouer
+une phrase, lancer l'orchestre). Les leçons restent ainsi extractibles
+vers les autres jeux, comme prévu dans « La forme », et se testent sans
+écran.
 
 ## Les questions ouvertes
 

@@ -308,8 +308,19 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       paramétrables, les paliers suivants des modes (les autres
       systèmes) et des degrés (tonique mobile, à la basse, d'autres
       gammes, l'échelle chromatique).
-- [ ] `ear` en WASM : `midi.go` derrière un build tag, le dex dans
-      `localStorage`, l'audio démarré au clic du menu.
+- [ ] les jeux dans le navigateur, *Walk with me* d'abord : c'est ce qui
+      ouvre les tests avec de vrais joueurs, sans rien à installer. Le
+      pilote MIDI selon la cible (`rtmididrv` ou `webmididrv`, dans
+      `games/keyboard`), `games/settings` sur `localStorage`, les
+      drapeaux et `-record` laissés au bureau, `make wasm` et `make
+      serve`, une page qui démarre l'audio au clic et prévient quand le
+      navigateur n'a pas la Web MIDI. Puis `ear`, de la même façon.
+- [ ] les cibles, telles qu'elles se dessinent : le navigateur pour
+      tous (Chrome, Edge ou Firefox ; Safari, sur Mac comme sur iPad,
+      n'a pas la Web MIDI) ; les tablettes Android par le même chemin,
+      avec des boutons tactiles ; une version native pour Mac, un jour,
+      construite sur un Mac (cgo, CoreMIDI) et non signée ; l'iPad en
+      dernier, sans clavier MIDI par le navigateur.
 - [ ] le shoot'em up, jeu d'harmonie déguisé, sur rail, sans esquive ;
       une grille iReal comme niveau.
 - [ ] les quatre pistes du billet sur la game loop de l'improvisateur,
