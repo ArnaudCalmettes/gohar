@@ -8,8 +8,9 @@
 // left hand sounds like a double bass, the right like a piano, split at
 // sol2 (G3). Without tempo, the chart waits for each root instead.
 //
-// The sounds come from GeneralUser GS, which `make sounds` downloads
-// into the user's cache directory; without it, the chip sounds of ear.
+// The sounds come from GeneralUser GS, slimmed down to what the game
+// plays and embedded (sounds/walk.sf2, made by `make slim`); -chip
+// plays the 8-bit sounds of ear instead.
 //
 //	go run ./walk                  # the title screen, then play: the space bar starts
 //	go run ./walk -demo            # the band plays the bass itself
@@ -17,15 +18,16 @@
 //	go run ./walk -record line.txt # write down the notes heard
 //	go run ./walk -lang en         # in English; the session's language by default
 //	go run ./walk -list            # the presets of the soundfont
-//	go run ./walk -sf2 other.sf2 -bass 0:33
+//	go run ./walk -sf2 ~/.cache/gohar/GeneralUser-GS.sf2 -bass 0:33
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/hajimehoshi/ebiten/v2"
 
@@ -47,7 +49,7 @@ func main() {
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
 	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
 	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")
-	sf2 := flag.String("sf2", defaultSoundFont(), "the soundfont of the band: the bass, the piano, the drums")
+	sf2 := flag.String("sf2", "", "the soundfont of the band: the bass, the piano, the drums; the one embedded if empty")
 	chip := flag.Bool("chip", false, "play 8-bit sounds rather than the soundfont")
 	list := flag.Bool("list", false, "list the presets of the soundfont, and quit")
 	bassPreset := flag.String("bass", "0:32", "bank:patch of the bass in the soundfont")
@@ -59,10 +61,6 @@ func main() {
 	language := flag.String("lang", saved.Lang, "the language of the game: fr or en")
 	flag.Parse()
 
-	if _, err := os.Stat(*sf2); err != nil && !*chip {
-		log.Printf("no soundfont at %s: 8-bit sounds instead (run make sounds)", *sf2)
-		*chip = true
-	}
 	var sf *synth.SoundFont
 	if !*chip {
 		sf = load(*sf2)
@@ -163,22 +161,20 @@ func main() {
 	}
 }
 
-// defaultSoundFont is where `make sounds` puts GeneralUser GS.
-func defaultSoundFont() string {
-	dir, err := os.UserCacheDir()
-	if err != nil {
-		return "GeneralUser-GS.sf2"
-	}
-	return filepath.Join(dir, "gohar", "GeneralUser-GS.sf2")
-}
-
+// load reads the soundfont at `path`, or the one embedded when `path`
+// is empty. A path given that cannot be read stops the game: the player
+// asked for those sounds.
 func load(path string) *synth.SoundFont {
-	f, err := os.Open(path)
-	if err != nil {
-		log.Fatal(err)
+	var r io.Reader = bytes.NewReader(walkSF2)
+	if path != "" {
+		f, err := os.Open(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		r = f
 	}
-	defer f.Close()
-	sf, err := synth.LoadSoundFont(f)
+	sf, err := synth.LoadSoundFont(r)
 	if err != nil {
 		log.Fatal(err)
 	}

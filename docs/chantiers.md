@@ -239,9 +239,9 @@ de la BEPA, dus à Étienne Guéreau, se citent librement :
 - [ ] les timbres 8 bits dans les préférences du joueur (aujourd'hui
       `-timbre` et `-authentic`).
 - [ ] la soundfont : GeneralUser GS est retenue (`make sounds`), et
-      `make slim` la réduit à ce que joue *Walk with me* (`synth/sf2`) ;
-      restent la licence d'une version réduite, avant de l'embarquer,
-      le rééchantillonnage ou le SF3 si le navigateur le demande, un
+      `make slim` la réduit à ce que joue *Walk with me* (`synth/sf2`),
+      2,5 Mo embarqués dans le jeu ; restent le rééchantillonnage ou le
+      SF3 si le navigateur le demande, un
       meilleur piano (Salamander réduit, par exemple), et une mesure
       sous charge.
 

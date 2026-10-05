@@ -39,13 +39,14 @@ $(CACHE)/GeneralUser-GS.sf2:
 
 # La soundfont de Walk with me, réduite à ce qu'il joue : la
 # contrebasse, le piano, et quatre touches du kit Jazz (la charleston au
-# pied, la ride, les deux wood blocks de la calibration). Voir
-# synth/sf2 et « Le son » dans docs/walk.md.
-.PHONY: slim
-slim: $(CACHE)/walk.sf2
+# pied, la ride, les deux wood blocks de la calibration). Elle est
+# versionnée et embarquée dans le jeu ; à refaire quand le jeu joue un
+# son de plus. Voir synth/sf2 et « Le son » dans docs/walk.md.
+WALK_SF2 := games/walk/sounds/walk.sf2
 
-$(CACHE)/walk.sf2: $(CACHE)/GeneralUser-GS.sf2
-	cd synth && go run ./cmd/sfslim -keep 0:32 -keep 0:0 -keep 128:32/44,51,76,77 -o $@ $<
+.PHONY: slim
+slim: $(CACHE)/GeneralUser-GS.sf2
+	cd synth && go run ./cmd/sfslim -keep 0:32 -keep 0:0 -keep 128:32/44,51,76,77 -o ../$(WALK_SF2) $<
 
 # La latence audio ne se mesure pas en test : elle se joue et s'écoute.
 .PHONY: latency

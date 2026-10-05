@@ -17,6 +17,13 @@ import (
 //go:embed sounds/snap.wav
 var snapWAV []byte
 
+// walkSF2 is GeneralUser GS slimmed down to what the band plays: the
+// double bass, the piano, and the four keys of the Jazz kit below (see
+// sounds/CREDITS.md and `make slim`).
+//
+//go:embed sounds/walk.sf2
+var walkSF2 []byte
+
 // The drums: the Jazz kit of the soundfont (see "Le son" in
 // docs/walk.md), the hi-hat closed by the foot, and the ride.
 var jazzKit = synth.Preset{Bank: 128, Patch: 32}

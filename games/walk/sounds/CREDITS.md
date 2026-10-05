@@ -13,7 +13,18 @@
 
 The double bass, the piano and the drum kit come from GeneralUser GS
 v2.0.3, by S. Christian Collins
-(<https://github.com/mrbumpy409/GeneralUser-GS>). Its license allows
-using it in software and redistributing it, modified or not. It is not
-kept in the repository because of its size (32 MB): `make sounds`
-downloads it into the user's cache directory and checks its hash.
+(<https://github.com/mrbumpy409/GeneralUser-GS>), under the GeneralUser
+GS License v2.0: "Please feel free to use it in your software projects,
+and to modify the SoundFont bank or its packaging to suit your needs."
+The same license warns that the origin of some of its samples is
+uncertain, which "may concern you if you intend to use GeneralUser GS
+in a commercial software product".
+
+## walk.sf2
+
+GeneralUser GS slimmed down to what Walk with me plays: the double bass
+(0:32), the piano (0:0), and four keys of the Jazz kit (128:32: the
+pedal hi-hat, ride 1, the high and low wood blocks), 2.5 MB rather than
+32. `make slim` makes it from GeneralUser GS, which `make sounds`
+downloads into the user's cache directory and checks its hash; every
+note kept sounds as in the full soundfont (synth/sf2, TestGeneralUser).
