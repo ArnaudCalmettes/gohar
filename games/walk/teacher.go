@@ -17,17 +17,17 @@ import (
 // positive toward the right of the screen.
 func drawTeacher(c screen.Canvas, x, y float32, s float64, snap bool, col color.Color) {
 	const (
-		stroke = 1.5
-		thigh  = 8.0
-		shin   = 8.0
-		torso  = 14.0
-		head   = 5.0
+		stroke       = sketchStroke
+		thigh        = sketchThigh
+		shin         = sketchShin
+		torso        = sketchTorso
+		head         = sketchHead
+		neckGap      = sketchNeckGap
+		shoulderDrop = sketchShoulderDrop
+		upper        = sketchUpper
+		fore         = sketchFore
 
-		neckGap      = 1.2
-		shoulderDrop = 0.6
-		shoulder     = 3.0 // from the neck to each shoulder, sideways
-		upper        = 6.0
-		fore         = 7.0
+		shoulder = 3.0 // from the neck to each shoulder, sideways
 
 		stance = 0.2 // each leg, apart
 

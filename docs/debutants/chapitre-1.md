@@ -32,33 +32,33 @@ S'il faut en glisser un avant-goût, l'usage le dira.
 ### 1.1 Premiers pas
 
 La leçon 1.1 mobilise l'oreille le plus tôt possible : le joueur chante
-ce qu'il joue.
+ce qu'il joue. Elle est écrite dans le jeu : ses étapes dans
+`games/walk/lessons/scripts.go`, ses bulles dans `games/walk/locales`.
+Ce qui suit la résume.
 
-1. *Dire* : « Salut ! Avant de jouer ensemble, faisons connaissance
-   avec le clavier. »
-2. *Montrer* : toutes les paires de touches noires s'allument. « Tu vois
-   ces paires de touches noires ? Il y en a partout. »
-3. *Demander* : « Appuie sur les deux touches noires d'une paire,
-   ensemble. » Il claque des doigts. Puis : « Et maintenant, les trois
-   d'un groupe de trois. » Le joueur prend en main la géographie du
+1. Le bonhomme se présente : avant de jouer ensemble, on fait
+   connaissance avec le clavier.
+2. Il montre les paires de touches noires, partout sur le clavier, et
+   fait appuyer sur les deux touches d'une paire, ensemble ; de même
+   pour les groupes de trois. Le joueur prend en main la géographie du
    clavier, deux et trois doigts posés, avant le premier nom de note.
-4. *Do et fa*, ensemble et dès le départ : do à gauche d'une paire, fa
-   à gauche d'un trio, chacun en do ré mi et en lettres (C, F). Des
+   Ce sont les deux demandes de la leçon où l'on ne se trompe pas de
+   bonne foi : l'easter egg y veille.
+3. Do et fa, ensemble et dès le départ : do à gauche d'une paire, fa à
+   gauche d'un trio, chacun en do ré mi et en lettres (C, F). Des
    débutants les confondent au début ; les apprendre l'un contre
-   l'autre, par leur groupe, coupe court à la confusion. « Trouve un
-   do », « trouve un fa », mélangés.
-5. *Do ré mi fa sol*, à partir du do : le joueur les joue en les
-   chantant. Cinq notes, pas sept : elles tiennent sous une main, et
-   C D E F G se suivent dans l'alphabet, ce qui aide à retenir les
-   lettres.
-6. *Les motifs*, avec les deux mains : do-ré-do, do-mi-do, do-fa-do,
-   do-sol-do, en « répète après moi », toujours en chantant. Le do reste
-   sous un doigt de la main gauche, l'index de préférence, et la main
-   droite joue l'autre note : elle n'a qu'à se décaler de touche blanche
-   en touche blanche, d'un motif au suivant. Le bonhomme conseille de
-   chanter sans dire pourquoi : le joueur retient ainsi, en même temps
-   que les notes, la seconde, la tierce, la quarte et la quinte, qu'il
-   retrouvera nommées au chapitre 3.
+   l'autre, par leur groupe, coupe court à la confusion. Le bonhomme
+   les fait trouver, mélangés, dans les deux notations.
+4. Do ré mi fa sol, à partir du do, joués après lui en les chantant.
+   Cinq notes, pas sept : elles tiennent sous une main, et C D E F G se
+   suivent dans l'alphabet, ce qui aide à retenir les lettres.
+5. Les motifs, do-ré-do, do-mi-do, do-fa-do, do-sol-do, répétés après
+   lui sans faute, d'une main ou des deux. Avec deux mains, le do reste
+   sous la gauche, et la droite n'a qu'à se décaler de touche blanche
+   en touche blanche, d'un motif au suivant. Chanter les motifs fait
+   retenir, en même temps que les notes, la seconde, la tierce, la
+   quarte et la quinte, que le joueur retrouvera nommées au chapitre 3 ;
+   le conseil, donné à l'étape 4, reviendra dans l'activité.
 
 **L'activité de la leçon 1.1** reprend ses motifs, do-ré-do, do-mi-do,
 do-fa-do, do-sol-do, sans tempo, de trois façons :

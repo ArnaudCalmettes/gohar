@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"sync/atomic"
 	"time"
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
@@ -37,14 +38,11 @@ const (
 	lowWood = 77
 
 	// The casserole of the lessons, a wrong note's "clong": the cowbell.
+	// walk.sf2 also keeps the bass drum, 36, the snare, 38, and the hi-hat
+	// closed by the stick, 42, for the plain kit of chapter 2 to come
+	// (docs/debutants/chapitre-2.md).
 	casserole    = 56
 	casseroleVel = 0.9
-
-	// The plain kit of chapter 2 (docs/debutants/chapitre-2.md), to
-	// come: the bass drum, the snare, the hi-hat closed by the stick.
-	bassDrum  = 36
-	snare     = 38
-	closedHat = 42
 )
 
 var acousticGrand = synth.Preset{Bank: 0, Patch: 0}
@@ -92,6 +90,8 @@ type band struct {
 	kit, snap   synth.Instrument
 	bass, piano synth.Instrument // the player's hands, split at `split`
 	split       int
+	bassHand    atomic.Bool // the split holds: only while a grid is played
+	silent      atomic.Bool // the keys do not sound: they turn a lesson's page
 	hat, ride   int  // the keys of the kit
 	ta, ti      int  // the calibration's
 	chip        bool // the kit is a noise: each stroke needs its release
@@ -163,12 +163,17 @@ func (bd *band) stop(at time.Time) {
 	}
 }
 
-// key sounds the player's key at once: the double bass below the
-// split, the piano above. Called from the MIDI goroutine: the
-// instruments' queues are safe for it.
+// key sounds the player's key at once: the piano, and while a grid is
+// played, `bassHand`, the double bass below the split; nothing while
+// `silent`, when a lesson waits for a bubble to be read and the key
+// turns the page. Called from the MIDI goroutine: the instruments'
+// queues are safe for it, and the flags are atomic.
 func (bd *band) key(e keyboard.Event) {
+	if e.Down && bd.silent.Load() {
+		return
+	}
 	inst := bd.piano
-	if e.Key < bd.split {
+	if e.Key < bd.split && bd.bassHand.Load() {
 		inst = bd.bass
 	}
 	if e.Down {

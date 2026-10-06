@@ -107,10 +107,13 @@ gohar/
     walk/                    Walk with me : temps attendus, marqueur,
                              walking bass générée, batterie,
                              enregistrement, écran titre, grille et
-                             bonhomme à l'écran, phrases en français et
-                             en anglais
+                             bonhomme à l'écran, cours des débutants et
+                             leçons, phrases en français et en anglais
       grids/                 les grilles du jeu, en ChordPro, sous
                              licence libre
+      lessons/               le cours des débutants sans écran : ses
+                             chapitres, le moteur des leçons et leurs
+                             scripts
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio
@@ -369,6 +372,12 @@ joue le rôle du `ebiten.Game` : Ebitengine ne voit que lui.
   dans un canal que la scène du dessus vide à chaque image, même quand
   elle n'en fait rien, pour que la suivante ne les reçoive pas en
   retard.
+
+Les scènes de *Walk with me* sont aujourd'hui l'écran titre, les
+options, la calibration (commune, dans `games/calibrate`), le cours des
+débutants et sa leçon, la partie et son bilan. Le cours remplace l'écran
+titre, et la leçon remplace le cours, qui la reprend à son retour : la
+leçon arrête la musique des menus, le cours la relance.
 
 Les bibliothèques de scènes pour Ebitengine existent (stagehand, gscene,
 bamenn), mais aucune n'offre la pile, et aucune n'est assez mûre pour

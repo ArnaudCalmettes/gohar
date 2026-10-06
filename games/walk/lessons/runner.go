@@ -36,6 +36,12 @@ func (r *Runner) Done() bool { return r.at >= len(r.steps) }
 // step. Meanwhile the keys sound, and count for nothing.
 func (r *Runner) Waiting() bool { return r.waiting && !r.Done() }
 
+// Reading tells whether the step playing waits for its bubble to be
+// read, and nothing else: a key of either keyboard may then say so.
+func (r *Runner) Reading() bool {
+	return !r.Done() && !r.waiting && r.steps[r.at].read()
+}
+
 // Held tells whether a key is down.
 func (r *Runner) Held() bool { return len(r.held) > 0 }
 

@@ -37,6 +37,25 @@ const (
 	stumbleTime = 400 * time.Millisecond
 )
 
+// The walker's sketch, at scale 1, as walker.draw and drawTeacher draw
+// him: lengths in logical units, the same in profile and from the front.
+const (
+	sketchStroke = 1.5
+	sketchThigh  = 8.0
+	sketchShin   = 8.0
+	sketchTorso  = 14.0
+	sketchHead   = 5.0 // its radius
+
+	sketchNeckGap      = 1.2 // the centre of the head above the neck, in radii
+	sketchShoulderDrop = 0.6 // the shoulders below the neck, in radii
+	sketchUpper        = 6.0 // the arm, shoulder to elbow
+	sketchFore         = 7.0 // elbow to hand
+
+	// sketchHeadAbove is the centre of his head above his feet, standing
+	// straight: where the tail of a bubble aims.
+	sketchHeadAbove = sketchThigh + sketchShin + sketchTorso + sketchNeckGap*sketchHead
+)
+
 type walker struct {
 	ease   float64 // 0 to 1, a moving average of landed against missed
 	streak int     // arrivals landed in a row
@@ -93,16 +112,15 @@ func (w *walker) draw(c screen.Canvas, x, y float32, s float64, g gait, beats fl
 	// The sketch, at scale 1: lengths in logical units, angles in
 	// radians from the downward vertical, positive toward the front.
 	const (
-		stroke = 1.5
-		thigh  = 8.0
-		shin   = 8.0
-		torso  = 14.0
-		head   = 5.0 // its radius
-
-		neckGap      = 1.2 // the centre of the head above the neck, in radii
-		shoulderDrop = 0.6 // the shoulders below the neck, in radii
-		upper        = 6.0 // the arm, shoulder to elbow
-		fore         = 7.0 // elbow to hand
+		stroke       = sketchStroke
+		thigh        = sketchThigh
+		shin         = sketchShin
+		torso        = sketchTorso
+		head         = sketchHead
+		neckGap      = sketchNeckGap
+		shoulderDrop = sketchShoulderDrop
+		upper        = sketchUpper
+		fore         = sketchFore
 
 		stride       = 0.4 // each leg, walking
 		grooveStride = 0.5

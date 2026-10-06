@@ -246,37 +246,6 @@ Un paquet de leçons, chacune une scène (`games/scene`) avec ses phrases
 - **autonome** : un programme qui enchaîne les chapitres dans l'ordre
   du *ramp up*, et leurs leçons.
 
-Pour l'instant, le cours vit dans *Walk with me*, sous « Apprendre » au
-menu du titre. L'écran liste les chapitres ouverts, puis les leçons du
-chapitre choisi : celles qui sont faites, d'une coche verte, et la
-suivante. Les autres restent cachées. Le catalogue des chapitres et la
-règle qui ouvre les leçons sont dans `games/walk/lessons`, la
-progression du joueur dans le fichier `course.json` de ses réglages.
-
-Une leçon écrite se joue dans sa propre scène (`games/walk/lesson.go`),
-qui prête la scène des leçons (voir « Le code » plus bas) : le bonhomme
-à gauche, face au joueur, une main dans la poche et l'autre libre, sa bulle sur plusieurs lignes à droite, le clavier de la
-partie réduit à trois octaves, de C3 à C6, chaque touche blanche
-nommée « do » au-dessus de « C ». Les touches montrées s'éclairent en
-bleu pâle. La casserole est la cloche du kit. Une bonne réponse a son
-signe à elle : le bonhomme lève sa main libre et claque des doigts, et
-dit « Oui ! », « Bien ! » ou « C'est ça ! », jamais deux fois de suite
-le même.
-L'orchestre se tait pendant la leçon : le chapitre 1 se joue sans
-tempo, et les phrases du bonhomme s'entendent seules. N'importe quelle
-touche de l'ordinateur dit qu'une bulle est lue, sauf R, qui rejoue
-l'étape, et Échap, qui revient au cours sans marquer la
-leçon faite. Une étape que le joueur termine au clavier ne passe pas
-aussitôt la main : la suivante attend que ses touches soient relâchées,
-puis le temps d'une noire, pour ne pas le presser. La casserole sonne
-avec la fausse note, tout de suite : c'est le son de la note qui
-n'était pas attendue. Le bonhomme, lui, ne réagit qu'une fois la touche
-relâchée, ou un temps après qu'elle a été enfoncée, qu'il s'agisse de
-saluer une bonne réponse ou de rejouer la consigne : répondre à une
-touche encore tenue coupe la parole au joueur. Ses répliques à l'easter
-egg (« Hé… », « Tu le fais exprès ? ») suivront la même règle. La leçon 1.1 est la première écrite ; son activité, et
-les leçons suivantes, restent à faire.
-
 ## Le bonhomme professeur
 
 Les leçons, c'est le bonhomme de *Walk with me* qui les donne, dans ses
@@ -366,6 +335,52 @@ Le paquet a pris forme ainsi :
 - **le déroulé** (`Runner`) : le jeu lui transmet les touches, la fin
   des phrases du bonhomme et les bulles lues, et il passe à l'étape
   suivante quand celle en cours est finie. R rejoue l'étape en cours.
+
+## Dans le jeu
+
+**Le menu.** Pour l'instant, le cours vit dans *Walk with me*, sous
+« Apprendre » au menu du titre. L'écran liste les chapitres ouverts,
+puis les leçons du chapitre choisi : celles qui sont faites, d'une
+coche verte, et la suivante ; les autres restent cachées. Le catalogue
+des chapitres et la règle qui ouvre les leçons sont dans
+`games/walk/lessons`, la progression du joueur dans le fichier
+`course.json` de ses réglages.
+
+**L'écran d'une leçon** (`games/walk/lesson.go`). Le bonhomme se tient
+à gauche, face au joueur, une main dans la poche et l'autre libre (voir
+« Le bonhomme » dans `walk.md`). Sa bulle court sur plusieurs lignes à
+droite, et sa queue part du point de la bulle le plus proche de sa
+tête, qu'elle vise. Le clavier de la partie, en bas, est réduit à trois
+octaves, de C3 à C6, chaque touche blanche nommée « do » au-dessus de
+« C » ; les touches montrées s'éclairent en bleu pâle. Tout le clavier
+sonne en piano, comme partout hors d'une grille : la contrebasse sous
+G3 n'a pas de sens pour une leçon, et un do qui devient contrebasse une
+octave plus bas déroute. L'orchestre se tait : le chapitre 1 se
+joue sans tempo, et les phrases du bonhomme s'entendent seules.
+
+**Les touches.** Quand une bulle attend d'être lue, n'importe quelle
+touche la tourne, de l'ordinateur ou du clavier MIDI ; celle du clavier
+ne sonne pas alors, et ne s'allume pas, pour qu'on ne la prenne pas
+pour une réponse. R rejoue l'étape, Échap revient au cours sans marquer
+la leçon faite. La ligne d'état dit ce qu'on attend : une touche pour
+continuer, ou des notes à jouer.
+
+**Les réactions.** La casserole, la cloche du kit, sonne avec la fausse
+note, tout de suite : c'est le son de la note qui n'était pas attendue.
+Une bonne réponse a son signe à elle : le bonhomme lève sa main libre
+et claque des doigts, avec un mot d'approbation, jamais deux fois de
+suite le même. Lui ne réagit qu'une fois la touche
+relâchée, ou un temps après qu'elle a été enfoncée, qu'il s'agisse de
+saluer une bonne réponse, de rejouer la consigne ou de s'agacer :
+répondre à une touche encore tenue coupe la parole au joueur. Une étape
+que le joueur termine au clavier ne passe pas aussitôt la main non
+plus : la suivante attend que ses touches soient relâchées, puis le
+temps d'une noire, pour ne pas le presser.
+
+**L'avancement.** La leçon 1.1 est la première écrite ; son activité et
+les leçons suivantes restent à faire. Une fois une leçon dans le jeu,
+sa doc la résume, étape par étape, sans recopier ses bulles : le texte
+exact vit dans les fichiers de phrases, où on le retouche.
 
 ## Les questions ouvertes
 

@@ -68,7 +68,8 @@ const (
 	msgOptKeys      = "options.keys"
 
 	msgCourseKeys = "course.keys" // the chapters and lessons are named in course.go
-	msgLessonKeys = "lesson.keys" // what a lesson says comes from lessons, by ID
+	msgLessonKeys = "lesson.keys" // a bubble to read; what a lesson says comes from lessons, by ID
+	msgLessonPlay = "lesson.play" // notes to play
 	msgCheerYes   = "cheer.yes"   // a right answer in a lesson
 	msgCheerGood  = "cheer.good"
 	msgCheerRight = "cheer.right"
@@ -129,7 +130,7 @@ var phrases = []string{
 	msgPlayer, msgDemo,
 	msgMenuLearn, msgMenuPlay, msgMenuOptions, msgMenuQuit, msgTitleKeys,
 	msgOptLang, msgLangName, msgOptCalibrate, msgOptBack, msgOptKeys,
-	msgCourseKeys, msgLessonKeys, msgCheerYes, msgCheerGood, msgCheerRight,
+	msgCourseKeys, msgLessonKeys, msgLessonPlay, msgCheerYes, msgCheerGood, msgCheerRight,
 	msgTeaseHey, msgTeaseOnPurpose, msgTeaseFedUp, msgTeaseBack,
 	msgRushing, msgRelax, msgDragging, msgItDrags,
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,

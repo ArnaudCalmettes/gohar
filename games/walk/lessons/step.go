@@ -10,7 +10,7 @@ type Step interface {
 	pressed(s Stage, held []int) bool  // a key went down, the last of `held`
 	released(s Stage, held []int) bool // a key went up, `held` the keys still down
 	phraseEnded(s Stage) bool          // the walker's phrase is over
-	read() bool                        // the bubble is read: a key, or its reading time
+	read() bool                        // the bubble is read: a key, or its reading time; no side effect
 }
 
 // still is the step that waits for nothing it does not name.

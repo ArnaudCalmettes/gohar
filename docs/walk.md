@@ -68,7 +68,10 @@ disparaissent. Elle dure autant qu'il le souhaite.
 - Deux zones, partagées par défaut au **sol2** (MIDI 55, G3 en notation
   américaine), le partage réglable (`-split`). Pas de mains croisées :
   le partage suffit toujours.
-- La main gauche sonne comme une contrebasse, la droite comme un piano.
+- Pendant une grille, la main gauche sonne comme une contrebasse, la
+  droite comme un piano. Ailleurs, dans les menus où l'on improvise sur
+  la ligne de basse du `jam` comme dans les leçons, tout le clavier est
+  un piano.
 - **Le registre de la basse.** Celui des quatre cordes de la
   contrebasse, du mi le plus grave du piano (E1) au sol (G2), guide la
   ligne, écrite une octave au-dessus de ce qui sonne (Siskind, p. 116 et
@@ -390,6 +393,14 @@ Ce qui suit est notre lecture des sources.
   joueur sur les dernières mesures, avec de l'inertie : une fausse note
   isolée ne le fait pas trébucher, une série oui. **Ses bulles** suivent
   la jauge de tension, usure comprise.
+- **Professeur**, dans les leçons du cours des débutants, il change de
+  pose : de face, une main dans la poche, l'autre libre, qui claque des
+  doigts à une bonne réponse (`teacher.go`, et « Dans le jeu » dans
+  `debutants.md`). Il sort de l'écran, de profil, quand l'easter egg
+  l'a poussé à bout, et revient de même, tourné vers la gauche
+  (`walkout.go`). Ses deux poses partagent les proportions du croquis
+  (`walker.go`), et ses bulles, dans la partie comme dans les leçons,
+  le même dessin (`bubble.go`).
 - Les états, du plus bas au plus haut :
   1. **il cherche le tempo** : pas hésitant, regard vers le joueur ;
      l'état de la phase sans tempo et du décompte ;
@@ -797,8 +808,9 @@ les coups d'un temps et les traduit en ordres datés.
   relâche d'abord le précédent, pour que la ride ne s'empile pas sur
   elle-même.
 - **Les touches du joueur** passent à côté : elles sonnent tout de suite,
-  la contrebasse sous le split, le piano au-dessus, depuis la goroutine
-  MIDI, sans attendre la boucle de jeu.
+  la contrebasse sous le split pendant une grille, le piano au-dessus
+  et partout ailleurs, depuis la goroutine MIDI, sans attendre la boucle
+  de jeu.
 
 ### Le chef d'orchestre : quand jouer
 

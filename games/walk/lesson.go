@@ -4,7 +4,6 @@ import (
 	"image/color"
 	"math/rand/v2"
 	"slices"
-	"strings"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -102,6 +101,8 @@ type lesson struct {
 
 	walker walker  // for his walkout, in profile
 	out    walkout // the easter egg (see walkout.go)
+
+	turned [screen.MIDIKeys]bool // the keys that turned a page, silent, until they go up
 }
 
 func newLesson(a *app, back *course, id string, steps []lessons.Step) *lesson {
@@ -122,15 +123,13 @@ func (l *lesson) Enter() {
 	l.runner.Start()
 }
 
-func (l *lesson) Leave() {}
+// Leave gives the keys their sound back.
+func (l *lesson) Leave() { l.band.silent.Store(false) }
 
 // The lessons.Stage the lesson's runner plays on.
 
 func (l *lesson) Say(phrase string) {
-	l.bubble = wrap(l.lang.T(phrase), func(s string) float64 {
-		w, _ := screen.Canvas{Scale: 1}.Measure(s, l.fonts.bubble)
-		return w
-	}, bubbleW)
+	l.bubble = l.wrap(l.lang.T(phrase), bubbleW)
 }
 
 func (l *lesson) Light(pcs []int) { l.shown = pcs }
@@ -187,6 +186,17 @@ func (l *lesson) Miss(pcs []int) {
 func (l *lesson) Update() scene.Transition {
 	now := time.Now()
 	l.drain(func(e keyboard.Event) {
+		if l.turned[e.Key] {
+			l.turned[e.Key] = e.Down // up at last: a key like the others
+			return
+		}
+		if e.Down && l.teaching() && l.runner.Reading() {
+			// A bubble to read: the key turns the page, unheard (see
+			// band.silent) and unlit, as a key of the computer would.
+			l.turned[e.Key] = true
+			l.runner.Read()
+			return
+		}
 		if l.down[e.Key] == e.Down {
 			return // a repeat, or a key held across scenes
 		}
@@ -235,6 +245,9 @@ func (l *lesson) Update() scene.Transition {
 	case len(keys) > 0:
 		l.runner.Read()
 	}
+	// The keys turn the page in silence while a bubble waits to be read;
+	// set here, before the next key comes.
+	l.band.silent.Store(l.teaching() && l.runner.Reading())
 	if l.runner.Done() {
 		l.back.finish(l.id)
 		return scene.Replace(l.back)
@@ -256,7 +269,9 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	if !l.drawWalkout(dst, c, now) {
 		drawTeacher(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
 	}
-	l.drawBubble(c, l.walkerAt(now))
+	if len(l.bubble) > 0 {
+		l.drawSpeech(c, l.bubble, bubbleX, bubbleTop, bubbleW, bubbleLineH, l.walkerAt(now))
+	}
 
 	l.piano.Draw(c, func(k int) screen.Dress {
 		if slices.Contains(l.shown, k%12) {
@@ -265,24 +280,11 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 		return screen.Dress{}
 	})
 	l.drawNames(c)
-	c.Text(l.lang.T(msgLessonKeys), l.fonts.ui, margin, statusY, faint)
-}
-
-// drawBubble draws the walker's phrase as the game draws his bubble: the
-// lines in the chart's hand, a line under them, and a stroke from its
-// start down toward his head.
-func (l *lesson) drawBubble(c screen.Canvas, x float64) {
-	if len(l.bubble) == 0 {
-		return
+	keys := msgLessonKeys
+	if l.teaching() && !l.runner.Reading() {
+		keys = msgLessonPlay // the walker waits for notes, not for a page turned
 	}
-	y := float64(bubbleTop)
-	for _, line := range l.bubble {
-		c.Text(line, l.fonts.bubble, bubbleX, y, ink)
-		y += bubbleLineH
-	}
-	under := float32(y + bubbleGap)
-	c.Line(bubbleX, under, bubbleX+bubbleW, under, 1, ink)
-	c.Line(bubbleX, under, float32(x)+20, walkerY-bubbleLift+bubbleTail, 1, ink)
+	c.Text(l.lang.T(keys), l.fonts.ui, margin, statusY, faint)
 }
 
 // drawNames writes the names of the white keys on them, "do" over "C".
@@ -299,26 +301,4 @@ func (l *lesson) drawNames(c screen.Canvas) {
 		c.Centred(letters[i], l.fonts.ui, mid, bottom, faint)
 		c.Centred(solfege[i], l.fonts.ui, mid, bottom-lh, faint)
 	}
-}
-
-// wrap cuts `s` into lines no wider than `width`, as `measure` measures
-// them, between words.
-func wrap(s string, measure func(string) float64, width float64) []string {
-	var lines []string
-	line := ""
-	for _, word := range strings.Fields(s) {
-		next := word
-		if line != "" {
-			next = line + " " + word
-		}
-		if line != "" && measure(next) > width {
-			lines = append(lines, line)
-			next = word
-		}
-		line = next
-	}
-	if line != "" {
-		lines = append(lines, line)
-	}
-	return lines
 }

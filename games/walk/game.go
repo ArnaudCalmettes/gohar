@@ -75,8 +75,6 @@ const (
 const (
 	bubbleHold = 1500 * time.Millisecond
 	bubbleLift = 130 // from his feet to the line under the phrase
-	bubbleTail = 6   // the stroke from that line down to his head
-	bubbleGap  = 3   // between the phrase and its line
 )
 
 // A cell is one chord written in a bar, at the beat it starts on.
@@ -172,14 +170,17 @@ func (g *game) Enter() {
 		g.jam.stop(time.Now())
 		g.jam = nil
 	}
+	g.band.bassHand.Store(true) // the left hand walks: a double bass under the split
 }
 
 // Leave stops the run, if any: the bass released, the recording
-// flushed.
+// flushed. Elsewhere the keyboard is a piano from end to end: over the
+// jam of the menus, in the lessons.
 func (g *game) Leave() {
 	if g.running {
 		g.stop(time.Now())
 	}
+	g.band.bassHand.Store(false)
 }
 
 func (g *game) start(now time.Time) {
@@ -482,10 +483,8 @@ func (g *game) drawWalker(c screen.Canvas) {
 	g.walker.draw(c, walkerX, walkerY, walkerScale, g.walker.gait(onBeat), beats, now, col)
 }
 
-// drawBubble draws what the walker says above his head, for a while,
-// the way a comic strip drawn in strokes does: the phrase in the
-// chart's hand, a line under it, and a stroke from that line down to
-// him. No frame.
+// drawBubble draws what the walker says above his head, for a while: one
+// line, centred over him (see drawSpeech).
 func (g *game) drawBubble(c screen.Canvas) {
 	if g.bubble == "" || time.Since(g.bubbleAt) > bubbleHold {
 		return
@@ -493,9 +492,7 @@ func (g *game) drawBubble(c screen.Canvas) {
 	w, h := c.Measure(g.bubble, g.fonts.bubble)
 	x := max(float64(margin), walkerX-w/2) // never off the screen
 	under := float64(walkerY - bubbleLift)
-	c.Text(g.bubble, g.fonts.bubble, x, under-bubbleGap-h, ink)
-	c.Line(float32(x), float32(under), float32(x+w), float32(under), 1, ink)
-	c.Line(walkerX, float32(under), walkerX, float32(under+bubbleTail), 1, ink)
+	g.drawSpeech(c, []string{g.bubble}, x, under-bubbleGap-h, w, h, walkerX)
 }
 
 // keys says the keys of the game as they stand, each with what it does
