@@ -270,13 +270,12 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       `walk.md`) : un gros plan sur la main qui claque, qui recule
       jusqu'au bonhomme à sa place quand la basse entre. Pour le
       plaisir, pas urgent.
-- [ ] le cours des grands débutants (`debutants.md`) : les cinq chapitres
-      du *ramp up* et leurs leçons (le chapitre 1 est écrit), le palier 0
-      et sa casserole, la gamme majeure dans les douze tons en
-      alternant dièses et bémols, le microdex des prérequis, les
-      petites grilles ; à éprouver avec de vrais
-      débutants. Reste à décider où ranger le microdex dans le dépôt, et
-      son nom.
+- [ ] le cours des grands débutants (`debutants.md`) : les cinq
+      chapitres du *ramp up* et leurs leçons (les chapitres 1 à 3 sont
+      écrits), le palier 0 et sa casserole, la gamme majeure dans les
+      douze tons en alternant dièses et bémols, le microdex des
+      prérequis ; à éprouver avec de vrais débutants. Reste à décider
+      où ranger le microdex dans le dépôt, et son nom.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :
   - **le chantier prioritaire** : le cursus, c'est-à-dire les paliers,
     la basse en deux et le mode campagne, qui vont ensemble ; le bilan
@@ -300,7 +299,11 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
   - **avec des joueurs de tous niveaux** : l'équilibrage des fenêtres de
     temps, des seuils du bonhomme et du mélange ;
   - **avec le cursus** : le catalogue de patterns de la basse de
-    référence.
+    référence ;
+  - **avec le cours des débutants** : la transposition des grilles à la
+    volée, sans écrire un `.cho` par tonalité. D'abord le blues en C,
+    sans altérations, pour clore le chapitre 1 ; puis chaque grille dans
+    les tonalités dont le joueur possède la gamme.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres
