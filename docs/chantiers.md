@@ -270,10 +270,11 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       `walk.md`) : un gros plan sur la main qui claque, qui recule
       jusqu'au bonhomme à sa place quand la basse entre. Pour le
       plaisir, pas urgent.
-- [ ] le cours des grands débutants (`debutants.md`) : les cinq leçons de
-      l'escalier, le palier 0 et sa casserole, la gamme majeure dans les
-      douze tons en alternant dièses et bémols, le microdex des
-      prérequis, les petites grilles ; à éprouver avec de vrais
+- [ ] le cours des grands débutants (`debutants.md`) : les cinq chapitres
+      du *ramp up* et leurs leçons (le chapitre 1 est écrit), le palier 0
+      et sa casserole, la gamme majeure dans les douze tons en
+      alternant dièses et bémols, le microdex des prérequis, les
+      petites grilles ; à éprouver avec de vrais
       débutants. Reste à décider où ranger le microdex dans le dépôt, et
       son nom.
 - [ ] *Walk with me* (`walk.md`), au-delà du premier jalon :

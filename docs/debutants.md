@@ -40,12 +40,17 @@ même geste de la main gauche d'une tonalité à la voisine.
   l'orchestre, le `jam` des menus de *Walk with me*. Une fausse note ne
   coupe rien, et il n'y a pas d'écran d'échec.
 
-## L'escalier
+## Le *ramp up*
 
-Chaque leçon apporte un savoir, et ce savoir débloque une façon de
-jouer :
+Le cours a deux niveaux. Un **chapitre** a un objectif, un savoir qui
+débloque une façon de jouer. Il se découpe en **leçons**, assez courtes
+pour tenir en une séance, qui y mènent pas à pas. « Connaître son
+clavier » est l'objectif du chapitre 1 ; trouver do et fa, puis do ré mi
+fa sol, c'est la leçon 1.1.
 
-| Leçon | Ce que le joueur sait ensuite | Ce qu'il joue aussitôt |
+Les chapitres, et ce que chacun débloque :
+
+| Chapitre | Ce que le joueur sait ensuite | Ce qu'il joue aussitôt |
 |---|---|---|
 | 1. Le clavier | Trouver une note, en do et en C, avec ses altérations | Le palier 0 : les fondamentales, une par accord |
 | 2. Le temps | Jouer sur la pulsation de l'orchestre | Le palier 1 : les fondamentales sur le temps |
@@ -64,10 +69,30 @@ Parler de tierce, de quinte ou de septième, c'est parler des degrés de
 la gamme : il faut au moins la gamme majeure avant de plaquer une
 triade.
 
+Le chapitre 1, le clavier, compte quatre leçons :
+
+| Leçon | Ce qu'elle apporte |
+|---|---|
+| 1.1 | Les groupes de touches noires ; do et fa ; do ré mi fa sol (voir « Le bonhomme professeur ») |
+| 1.2 | La et si : les sept notes blanches ; mi et si à droite des groupes, comme do et fa à gauche |
+| 1.3 | Les dièses : une note qu'on fait monter d'un cran ; mi♯ et si♯, les premières notes enharmoniques |
+| 1.4 | Les bémols : une note qu'on fait descendre d'un cran ; deux noms par touche noire ; fa♭ et do♭ ; l'échelle chromatique |
+
+Les quatre leçons sont décrites dans « Le bonhomme professeur ».
+
+Le chapitre se clôt par une activité qui ramène au jeu : une grille
+jouée hors tempo, au palier 0. Ce n'est pas tout à fait le mode
+déchiffrage : il faut viser juste, et donner la bonne note du premier
+coup. La grille est une vraie grille du jeu : une section A entière de
+*Satin Doll*, ou le blues, ou les deux. Leurs fondamentales demandent ce
+que le chapitre vient d'apprendre : A♭ et D♭ dans *Satin Doll*, B♭ dans
+le blues en F.
+
 ## Le palier 0
 
-Un palier plus simple que le premier de *Walk with me* : le joueur pose
-la fondamentale de chaque accord, sans exigence de temps.
+C'est l'activité qui clôt le chapitre 1. Un palier plus simple que le
+premier de *Walk with me* : le joueur pose la fondamentale de chaque
+accord, sans exigence de temps.
 
 Il ne tolère pas l'erreur pour autant. Le mode déchiffrage de *Walk with
 me* attend patiemment la bonne note et ne compte pas les autres ; le
@@ -165,11 +190,11 @@ fait.
 Des grilles de quatre ou huit mesures, écrites pour une leçon, libres de
 droits comme toutes les grilles de gohar :
 
-- C | F | G | C pour le palier 0 ;
 - un II-V-I en C pour la basse en deux ;
-- puis les mêmes dans les tonalités que le joueur possède.
+- puis le même dans les tonalités que le joueur possède.
 
-*Satin Doll* vient ensuite, comme première vraie grille.
+Le palier 0 n'en a pas besoin : il se joue d'emblée sur de vraies
+grilles, *Satin Doll* et le blues (voir « Le *ramp up* »).
 
 ## Rendre le cours amusant
 
@@ -187,8 +212,8 @@ droits comme toutes les grilles de gohar :
   nomme ensuite. C'est le mécanisme d'`Overheard` dans le dex, appliqué
   au débutant.
 - **Des séances courtes**, de trois à cinq minutes par leçon.
-- ***Au clair de la lune* en neuvièmes mineures**, un gag éprouvé de
-  la leçon des intervalles. Le bonhomme joue d'abord la première phrase
+- ***Au clair de la lune* en neuvièmes mineures**, un gag éprouvé du
+  chapitre des intervalles. Le bonhomme joue d'abord la première phrase
   en octaves, do à gauche et do à droite : ça sonne plein, rassurant.
   Puis, arrivé à la neuvième mineure, le demi-ton écarté d'une octave,
   il la rejoue sur cet intervalle : en do à gauche, en do♯ à droite. On
@@ -202,10 +227,15 @@ droits comme toutes les grilles de gohar :
   s'arrête sur le si et ne joue pas le do : le joueur sent la tension,
   la note qui manque. C'est lui qui joue le do, et « ah ! ça va mieux ».
   Le si est la sensible : la note qui tire vers la tonique, un demi-ton
-  au-dessous. Le gag a sa place juste avant la règle du cycle des
-  quintes (voir « La gamme dans les douze tons »), qui parle de créer
-  et de détruire une sensible : le joueur sait déjà, à l'oreille, ce
-  qu'elle est.
+  au-dessous. Le joueur en a déjà senti l'effet à la leçon 1.2, à la
+  fin de la gamme ; ce gag-ci la nomme et la fait **retenir**. Il a sa
+  place au chapitre 4, juste avant la règle du cycle des quintes (voir
+  « La gamme dans les douze tons »), qui parle de créer et de détruire
+  une sensible. À ce stade, le joueur sent déjà que les degrés de la
+  gamme jouent des rôles différents : s'arrêter sur le 5e degré pose une
+  question, sur le 3e c'est une virgule, sur le 7e ça perturbe. Il le
+  sent sans qu'on le lui ait expliqué ; les degrés ne s'expliquent
+  qu'au chapitre 5.
 - **Un easter egg, pour qui fait exprès de rater.** Seulement sur les
   demandes où l'on ne peut pas se tromper de bonne foi, comme « appuie
   sur les deux touches noires d'une paire » : là, dix casseroles d'affilée,
@@ -220,10 +250,10 @@ droits comme toutes les grilles de gohar :
 
 ## Plus loin
 
-La tonalité, au sens de l'harmonie, n'a pas encore de place dans
-l'escalier : c'est le point où le cours rejoint le cursus de *Walk with
+La tonalité, au sens de l'harmonie, n'a pas encore de place dans le
+*ramp up* : c'est le point où le cours rejoint le cursus de *Walk with
 me*, et l'analyse, qui la détecte déjà. Sa place se décidera une fois
-les cinq premières leçons construites, et éprouvées avec de vrais
+les cinq premiers chapitres construits, et éprouvés avec de vrais
 débutants.
 
 ## La forme
@@ -234,8 +264,8 @@ Un paquet de leçons, chacune une scène (`games/scene`) avec ses phrases
 - **intégré** : un jeu pousse une leçon quand il manque un acquis à son
   joueur ; *Walk with me* propose « Lire un chiffrage, trois minutes »
   avant le premier run ;
-- **autonome** : un programme qui enchaîne les leçons dans l'ordre de
-  l'escalier.
+- **autonome** : un programme qui enchaîne les chapitres dans l'ordre
+  du *ramp up*, et leurs leçons.
 
 ## Le bonhomme professeur
 
@@ -260,7 +290,7 @@ quelque chose.
 une petite grille. R fait réentendre ou relire la dernière étape ; une
 touche saute ce que le joueur sait déjà.
 
-Par exemple, la leçon 1. Elle mobilise l'oreille le plus tôt possible :
+Par exemple, la leçon 1.1. Elle mobilise l'oreille le plus tôt possible :
 le joueur chante ce qu'il joue.
 
 1. *Dire* : « Salut ! Avant de jouer ensemble, faisons connaissance
@@ -287,17 +317,17 @@ le joueur chante ce qu'il joue.
    en touche blanche, d'un motif au suivant. Le
    bonhomme conseille de chanter sans dire pourquoi : le joueur retient
    ainsi, en même temps que les notes, la seconde, la tierce, la quarte
-   et la quinte, qu'il retrouvera nommées à la leçon 3.
+   et la quinte, qu'il retrouvera nommées au chapitre 3.
 7. *Pour finir la séance*, les mêmes motifs, un peu plus longs, avec
    une batterie, la plus simple possible, tout à la fin. Le rythme
-   n'est pas encore le sujet : c'est l'avant-goût de la leçon 2.
+   n'est pas encore le sujet : c'est l'avant-goût du chapitre 2.
 
-La et si viendront ensuite.
+La et si viennent à la leçon 1.2.
 
 **L'activité de la leçon.** Une leçon se donne une fois ; elle ouvre une
 activité, sur laquelle le joueur s'entraîne aussi longtemps et aussi
 souvent qu'il veut, avant de passer à la leçon suivante. L'activité de
-la leçon 1 reprend ses motifs, do-ré-do, do-mi-do, do-fa-do,
+la leçon 1.1 reprend ses motifs, do-ré-do, do-mi-do, do-fa-do,
 do-sol-do, sans tempo, de trois façons :
 
 - **montrés** : le bonhomme joue le motif, le joueur le répète ;
@@ -310,8 +340,101 @@ les lit pas.
 
 Chaque façon passe d'abord les motifs dans l'ordre (ré, puis mi, puis
 fa, puis sol), puis mélangés. Viennent ensuite les trois façons
-mélangées entre elles. Le conseil de chanter revient au fil de
-l'activité.
+mélangées entre elles. L'activité demande aussi une séquence plus
+longue, la suite entière de la leçon : do ré mi fa sol, et C D E F G.
+Le conseil de chanter revient au fil de l'activité.
+
+**La leçon 1.2** complète la gamme, et mobilise d'abord la mémoire
+auditive et lexicale du joueur : c'est la suite chantée qui situe la et
+si, plutôt que leur place parmi les touches noires.
+
+1. *Dire* : « Do ré mi fa sol, tu les as. On continue. »
+2. *Répéter après lui* : do ré mi fa sol la si do, en montant puis en
+   descendant, en chantant. La suite entière s'installe, dans l'oreille
+   et dans les mots.
+3. *Dire*, puis *demander* : les mêmes notes en lettres, C D E F G A B.
+   Le bonhomme prévient : « Attention, après G, l'alphabet repart de A. »
+   Puis : « joue C D E F G A B ».
+
+   Un gag en guise de chute, la sensible avant son nom. Sur le dernier
+   si, le jeu garde la note enfoncée : le son reste, sans que le clavier
+   à l'écran la montre tenue. Le bonhomme a l'air tendu : « Humpf ! Ça
+   peut pas finir comme ça ; il manque quelque chose… » Le do au-dessus
+   clignote sur le clavier. Le joueur le joue : « Ah ! Merci ! Ça va
+   beaucoup mieux. » Le mot de sensible ne vient qu'au chapitre 4 ;
+   le joueur en a déjà senti l'effet.
+4. *Montrer* : une astuce pour deux notes. Do et fa sont à gauche des
+   groupes de deux et de trois touches noires ; mi et si sont à droite
+   de ces mêmes groupes.
+5. *Demander* : un petit exercice qui renforce ces quatre touches,
+   « joue do fa mi si do », puis « joue C F E B C », puis d'autres
+   enchaînements des quatre.
+6. *Les motifs*, en miroir de ceux de 1.1 : do-si-do, do-la-do,
+   do-sol-do, en « répète après moi », en chantant. Cette fois, le do
+   est à la main droite et l'autre note à la main gauche, qui descend
+   de touche blanche en touche blanche. Avec le sol, ces motifs
+   couvrent un tétracorde complet, sol la si do.
+7. *Pour finir la séance*, la batterie, comme en 1.1.
+
+L'activité de la leçon 1.2 met ensemble tous les motifs de 1.1 et de
+1.2, et sa séquence longue est la gamme entière : do ré mi fa sol la si,
+et C D E F G A B.
+
+**La leçon 1.3** nomme les touches noires par leurs dièses. Elle donne
+au joueur le sens de l'orientation, avec le vocabulaire qui va avec : on
+**monte** vers la droite du clavier, on descend vers la gauche.
+
+1. *Dire* : « Les touches noires ont des noms aussi. Un dièse, c'est une
+   note qu'on a fait monter d'un cran, vers la droite. » Puis le signe
+   et les deux notations : do♯ et C♯.
+2. *Jouer*, puis *répéter après lui* : do puis do♯, fa puis fa♯. La
+   note monte d'un cran. Le mot de demi-ton attend le chapitre 3.
+3. *Demander* : les cinq touches noires par leur dièse, do♯ ré♯ fa♯ sol♯
+   la♯, en do ré mi puis en lettres, mélangées.
+4. *Demander*, à deviner : « Et mi♯ ? » Le joueur a trois chances, sans
+   qu'on les lui compte : chaque raté sonne la casserole, avec « Non, il
+   n'est pas là. Rappelle-toi : un dièse, c'est une note qu'on a fait
+   monter d'un cran. » Puis de même pour si♯. Au bout de trois essais
+   infructueux, le bonhomme donne la réponse : « Mi♯ est sur le fa, et
+   si♯ est sur le do. » Trouvées ou données, il nomme la chose : mi♯ et
+   fa sont des notes **enharmoniques**, deux noms pour une même touche.
+   L'astuce de 1.2 l'annonçait : mi et si sont collés à droite d'un
+   groupe de touches noires, sans touche noire après eux.
+5. *Demander*, la séquence longue :
+   « joue C C♯ D D♯ E F F♯ G G♯ A A♯ B C ». Elle monte touche par touche et prépare la basse en chromatisme
+   du chapitre 3.
+6. *Pour finir la séance*, la batterie.
+
+L'activité de la leçon 1.3 ne reprend pas les motifs de 1.1 et 1.2.
+Elle demande des séquences de notes diésées, dites en do ré mi et en
+lettres, et y glisse de temps en temps un mi♯ ou un si♯.
+
+**La leçon 1.4** est le miroir de 1.3 : les bémols, en descendant.
+
+1. *Dire* : « Un bémol, c'est une note qu'on a fait descendre d'un cran,
+   vers la gauche. » Puis le signe et les deux notations : ré♭ et D♭.
+2. *Jouer*, puis *répéter après lui* : ré puis ré♭, si puis si♭.
+3. *Demander* : les cinq touches noires par leur bémol, ré♭ mi♭ sol♭ la♭
+   si♭, en do ré mi puis en lettres, mélangées.
+4. *Dire*, puis *demander* : « joue do♯ », puis « joue ré♭ » ; c'est la
+   même touche. Chaque touche noire a deux noms, et le bonhomme le
+   prend sur un ton léger : « Les musiciens aiment bien compliquer les
+   choses. » Do♯ et ré♭ sont enharmoniques, comme mi♯ et fa.
+5. *Demander*, à deviner, comme à la leçon 1.3 : fa♭, puis do♭, trois
+   chances chacun, la casserole à chaque raté avec « Non, il n'est pas
+   là. Rappelle-toi : un bémol, c'est une note qu'on a fait descendre
+   d'un cran. » Au bout de trois essais, la réponse : « Fa♭ est sur le
+   mi, et do♭ est sur le si. »
+6. *Demander*, la séquence longue, qui descend cette fois :
+   « joue C B B♭ A A♭ G G♭ F E E♭ D D♭ C ».
+7. *Dire*, en conclusion : les douze notes jouées touche par touche, en
+   montant à la leçon 1.3 et en descendant ici, forment l'**échelle
+   chromatique**.
+8. *Pour finir la séance*, la batterie.
+
+L'activité de la leçon 1.4 demande des séquences de notes bémolisées,
+dites en do ré mi et en lettres, et y glisse de temps en temps un fa♭ ou
+un do♭.
 
 **Le passage à la leçon suivante**, c'est le joueur qui le décide, quand
 il se sent prêt. Une leçon donnée est marquée faite, d'une coche verte ;
@@ -357,5 +480,9 @@ vers les autres jeux, comme prévu dans « La forme », et se testent sans
 
 - La place du microdex dans le dépôt : un paquet à côté du dex, dans
   son module, ou un module à lui ; et son nom.
+- Ce qui clôt les chapitres suivants. Le chapitre 1 se clôt par une
+  activité qui ramène au jeu, le palier 0 ; reste à voir si chaque
+  chapitre se clôt de même par le palier qu'il débloque, et comment le
+  montrer au joueur.
 - Le point où le cours s'arrête et où le cursus de *Walk with me* prend
   le relais (voir « Plus loin »).
