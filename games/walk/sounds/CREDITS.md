@@ -23,9 +23,9 @@ in a commercial software product".
 ## walk.sf2
 
 GeneralUser GS slimmed down to what Walk with me plays: the double bass
-(0:32), the piano (0:0), and four keys of the Jazz kit (128:32: the
-pedal hi-hat, ride 1, the high and low wood blocks), 2.5 MB rather than
-32. `make slim` makes it from GeneralUser GS, which `make sounds`
+(0:32), the piano (0:0), and eight keys of the Jazz kit (128:32: the
+bass drum, the snare, the closed and pedal hi-hats, ride 1, the cowbell,
+the high and low wood blocks), about 2.5 MB rather than 32. `make slim` makes it from GeneralUser GS, which `make sounds`
 downloads into the user's cache directory and checks its hash; every
 note kept sounds as in the full soundfont (synth/sf2, TestGeneralUser).
 

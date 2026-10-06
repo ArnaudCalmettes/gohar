@@ -598,8 +598,11 @@ scènes : le premier écran titre se contente de la position finale.
 
 - **Ce qu'on voit** : le bonhomme grisé à gauche, à la place qu'il
   occupe pendant la partie, qui marche en claquant des doigts ; le
-  titre et le menu au milieu, « Jouer », « Options » et « Quitter »,
-  choisis avec les flèches et validés par Entrée.
+  titre et le menu au milieu, « Apprendre », « Jouer une grille »,
+  « Options » et « Quitter », choisis avec les flèches et validés par
+  Entrée. « Apprendre » ouvre le cours des grands débutants
+  (`debutants.md`), en premier parce qu'un nouveau venu lit le menu de
+  haut en bas.
 - **Ce qu'on entend** : à 160 à la noire, plus enlevé que la partie
   (120 par défaut), car le titre invite, il n'enseigne pas.
   - D'abord deux mesures de décompte, les seuls claquements du
@@ -618,11 +621,13 @@ scènes : le premier écran titre se contente de la position finale.
   blues et le même temps ; seule l'orchestration change d'un écran à
   l'autre :
   - au titre, la ride, le charley et les claquements ;
-  - dans les options, la basse et le charley sur 2 et 4 seulement, le
-    bonhomme qui marche dans le rythme sans claquer des doigts ;
+  - dans les options et dans le cours, la basse et le charley sur 2 et
+    4 seulement, le bonhomme qui marche dans le rythme sans claquer des
+    doigts ;
   - sous la mesure battue de la calibration, la basse seule, plus douce.
 
-  Jouer l'arrête : la partie lance son propre décompte, à son tempo.
+  Jouer une grille l'arrête : la partie lance son propre décompte, à
+  son tempo.
   Échap ramène de la partie au titre, où le blues reprend avec son
   décompte de claquements, et du titre quitte le jeu.
 - **Les options** : le tempo de la partie, de 5 en 5 entre 60 et 240,
@@ -692,10 +697,12 @@ scènes : le premier écran titre se contente de la position finale.
   figé, empreinte vérifiée.
 - **La soundfont réduite**, embarquée dans le jeu avec le snap
   (`games/walk/sounds`) : `make slim` tire de GeneralUser `walk.sf2`,
-  2,5 Mo au lieu de 32, réduite à ce que le jeu joue : la contrebasse
-  (0:32), le piano (0:0) et quatre touches du kit Jazz (128:32 : la
-  charleston au pied, la ride 1, les deux wood blocks de la
-  calibration). C'est `synth/sf2` qui découpe : il garde les presets
+  2,5 Mo environ au lieu de 32, réduite à ce que le jeu joue : la
+  contrebasse (0:32), le piano (0:0) et huit touches du kit Jazz
+  (128:32 : la charleston au pied, la ride 1, les deux wood blocks de
+  la calibration ; la cloche, casserole des fausses notes des leçons ;
+  la grosse caisse, la caisse claire et la charleston fermée du
+  chapitre 2 du cours). C'est `synth/sf2` qui découpe : il garde les presets
   demandés, leurs instruments et leurs échantillons, et pour un kit les
   seules zones des touches frappées. Un test vérifie, sur GeneralUser
   quand il est là, que chaque note gardée sonne comme avant, échantillon
@@ -830,9 +837,11 @@ jamais ; seule l'orchestration change, sur le temps.
   prête le métronome du `jam` et une fonction qui le fait jouer. Sa
   mesure battue tombe ainsi sur les temps de la musique, et part sur le
   premier temps de la mesure suivante.
-- **Jouer l'arrête** : la partie lance son propre décompte, à son
+- **Jouer une grille l'arrête** : la partie lance son propre décompte, à son
   tempo. En revenant au titre, un `jam` neuf repart avec son ouverture
-  en claquements.
+  en claquements. Une leçon l'arrête aussi ; en revenant à la liste des
+  leçons, où le bonhomme marche sans claquer des doigts, le `jam` neuf
+  repart sans ouverture, l'orchestre tout de suite.
 
 ### Ce qui reste à faire
 

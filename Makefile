@@ -46,7 +46,7 @@ WALK_SF2 := games/walk/sounds/walk.sf2
 
 .PHONY: slim
 slim: $(CACHE)/GeneralUser-GS.sf2
-	cd synth && go run ./cmd/sfslim -keep 0:32 -keep 0:0 -keep 128:32/44,51,76,77 -o ../$(WALK_SF2) $<
+	cd synth && go run ./cmd/sfslim -keep 0:32 -keep 0:0 -keep 128:32/36,38,42,44,51,56,76,77 -o ../$(WALK_SF2) $<
 
 # Walk with me dans le navigateur, dans build/web : le programme en
 # WebAssembly, sans ses tables de débogage (un demi-Mo de moins), le

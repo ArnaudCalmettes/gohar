@@ -17,7 +17,7 @@ import (
 var snapWAV []byte
 
 // walkSF2 is GeneralUser GS slimmed down to what the band plays: the
-// double bass, the piano, and the four keys of the Jazz kit below (see
+// double bass, the piano, and the keys of the Jazz kit below (see
 // sounds/CREDITS.md and `make slim`).
 //
 //go:embed sounds/walk.sf2
@@ -35,6 +35,16 @@ const (
 	// high one, of the General MIDI map every kit follows.
 	hiWood  = 76
 	lowWood = 77
+
+	// The casserole of the lessons, a wrong note's "clong": the cowbell.
+	casserole    = 56
+	casseroleVel = 0.9
+
+	// The plain kit of chapter 2 (docs/debutants/chapitre-2.md), to
+	// come: the bass drum, the snare, the hi-hat closed by the stick.
+	bassDrum  = 36
+	snare     = 38
+	closedHat = 42
 )
 
 var acousticGrand = synth.Preset{Bank: 0, Patch: 0}

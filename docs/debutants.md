@@ -212,10 +212,20 @@ saura ce que sont un II, un V et un I.
   d'abord, puis « Tu le fais exprès ? », et à la dixième : « Bon, j'en
   ai marre ! Je peux pas travailler dans ces conditions. » Il part à
   pied vers la droite, sort de l'écran, et un GAME OVER s'affiche. Une
-  touche, et il revient en traînant les pieds (« Bon, d'accord. Mais
+  touche, et il revient (« Bon, d'accord. Mais
   c'est la dernière fois ! ») : la leçon reprend où elle en était, rien
   n'est perdu. Une étape le permet ou non ; le compte repart de zéro à
   la première bonne note.
+
+  Dans le jeu (`games/walk/walkout.go`), une étape « Demander » le
+  permet par son drapeau `Teasing` : à la leçon 1.1, la paire et le
+  groupe de trois. « Hé… » vient à la quatrième casserole d'affilée,
+  « Tu le fais exprès ? » à la septième, la sortie à la dixième. Le
+  bonhomme sort à droite de profil, en marchant ; GAME OVER s'affiche ;
+  une touche, de l'ordinateur ou du clavier MIDI, et il revient de la
+  droite, du même pas, tourné vers la gauche ; une touche encore, et
+  l'étape reprend. Comme ses autres répliques, ses mots
+  attendent que la touche soit relâchée.
 
 ## Plus loin
 
@@ -236,6 +246,37 @@ Un paquet de leçons, chacune une scène (`games/scene`) avec ses phrases
 - **autonome** : un programme qui enchaîne les chapitres dans l'ordre
   du *ramp up*, et leurs leçons.
 
+Pour l'instant, le cours vit dans *Walk with me*, sous « Apprendre » au
+menu du titre. L'écran liste les chapitres ouverts, puis les leçons du
+chapitre choisi : celles qui sont faites, d'une coche verte, et la
+suivante. Les autres restent cachées. Le catalogue des chapitres et la
+règle qui ouvre les leçons sont dans `games/walk/lessons`, la
+progression du joueur dans le fichier `course.json` de ses réglages.
+
+Une leçon écrite se joue dans sa propre scène (`games/walk/lesson.go`),
+qui prête la scène des leçons (voir « Le code » plus bas) : le bonhomme
+à gauche, face au joueur, une main dans la poche et l'autre libre, sa bulle sur plusieurs lignes à droite, le clavier de la
+partie réduit à trois octaves, de C3 à C6, chaque touche blanche
+nommée « do » au-dessus de « C ». Les touches montrées s'éclairent en
+bleu pâle. La casserole est la cloche du kit. Une bonne réponse a son
+signe à elle : le bonhomme lève sa main libre et claque des doigts, et
+dit « Oui ! », « Bien ! » ou « C'est ça ! », jamais deux fois de suite
+le même.
+L'orchestre se tait pendant la leçon : le chapitre 1 se joue sans
+tempo, et les phrases du bonhomme s'entendent seules. N'importe quelle
+touche de l'ordinateur dit qu'une bulle est lue, sauf R, qui rejoue
+l'étape, et Échap, qui revient au cours sans marquer la
+leçon faite. Une étape que le joueur termine au clavier ne passe pas
+aussitôt la main : la suivante attend que ses touches soient relâchées,
+puis le temps d'une noire, pour ne pas le presser. La casserole sonne
+avec la fausse note, tout de suite : c'est le son de la note qui
+n'était pas attendue. Le bonhomme, lui, ne réagit qu'une fois la touche
+relâchée, ou un temps après qu'elle a été enfoncée, qu'il s'agisse de
+saluer une bonne réponse ou de rejouer la consigne : répondre à une
+touche encore tenue coupe la parole au joueur. Ses répliques à l'easter
+egg (« Hé… », « Tu le fais exprès ? ») suivront la même règle. La leçon 1.1 est la première écrite ; son activité, et
+les leçons suivantes, restent à faire.
+
 ## Le bonhomme professeur
 
 Les leçons, c'est le bonhomme de *Walk with me* qui les donne, dans ses
@@ -249,7 +290,7 @@ quelque chose.
 | Étape | Ce que fait le bonhomme | Ce qui fait avancer |
 |---|---|---|
 | Dire | Une bulle d'explication | Le temps de lecture, ou une touche |
-| Montrer | Il allume des touches sur le clavier à l'écran | Rien : il prépare l'étape suivante |
+| Montrer | Il allume des touches sur le clavier à l'écran, et le dit | Sa bulle lue ; les touches restent allumées pour l'étape suivante, qu'il prépare |
 | Jouer | Il joue une note ou une phrase, qu'on entend et qu'on voit | La fin de la phrase |
 | Demander | « Trouve le do », « joue la quinte de F » | La bonne réponse ; un raté, c'est la casserole et la bonne touche montrée |
 | Répéter après lui | Il joue, le joueur reproduit | La phrase rejouée juste |
@@ -303,6 +344,28 @@ scène (une interface : dire dans une bulle, allumer des touches, jouer
 une phrase, lancer l'orchestre). Les leçons restent ainsi extractibles
 vers les autres jeux, comme prévu dans « La forme », et se testent sans
 écran.
+
+Le paquet a pris forme ainsi :
+
+- **la scène** (`Stage`) : dire une phrase, par son identifiant, que le
+  jeu traduit ; allumer des touches, désignées par leur note, à toutes
+  les octaves ; faire jouer une phrase au bonhomme ; répondre à un raté,
+  par la casserole et la bonne touche montrée. L'orchestre viendra avec
+  « Jouer ensemble » ;
+- **les cibles** (`Target`) : une note à n'importe quelle octave, jugée
+  sur la dernière touche enfoncée, pour qu'un do tenu sous la main
+  gauche ne compte pas comme une faute ; un groupe de touches noires
+  enfoncées ensemble, la paire ou le trio, qui reste « en cours » tant
+  que toutes ses touches ne sont pas là, et compte comme raté si on les
+  relâche avant ;
+- **les étapes** : Dire, Montrer, Jouer, Demander et Répéter après lui.
+  Répéter se joue sans faute : une fausse note fait sonner la casserole,
+  le bonhomme rejoue la phrase, et le joueur la reprend du début. Une
+  gamme jouée de si à do contient « do sol do », elle ne le répète
+  pas ;
+- **le déroulé** (`Runner`) : le jeu lui transmet les touches, la fin
+  des phrases du bonhomme et les bulles lues, et il passe à l'étape
+  suivante quand celle en cours est finie. R rejoue l'étape en cours.
 
 ## Les questions ouvertes
 

@@ -22,12 +22,18 @@ type jam struct {
 
 // newJam starts the count-in a lookahead from now: two bars of the
 // walker's snaps on 2 and 4, alone, then the band comes in, at
-// `titleBPM`.
-func newJam(a *app) *jam {
+// `titleBPM`. Without `snapIn`, the band comes in at once: on a screen
+// where the walker does not snap, the count-in's snaps would come from
+// nowhere.
+func newJam(a *app, snapIn bool) *jam {
 	now := time.Now()
+	in := 0
+	if snapIn {
+		in = countIn
+	}
 	beat := time.Duration(float64(time.Minute) / titleBPM)
-	m := tempo.NewMetronome(now.Add(lookahead+countIn*beat), titleBPM, perBar)
-	return &jam{band: a.band, m: m, bass: newBassist(a), next: -countIn}
+	m := tempo.NewMetronome(now.Add(lookahead+time.Duration(in)*beat), titleBPM, perBar)
+	return &jam{band: a.band, m: m, bass: newBassist(a), next: -in}
 }
 
 // play queues the beats due within the lookahead of `now`: the snaps of

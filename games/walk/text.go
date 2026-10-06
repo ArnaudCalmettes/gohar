@@ -55,7 +55,8 @@ const (
 	msgPlayer = "record.player" // who plays, in a recording's heading
 	msgDemo   = "record.demo"
 
-	msgMenuPlay    = "menu.play"
+	msgMenuLearn   = "menu.learn" // the course for beginners
+	msgMenuPlay    = "menu.play"  // play a grid
 	msgMenuOptions = "menu.options"
 	msgMenuQuit    = "menu.quit"
 	msgTitleKeys   = "title.keys" // the keys of the title screen
@@ -65,6 +66,18 @@ const (
 	msgOptCalibrate = "options.calibrate"
 	msgOptBack      = "options.back"
 	msgOptKeys      = "options.keys"
+
+	msgCourseKeys = "course.keys" // the chapters and lessons are named in course.go
+	msgLessonKeys = "lesson.keys" // what a lesson says comes from lessons, by ID
+	msgCheerYes   = "cheer.yes"   // a right answer in a lesson
+	msgCheerGood  = "cheer.good"
+	msgCheerRight = "cheer.right"
+
+	// The walker's annoyance, the easter egg of the lessons (walkout.go).
+	msgTeaseHey       = "tease.hey"
+	msgTeaseOnPurpose = "tease.onpurpose"
+	msgTeaseFedUp     = "tease.fedup"
+	msgTeaseBack      = "tease.back"
 
 	// What the walker says (see coach).
 	msgRushing  = "coach.rushing"
@@ -114,8 +127,10 @@ var phrases = []string{
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,
 	msgPlayer, msgDemo,
-	msgMenuPlay, msgMenuOptions, msgMenuQuit, msgTitleKeys,
+	msgMenuLearn, msgMenuPlay, msgMenuOptions, msgMenuQuit, msgTitleKeys,
 	msgOptLang, msgLangName, msgOptCalibrate, msgOptBack, msgOptKeys,
+	msgCourseKeys, msgLessonKeys, msgCheerYes, msgCheerGood, msgCheerRight,
+	msgTeaseHey, msgTeaseOnPurpose, msgTeaseFedUp, msgTeaseBack,
 	msgRushing, msgRelax, msgDragging, msgItDrags,
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
 	msgReviewTitle, msgReviewWorked, msgReviewConsolidate,

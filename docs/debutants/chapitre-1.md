@@ -29,7 +29,7 @@ S'il faut en glisser un avant-goût, l'usage le dira.
 
 ## Les leçons
 
-### 1.1 Do, fa, et do ré mi fa sol
+### 1.1 Premiers pas
 
 La leçon 1.1 mobilise l'oreille le plus tôt possible : le joueur chante
 ce qu'il joue.

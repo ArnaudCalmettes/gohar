@@ -20,15 +20,17 @@ const (
 	titleBPM = 160
 )
 
-// The items of the menu, in order.
+// The items of the menu, in order: the course first, for a newcomer
+// reads the menu from the top.
 const (
-	itemPlay = iota
+	itemLearn = iota
+	itemPlay
 	itemOptions
 	itemQuit
 	items
 )
 
-var itemPhrase = [items]string{itemPlay: msgMenuPlay, itemOptions: msgMenuOptions, itemQuit: msgMenuQuit}
+var itemPhrase = [items]string{itemLearn: msgMenuLearn, itemPlay: msgMenuPlay, itemOptions: msgMenuOptions, itemQuit: msgMenuQuit}
 
 // title is the title scene: the jam plays, the reference bass walking
 // the blues with the ride and the walker's snaps, while the player
@@ -48,7 +50,7 @@ func newTitle(a *app) *title {
 // options, the blues goes on.
 func (t *title) Enter() {
 	if t.jam == nil {
-		t.jam = newJam(t.app)
+		t.jam = newJam(t.app, true)
 	}
 }
 
@@ -67,6 +69,8 @@ func (t *title) Update() scene.Transition {
 			return scene.Quit
 		case itemOptions:
 			return scene.Replace(newOptions(t.app, t))
+		case itemLearn:
+			return scene.Replace(newCourse(t.app, t))
 		}
 		return scene.Replace(newGame(t.app))
 	}
