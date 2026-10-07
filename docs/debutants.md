@@ -221,11 +221,13 @@ saura ce que sont un II, un V et un I.
   permet par son drapeau `Teasing` : à la leçon 1.1, la paire et le
   groupe de trois. « Hé… » vient à la quatrième casserole d'affilée,
   « Tu le fais exprès ? » à la septième, la sortie à la dixième. Le
-  bonhomme sort à droite de profil, en marchant ; GAME OVER s'affiche ;
-  une touche, de l'ordinateur ou du clavier MIDI, et il revient de la
-  droite, du même pas, tourné vers la gauche ; une touche encore, et
-  l'étape reprend. Comme ses autres répliques, ses mots
-  attendent que la touche soit relâchée.
+  bonhomme sort à droite de profil, en marchant ; GAME OVER s'affiche,
+  sur un petit air de piano dans les aigus : quatre tritons qui
+  descendent d'un demi-ton, le dernier en trémolo. Une touche, de
+  l'ordinateur ou du clavier MIDI, et il revient de la droite, du même
+  pas, tourné vers la gauche ; une touche encore, et l'étape reprend.
+  Comme ses autres répliques, ses mots attendent que la touche soit
+  relâchée.
 
 ## Plus loin
 

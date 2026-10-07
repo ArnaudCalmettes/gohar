@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/ArnaudCalmettes/gohar/games/screen"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
 	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
@@ -15,6 +16,19 @@ import (
 // in good faith, and the walker, fed up, walks out of the screen. GAME
 // OVER. A key, and he walks back; the lesson goes on where it was,
 // nothing lost.
+
+// The GAME OVER jingle, on the piano, high: four tritones going down
+// a semitone at a time, the last one shaken in a tremolo.
+const (
+	jingleTop     = 83 // B5, the top note of the first tritone
+	jingleSteps   = 4
+	jingleBPM     = 140 // a tritone a beat
+	jingleNote    = time.Minute / jingleBPM
+	jingleTremolo = 3 * jingleNote        // the last tritone
+	jingleShake   = 45 * time.Millisecond // each of its notes, in turn
+	jingleVel     = 0.7
+	tritone       = 6 // semitones
+)
 
 // The stages of a walkout.
 type walkoutStage int
@@ -86,9 +100,34 @@ func (l *lesson) walkoutTick(now time.Time) {
 	case l.out.stage == leaving && t >= walkTime:
 		l.out.stage, l.out.since = gone, now
 		l.bubble = nil
+		l.jingle(now)
 	case l.out.stage == returning && t >= walkTime:
 		l.out.stage, l.out.since = sulking, now
 		l.Say(msgTeaseBack)
+	}
+}
+
+// jingle plays the GAME OVER jingle from `now`: the first three
+// tritones struck together, the last one in a tremolo, its two notes in
+// turn.
+func (l *lesson) jingle(now time.Time) {
+	p := l.band.Piano
+	at := now.Add(band.Lookahead)
+	hold := time.Duration(phraseHold * float64(jingleNote.Nanoseconds())) // not a constant: rounded, not refused
+	for i := range jingleSteps - 1 {
+		hi := jingleTop - i
+		for _, k := range []int{hi - tritone, hi} {
+			p.ScheduleOn(k, jingleVel, at)
+			p.ScheduleOff(k, at.Add(hold))
+		}
+		at = at.Add(jingleNote)
+	}
+	hi := jingleTop - (jingleSteps - 1)
+	for i := range int(jingleTremolo / jingleShake) {
+		k := hi - tritone*(1-i%2) // the low note first
+		p.ScheduleOn(k, jingleVel, at)
+		p.ScheduleOff(k, at.Add(jingleShake))
+		at = at.Add(jingleShake)
 	}
 }
 

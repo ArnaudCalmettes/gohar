@@ -271,9 +271,6 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       `walk.md`) : un gros plan sur la main qui claque, qui recule
       jusqu'au bonhomme à sa place quand la basse entre. Pour le
       plaisir, pas urgent.
-- [ ] un jingle de GAME OVER pour l'easter egg des leçons
-      (`games/walk/walkout.go`), qui pour l'instant s'affiche en
-      silence.
 - [ ] le cours des grands débutants (`debutants.md`) : les cinq
       chapitres du *ramp up* et leurs leçons (les chapitres 1 à 3 sont
       écrits), le palier 0 et sa casserole, la gamme majeure dans les
