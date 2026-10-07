@@ -104,13 +104,28 @@ gohar/
     calibrate/               la calibration de la latence, une scène
                              commune
     ear/                     ear trainer : menu, degrés, tétracordes, modes
-    walk/                    Walk with me : temps attendus, marqueur,
-                             walking bass générée, batterie,
-                             enregistrement, écran titre, grille et
-                             bonhomme à l'écran, cours des débutants et
-                             leçons, phrases en français et en anglais
+    walk/                    Walk with me : les scènes (écran titre,
+                             options, cours et leçons, partie, bilan),
+                             enregistrement, phrases en français et
+                             en anglais
       grids/                 les grilles du jeu, en ChordPro, sous
-                             licence libre
+                             licence libre, et leur lecture
+      mark/                  ce que le jeu note du joueur, sans écran ni
+                             son : temps attendus, marqueur, mode sans
+                             tempo, bilan et conseil
+      bass/                  la basse de référence, générée d'après la
+                             grille
+      band/                  l'orchestre : les mains du joueur, la
+                             basse, la batterie, les claquements, les
+                             parties et la musique des menus ; le son
+                             ouvert sur le bureau ou dans le navigateur
+        sounds/              la soundfont réduite et le claquement
+      chart/                 la grille à l'écran, comme une page de
+                             Real Book : les chiffrages, les mesures,
+                             les marques des arrivées
+      figure/                le bonhomme : sa démarche, sa pose de
+                             professeur, ses bulles et ce qu'il dit
+                             pendant une partie
       lessons/               le cours des débutants sans écran : ses
                              chapitres, le moteur des leçons et leurs
                              scripts

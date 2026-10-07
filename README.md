@@ -174,7 +174,7 @@ setting must name "GitHub Actions" as its source.
 
 `make slim` is only needed when the game plays a new sound: it cuts
 GeneralUser GS down again to the presets and drum keys listed in the
-Makefile, into `games/walk/sounds/walk.sf2`.
+Makefile, into `games/walk/band/sounds/walk.sf2`.
 
 The iReal Pro reader is checked against real playlists that are not
 ours to publish. Export yours from the app as HTML into

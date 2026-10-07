@@ -8,6 +8,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
 	"github.com/ArnaudCalmettes/gohar/games/screen"
+	"github.com/ArnaudCalmettes/gohar/games/walk/chart"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 )
 
 // The menus, the title's, the options' and the course's: the walker
@@ -48,7 +50,7 @@ func confirmed() bool {
 // drawMenu draws a menu screen on the jam's beats: the walker `wk` in
 // gait `g`, the heading in `head`, the `labels`, and the keys in the
 // status line.
-func (a *app) drawMenu(dst *ebiten.Image, wk *walker, g gait, heading string, head *screen.Font, labels []string, chosen int, keys string) {
+func (a *app) drawMenu(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, labels []string, chosen int, keys string) {
 	a.drawList(dst, wk, g, heading, head, labels, nil, chosen, keys, layout{top: menuY, gap: menuGap})
 }
 
@@ -62,11 +64,11 @@ type layout struct {
 // drawList is drawMenu with its list laid out by `l`, and a green check
 // left of each item `done` marks. `done` may be nil, or shorter than
 // `labels`.
-func (a *app) drawList(dst *ebiten.Image, wk *walker, g gait, heading string, head *screen.Font, labels []string, done []bool, chosen int, keys string, l layout) {
+func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, labels []string, done []bool, chosen int, keys string, l layout) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: a.scale}
 	now := time.Now()
-	wk.draw(c, walkerX, walkerY, walkerScale, g, a.jam.m.Beats(now), now, faint)
+	wk.Draw(c, walkerX, walkerY, walkerScale, g, a.jam.Metronome().Beats(now), now, faint)
 
 	const mid = screenWidth / 2
 	c.Centred(heading, head, mid, headingY, ink)
@@ -93,6 +95,6 @@ func (a *app) drawList(dst *ebiten.Image, wk *walker, g gait, heading string, he
 func drawCheck(c screen.Canvas, x, y float64) {
 	const width = 2.5
 	x0, y0 := float32(x), float32(y)
-	c.Line(x0, y0, x0+checkW*0.35, y0+checkW*0.35, width, landedInk)
-	c.Line(x0+checkW*0.35, y0+checkW*0.35, x0+checkW, y0-checkW*0.45, width, landedInk)
+	c.Line(x0, y0, x0+checkW*0.35, y0+checkW*0.35, width, chart.LandedInk)
+	c.Line(x0+checkW*0.35, y0+checkW*0.35, x0+checkW, y0-checkW*0.45, width, chart.LandedInk)
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
 	"github.com/ArnaudCalmettes/gohar/games/scene"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 )
 
 // The title screen, in the final position of the opening to come (see
@@ -38,19 +40,19 @@ var itemPhrase = [items]string{itemLearn: msgMenuLearn, itemPlay: msgMenuPlay, i
 type title struct {
 	*app
 
-	walker walker
+	walker figure.Walker
 	menu   menu
 }
 
 func newTitle(a *app) *title {
-	return &title{app: a, walker: walker{ease: 1, streak: snapStreak}, menu: menu{items: items}} // at his best: he snaps
+	return &title{app: a, walker: figure.NewWalker(figure.Snapping), menu: menu{items: items}} // at his best: he snaps
 }
 
 // Enter starts the jam, unless it plays already: back from the
 // options, the blues goes on.
 func (t *title) Enter() {
 	if t.jam == nil {
-		t.jam = newJam(t.app, true)
+		t.jam = t.newJam(true)
 	}
 }
 
@@ -74,7 +76,7 @@ func (t *title) Update() scene.Transition {
 		}
 		return scene.Replace(newGame(t.app))
 	}
-	t.jam.play(time.Now(), full)
+	t.jam.Play(time.Now(), band.Full)
 	return scene.Stay
 }
 
@@ -83,5 +85,5 @@ func (t *title) Draw(dst *ebiten.Image) {
 	for i := range items {
 		labels[i] = t.lang.T(itemPhrase[i])
 	}
-	t.drawMenu(dst, &t.walker, t.walker.gait(true), gameTitle, t.fonts.count, labels, t.menu.chosen, t.lang.T(msgTitleKeys))
+	t.drawMenu(dst, &t.walker, t.walker.Gait(true), gameTitle, t.fonts.count, labels, t.menu.chosen, t.lang.T(msgTitleKeys))
 }

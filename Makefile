@@ -42,7 +42,7 @@ $(CACHE)/GeneralUser-GS.sf2:
 # pied, la ride, les deux wood blocks de la calibration). Elle est
 # versionnée et embarquée dans le jeu ; à refaire quand le jeu joue un
 # son de plus. Voir synth/sf2 et « Le son » dans docs/walk.md.
-WALK_SF2 := games/walk/sounds/walk.sf2
+WALK_SF2 := games/walk/band/sounds/walk.sf2
 
 .PHONY: slim
 slim: $(CACHE)/GeneralUser-GS.sf2
@@ -87,7 +87,7 @@ serve: wasm
 # MIDI avec la soundfont du jeu, sans Go. Ouvrir
 # http://localhost:8080/latency.html ; voir games/walk/web/latency.html.
 latency-web: jssynth
-	cp games/walk/web/latency.html games/walk/sounds/walk.sf2 $(WEB)/
+	cp games/walk/web/latency.html games/walk/band/sounds/walk.sf2 $(WEB)/
 	cd $(WEB) && python3 -m http.server 8080
 
 # La latence audio ne se mesure pas en test : elle se joue et s'écoute.

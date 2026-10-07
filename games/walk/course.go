@@ -9,6 +9,8 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/settings"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
 
@@ -50,7 +52,7 @@ type course struct {
 	*app
 
 	back   *title // the title to go back to, the jam still playing
-	walker walker
+	walker figure.Walker
 	menu   menu
 
 	done    lessons.Progress
@@ -63,7 +65,7 @@ func newCourse(a *app, back *title) *course {
 	if _, err := settings.Load(settings.Path(courseFile), &done); err != nil {
 		log.Println("course:", err) // the course starts over, the file stays as it is
 	}
-	c := &course{app: a, back: back, walker: walker{ease: grooveFrom}, done: done, open: lessons.Open(lessons.Course, done)}
+	c := &course{app: a, back: back, walker: figure.NewWalker(figure.Grooving), done: done, open: lessons.Open(lessons.Course, done)}
 	c.showChapters(0)
 	return c
 }
@@ -99,7 +101,7 @@ func (c *course) finish(id string) {
 // it, without the count-in: here the walker grooves, he does not snap.
 func (c *course) Enter() {
 	if c.jam == nil {
-		c.jam = newJam(c.app, false)
+		c.jam = c.newJam(false)
 	}
 }
 
@@ -123,7 +125,7 @@ func (c *course) Update() scene.Transition {
 			return scene.Replace(newLesson(c.app, c, id, steps))
 		}
 	}
-	c.jam.play(time.Now(), light)
+	c.jam.Play(time.Now(), band.Light)
 	return scene.Stay
 }
 
@@ -136,7 +138,7 @@ func (c *course) Draw(dst *ebiten.Image) {
 			done = append(done, c.done.Finished(lessons.Course[i]))
 		}
 		labels = append(labels, c.lang.T(msgOptBack))
-		c.drawList(dst, &c.walker, c.walker.gait(true), c.lang.T(msgMenuLearn), c.fonts.count, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
+		c.drawList(dst, &c.walker, c.walker.Gait(true), c.lang.T(msgMenuLearn), c.fonts.count, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
 		return
 	}
 	for _, l := range c.open[c.chapter].Lessons {
@@ -145,5 +147,5 @@ func (c *course) Draw(dst *ebiten.Image) {
 	}
 	labels = append(labels, c.lang.T(msgOptBack))
 	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID)) // longer than a menu's: in the chords' hand
-	c.drawList(dst, &c.walker, c.walker.gait(true), heading, c.fonts.chord, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.chord, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
 }

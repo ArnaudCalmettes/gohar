@@ -7,6 +7,9 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/screen"
 )
 
+// octave is the MIDI keys from a note to the same, an octave up.
+const octave = 12
+
 // The game draws in logical coordinates, screenWidth by screenHeight
 // (see screen.Canvas).
 const (
@@ -29,11 +32,6 @@ var (
 	// The bars of the review: what worked, what is to consolidate.
 	workedTint      = color.RGBA{0xcf, 0xec, 0xd9, 0xff}
 	consolidateTint = color.RGBA{0xf8, 0xe0, 0xbf, 0xff}
-
-	// The marks of the arrivals: landed, missed, doubled.
-	landedInk  = color.RGBA{0x2a, 0x9d, 0x5a, 0xff}
-	missedInk  = color.RGBA{0xc0, 0x39, 0x2b, 0xff}
-	doubledInk = color.RGBA{0xe0, 0x8a, 0x1e, 0xff}
 )
 
 // fonts are the faces the game uses: the chart's hand for the chords,
@@ -49,7 +47,6 @@ const (
 	chordSmallSize       = 18 // two chords in a bar
 	chordRaisedSize      = 16
 	chordSmallRaisedSize = 12
-	raisedDY             = 3 // how far an exponent rises above the line's top
 	countSize            = 64
 	bubbleSize           = 14
 	uiSize               = 11

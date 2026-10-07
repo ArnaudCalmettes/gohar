@@ -87,9 +87,9 @@ type Ask struct {
 // The misses in a row that annoy the walker, more and more (see the
 // easter egg of "Rendre le cours amusant" in docs/debutants.md).
 const (
-	missesHey      = 4
+	missesHey       = 4
 	missesOnPurpose = 7
-	missesFed      = 10
+	missesFed       = 10
 )
 
 func (st *Ask) said() string { return st.Phrase }
@@ -154,7 +154,7 @@ func (*Ask) read() bool             { return false }
 // the notes of a scale.
 type Repeat struct {
 	Phrase string
-	Keys   []int // what the walker plays, MIDI numbers
+	Keys   []int    // what the walker plays, MIDI numbers
 	Want   []Target // a target for each note
 
 	at int // the note expected next, -1 while the walker plays
@@ -194,4 +194,4 @@ func (st *Repeat) pressed(s Stage, held []int) bool {
 }
 
 func (*Repeat) released(Stage, []int) bool { return false }
-func (*Repeat) read() bool                  { return false }
+func (*Repeat) read() bool                 { return false }

@@ -11,6 +11,8 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/games/calibrate"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 )
 
 // The game's tempo, as the options set it: in steps, between two
@@ -42,12 +44,12 @@ type options struct {
 	*app
 
 	back   *title // the title to go back to, the jam still playing
-	walker walker
+	walker figure.Walker
 	menu   menu
 }
 
 func newOptions(a *app, back *title) *options {
-	return &options{app: a, back: back, walker: walker{ease: grooveFrom}, menu: menu{items: optItems}}
+	return &options{app: a, back: back, walker: figure.NewWalker(figure.Grooving), menu: menu{items: optItems}}
 }
 
 func (o *options) Enter() {}
@@ -81,7 +83,7 @@ func (o *options) Update() scene.Transition {
 	if step != 0 {
 		o.change(step)
 	}
-	o.jam.play(time.Now(), light)
+	o.jam.Play(time.Now(), band.Light)
 	return scene.Stay
 }
 
@@ -110,16 +112,16 @@ func (o *options) calibrate() scene.Transition {
 		Width: screenWidth,
 		Scale: func() float64 { return o.scale },
 		Lang:  o.lang.Tag(),
-		Clock: o.jam.m,
+		Clock: o.jam.Metronome(),
 		MIDI:  o.midi != "",
 		Drain: o.drain,
-		Tick:  o.band.tick,
+		Tick:  o.band.Tick,
 		Play: func(now time.Time, quiet bool) {
 			if quiet {
-				o.jam.play(now, bassOnly)
+				o.jam.Play(now, band.BassOnly)
 				return
 			}
-			o.jam.play(now, light)
+			o.jam.Play(now, band.Light)
 		},
 		Key:  o.pair,
 		Done: func(d time.Duration) { o.latency = d },
@@ -138,5 +140,5 @@ func (o *options) Draw(dst *ebiten.Image) {
 	labels[optLang] = o.lang.T(msgOptLang, "Name", o.lang.T(msgLangName))
 	labels[optCalibrate] = o.lang.T(msgOptCalibrate)
 	labels[optBack] = o.lang.T(msgOptBack)
-	o.drawMenu(dst, &o.walker, o.walker.gait(true), o.lang.T(msgMenuOptions), o.fonts.count, labels, o.menu.chosen, o.lang.T(msgOptKeys))
+	o.drawMenu(dst, &o.walker, o.walker.Gait(true), o.lang.T(msgMenuOptions), o.fonts.count, labels, o.menu.chosen, o.lang.T(msgOptKeys))
 }

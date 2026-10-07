@@ -12,6 +12,8 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
 
@@ -99,8 +101,8 @@ type lesson struct {
 	cheerAt time.Time // the last right answer
 	cheer   int       // the last cheer said, in cheers
 
-	walker walker  // for his walkout, in profile
-	out    walkout // the easter egg (see walkout.go)
+	walker figure.Walker // for his walkout, in profile
+	out    walkout       // the easter egg (see walkout.go)
 
 	turned [screen.MIDIKeys]bool // the keys that turned a page, silent, until they go up
 }
@@ -117,19 +119,19 @@ func newLesson(a *app, back *course, id string, steps []lessons.Step) *lesson {
 // the walker's phrases must be heard alone.
 func (l *lesson) Enter() {
 	if l.jam != nil {
-		l.jam.stop(time.Now())
+		l.jam.Stop(time.Now())
 		l.jam = nil
 	}
 	l.runner.Start()
 }
 
 // Leave gives the keys their sound back.
-func (l *lesson) Leave() { l.band.silent.Store(false) }
+func (l *lesson) Leave() { l.band.Silent.Store(false) }
 
 // The lessons.Stage the lesson's runner plays on.
 
 func (l *lesson) Say(phrase string) {
-	l.bubble = l.wrap(l.lang.T(phrase), bubbleW)
+	l.bubble = l.speech().Wrap(l.lang.T(phrase))
 }
 
 func (l *lesson) Light(pcs []int) { l.shown = pcs }
@@ -150,14 +152,14 @@ func (l *lesson) react(f func()) {
 func (l *lesson) Play(keys []int) { l.react(func() { l.play(keys) }) }
 
 func (l *lesson) play(keys []int) {
-	now := time.Now().Add(lookahead)
+	now := time.Now().Add(band.Lookahead)
 	if after := l.missAt.Add(phraseNote); now.Before(after) {
 		now = after
 	}
 	for i, k := range keys {
 		at := now.Add(time.Duration(i) * phraseNote)
-		l.band.piano.ScheduleOn(k, phraseVel, at)
-		l.band.piano.ScheduleOff(k, at.Add(time.Duration(phraseHold*float64(phraseNote))))
+		l.band.Piano.ScheduleOn(k, phraseVel, at)
+		l.band.Piano.ScheduleOff(k, at.Add(time.Duration(phraseHold*float64(phraseNote))))
 	}
 	l.phrase, l.phraseAt, l.playing = keys, now, true
 }
@@ -168,8 +170,7 @@ func (l *lesson) Hit() { l.react(l.hit) }
 
 func (l *lesson) hit() {
 	now := time.Now()
-	l.band.snap.ScheduleOn(noiseKey, cheerVel, now)
-	l.band.snap.ScheduleOff(noiseKey, now.Add(hold)) // a clip ignores it
+	l.band.SnapAt(cheerVel, now)
 	l.cheerAt = now
 	l.cheer = (l.cheer + 1 + rand.IntN(len(cheers)-1)) % len(cheers)
 	l.bubble = []string{l.lang.T(cheers[l.cheer])}
@@ -179,7 +180,7 @@ func (l *lesson) hit() {
 // the right keys.
 func (l *lesson) Miss(pcs []int) {
 	l.missAt = time.Now()
-	l.band.strike(casserole, casseroleVel, l.missAt)
+	l.band.Strike(band.Casserole, band.CasseroleVel, l.missAt)
 	l.shown = pcs
 }
 
@@ -247,7 +248,7 @@ func (l *lesson) Update() scene.Transition {
 	}
 	// The keys turn the page in silence while a bubble waits to be read;
 	// set here, before the next key comes.
-	l.band.silent.Store(l.teaching() && l.runner.Reading())
+	l.band.Silent.Store(l.teaching() && l.runner.Reading())
 	if l.runner.Done() {
 		l.back.finish(l.id)
 		return scene.Replace(l.back)
@@ -267,10 +268,10 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	c := screen.Canvas{Dst: dst, Scale: l.scale}
 	now := time.Now()
 	if !l.drawWalkout(dst, c, now) {
-		drawTeacher(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
+		figure.DrawTeacher(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
 	}
 	if len(l.bubble) > 0 {
-		l.drawSpeech(c, l.bubble, bubbleX, bubbleTop, bubbleW, bubbleLineH, l.walkerAt(now))
+		l.speech().Draw(c, l.bubble, l.walkerAt(now), walkerY, walkerScale)
 	}
 
 	l.piano.Draw(c, func(k int) screen.Dress {
@@ -285,6 +286,11 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 		keys = msgLessonPlay // the walker waits for notes, not for a page turned
 	}
 	c.Text(l.lang.T(keys), l.fonts.ui, margin, statusY, faint)
+}
+
+// speech is the walker's bubble in a lesson.
+func (l *lesson) speech() figure.Bubble {
+	return figure.Bubble{Font: l.fonts.bubble, Ink: ink, Left: bubbleX, Top: bubbleTop, Width: bubbleW, LineH: bubbleLineH}
 }
 
 // drawNames writes the names of the white keys on them, "do" over "C".

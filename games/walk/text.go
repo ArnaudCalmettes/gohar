@@ -5,6 +5,8 @@ import (
 	"io/fs"
 
 	"github.com/ArnaudCalmettes/gohar/games/lang"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
+	"github.com/ArnaudCalmettes/gohar/games/walk/mark"
 )
 
 // The game's phrases, one file per language in locales/ (see
@@ -80,7 +82,7 @@ const (
 	msgTeaseFedUp     = "tease.fedup"
 	msgTeaseBack      = "tease.back"
 
-	// What the walker says (see coach).
+	// What the walker says (see figure.Coach).
 	msgRushing  = "coach.rushing"
 	msgRelax    = "coach.relax"
 	msgDragging = "coach.dragging"
@@ -142,7 +144,14 @@ var phrases = []string{
 	msgWorkStart, msgWorkMid, msgWorkHeld,
 }
 
+// coachLines are what the coach says.
+var coachLines = figure.Lines{
+	Rushing:  []string{msgRushing, msgRelax},
+	Dragging: []string{msgDragging, msgItDrags},
+	Praise:   []string{msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig},
+}
+
 var (
-	timingPhrase = map[Timing]string{OnTime: msgOnTime, Early: msgEarly, Late: msgLate, Between: msgBetween}
-	pitchPhrase  = map[Pitch]string{Root: msgRoot, ChordTone: msgChordTone, Outside: msgOutside}
+	timingPhrase = map[mark.Timing]string{mark.OnTime: msgOnTime, mark.Early: msgEarly, mark.Late: msgLate, mark.Between: msgBetween}
+	pitchPhrase  = map[mark.Pitch]string{mark.Root: msgRoot, mark.ChordTone: msgChordTone, mark.Outside: msgOutside}
 )

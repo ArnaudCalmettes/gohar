@@ -30,7 +30,8 @@ Le détail des modules est dans l'arborescence d'`architecture.md`.
       soundfonts, sons enregistrés.
 - [x] `games` : `keyboard`, `keys`, `ear`, *Walk with me* (le premier
       jalon, l'écran titre et ses options, trois grilles en ChordPro,
-      le bilan de fin de run), et les paquets communs (`screen`,
+      le bilan de fin de run, ses paquets `grids`, `mark`, `bass`,
+      `band`, `figure`, `chart` et `lessons`), et les paquets communs (`screen`,
       `tempo`, `settings`, `lang` avec l'internationalisation, `scene`
       le régisseur, `calibrate` la calibration de la latence).
 

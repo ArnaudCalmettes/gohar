@@ -16,22 +16,21 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
 	"github.com/ArnaudCalmettes/gohar/games/tempo"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/bass"
+	"github.com/ArnaudCalmettes/gohar/games/walk/chart"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
+	"github.com/ArnaudCalmettes/gohar/games/walk/mark"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
 	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
-// lookahead is how far ahead the band is scheduled. Ebiten's loop
-// ticks every 16 ms, too coarse to play a beat on time: notes are
-// queued a window ahead and the synth applies them to the sample (see
-// "Le son" in docs/walk.md).
-const lookahead = 100 * time.Millisecond
-
 // The count-in: two bars of hi-hat, "1, 3, 1, 2, 3, 4", the time to
 // move the hands from the space bar to the keyboard.
 const (
-	perBar  = 4
-	countIn = 2 * perBar
+	perBar  = mark.BeatsPerBar
+	countIn = band.CountIn
 )
 
 // The layout: the chart on the right two thirds of the screen, laid
@@ -53,9 +52,8 @@ const (
 	chartX     = screenWidth - margin - barsPerRow*barW
 	chartY     = 70
 
-	// Within a bar: a chord and a mark from the start of their beat.
-	chordDX, chordDY = 8, 14
-	markDX, markDY   = 14, barH - 10
+	// Within a bar: a mark from the start of its beat.
+	markDX, markDY = 14, barH - 10
 
 	walkerX     = chartX / 2
 	walkerY     = chartY + (chartRows-1)*rowH + barH
@@ -77,12 +75,6 @@ const (
 	bubbleLift = 130 // from his feet to the line under the phrase
 )
 
-// A cell is one chord written in a bar, at the beat it starts on.
-type cell struct {
-	name symbol
-	beat int // in the bar, from 0
-}
-
 // game is the game scene of Walk With Me: the chart, the count-in, the
 // band, the player's hands, and the marks of the first palier. Two
 // phases: with the tempo, the band plays and the marker marks; without,
@@ -99,38 +91,38 @@ type game struct {
 
 	namer      *naming.Namer                     // for a note over no chord
 	written    map[analysis.Ticks]chordpro.Chord // the chords as the grid writes them, by start
-	bars       [][]cell                          // the chart, bar by bar; empty for a chord held from before
-	formulas   map[analysis.Ticks]formula        // the formulas its chords make, for the review
+	bars       [][]chart.Cell                    // the chart, bar by bar; empty for a chord held from before
+	formulas   map[analysis.Ticks]mark.Formula   // the formulas its chords make, for the review
 	small      bool                              // a bar holds two chords: all are written small
 	chorusLen  int                               // beats in a chorus
-	rules      Rules                             // what the marker and the practice expect
+	rules      mark.Rules                        // what the marker and the practice expect
 	practicing bool                              // the phase without tempo
 
 	running  bool
 	m        tempo.Metronome
-	beats    []Beat
+	beats    []mark.Beat
 	next     int // the next beat to schedule
-	marker   *Marker
-	marks    map[int]BeatKind // the arrivals marked, by beat
-	practice *practice
+	marker   *mark.Marker
+	marks    map[int]mark.BeatKind // the arrivals marked, by beat
+	practice *mark.Practice
 	lastMark string // what the last note of the bass was
 	last     keyboard.Event
 	down     [screen.MIDIKeys]bool // the keys held, as the events tell
 	piano    screen.Piano
-	walker   walker
-	line     []int  // the reference line, in demo: a key per beat
-	heard    []Note // its notes not yet sounded, for the marker
-	ending   int    // the key the demo ends on, after the last beat; 0 for none
+	walker   figure.Walker
+	line     []int       // the reference line, in demo: a key per beat
+	heard    []mark.Note // its notes not yet sounded, for the marker
+	ending   int         // the key the demo ends on, after the last beat; 0 for none
 
-	summary  *summary  // the marks of the run, for its review
-	coach    *coach    // what the walker says, the player's runs only
-	bubble   string    // the phrase in his bubble, empty for none
-	bubbleAt time.Time // when he said it
+	summary  *mark.Summary // the marks of the run, for its review
+	coach    *figure.Coach // what the walker says, the player's runs only
+	bubble   string        // the phrase in his bubble, empty for none
+	bubbleAt time.Time     // when he said it
 }
 
 func newGame(a *app) *game {
-	rules := FirstPalier
-	rules.Split = a.band.split // -split moves the marker's zone with the sound's
+	rules := mark.FirstPalier
+	rules.Split = a.band.Split // -split moves the marker's zone with the sound's
 	g := &game{
 		app:        a,
 		bpm:        a.bpm,
@@ -147,19 +139,16 @@ func newGame(a *app) *game {
 func (g *game) load(i int) {
 	g.current = i
 	t := g.tunes[i]
-	g.title, g.grid = t.title, t.grid
-	g.namer = namerFor(t.grid)
+	g.title, g.grid = t.Title, t.Grid
+	g.namer = namerFor(t.Grid)
 	g.written = map[analysis.Ticks]chordpro.Chord{}
-	for i, ch := range t.grid.Chords {
-		g.written[ch.Start] = t.written[i]
+	for i, ch := range t.Grid.Chords {
+		g.written[ch.Start] = t.Written[i]
 	}
-	g.bars = chart(t)
-	g.formulas = formulasOf(t.grid)
-	g.small = false
-	for _, cells := range g.bars {
-		g.small = g.small || len(cells) > 1
-	}
-	g.chorusLen = len(Expect(t.grid, tempo.NewMetronome(time.Time{}, g.bpm, perBar), 1))
+	g.bars = chart.Bars(t)
+	g.formulas = mark.FormulasOf(t.Grid)
+	g.small = chart.Small(g.bars)
+	g.chorusLen = len(mark.Expect(t.Grid, tempo.NewMetronome(time.Time{}, g.bpm, perBar), 1))
 	g.marks, g.practice = nil, nil
 }
 
@@ -167,10 +156,10 @@ func (g *game) load(i int) {
 // at its own tempo. The space bar starts it.
 func (g *game) Enter() {
 	if g.jam != nil {
-		g.jam.stop(time.Now())
+		g.jam.Stop(time.Now())
 		g.jam = nil
 	}
-	g.band.bassHand.Store(true) // the left hand walks: a double bass under the split
+	g.band.BassHand.Store(true) // the left hand walks: a double bass under the split
 }
 
 // Leave stops the run, if any: the bass released, the recording
@@ -180,44 +169,44 @@ func (g *game) Leave() {
 	if g.running {
 		g.stop(time.Now())
 	}
-	g.band.bassHand.Store(false)
+	g.band.BassHand.Store(false)
 }
 
 func (g *game) start(now time.Time) {
 	g.running = true
 	g.lastMark = ""
-	g.walker = walker{} // each run starts from a walk
+	g.walker = figure.Walker{} // each run starts from a walk
 	seed := uint64(now.UnixNano())
 	rng := rand.New(rand.NewPCG(seed, seed>>32|1))
-	g.coach, g.bubble = newCoach(rng), ""
+	g.coach, g.bubble = figure.NewCoach(rng, coachLines), ""
 	if g.practicing {
 		// No time: any metronome numbers the beats.
-		g.practice = newPractice(g.rules, Expect(g.grid, tempo.NewMetronome(now, g.bpm, perBar), 1))
+		g.practice = mark.NewPractice(g.rules, mark.Expect(g.grid, tempo.NewMetronome(now, g.bpm, perBar), 1))
 		return
 	}
 	beat := time.Duration(float64(time.Minute) / g.bpm)
-	g.m = tempo.NewMetronome(now.Add(lookahead+countIn*beat), g.bpm, perBar)
-	g.beats = Expect(g.grid, g.m, g.choruses)
+	g.m = tempo.NewMetronome(now.Add(band.Lookahead+countIn*beat), g.bpm, perBar)
+	g.beats = mark.Expect(g.grid, g.m, g.choruses)
 	g.next = -countIn
-	g.marker = NewMarker(g.rules, g.m, g.beats)
-	g.marks = map[int]BeatKind{}
-	g.summary = newSummary(len(g.bars), g.chorusLen, g.formulas)
+	g.marker = mark.NewMarker(g.rules, g.m, g.beats)
+	g.marks = map[int]mark.BeatKind{}
+	g.summary = mark.NewSummary(len(g.bars), g.chorusLen, g.formulas)
 	g.line, g.heard, g.ending = nil, nil, 0
 	if g.rec != nil {
 		who := g.lang.T(msgPlayer)
-		if g.band.demo {
+		if g.band.Demo {
 			who = g.lang.T(msgDemo)
 		}
 		g.rec.run(now, g.bpm, who)
 	}
-	if g.band.demo {
-		g.line = Walk(g.beats, rng)
-		g.ending = Ending(g.beats, g.line, g.grid.End)
+	if g.band.Demo {
+		g.line = bass.Walk(g.beats, rng)
+		g.ending = bass.Ending(g.beats, g.line, g.grid.End)
 	}
 }
 
 func (g *game) stop(now time.Time) {
-	g.band.stop(now)
+	g.band.Stop(now)
 	g.running = false
 	if g.rec != nil {
 		g.rec.flush()
@@ -236,7 +225,7 @@ func (g *game) Update() scene.Transition {
 	case inpututil.IsKeyJustPressed(ebiten.KeyT) && !g.running:
 		g.practicing = !g.practicing
 	case inpututil.IsKeyJustPressed(ebiten.KeyD) && !g.running && !g.practicing:
-		g.band.demo = !g.band.demo
+		g.band.Demo = !g.band.Demo
 	case g.running:
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp):
 		g.load((g.current + len(g.tunes) - 1) % len(g.tunes))
@@ -277,39 +266,39 @@ func (g *game) Update() scene.Transition {
 	}
 	for _, bm := range g.marker.Close(now) {
 		g.marks[bm.Beat] = bm.Kind
-		g.summary.beat(bm.Beat, g.beats[bm.Beat], bm.Kind)
-		g.walker.mark(bm.Kind, now)
-		if !g.band.demo {
-			g.speak(g.coach.arrival(bm.Beat, bm.Kind == Landed, g.walker.gait(true) == snapping), now)
+		g.summary.Beat(bm.Beat, g.beats[bm.Beat], bm.Kind)
+		g.walker.Mark(bm.Kind, now)
+		if !g.band.Demo {
+			g.speak(g.coach.Arrival(bm.Beat, bm.Kind == mark.Landed, g.walker.Gait(true) == figure.Snapping), now)
 		}
 	}
-	_, end := g.m.Due(now, now.Add(lookahead))
+	_, end := g.m.Due(now, now.Add(band.Lookahead))
 	for ; g.next < end && g.next < len(g.beats); g.next++ {
 		key, at := 0, g.m.At(g.next)
 		if g.line != nil && g.next >= 0 {
 			key = g.line[g.next]
-			g.heard = append(g.heard, Note{Key: key, At: at})
+			g.heard = append(g.heard, mark.Note{Key: key, At: at})
 		}
-		c := cue{pos: g.m.Position(g.next), key: key, snap: g.walker.gait(true) == snapping}
-		a := full
+		c := band.Cue{Pos: g.m.Position(g.next), Key: key, Snap: g.walker.Gait(true) == figure.Snapping}
+		a := band.Full
 		if g.next < 0 {
-			a = hatCountIn
+			a = band.HatCountIn
 		}
-		g.band.play(a.strokes(c), g.next, g.m)
+		g.band.Play(a.Strokes(c), g.next, g.m)
 	}
 	// The demo's last note, on the beat after the last one, held a bar:
 	// the run stops once it has rung.
 	last := len(g.beats)
 	if g.ending != 0 {
 		if g.next == last && end > last {
-			g.band.play(ending.strokes(cue{key: g.ending}), last, g.m)
+			g.band.Play(band.Ending.Strokes(band.Cue{Key: g.ending}), last, g.m)
 			g.next++
 		}
 		last += perBar
 	}
 	if now.After(g.m.At(last)) { // played through: the player's run gets its review
 		g.stop(now)
-		if !g.band.demo {
+		if !g.band.Demo {
 			return scene.Push(newReview(g))
 		}
 	}
@@ -336,29 +325,29 @@ func (g *game) demoKey(now time.Time) int {
 // mark hands a key pressed in the bass zone to the marker, or to the
 // practice, and keeps what it was for the status line.
 func (g *game) mark(e keyboard.Event) {
-	if !g.running || e.Key >= g.band.split {
+	if !g.running || e.Key >= g.band.Split {
 		return
 	}
 	if g.practicing {
-		chord, at := g.practice.waiting().Chord, g.practice.at
-		pitch := g.practice.play(e.Key)
+		chord, at := g.practice.Waiting().Chord, g.practice.Arrival()
+		pitch := g.practice.Play(e.Key)
 		g.lastMark = g.lang.T(msgMark, "Note", g.noteName(e.Key, chord), "Words", g.lang.T(pitchPhrase[pitch]))
-		if g.practice.at != at {
-			g.walker.mark(Landed, time.Now())
+		if g.practice.Arrival() != at {
+			g.walker.Mark(mark.Landed, time.Now())
 		}
 		return
 	}
 	// The calibrated latency, taken off: the instant the player heard
 	// the beat he answered, rather than the one the game received.
-	m, ok := g.marker.Play(Note{Key: e.Key, At: e.At.Add(-g.latency)})
+	m, ok := g.marker.Play(mark.Note{Key: e.Key, At: e.At.Add(-g.latency)})
 	if !ok {
 		return
 	}
 	g.lastMark = g.lang.T(msgMark, "Note", g.noteName(e.Key, g.beats[m.Beat].Chord), "Words", g.markWords(m))
 	g.record(m)
-	g.summary.note(m)
-	if !g.band.demo {
-		g.speak(g.coach.note(m.Off, m.Timing, m.Beat), time.Now())
+	g.summary.Note(m)
+	if !g.band.Demo {
+		g.speak(g.coach.Note(m.Off, m.Timing, m.Beat), time.Now())
 	}
 }
 
@@ -372,9 +361,9 @@ func (g *game) speak(id string, now time.Time) {
 
 // markWords says what a note was: its timing, and its pitch when a beat
 // claims it.
-func (g *game) markWords(m NoteMark) string {
+func (g *game) markWords(m mark.NoteMark) string {
 	timing := g.lang.T(timingPhrase[m.Timing])
-	if m.Timing == Between {
+	if m.Timing == mark.Between {
 		return timing
 	}
 	return timing + ", " + g.lang.T(pitchPhrase[m.Pitch])
@@ -382,15 +371,15 @@ func (g *game) markWords(m NoteMark) string {
 
 // record writes `m` down, when the game records: the bar counted within
 // its chorus, the chord as the chart writes it.
-func (g *game) record(m NoteMark) {
+func (g *game) record(m mark.NoteMark) {
 	if g.rec == nil {
 		return
 	}
 	ch := g.beats[m.Beat].Chord
 	p := g.m.Position(m.Beat)
-	bar, chorus := barOf(m.Beat, g.chorusLen)
+	bar, chorus := mark.BarOf(m.Beat, g.chorusLen)
 	p.Bar = bar + 1
-	g.rec.note(chorus+1, p, m.Off, symbolOf(g.written[ch.Start]).String(), octaveName(g.noteName(m.Key, ch), m.Key), g.markWords(m))
+	g.rec.note(chorus+1, p, m.Off, chart.SymbolOf(g.written[ch.Start]).String(), octaveName(g.noteName(m.Key, ch), m.Key), g.markWords(m))
 }
 
 // noteName spells `key` over the chord it was played on, as a lead
@@ -411,10 +400,10 @@ func (g *game) noteName(key int, ch analysis.Change) string {
 }
 
 // markAt returns the mark of beat `n` of the chorus playing, if any.
-func (g *game) markAt(n int, chorus int) (BeatKind, bool) {
+func (g *game) markAt(n int, chorus int) (mark.BeatKind, bool) {
 	if g.practicing {
-		if g.practice != nil && g.practice.landed[n] {
-			return Landed, true
+		if g.practice != nil && g.practice.Landed(n) {
+			return mark.Landed, true
 		}
 		return 0, false
 	}
@@ -436,7 +425,7 @@ func (g *game) Draw(dst *ebiten.Image) {
 	pos := math.Inf(-1)
 	switch {
 	case g.running && g.practicing:
-		pos = float64(g.practice.waiting().N)
+		pos = float64(g.practice.Waiting().N)
 	case g.running:
 		pos = g.m.Beats(time.Now())
 	}
@@ -450,7 +439,7 @@ func (g *game) Draw(dst *ebiten.Image) {
 	}
 
 	g.piano.Draw(c, nil)
-	drawSplit(c, &g.piano, g.band.split)
+	drawSplit(c, &g.piano, g.band.Split)
 	g.drawWalker(c)
 	g.drawBubble(c)
 
@@ -477,14 +466,14 @@ func (g *game) drawWalker(c screen.Canvas) {
 		onBeat = beats >= 0 && beats < float64(len(g.beats))
 	}
 	var col color.Color = ink
-	if g.band.demo && !g.practicing {
+	if g.band.Demo && !g.practicing {
 		col = faint // a silhouette: the band plays, not a player
 	}
-	g.walker.draw(c, walkerX, walkerY, walkerScale, g.walker.gait(onBeat), beats, now, col)
+	g.walker.Draw(c, walkerX, walkerY, walkerScale, g.walker.Gait(onBeat), beats, now, col)
 }
 
 // drawBubble draws what the walker says above his head, for a while: one
-// line, centred over him (see drawSpeech).
+// line, centred over him (see figure.Bubble).
 func (g *game) drawBubble(c screen.Canvas) {
 	if g.bubble == "" || time.Since(g.bubbleAt) > bubbleHold {
 		return
@@ -492,7 +481,8 @@ func (g *game) drawBubble(c screen.Canvas) {
 	w, h := c.Measure(g.bubble, g.fonts.bubble)
 	x := max(float64(margin), walkerX-w/2) // never off the screen
 	under := float64(walkerY - bubbleLift)
-	g.drawSpeech(c, []string{g.bubble}, x, under-bubbleGap-h, w, h, walkerX)
+	b := figure.Bubble{Font: g.fonts.bubble, Ink: ink, Left: x, Top: under - figure.BubbleGap - h, Width: w, LineH: h}
+	b.Draw(c, []string{g.bubble}, walkerX, walkerY, walkerScale)
 }
 
 // keys says the keys of the game as they stand, each with what it does
@@ -510,7 +500,7 @@ func (g *game) keys() string {
 	} else {
 		keys = append(keys, g.lang.T(msgKeyFree))
 		demo := msgKeyDemoOn
-		if g.band.demo {
+		if g.band.Demo {
 			demo = msgKeyDemoOff
 		}
 		keys = append(keys, g.lang.T(demo))
@@ -527,7 +517,7 @@ func (g *game) drawMode(c screen.Canvas) {
 	switch {
 	case g.practicing:
 		label = g.lang.T(msgModeFree)
-	case g.band.demo:
+	case g.band.Demo:
 		label = g.lang.T(msgModeDemo)
 	}
 	w, h := c.Measure(label, g.fonts.ui)

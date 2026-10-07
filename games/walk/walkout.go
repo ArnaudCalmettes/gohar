@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 
 	"github.com/ArnaudCalmettes/gohar/games/screen"
+	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
 
@@ -112,7 +113,7 @@ func (l *lesson) drawWalkout(dst *ebiten.Image, c screen.Canvas, now time.Time) 
 	t := now.Sub(l.out.since).Seconds()
 	switch l.out.stage {
 	case leaving:
-		l.walker.draw(c, float32(l.walkerAt(now)), walkerY, walkerScale, walking, t*walkSteps, now, ink)
+		l.walker.Draw(c, float32(l.walkerAt(now)), walkerY, walkerScale, figure.Walking, t*walkSteps, now, ink)
 	case gone:
 		c.Centred(gameOver, l.fonts.count, screenWidth/2, headingY, ink)
 	case returning:
@@ -135,7 +136,7 @@ func (l *lesson) drawMirrored(dst *ebiten.Image, x, beats float64, now time.Time
 	}
 	l.out.mirror.Clear()
 	box := screen.Canvas{Dst: l.out.mirror, Scale: l.scale}
-	l.walker.draw(box, mirrorW/2, mirrorH-5, walkerScale, walking, beats, now, ink)
+	l.walker.Draw(box, mirrorW/2, mirrorH-5, walkerScale, figure.Walking, beats, now, ink)
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(-1, 1)
 	op.GeoM.Translate((x+mirrorW/2)*l.scale, (walkerY-mirrorH+5)*l.scale)

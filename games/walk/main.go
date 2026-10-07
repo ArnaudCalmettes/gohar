@@ -34,6 +34,9 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/lang"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/settings"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
+	"github.com/ArnaudCalmettes/gohar/games/walk/mark"
 	"github.com/ArnaudCalmettes/gohar/synth"
 )
 
@@ -51,7 +54,7 @@ func main() {
 	chip := flag.Bool("chip", false, "play 8-bit sounds rather than the soundfont")
 	list := flag.Bool("list", false, "list the presets of the soundfont, and quit")
 	bassPreset := flag.String("bass", "0:32", "bank:patch of the bass in the soundfont")
-	split := flag.Int("split", FirstPalier.Split, "the lowest key of the right hand")
+	split := flag.Int("split", mark.FirstPalier.Split, "the lowest key of the right hand")
 	useMIDI := flag.Bool("midi", true, "listen to a MIDI keyboard if there is one")
 	port := flag.String("port", "", "an input's number or part of its name; the first one if empty")
 	device := flag.Duration("device", synth.DefaultBuffer, "device buffer")
@@ -60,9 +63,9 @@ func main() {
 	language := flag.String("lang", saved.Lang, "the language of the game: fr or en")
 	flag.Parse()
 
-	bd, closeAudio, err := openAudio(audioFlags{
-		sf2: *sf2, chip: *chip, list: *list,
-		bass: preset(*bassPreset), split: *split, demo: *demo, device: *device, gain: *gain,
+	bd, closeAudio, err := band.Open(band.Flags{
+		SF2: *sf2, Chip: *chip, List: *list,
+		Bass: preset(*bassPreset), Split: *split, Demo: *demo, Device: *device, Gain: *gain,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -72,7 +75,7 @@ func main() {
 	}
 	defer closeAudio()
 
-	tunes, err := readTunes()
+	tunes, err := grids.All()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -131,7 +134,7 @@ func main() {
 	// Without a keyboard, the walker plays and the player listens: the
 	// demo is on, and D turns it off at rest.
 	if a.midi == "" {
-		bd.demo = true
+		bd.Demo = true
 	}
 	// oto opens the default output and does not name it: the buffer is
 	// what the game knows of it, and what changes its latency.

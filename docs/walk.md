@@ -322,7 +322,7 @@ Ce qui suit est notre lecture des sources.
   basse ; au second, le joueur prend la main. Le générateur et le
   marqueur partagent leurs règles : une ligne générée doit recevoir de
   bonnes marques, et les tests le vérifient.
-- Le générateur (`generator.go`, joué par `-demo`) suit les cinq règles
+- Le générateur (le paquet `games/walk/bass`, joué par `-demo`) suit les cinq règles
   de Siskind (voir « La walking bass »), avec trois écarts :
   - sur un accord tenu, la gamme peut aussi descendre vers la quinte du
     dessous, pour qu'un walk down puisse se poursuivre ;
@@ -395,12 +395,12 @@ Ce qui suit est notre lecture des sources.
   la jauge de tension, usure comprise.
 - **Professeur**, dans les leçons du cours des débutants, il change de
   pose : de face, une main dans la poche, l'autre libre, qui claque des
-  doigts à une bonne réponse (`teacher.go`, et « Dans le jeu » dans
-  `debutants.md`). Il sort de l'écran, de profil, quand l'easter egg
+  doigts à une bonne réponse (`figure/teacher.go`, et « Dans le jeu »
+  dans `debutants.md`). Il sort de l'écran, de profil, quand l'easter egg
   l'a poussé à bout, et revient de même, tourné vers la gauche
   (`walkout.go`). Ses deux poses partagent les proportions du croquis
-  (`walker.go`), et ses bulles, dans la partie comme dans les leçons,
-  le même dessin (`bubble.go`).
+  (`figure/walker.go`), et ses bulles, dans la partie comme dans les
+  leçons, le même dessin (`figure/bubble.go`).
 - Les états, du plus bas au plus haut :
   1. **il cherche le tempo** : pas hésitant, regard vers le joueur ;
      l'état de la phase sans tempo et du décompte ;
@@ -414,8 +414,8 @@ Ce qui suit est notre lecture des sources.
 - Il vit en périphérie, à gauche de la grille, et ne masque jamais un
   chiffrage.
 - **Pour l'instant, un bonhomme en bâtons** dessiné par le moteur
-  (`walker.go`), qui suffit à valider que la démarche suit le jeu avant
-  de commander le moindre dessin :
+  (`figure/walker.go`), qui suffit à valider que la démarche suit le
+  jeu avant de commander le moindre dessin :
   - l'aisance est une moyenne glissante des arrivées, à peu près les
     huit dernières ; il saute à chaque arrivée posée, et ne trébuche
     sur une manquée que si l'aisance est déjà retombée ;
@@ -426,9 +426,9 @@ Ce qui suit est notre lecture des sources.
   - les seuils sont des valeurs de départ, à régler en jouant.
 - **Il parle**, avec les mots du jeu (des marques, pas un jugement),
   au-dessus de sa tête, écrit à la main de la grille et tenu une
-  seconde et demie (`coach.go`). Pas de bulle fermée : un trait sous la
-  phrase et un trait qui descend vers lui, à la manière d'une BD dessinée
-  en bâtons comme lui :
+  seconde et demie (`figure/coach.go`). Pas de bulle fermée : un trait
+  sous la phrase et un trait qui descend vers lui, à la manière d'une
+  BD dessinée en bâtons comme lui :
   - **rien quand le joueur joue dans les temps** : le claquement de
     doigts le dit déjà, c'est le juice ;
   - « Tu presses » ou « Détends-toi » quand les cinq dernières notes
@@ -707,7 +707,7 @@ scènes : le premier écran titre se contente de la position finale.
   sounds` la télécharge dans le cache de l'utilisateur, d'un commit
   figé, empreinte vérifiée.
 - **La soundfont réduite**, embarquée dans le jeu avec le snap
-  (`games/walk/sounds`) : `make slim` tire de GeneralUser `walk.sf2`,
+  (`games/walk/band/sounds`) : `make slim` tire de GeneralUser `walk.sf2`,
   2,5 Mo environ au lieu de 32, réduite à ce que le jeu joue : la
   contrebasse (0:32), le piano (0:0) et huit touches du kit Jazz
   (128:32 : la charleston au pied, la ride 1, les deux wood blocks de
@@ -720,7 +720,7 @@ scènes : le premier écran titre se contente de la position finale.
   pour échantillon. Sa licence permet de la modifier et de l'utiliser
   dans un logiciel ; elle prévient que l'origine de certains
   échantillons est incertaine, ce qui ne concerne qu'un produit
-  commercial (voir `sounds/CREDITS.md`). Le jeu joue la soundfont
+  commercial (voir `games/walk/band/sounds/CREDITS.md`). Le jeu joue la soundfont
   embarquée ; `-sf2` en essaie une autre, GeneralUser complète par
   exemple, pour choisir un autre son. Un son de plus dans le jeu, la
   casserole par exemple, demande de refaire `make slim`.

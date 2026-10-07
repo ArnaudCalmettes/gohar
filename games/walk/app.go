@@ -7,6 +7,8 @@ import (
 
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/lang"
+	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
 )
 
 // eventBuffer is how many key events wait for the scene on top.
@@ -18,14 +20,14 @@ const eventBuffer = 64
 // and the options of the command line until a settings screen takes
 // them over.
 type app struct {
-	band   *band
+	band   *band.Band
 	events chan keyboard.Event // the keys, for the scene on top
 	midi   string              // the keyboard's name, empty without one
 	lang   *lang.Lang
 	fonts  fonts
 	scale  float64   // the window's, set by layout
 	rec    *recorder // nil without -record
-	jam    *jam      // the music of the menus, nil while a game plays
+	jam    *band.Jam // the music of the menus, nil while a game plays
 
 	// pair names the keyboard and the output, for the calibration;
 	// latency is the offset measured for it, zero until one is.
@@ -33,7 +35,7 @@ type app struct {
 	latency time.Duration
 
 	// The grids, and the one chosen last, kept for the session.
-	tunes   []tune
+	tunes   []grids.Tune
 	current int
 
 	// The options.
@@ -46,7 +48,7 @@ type app struct {
 // event to the scene on top, never waiting. A full channel drops the
 // event for the display only: the sound has already gone.
 func (a *app) onKey(e keyboard.Event) {
-	a.band.key(e)
+	a.band.Key(e)
 	select {
 	case a.events <- e:
 	default:
@@ -75,4 +77,10 @@ func (a *app) layout(outsideWidth, outsideHeight int) (int, int) {
 	w, h := float64(outsideWidth)*s, float64(outsideHeight)*s
 	a.scale = min(w/screenWidth, h/screenHeight)
 	return int(screenWidth * a.scale), int(screenHeight * a.scale)
+}
+
+// newJam starts the music of the menus on the band, the blues walked at
+// `titleBPM`, with the walker's snapped count-in when `snapIn`.
+func (a *app) newJam(snapIn bool) *band.Jam {
+	return band.NewJam(a.band, a.tunes[0].Grid, titleBPM, snapIn)
 }
