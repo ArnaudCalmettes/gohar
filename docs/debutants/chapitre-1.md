@@ -60,22 +60,30 @@ Ce qui suit la résume.
    quarte et la quinte, que le joueur retrouvera nommées au chapitre 3 ;
    le conseil, donné à l'étape 4, reviendra dans l'activité.
 
-**L'activité de la leçon 1.1** reprend ses motifs, do-ré-do, do-mi-do,
-do-fa-do, do-sol-do, sans tempo, de trois façons :
+**L'activité de la leçon 1.1** reprend ses motifs, C-D-C, C-E-C, C-F-C,
+C-G-C, sans tempo, de deux façons :
 
 - **montrés** : le bonhomme joue le motif, le joueur le répète ;
-- **dits en do ré mi** : « do, mi, do », sans rien jouer ni allumer ;
-- **dits en lettres** : « C, E, C ».
+- **dits en lettres** : « C, E, C », sans rien jouer ni allumer.
 
-Dans les deux façons dites, le clavier à l'écran n'allume rien et
-masque ses étiquettes « do / C » : le joueur cherche les touches, il ne
-les lit pas.
+La leçon a nommé les notes dans les deux notations ; passé ce moment de
+découverte, le jeu ne demande plus que les lettres. Le clavier à
+l'écran garde ses deux étiquettes, « do » au-dessus de « C » : le
+joueur qui pense en do ré mi s'y retrouve, et apprend les lettres en
+les lisant à côté.
 
-Chaque façon passe d'abord les motifs dans l'ordre (ré, puis mi, puis
-fa, puis sol), puis mélangés. Viennent ensuite les trois façons
-mélangées entre elles. L'activité demande aussi une séquence plus
-longue, la suite entière de la leçon : do ré mi fa sol, et C D E F G.
-Le conseil de chanter revient au fil de l'activité.
+Chaque façon passe d'abord les motifs dans l'ordre (D, puis E, puis F,
+puis G), puis mélangés. Viennent ensuite les deux façons mélangées
+entre elles, avec la suite entière de la leçon, C D E F G, une fois
+montrée et une fois dite. Le conseil de chanter revient deux fois. Le
+tirage change à chaque partie.
+
+Comme dans la leçon, un motif se rejoue sans faute. Montré, un raté le
+fait rejouer par le bonhomme. Dit, un raté allume toutes les touches
+du motif, jusqu'à ce qu'il soit rejoué depuis le début.
+
+Elle est écrite dans le jeu (`games/walk/lessons/activities.go`) ; on
+l'ouvre d'une leçon faite, par « S'entraîner ».
 
 ### 1.2 La et si
 

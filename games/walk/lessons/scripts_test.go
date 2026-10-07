@@ -1,6 +1,9 @@
 package lessons
 
-import "testing"
+import (
+	"math/rand/v2"
+	"testing"
+)
 
 // play answers `want` as a student who gets it right: its keys down
 // around middle C, then up.
@@ -17,11 +20,17 @@ func play(r *Runner, want Target) {
 	}
 }
 
-// Every script runs to its end for a student who reads every bubble and
+// Every script and every activity runs to its end for a student who reads every bubble and
 // plays every answer right, and says only phrases it names.
 func TestScripts(t *testing.T) {
+	all := map[string][]Step{}
 	for id := range scripts {
-		steps := Script(id)
+		all[id] = Script(id)
+	}
+	for id := range activities {
+		all["activity "+id] = Activity(id, rand.New(rand.NewPCG(1, 2)))
+	}
+	for id, steps := range all {
 		r := NewRunner(&stage{}, steps)
 		r.Start()
 		for i, st := range steps {

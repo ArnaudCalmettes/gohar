@@ -1,5 +1,7 @@
 package lessons
 
+import "math/rand/v2"
+
 // The scripts of the lessons written so far, by ID. Each call builds
 // fresh steps: Ask and Repeat keep where they are.
 var scripts = map[string]func() []Step{
@@ -15,16 +17,22 @@ func Script(id string) []Step {
 	return nil
 }
 
-// Phrases returns the phrases every script says, for the game to check
-// that it can say them all.
+// Phrases returns the phrases every script and every activity says,
+// for the game to check that it can say them all.
 func Phrases() []string {
 	var out []string
-	for _, s := range scripts {
-		for _, st := range s() {
+	add := func(steps []Step) {
+		for _, st := range steps {
 			if p := st.said(); p != "" {
 				out = append(out, p)
 			}
 		}
+	}
+	for _, s := range scripts {
+		add(s())
+	}
+	for _, a := range activities {
+		add(a(rand.New(rand.NewPCG(1, 2)))) // any order says the same phrases
 	}
 	return out
 }

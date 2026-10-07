@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math/rand/v2"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -47,7 +48,8 @@ func init() {
 // course is the scene of the course for beginners, over the lighter
 // jam: first the chapters open, then the lessons of the one chosen, a
 // green check on what is done. A lesson written plays in a lesson
-// scene (see lesson.go), which comes back here.
+// scene (see lesson.go), which comes back here. A lesson done that has
+// an activity opens a last list: practise, or see the lesson again.
 type course struct {
 	*app
 
@@ -58,28 +60,71 @@ type course struct {
 	done    lessons.Progress
 	open    []lessons.Chapter // what the player sees, a prefix of lessons.Course
 	chapter int               // the chapter open, or -1 for the list of chapters
+	lesson  int               // the lesson open in it, or -1 for its list
+	rng     *rand.Rand        // the order of the activities
 }
+
+// The items of a lesson open, before Back.
+const (
+	itemPractise = iota // its activity
+	itemReview          // the lesson again
+	lessonItems
+)
 
 func newCourse(a *app, back *title) *course {
 	done := lessons.Progress{}
 	if _, err := settings.Load(settings.Path(courseFile), &done); err != nil {
 		log.Println("course:", err) // the course starts over, the file stays as it is
 	}
-	c := &course{app: a, back: back, walker: figure.NewWalker(figure.Grooving), done: done, open: lessons.Open(lessons.Course, done)}
+	seed := uint64(time.Now().UnixNano())
+	c := &course{
+		app: a, back: back, walker: figure.NewWalker(figure.Grooving),
+		done: done, open: lessons.Open(lessons.Course, done),
+		rng: rand.New(rand.NewPCG(seed, seed>>32|1)),
+	}
 	c.showChapters(0)
 	return c
 }
 
 // showChapters lists the chapters, `chosen` chosen.
 func (c *course) showChapters(chosen int) {
-	c.chapter = -1
+	c.chapter, c.lesson = -1, -1
 	c.menu = menu{chosen: chosen, items: len(c.open) + 1} // and Back
 }
 
 // showLessons lists the lessons of chapter `i`, `chosen` chosen.
 func (c *course) showLessons(i, chosen int) {
-	c.chapter = i
+	c.chapter, c.lesson = i, -1
 	c.menu = menu{chosen: chosen, items: len(c.open[i].Lessons) + 1}
+}
+
+// showLesson opens lesson `i` of the chapter open, `chosen` chosen.
+func (c *course) showLesson(i, chosen int) {
+	c.lesson = i
+	c.menu = menu{chosen: chosen, items: lessonItems + 1}
+}
+
+// id is the ID of the lesson chosen in the chapter's list, or open.
+func (c *course) id() string {
+	i := c.menu.chosen
+	if c.lesson >= 0 {
+		i = c.lesson
+	}
+	return c.open[c.chapter].Lessons[i].ID
+}
+
+// play starts lesson `id`, or its activity when `activity`, if written.
+func (c *course) play(id string, activity bool) scene.Transition {
+	if activity {
+		if steps := lessons.Activity(id, c.rng); steps != nil {
+			return scene.Replace(newLesson(c.app, c, steps, func() {}))
+		}
+		return scene.Stay
+	}
+	if steps := lessons.Script(id); steps != nil {
+		return scene.Replace(newLesson(c.app, c, steps, func() { c.finish(id) }))
+	}
+	return scene.Stay
 }
 
 // finish marks lesson `id` done, saves it, and opens what follows: the
@@ -91,6 +136,9 @@ func (c *course) finish(id string) {
 	}
 	c.open = lessons.Open(lessons.Course, c.done)
 	chosen := c.menu.chosen
+	if c.lesson >= 0 {
+		chosen = c.lesson // seen again from its own list
+	}
 	if chosen+1 < len(c.open[c.chapter].Lessons) {
 		chosen++
 	}
@@ -113,17 +161,25 @@ func (c *course) Update() scene.Transition {
 	back := c.menu.chosen == c.menu.items-1
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape), confirmed() && back:
-		if c.chapter < 0 {
+		switch {
+		case c.chapter < 0:
 			return scene.Replace(c.back)
+		case c.lesson >= 0:
+			c.showLessons(c.chapter, c.lesson)
+		default:
+			c.showChapters(c.chapter)
 		}
-		c.showChapters(c.chapter)
 	case confirmed() && c.chapter < 0:
 		c.showLessons(c.menu.chosen, 0)
+	case confirmed() && c.lesson >= 0:
+		return c.play(c.id(), c.menu.chosen == itemPractise)
 	case confirmed():
-		id := c.open[c.chapter].Lessons[c.menu.chosen].ID
-		if steps := lessons.Script(id); steps != nil {
-			return scene.Replace(newLesson(c.app, c, id, steps))
+		id := c.id()
+		if c.done[id] && lessons.Activity(id, c.rng) != nil {
+			c.showLesson(c.menu.chosen, itemPractise)
+			break
 		}
+		return c.play(id, false)
 	}
 	c.jam.Play(time.Now(), band.Light)
 	return scene.Stay
@@ -139,6 +195,12 @@ func (c *course) Draw(dst *ebiten.Image) {
 		}
 		labels = append(labels, c.lang.T(msgOptBack))
 		c.drawList(dst, &c.walker, c.walker.Gait(true), c.lang.T(msgMenuLearn), c.fonts.count, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
+		return
+	}
+	if c.lesson >= 0 {
+		labels = []string{c.lang.T(msgCoursePractise), c.lang.T(msgCourseReview), c.lang.T(msgOptBack)}
+		heading := c.lang.T(lessonPhrase(c.id()))
+		c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.chord, labels, nil, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
 		return
 	}
 	for _, l := range c.open[c.chapter].Lessons {

@@ -294,7 +294,9 @@ touche saute ce que le joueur sait déjà.
 **L'activité de la leçon.** Une leçon se donne une fois ; elle ouvre une
 activité, sur laquelle le joueur s'entraîne aussi longtemps et aussi
 souvent qu'il veut, avant de passer à la leçon suivante. L'activité de
-la leçon 1.1 (`debutants/chapitre-1.md`) en donne le modèle.
+la leçon 1.1 (`debutants/chapitre-1.md`) en donne le modèle. Dans le
+jeu, une leçon faite qui a une activité ouvre un dernier choix :
+« S'entraîner », ou « Revoir la leçon ».
 
 **Le passage à la leçon suivante**, c'est le joueur qui le décide, quand
 il se sent prêt. Une leçon donnée est marquée faite, d'une coche verte ;
@@ -399,8 +401,8 @@ que le joueur termine au clavier ne passe pas aussitôt la main non
 plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.
 
-**L'avancement.** La leçon 1.1 est la première écrite ; son activité et
-les leçons suivantes restent à faire. Une fois une leçon dans le jeu,
+**L'avancement.** La leçon 1.1 et son activité sont écrites ; les
+leçons suivantes restent à faire. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

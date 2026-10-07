@@ -73,7 +73,7 @@ type lesson struct {
 	*app
 
 	back   *course
-	id     string
+	done   func() // once every step is over, before going back
 	runner *lessons.Runner
 	piano  screen.Piano
 	down   [screen.MIDIKeys]bool // what the hands hold
@@ -113,10 +113,12 @@ type lesson struct {
 	turned [screen.MIDIKeys]bool // the keys that turned a page, silent, until they go up
 }
 
-func newLesson(a *app, back *course, id string, steps []lessons.Step) *lesson {
+// newLesson plays `steps`, a lesson or its activity, and goes back to
+// `back`, calling `done` when they are all over.
+func newLesson(a *app, back *course, steps []lessons.Step, done func()) *lesson {
 	p := newPiano()
 	p.Low, p.High = lessonLow, lessonHigh
-	l := &lesson{app: a, back: back, id: id, piano: p}
+	l := &lesson{app: a, back: back, done: done, piano: p}
 	l.runner = lessons.NewRunner(l, steps)
 	return l
 }
@@ -267,7 +269,7 @@ func (l *lesson) Update() scene.Transition {
 	// set here, before the next key comes.
 	l.band.Silent.Store(l.teaching() && l.runner.Reading())
 	if l.runner.Done() {
-		l.back.finish(l.id)
+		l.done()
 		return scene.Replace(l.back)
 	}
 	var walker [screen.MIDIKeys]bool // the note of his phrase sounding now

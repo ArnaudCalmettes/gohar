@@ -1,5 +1,7 @@
 package lessons
 
+import "slices"
+
 // A Step is one of the walker's gestures in a lesson (see the table of
 // "Le bonhomme professeur" in docs/debutants.md). The Runner calls its
 // methods; each but begin says whether the step is over. "Jouer
@@ -152,9 +154,13 @@ func (*Ask) read() bool             { return false }
 // note sounds the casserole, and the walker plays the phrase again, to
 // be played back again from its start: "do sol do" is not found among
 // the notes of a scale.
+//
+// Without Keys, the walker only says the phrase, "C, E, C", and the
+// player plays it from the words. A wrong note then shows every key of
+// the phrase, lit until it is played through, from its start again.
 type Repeat struct {
 	Phrase string
-	Keys   []int    // what the walker plays, MIDI numbers
+	Keys   []int    // what the walker plays, MIDI numbers; nil to say it only
 	Want   []Target // a target for each note
 
 	at int // the note expected next, -1 while the walker plays
@@ -163,14 +169,20 @@ type Repeat struct {
 func (st *Repeat) said() string { return st.Phrase }
 
 func (st *Repeat) begin(s Stage) {
-	st.at = -1
 	s.Say(st.Phrase)
 	s.Light(nil)
+	if st.Keys == nil {
+		st.at = 0
+		return
+	}
+	st.at = -1
 	s.Play(st.Keys)
 }
 
 func (st *Repeat) phraseEnded(Stage) bool {
-	st.at = 0
+	if st.Keys != nil {
+		st.at = 0
+	}
 	return false
 }
 
@@ -179,18 +191,41 @@ func (st *Repeat) pressed(s Stage, held []int) bool {
 		return false // he is still playing: the keys sound, nothing counts
 	}
 	if st.Want[st.at].Judge(held) != Hit {
+		if st.Keys == nil {
+			s.Miss(st.hint())
+			st.at = 0
+			return false
+		}
 		s.Miss(nil)
 		st.at = -1
 		s.Play(st.Keys)
 		return false
 	}
-	s.Light(nil)
+	if st.Keys != nil {
+		s.Light(nil) // what a Show lit, out at the first note
+	}
 	st.at++
 	if st.at < len(st.Want) {
 		return false
 	}
+	if st.Keys == nil {
+		s.Light(nil) // the phrase's keys, lit after a miss
+	}
 	s.Hit()
 	return true
+}
+
+// hint is every pitch class the phrase wants, once each, in order.
+func (st *Repeat) hint() []int {
+	var pcs []int
+	for _, w := range st.Want {
+		for _, p := range w.Hint() {
+			if !slices.Contains(pcs, p) {
+				pcs = append(pcs, p)
+			}
+		}
+	}
+	return pcs
 }
 
 func (*Repeat) released(Stage, []int) bool { return false }

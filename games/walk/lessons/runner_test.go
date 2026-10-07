@@ -178,6 +178,29 @@ func TestRepeatExactly(t *testing.T) {
 	}
 }
 
+// Said rather than shown, "C, E, C" is played from the words. A wrong
+// note shows the keys of the whole motif, lit until it is played
+// through, from its start again.
+func TestRepeatSaid(t *testing.T) {
+	s := &stage{}
+	r := NewRunner(s, []Step{&Repeat{Phrase: "C, E, C", Want: []Target{Do, Mi, Do}}})
+	r.Start()
+	expect(t, s, "says C, E, C", "lights out")
+	for _, n := range []string{"C4", "F4"} {
+		r.NoteOn(key(n))
+		r.NoteOff(key(n))
+	}
+	expect(t, s, "casserole, shows C E")
+	for _, n := range []string{"C4", "E4", "C5"} {
+		r.NoteOn(key(n))
+		r.NoteOff(key(n))
+	}
+	expect(t, s, "lights out", "right")
+	if !r.Done() {
+		t.Error("not over after C E C")
+	}
+}
+
 func TestGroup(t *testing.T) {
 	for _, tc := range []struct {
 		group Group
