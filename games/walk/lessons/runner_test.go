@@ -49,9 +49,21 @@ func (s *stage) Play(ks []int) {
 	s.log = append(s.log, "plays "+strings.Join(ns, " "))
 }
 
-func (s *stage) Miss(pcs []int) { s.log = append(s.log, "casserole, shows "+pcNames(pcs)) }
+func (s *stage) Miss(pcs []int, _ int) { s.log = append(s.log, "casserole, shows "+pcNames(pcs)) }
 
 func (s *stage) Hit() { s.log = append(s.log, "right") }
+
+func (s *stage) Hold(k int) { s.log = append(s.log, "holds "+keyName(k)) }
+
+func (s *stage) Release() { s.log = append(s.log, "lets go") }
+
+func (s *stage) Blink(k int) {
+	if k == 0 {
+		s.log = append(s.log, "blinks no more")
+		return
+	}
+	s.log = append(s.log, "blinks "+keyName(k))
+}
 
 func (s *stage) Tease(a Annoyance) {
 	s.log = append(s.log, [...]string{Hey: "Hé…", OnPurpose: "on purpose?", FedUp: "walks out"}[a])
@@ -198,6 +210,33 @@ func TestRepeatSaid(t *testing.T) {
 	expect(t, s, "lights out", "right")
 	if !r.Done() {
 		t.Error("not over after C E C")
+	}
+}
+
+// "Joue C D E F G A B": the B hangs, held by the game, until the C
+// above it, blinking, resolves it. A wrong note on the way starts the
+// phrase over; once it hangs, a wrong note is only a casserole.
+func TestHang(t *testing.T) {
+	s := &stage{}
+	r := NewRunner(s, []Step{&Hang{
+		Phrase: "play C D E F G A B", Want: []Target{Do, Re, Mi, Fa, Sol, La, Si},
+		Humpf: "humpf", Resolve: Do, Thanks: "thanks",
+	}})
+	r.Start()
+	s.take()
+	for _, n := range []string{"C4", "D4", "E4", "F4", "G4", "A4", "B4"} {
+		r.NoteOn(key(n))
+		r.NoteOff(key(n))
+	}
+	expect(t, s, "lights out", "holds B4", "says humpf", "blinks C5")
+	r.NoteOn(key("D5"))
+	r.NoteOff(key("D5"))
+	expect(t, s, "casserole, shows ")
+	r.NoteOn(key("C5"))
+	expect(t, s, "blinks no more", "lets go", "says thanks")
+	r.NoteOff(key("C5"))
+	if !r.Done() {
+		t.Error("not over once resolved")
 	}
 }
 

@@ -10,7 +10,7 @@ Il compte quatre leçons :
 | Leçon | Ce qu'elle apporte |
 |---|---|
 | 1.1 | Les groupes de touches noires ; do et fa ; do ré mi fa sol |
-| 1.2 | La et si : les sept notes blanches ; mi et si à droite des groupes, comme do et fa à gauche |
+| 1.2 | La gamme de do majeur : les sept notes blanches, avec la et si ; mi et si à droite des groupes, comme do et fa à gauche |
 | 1.3 | Les dièses : une note qu'on fait monter d'un cran ; mi♯ et si♯, les premières notes enharmoniques |
 | 1.4 | Les bémols : une note qu'on fait descendre d'un cran ; deux noms par touche noire ; fa♭ et do♭ ; l'échelle chromatique |
 
@@ -49,7 +49,8 @@ Ce qui suit la résume.
    débutants les confondent au début ; les apprendre l'un contre
    l'autre, par leur groupe, coupe court à la confusion. Le bonhomme
    les fait trouver, mélangés, dans les deux notations.
-4. Do ré mi fa sol, à partir du do, joués après lui en les chantant.
+4. Do ré mi fa sol, à partir du do, joués après lui en les chantant,
+   puis en redescendant, sol fa mi ré do.
    Cinq notes, pas sept : elles tiennent sous une main, et C D E F G se
    suivent dans l'alphabet, ce qui aide à retenir les lettres.
 5. Les motifs, do-ré-do, do-mi-do, do-fa-do, do-sol-do, répétés après
@@ -74,8 +75,8 @@ les lisant à côté.
 
 Chaque façon passe d'abord les motifs dans l'ordre (D, puis E, puis F,
 puis G), puis mélangés. Viennent ensuite les deux façons mélangées
-entre elles, avec la suite entière de la leçon, C D E F G, une fois
-montrée et une fois dite. Le conseil de chanter revient deux fois. Le
+entre elles, avec la suite entière de la leçon, C D E F G, et sa
+descente, G F E D C, chacune une fois montrée et une fois dite. Le conseil de chanter revient deux fois. Le
 tirage change à chaque partie.
 
 Comme dans la leçon, un motif se rejoue sans faute. Montré, un raté le
@@ -85,42 +86,56 @@ du motif, jusqu'à ce qu'il soit rejoué depuis le début.
 Elle est écrite dans le jeu (`games/walk/lessons/activities.go`) ; on
 l'ouvre d'une leçon faite, par « S'entraîner ».
 
-### 1.2 La et si
+### 1.2 La gamme de do majeur
 
-**La leçon 1.2** complète la gamme, et mobilise d'abord la mémoire
+La leçon 1.2 complète la gamme, et mobilise d'abord la mémoire
 auditive et lexicale du joueur : c'est la suite chantée qui situe la et
-si, plutôt que leur place parmi les touches noires.
+si, plutôt que leur place parmi les touches noires. Elle est écrite
+dans le jeu, comme la 1.1 ; ce qui suit la résume.
 
-1. *Dire* : « Do ré mi fa sol, tu les as. On continue. »
-2. *Répéter après lui* : do ré mi fa sol la si do, en montant puis en
-   descendant, en chantant. La suite entière s'installe, dans l'oreille
-   et dans les mots.
-3. *Dire*, puis *demander* : les mêmes notes en lettres, C D E F G A B.
-   Le bonhomme prévient : « Attention, après G, l'alphabet repart de A. »
-   Puis : « joue C D E F G A B ».
+1. Le bonhomme reprend où la leçon 1.1 s'est arrêtée : une dernière
+   révision de C D E F G, demandés en lettres, avant de les dire
+   acquis.
+2. La gamme entière, de do au do du dessus, en montant puis en
+   descendant, répétée après lui en chantant. La suite s'installe, dans
+   l'oreille et dans les mots. La consigne précise, entre parenthèses,
+   qu'elle ne se joue pas en rythme : les doigtés viendront plus tard,
+   et le passage du pouce est hors de portée d'un grand débutant. Un
+   seul doigt suffit.
+3. Les mêmes notes en lettres, C D E F G A B, avec la mise en garde :
+   après G, l'alphabet repart de A. Puis il les demande, dites, sans
+   les jouer.
 
    Un gag en guise de chute, la sensible avant son nom. Sur le dernier
-   si, le jeu garde la note enfoncée : le son reste, sans que le clavier
-   à l'écran la montre tenue. Le bonhomme a l'air tendu : « Humpf ! Ça
-   peut pas finir comme ça ; il manque quelque chose… » Le do au-dessus
-   clignote sur le clavier. Le joueur le joue : « Ah ! Merci ! Ça va
-   beaucoup mieux. » Le mot de sensible ne vient qu'au chapitre 4 ;
-   le joueur en a déjà senti l'effet.
-4. *Montrer* : une astuce pour deux notes. Do et fa sont à gauche des
-   groupes de deux et de trois touches noires ; mi et si sont à droite
-   de ces mêmes groupes.
-5. *Demander* : un petit exercice qui renforce ces quatre touches,
-   « joue do fa mi si do », puis « joue C F E B C », puis d'autres
-   enchaînements des quatre.
-6. *Les motifs*, en miroir de ceux de 1.1 : do-si-do, do-la-do,
-   do-sol-do, en « répète après moi », en chantant. Cette fois, le do
-   est à la main droite et l'autre note à la main gauche, qui descend
-   de touche blanche en touche blanche. Avec le sol, ces motifs
-   couvrent un tétracorde complet, sol la si do.
+   B, le jeu garde la note : le son reste quand le joueur lâche la
+   touche, sans que le clavier à l'écran la montre tenue. Le bonhomme
+   s'impatiente, il manque quelque chose ; le C au-dessus clignote.
+   Le joueur le joue, la note tenue s'arrête, et le bonhomme, soulagé,
+   remercie. Le mot de sensible ne vient qu'au chapitre 4 ; le joueur
+   en a déjà senti l'effet.
+4. Une astuce pour deux notes : do et fa sont à gauche des groupes de
+   deux et de trois touches noires ; mi et si sont à droite de ces
+   mêmes groupes. Les quatre touches s'allument, le temps de la bulle,
+   sans exercice : s'attarder sur do fa mi si, qui ne forment pas une
+   phrase, n'aurait rien de musical.
+5. Les motifs, en miroir de ceux de 1.1 : do-si-do, do-la-do,
+   do-sol-do, répétés après lui en chantant. Cette fois, le do est à
+   la main droite et l'autre note à la main gauche, qui descend de
+   touche blanche en touche blanche. Avec le sol, ces motifs couvrent
+   un tétracorde complet, sol la si do.
+6. Pour finir, les sept notes à trouver, une fois chacune, dans un
+   ordre tiré à chaque leçon, chacune demandée en lettres ou en do ré
+   mi. C'est là que mi et si, comme les autres, se retrouvent sous les
+   doigts.
 
-L'activité de la leçon 1.2 met ensemble tous les motifs de 1.1 et de
-1.2, et sa séquence longue est la gamme entière : do ré mi fa sol la si,
-et C D E F G A B.
+Dans le jeu, la note tenue est une étape à part, « Laisser en
+suspens » (`Hang`) : une suite demandée comme « Répéter après lui »,
+dont la dernière note reste en l'air jusqu'à la note qui la résout.
+
+**L'activité de la leçon 1.2** suit le modèle de celle de 1.1. Elle met
+ensemble tous les motifs de 1.1 et de 1.2, et sa séquence longue est la
+gamme entière, de C au C du dessus. Dit en lettres, C-G-C est le même
+dans les deux leçons, en montant comme en descendant.
 
 ### 1.3 Les dièses
 

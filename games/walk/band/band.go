@@ -116,11 +116,12 @@ type Band struct {
 	bowl        synth.Instrument // the singing bowl, a clip; a triangle on the chip
 	bass, Piano synth.Instrument // the player's hands, split at `Split`
 	Split       int
-	BassHand    atomic.Bool // the split holds: only while a grid is played
-	Silent      atomic.Bool // the keys do not sound: they turn a lesson's page
-	hat, ride   int         // the keys of the kit
-	ta, ti      int         // the calibration's
-	chip        bool        // the kit is a noise: each stroke needs its release
+	BassHand    atomic.Bool  // the split holds: only while a grid is played
+	Silent      atomic.Bool  // the keys do not sound: they turn a lesson's page
+	hanging     atomic.Int32 // a key kept sounding once up (see Hold), 0 for none
+	hat, ride   int          // the keys of the kit
+	ta, ti      int          // the calibration's
+	chip        bool         // the kit is a noise: each stroke needs its release
 
 	Demo bool // the band plays the bass itself, the reference line
 	held int  // the key the reference bass holds, 0 for none
@@ -211,6 +212,9 @@ func (bd *Band) Key(e keyboard.Event) {
 	if e.Down && bd.Silent.Load() {
 		return
 	}
+	if !e.Down && int32(e.Key) == bd.hanging.Load() {
+		return // left hanging, until Unhold
+	}
 	inst := bd.Piano
 	if e.Key < bd.Split && bd.BassHand.Load() {
 		inst = bd.bass
@@ -219,5 +223,17 @@ func (bd *Band) Key(e keyboard.Event) {
 		inst.NoteOn(e.Key, e.Velocity, e.At)
 	} else {
 		inst.NoteOff(e.Key, e.At)
+	}
+}
+
+// Hold keeps key `k` sounding once the player lets it go, until
+// Unhold: a note left hanging in a lesson. The scene asks for it as it
+// hears the key go down, within a frame: well before a finger lifts.
+func (bd *Band) Hold(k int) { bd.hanging.Store(int32(k)) }
+
+// Unhold lets go, at `at`, of the key Hold kept sounding, if any.
+func (bd *Band) Unhold(at time.Time) {
+	if k := bd.hanging.Swap(0); k != 0 {
+		bd.Piano.ScheduleOff(int(k), at)
 	}
 }

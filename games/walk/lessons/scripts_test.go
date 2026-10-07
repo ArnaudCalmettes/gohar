@@ -49,6 +49,11 @@ func TestScripts(t *testing.T) {
 				for _, w := range st.Want {
 					play(r, w)
 				}
+			case *Hang:
+				for _, w := range st.Want {
+					play(r, w)
+				}
+				play(r, st.Resolve)
 			}
 			r.Resume() // the keys up, a beat gone
 		}

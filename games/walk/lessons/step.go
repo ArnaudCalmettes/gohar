@@ -130,7 +130,7 @@ func (st *Ask) released(s Stage, held []int) bool {
 // miss sounds the casserole, and on a teasing request counts the misses
 // in a row.
 func (st *Ask) miss(s Stage) {
-	s.Miss(st.Want.Hint())
+	s.Miss(st.Want.Hint(), 0)
 	if !st.Teasing {
 		return
 	}
@@ -192,11 +192,11 @@ func (st *Repeat) pressed(s Stage, held []int) bool {
 	}
 	if st.Want[st.at].Judge(held) != Hit {
 		if st.Keys == nil {
-			s.Miss(st.hint())
+			s.Miss(st.hint(), st.at)
 			st.at = 0
 			return false
 		}
-		s.Miss(nil)
+		s.Miss(nil, st.at)
 		st.at = -1
 		s.Play(st.Keys)
 		return false
@@ -230,3 +230,68 @@ func (st *Repeat) hint() []int {
 
 func (*Repeat) released(Stage, []int) bool { return false }
 func (*Repeat) read() bool                 { return false }
+
+// Hang is a phrase left hanging, the gag of lesson 1.2 (see
+// docs/debutants/chapitre-1.md): said, and played back from the words
+// as a Repeat without Keys is, but its last note is held by the game
+// once the player lets it go. The walker frets, and the note that
+// resolves it, the first one of its pitch class above, blinks; played,
+// it lets go of the held note, and he thanks the player.
+type Hang struct {
+	Phrase  string   // what is asked, said
+	Want    []Target // a target for each note, the last one left hanging
+	Humpf   string   // said while it hangs
+	Resolve Note     // what resolves it
+	Thanks  string   // said once resolved
+
+	at   int // the note expected next
+	held int // the key left hanging, 0 before
+}
+
+func (st *Hang) said() string { return st.Phrase }
+
+func (st *Hang) begin(s Stage) {
+	if st.held != 0 { // played over, R: nothing left hanging
+		s.Release()
+		s.Blink(0)
+	}
+	st.at, st.held = 0, 0
+	s.Say(st.Phrase)
+	s.Light(nil)
+}
+
+func (st *Hang) pressed(s Stage, held []int) bool {
+	if st.held == 0 {
+		r := Repeat{Want: st.Want}
+		if st.Want[st.at].Judge(held) != Hit {
+			s.Miss(r.hint(), st.at)
+			st.at = 0
+			return false
+		}
+		if st.at++; st.at < len(st.Want) {
+			return false
+		}
+		s.Light(nil) // the phrase's keys, lit after a miss
+		st.held = held[len(held)-1]
+		s.Hold(st.held)
+		s.Say(st.Humpf)
+		up := (int(st.Resolve) - pc(st.held) + 12) % 12
+		if up == 0 {
+			up = 12
+		}
+		s.Blink(st.held + up)
+		return false
+	}
+	if st.Resolve.Judge(held) != Hit {
+		s.Miss(nil, 0)
+		return false
+	}
+	s.Blink(0)
+	s.Release()
+	s.Say(st.Thanks)
+	return true
+}
+
+func (*Hang) released(Stage, []int) bool { return false }
+func (*Hang) phraseEnded(Stage) bool     { return false }
+func (*Hang) read() bool                 { return false }

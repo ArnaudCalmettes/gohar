@@ -87,8 +87,7 @@ type lesson struct {
 	phraseAt time.Time
 	playing  bool
 
-	upAt   time.Time // when the last key went up
-	missAt time.Time // the last casserole
+	upAt time.Time // when the last key went up
 
 	// The walker's reactions to a key, his cheer, a phrase played again,
 	// wait for it to go up, or for a beat after it went down: answering
@@ -98,8 +97,16 @@ type lesson struct {
 	pressAt time.Time // when the last one went down
 	pending []func()  // the reactions waiting, in order
 
+	// What follows a wrong note, the right keys shown, the phrase played
+	// again, waits for the next bar, `correctAt`, as if the player had
+	// played in rhythm (see Miss).
+	corrections []func()
+	correctAt   time.Time
+
 	cheerAt time.Time // the last right answer
 	cheer   int       // the last cheer said, in cheers
+
+	blink int // a key blinking, asked for without a word; 0 for none
 
 	walker figure.Walker // for his walkout, in profile
 	out    walkout       // the easter egg's first gag (see gags.go)
@@ -133,8 +140,12 @@ func (l *lesson) Enter() {
 	l.runner.Start()
 }
 
-// Leave gives the keys their sound back.
-func (l *lesson) Leave() { l.band.Silent.Store(false) }
+// Leave gives the keys their sound back, and lets go of a note left
+// hanging.
+func (l *lesson) Leave() {
+	l.band.Silent.Store(false)
+	l.band.Unhold(time.Now())
+}
 
 // The lessons.Stage the lesson's runner plays on.
 
@@ -143,6 +154,15 @@ func (l *lesson) Say(phrase string) {
 }
 
 func (l *lesson) Light(pcs []int) { l.shown = pcs }
+
+func (l *lesson) Hold(key int) { l.band.Hold(key) }
+
+func (l *lesson) Release() { l.band.Unhold(time.Now()) }
+
+func (l *lesson) Blink(key int) { l.blink = key }
+
+// blinkPeriod is how long a blinking key stays lit, then out.
+const blinkPeriod = 300 * time.Millisecond
 
 // react does `f` at once, or once the key that brought it about is up,
 // or a beat after it went down.
@@ -154,16 +174,22 @@ func (l *lesson) react(f func()) {
 	l.pending = append(l.pending, f)
 }
 
-// Play plays `keys` from now, scheduled ahead as the band is, or a beat
-// after a casserole that just sounded: the phrase played again after a
-// wrong note must not cover it.
-func (l *lesson) Play(keys []int) { l.react(func() { l.play(keys) }) }
+// beatsPerBar is the bar the player is taken to play in, a beat a
+// note of the walker's phrases.
+const beatsPerBar = 4
 
-func (l *lesson) play(keys []int) {
-	now := time.Now().Add(band.Lookahead)
-	if after := l.missAt.Add(phraseNote); now.Before(after) {
-		now = after
+// Play plays `keys` from now, scheduled ahead as the band is; after a
+// wrong note, from the next bar (see Miss).
+func (l *lesson) Play(keys []int) {
+	if len(l.corrections) > 0 {
+		l.corrections = append(l.corrections, func() { l.play(keys, l.correctAt) })
+		return
 	}
+	l.react(func() { l.play(keys, time.Now().Add(band.Lookahead)) })
+}
+
+// play plays `keys` from `now`, a note a beat.
+func (l *lesson) play(keys []int, now time.Time) {
 	for i, k := range keys {
 		at := now.Add(time.Duration(i) * phraseNote)
 		l.band.Piano.ScheduleOn(k, phraseVel, at)
@@ -196,11 +222,16 @@ func (l *lesson) hit() {
 }
 
 // Miss sounds the casserole at once, with the wrong note, and shows
-// the right keys.
-func (l *lesson) Miss(pcs []int) {
-	l.missAt = time.Now()
-	l.band.Strike(band.Casserole, band.CasseroleVel, l.missAt)
-	l.shown = pcs
+// the right keys on the next bar. The player is taken as playing in
+// rhythm: the wrong note on beat `beat` of the phrase, from 0, the bar
+// starting with it. A motif of three notes missed on its third falls
+// on 3: the beat 4 lets it be heard, the walker starts again on 1.
+func (l *lesson) Miss(pcs []int, beat int) {
+	now := time.Now()
+	l.band.Strike(band.Casserole, band.CasseroleVel, now)
+	wait := beatsPerBar - beat%beatsPerBar
+	l.correctAt = now.Add(time.Duration(wait) * phraseNote)
+	l.corrections = append(l.corrections, func() { l.shown = pcs })
 }
 
 func (l *lesson) Update() scene.Transition {
@@ -242,6 +273,15 @@ func (l *lesson) Update() scene.Transition {
 		}
 		l.pending = nil
 	}
+	if l.runner.Waiting() {
+		l.corrections = nil // the step got its answer meanwhile: nothing to correct
+	}
+	if len(l.corrections) > 0 && !now.Before(l.correctAt.Add(-band.Lookahead)) { // the phrase scheduled ahead, on the bar
+		for _, f := range l.corrections {
+			f()
+		}
+		l.corrections = nil
+	}
 	// A step played through hands over once the keys are up, and a beat
 	// of the walker's phrases later: asked again at once, the player
 	// would feel rushed.
@@ -261,6 +301,7 @@ func (l *lesson) Update() scene.Transition {
 			l.walkoutKey(now)
 		}
 	case inpututil.IsKeyJustPressed(ebiten.KeyR):
+		l.corrections = nil // the step from its start: nothing to correct
 		l.runner.Again()
 	case len(keys) > 0:
 		l.runner.Read()
@@ -294,8 +335,9 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 		l.speech().Draw(c, l.bubble, hx, hy, r)
 	}
 
+	blinkOn := now.UnixMilli()/blinkPeriod.Milliseconds()%2 == 0
 	l.piano.Draw(c, func(k int) screen.Dress {
-		if slices.Contains(l.shown, k%12) {
+		if slices.Contains(l.shown, k%12) || k == l.blink && blinkOn {
 			return screen.Dress{Base: shownTint}
 		}
 		return screen.Dress{}

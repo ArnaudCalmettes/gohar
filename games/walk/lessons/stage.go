@@ -19,12 +19,28 @@ type Stage interface {
 	Play(keys []int)
 
 	// Miss answers a wrong note: the casserole sounds, and the right
-	// keys, every key of the pitch classes `pcs`, are shown.
-	Miss(pcs []int)
+	// keys, every key of the pitch classes `pcs`, are shown. `beat` is
+	// where the wrong note fell in the phrase asked, from 0: the game
+	// takes the player as playing in rhythm, a beat a note, four to the
+	// bar, and shows the way again on the next bar, as Play does after
+	// a Miss.
+	Miss(pcs []int, beat int)
 
 	// Hit answers what was asked, played right to its end: a sign that
 	// it is right, before the next step.
 	Hit()
+
+	// Hold keeps MIDI key `key` sounding after the player lets it go,
+	// until Release: a note left hanging. The keyboard on the screen
+	// does not show it held.
+	Hold(key int)
+
+	// Release lets go of the key Hold kept sounding.
+	Release()
+
+	// Blink has MIDI key `key` blink on the keyboard on the screen, a
+	// key asked for without a word; 0 stops it.
+	Blink(key int)
 
 	// Tease answers misses in a row where nobody misses in good faith:
 	// the walker's annoyance, as far as `level`. At FedUp he walks out,
