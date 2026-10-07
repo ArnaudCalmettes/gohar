@@ -30,7 +30,8 @@ type Bubble struct {
 // head, its centre on (`hx`, `hy`), `r` its radius (see Pose.Head). The
 // tail leaves the line at the point nearest his head, straight above
 // it when he stands under the line, and aims at the centre of his head,
-// wherever he walks; it stops a few pixels short of it.
+// wherever he walks; it stops a few pixels short of it. A bubble of
+// several lines may end below his head: the tail then goes up to it.
 func (b Bubble) Draw(c screen.Canvas, lines []string, hx, hy, r float64) {
 	ly := b.Top
 	for _, line := range lines {
@@ -44,8 +45,8 @@ func (b Bubble) Draw(c screen.Canvas, lines []string, hx, hy, r float64) {
 	dx, dy := hx-fx, hy-under
 	d := math.Hypot(dx, dy)
 	stop := r + tailGap
-	if dy <= 0 || d <= stop {
-		return // his head level with the line: no tail
+	if d <= stop {
+		return // his head against the line: no room for a tail
 	}
 	k := 1 - stop/d
 	c.Line(float32(fx), float32(under), float32(fx+dx*k), float32(under+dy*k), 1, b.Ink)

@@ -2,7 +2,6 @@ package main
 
 import (
 	"image/color"
-	"log"
 	"math/rand/v2"
 	"slices"
 	"time"
@@ -10,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
-	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
@@ -192,39 +190,6 @@ func (l *lesson) Release() { l.band.Unhold(time.Now()) }
 
 func (l *lesson) Blink(key int) { l.blink = key }
 
-func (l *lesson) Chords(chords []string) { l.chords = symbols(chords) }
-
-func (l *lesson) Line(chords []string, bar int) {
-	l.line, l.lineBar = nil, bar
-	for _, s := range symbols(chords) {
-		l.line = append(l.line, []chart.Cell{{Symbol: s}})
-	}
-}
-
-func (l *lesson) Bass(on bool) {
-	l.bass = on
-	l.band.BassHand.Store(on)
-	l.piano.Low, l.piano.High = lessonLow, lessonHigh
-	if on {
-		l.piano.Low, l.piano.High = bassLow, bassHigh
-	}
-}
-
-// symbols reads `chords`, in ChordPro, as a chart draws them. A lesson
-// writes them in its script: one it cannot read is a bug, and logged.
-func symbols(chords []string) []chart.Symbol {
-	var out []chart.Symbol
-	for _, s := range chords {
-		c, err := chordpro.ReadChord(s)
-		if err != nil {
-			log.Println("lesson:", err)
-			continue
-		}
-		out = append(out, chart.SymbolOf(c))
-	}
-	return out
-}
-
 // blinkPeriod is how long a blinking key stays lit, then out.
 const blinkPeriod = 300 * time.Millisecond
 
@@ -241,46 +206,6 @@ func (l *lesson) react(f func()) {
 // beatsPerBar is the bar the player is taken to play in, a beat a
 // note of the walker's phrases.
 const beatsPerBar = 4
-
-// Play plays `keys` from now, scheduled ahead as the band is; after a
-// wrong note, from the next bar (see Miss).
-func (l *lesson) Play(keys []int) { l.playEvery(keys, phraseNote) }
-
-// PlayBars plays `keys` a bar each, as the roots of a line of a grid.
-func (l *lesson) PlayBars(keys []int) { l.playEvery(keys, beatsPerBar*phraseNote) }
-
-// playEvery plays `keys`, a note every `step`, as Play says.
-func (l *lesson) playEvery(keys []int, step time.Duration) {
-	if len(l.corrections) > 0 {
-		l.corrections = append(l.corrections, func() { l.play(keys, step, l.correctAt) })
-		return
-	}
-	l.react(func() { l.play(keys, step, time.Now().Add(band.Lookahead)) })
-}
-
-// play plays `keys` from `now`, a note every `step`, each held almost to
-// the next. A note a bar, he snaps on 2 and 4.
-func (l *lesson) play(keys []int, step time.Duration, now time.Time) {
-	snaps := step == beatsPerBar*phraseNote
-	if snaps {
-		for i := range keys {
-			bar := now.Add(time.Duration(i) * step)
-			l.band.SnapAt(grooveVel, bar.Add(phraseNote))
-			l.band.SnapAt(grooveVel, bar.Add(3*phraseNote))
-		}
-	}
-	for i, k := range keys {
-		at := now.Add(time.Duration(i) * step)
-		off := at.Add(time.Duration(phraseHold * float64(step)))
-		if l.bass {
-			l.band.Pluck(k, phraseVel, at, off)
-			continue
-		}
-		l.band.Piano.ScheduleOn(k, phraseVel, at)
-		l.band.Piano.ScheduleOff(k, off)
-	}
-	l.phrase, l.phraseAt, l.phraseStep, l.phraseSnap, l.playing = keys, now, step, snaps, true
-}
 
 // Hit snaps, has the walker raise his free hand, snapping, and says a
 // cheer in his bubble, until the next step says its own phrase.
@@ -433,42 +358,6 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 		keys = msgLessonPlay // the walker waits for notes, not for a page turned
 	}
 	c.Text(l.lang.T(keys), l.fonts.ui, margin, statusY, faint)
-}
-
-// snapping tells whether the walker's hand is up, snapping, at `now`:
-// for a right answer, or on 2 and 4 under his line of a grid.
-func (l *lesson) snapping(now time.Time) bool {
-	if now.Sub(l.cheerAt) < cheerTime {
-		return true
-	}
-	if !l.playing || !l.phraseSnap || now.Before(l.phraseAt) {
-		return false
-	}
-	t := now.Sub(l.phraseAt)
-	beat := int(t / phraseNote)
-	return beat%2 == 1 && t%phraseNote < cheerTime
-}
-
-// drawWritten draws what the walker wrote: chords side by side, or a
-// line of a grid, its bar played shaded; while he plays the line, the
-// bar of the note he plays.
-func (l *lesson) drawWritten(c screen.Canvas, now time.Time) {
-	pen := l.pen()
-	x := float64(bubbleX)
-	for _, s := range l.chords {
-		x = pen.DrawSymbol(c, s, x, writtenY) + chordsGap
-	}
-	bar := l.lineBar
-	if l.playing && !now.Before(l.phraseAt) {
-		bar = int(now.Sub(l.phraseAt) / l.phraseStep)
-	}
-	for i, cells := range l.line {
-		var fill color.Color
-		if i == bar {
-			fill = pale
-		}
-		pen.DrawBar(c, cells, float32(bubbleX+i*barW), writtenY, barW, lineBarH, fill, false, i == len(l.line)-1)
-	}
 }
 
 // speech is the walker's bubble in a lesson.

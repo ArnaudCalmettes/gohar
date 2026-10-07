@@ -127,8 +127,8 @@ gohar/
                              professeur, ses bulles et ce qu'il dit
                              pendant une partie
       lessons/               le cours des débutants sans écran : ses
-                             chapitres, le moteur des leçons et leurs
-                             scripts
+                             chapitres, le moteur des leçons, leurs
+                             scripts et leurs activités
     keys/                    clavier jouable, mesure de latence bout en bout
     otolatency/              sonde de la seule moitié audio
     latency/                 sonde historique, par ebiten/v2/audio

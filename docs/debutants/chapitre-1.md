@@ -34,7 +34,7 @@ S'il faut en glisser un avant-goût, l'usage le dira.
 
 La leçon 1.1 mobilise l'oreille le plus tôt possible : le joueur chante
 ce qu'il joue. Elle est écrite dans le jeu : ses étapes dans
-`games/walk/lessons/scripts.go`, ses bulles dans `games/walk/locales`.
+`games/walk/lessons/chapter1.go`, ses bulles dans `games/walk/locales`.
 Ce qui suit la résume.
 
 1. Le bonhomme se présente : avant de jouer ensemble, on fait

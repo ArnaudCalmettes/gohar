@@ -346,17 +346,21 @@ Le paquet a pris forme ainsi :
 
 - **la scène** (`Stage`) : dire une phrase, par son identifiant, que le
   jeu traduit ; allumer des touches, désignées par leur note, à toutes
-  les octaves ; faire jouer une phrase au bonhomme ; répondre à un raté,
-  par la casserole et la bonne touche montrée. L'orchestre viendra avec
-  « Jouer ensemble » ;
+  les octaves, ou en faire clignoter une ; faire jouer une phrase au
+  bonhomme, une note par temps ou par mesure ; répondre à un raté, par
+  la casserole et la bonne touche montrée ; tenir une note en suspens ;
+  écrire des accords, ou une ligne de grille ; passer le joueur à la
+  basse. L'orchestre viendra avec « Jouer ensemble » ;
 - **les cibles** (`Target`) : une note à n'importe quelle octave, jugée
   sur la dernière touche enfoncée, pour qu'un do tenu sous la main
   gauche ne compte pas comme une faute ; un groupe de touches noires
   enfoncées ensemble, la paire ou le trio, qui reste « en cours » tant
   que toutes ses touches ne sont pas là, et compte comme raté si on les
   relâche avant ;
-- **les étapes** : Dire, Montrer, Jouer, Demander, Répéter après lui,
-  Faire deviner, Laisser en suspens, Écrire et Jouer une ligne. Répéter se joue sans faute : une fausse note
+- **les étapes** : Dire, Montrer, Jouer et Écrire (`step.go`) ;
+  Demander et Faire deviner, une note à la fois (`ask.go`) ; Répéter
+  après lui, Laisser en suspens et Jouer une ligne, plusieurs notes à
+  la suite (`phrase.go`). Répéter se joue sans faute : une fausse note
   fait sonner la casserole, le bonhomme rejoue la phrase, et le joueur
   la reprend du début. Une gamme jouée de si à do contient « do sol
   do », elle ne le répète pas. Dite plutôt que jouée, une fausse note
@@ -364,7 +368,9 @@ Le paquet a pris forme ainsi :
   rejouée en entier ;
 - **le déroulé** (`Runner`) : le jeu lui transmet les touches, la fin
   des phrases du bonhomme et les bulles lues, et il passe à l'étape
-  suivante quand celle en cours est finie. R rejoue l'étape en cours.
+  suivante quand celle en cours est finie. R rejoue l'étape en cours ;
+- **les scripts**, un fichier par chapitre (`chapter1.go`), et les
+  activités (`activities.go`), tirées à neuf à chaque partie.
 
 ## Dans le jeu
 
