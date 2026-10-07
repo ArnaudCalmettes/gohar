@@ -33,6 +33,8 @@ type stage struct{ log []string }
 
 func (s *stage) Say(phrase string) { s.log = append(s.log, "says "+phrase) }
 
+func (s *stage) Add(phrase string) { s.log = append(s.log, "adds "+phrase) }
+
 func (s *stage) Light(pcs []int) {
 	if pcs == nil {
 		s.log = append(s.log, "lights out")
@@ -304,6 +306,29 @@ func TestPlayLine(t *testing.T) {
 	if !r.Done() {
 		t.Error("not over after the fourth bar")
 	}
+}
+
+// A long phrase missed: the walker adds his reminder to take it slowly,
+// once, however many misses follow. A short one goes without.
+func TestRemindSlowly(t *testing.T) {
+	s := &stage{}
+	r := NewRunner(s, []Step{&Repeat{Phrase: "C, D, E, F, G", Want: []Target{Do, Re, Mi, Fa, Sol}}})
+	r.Start()
+	s.take()
+	for range 2 {
+		r.NoteOn(key("C4"))
+		r.NoteOff(key("C4"))
+		r.NoteOn(key("E4"))
+		r.NoteOff(key("E4"))
+	}
+	expect(t, s, "adds "+slowly, "casserole, shows C D E F G", "casserole, shows C D E F G")
+
+	r = NewRunner(s, []Step{&Repeat{Phrase: "C, E, C", Want: []Target{Do, Mi, Do}}})
+	r.Start()
+	s.take()
+	r.NoteOn(key("D4"))
+	r.NoteOff(key("D4"))
+	expect(t, s, "casserole, shows C E")
 }
 
 func TestGroup(t *testing.T) {

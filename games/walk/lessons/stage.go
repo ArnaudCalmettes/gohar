@@ -10,6 +10,10 @@ type Stage interface {
 	// player's language: the lesson knows the phrase's ID only.
 	Say(phrase string)
 
+	// Add adds the phrase `phrase` under the bubble's: a reminder, the
+	// step's own phrase still there.
+	Add(phrase string)
+
 	// Light lights every key of the pitch classes `pcs` (0 for C, up to
 	// 11 for B), in every octave. Nil puts them out.
 	Light(pcs []int)

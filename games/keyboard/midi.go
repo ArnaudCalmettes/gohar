@@ -90,6 +90,18 @@ func isNumber(s string) bool {
 	return err == nil
 }
 
+// MinVelocity is the softest a key sounds, from 0 to 1. A controller's
+// key pressed gently can send a velocity so low that the note is barely
+// heard, if at all: a real piano's key sounds, only softer. Below this
+// floor, a key goes down at the floor.
+const MinVelocity = 0.3
+
+// velocityOf turns a MIDI velocity, 1 to 127, into the Event's, 0 to 1,
+// no softer than MinVelocity.
+func velocityOf(v uint8) float64 {
+	return max(float64(v)/127, MinVelocity)
+}
+
 type midiSource struct {
 	in   drivers.In
 	stop func()
@@ -110,7 +122,7 @@ func (m *midiSource) Listen(recv func(Event)) error {
 		case msg.GetNoteStart(&channel, &key, &velocity):
 			recv(Event{
 				Key:      int(key),
-				Velocity: float64(velocity) / 127,
+				Velocity: velocityOf(velocity),
 				Down:     true,
 				At:       at,
 			})

@@ -649,6 +649,14 @@ sources de touches. Un clavier MIDI en est une, une séquence enregistrée
 rejouée en mode entraînement en est une autre, et ce n'est pas un
 bouchon de test mais un vrai mode d'un vrai jeu.
 
+La source MIDI pose un plancher à la vélocité (`MinVelocity`, 0,3) :
+une touche de contrôleur enfoncée doucement peut envoyer une vélocité
+si basse que la note s'entend à peine, voire pas du tout, ce qui
+déroute, quand une touche de vrai piano sonne toujours, seulement moins
+fort. En dessous du plancher, la touche part au plancher ; au-dessus,
+elle garde sa vélocité. Tous les jeux en profitent, puisque c'est la
+source qui le pose.
+
 ## Il n'y a pas de port dans `analysis`
 
 Prévu, puis abandonné en concevant le moteur. La raison mérite d'être

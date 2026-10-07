@@ -238,7 +238,7 @@ saura ce que sont un II, un V et un I.
   « Tu le fais exprès ? » à la septième, la sortie à la dixième. Le
   bonhomme sort à droite de profil, en marchant ; GAME OVER s'affiche,
   sur un petit air de piano dans les aigus : quatre tritons qui
-  descendent d'un demi-ton, le dernier en trémolo. Une touche, de
+  descendent d'un demi-ton, égrenés, le dernier tenu. Une touche, de
   l'ordinateur ou du clavier MIDI, et il revient de la droite, du même
   pas, tourné vers la gauche ; une touche encore, et l'étape reprend.
   Comme ses autres répliques, ses mots attendent que la touche soit
@@ -414,7 +414,14 @@ le joueur jouait en rythme : une note par temps, quatre temps par
 mesure, la phrase commencée sur le 1. Un motif de trois notes raté sur
 sa troisième tombe sur le 3 ; le 4 laisse entendre la casserole, et le
 bonhomme reprend sur le 1, comme le claquement d'une bonne réponse
-tombe sur le 4. Une étape
+tombe sur le 4.
+
+Sur une phrase longue, cinq notes ou plus, un débutant s'énerve vite :
+il se presse, garde une touche enfoncée, rate en voulant rattraper. Au
+premier raté, le bonhomme ajoute donc à sa bulle, sous la consigne qui
+reste lisible, un rappel : prendre son temps, une note après l'autre,
+proprement, avec un seul doigt s'il le faut. Une fois par étape, quel
+que soit le nombre de ratés. Une étape
 que le joueur termine au clavier ne passe pas aussitôt la main non
 plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.

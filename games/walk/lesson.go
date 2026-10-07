@@ -184,6 +184,12 @@ func (l *lesson) Say(phrase string) {
 
 func (l *lesson) Light(pcs []int) { l.shown = pcs }
 
+// Add waits for the key held, as Say does, and adds the phrase's lines
+// under the bubble's.
+func (l *lesson) Add(phrase string) {
+	l.react(func() { l.bubble = append(l.bubble, l.speech().Wrap(l.lang.T(phrase))...) })
+}
+
 func (l *lesson) Hold(key int) { l.band.Hold(key) }
 
 func (l *lesson) Release() { l.band.Unhold(time.Now()) }

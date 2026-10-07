@@ -25,16 +25,17 @@ import (
 //     then on.
 
 // The GAME OVER jingle, on the piano, high: four tritones going down
-// a semitone at a time, the last one shaken in a tremolo.
+// a semitone at a time, a beat each, every one broken, its high note a
+// moment after the low one; the last one left to ring.
 const (
-	jingleTop     = 83 // B5, the top note of the first tritone
-	jingleSteps   = 4
-	jingleBPM     = 140 // a tritone a beat
-	jingleNote    = time.Minute / jingleBPM
-	jingleTremolo = 3 * jingleNote        // the last tritone
-	jingleShake   = 45 * time.Millisecond // each of its notes, in turn
-	jingleVel     = 0.7
-	tritone       = 6 // semitones
+	jingleTop   = 83 // B5, the top note of the first tritone
+	jingleSteps = 4
+	jingleBPM   = 140 // a tritone a beat
+	jingleNote  = time.Minute / jingleBPM
+	jingleLast  = 3 * jingleNote        // the last tritone, held
+	jingleBreak = 60 * time.Millisecond // a tritone's high note, after its low one
+	jingleVel   = 0.7
+	tritone     = 6 // semitones
 )
 
 // The stages of a walkout.
@@ -149,27 +150,23 @@ func (l *lesson) walkoutTick(now time.Time) {
 	}
 }
 
-// jingle plays the GAME OVER jingle from `now`: the first three
-// tritones struck together, the last one in a tremolo, its two notes in
-// turn.
+// jingle plays the GAME OVER jingle from `now`: the tritones in turn,
+// each broken, low then high, held almost to the next; the last one
+// held longer.
 func (l *lesson) jingle(now time.Time) {
 	p := l.band.Piano
 	at := now.Add(band.Lookahead)
 	hold := time.Duration(phraseHold * float64(jingleNote.Nanoseconds())) // not a constant: rounded, not refused
-	for i := range jingleSteps - 1 {
+	for i := range jingleSteps {
 		hi := jingleTop - i
-		for _, k := range []int{hi - tritone, hi} {
-			p.ScheduleOn(k, jingleVel, at)
-			p.ScheduleOff(k, at.Add(hold))
+		if i == jingleSteps-1 {
+			hold = jingleLast
 		}
+		p.ScheduleOn(hi-tritone, jingleVel, at)
+		p.ScheduleOn(hi, jingleVel, at.Add(jingleBreak))
+		p.ScheduleOff(hi-tritone, at.Add(hold))
+		p.ScheduleOff(hi, at.Add(hold))
 		at = at.Add(jingleNote)
-	}
-	hi := jingleTop - (jingleSteps - 1)
-	for i := range int(jingleTremolo / jingleShake) {
-		k := hi - tritone*(1-i%2) // the low note first
-		p.ScheduleOn(k, jingleVel, at)
-		p.ScheduleOff(k, at.Add(jingleShake))
-		at = at.Add(jingleShake)
 	}
 }
 

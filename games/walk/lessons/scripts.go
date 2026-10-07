@@ -44,6 +44,7 @@ func Phrases() []string {
 	for _, a := range activities {
 		add(a(rand.New(rand.NewPCG(1, 2)))) // any order says the same phrases
 	}
+	out = append(out, slowly)                                 // said at a miss in a long phrase
 	for _, n := range slices.Concat(sevenNotes, fiveSharps) { // drawn by a script, not all said each time
 		out = append(out, findLetter[n], findSolfege[n])
 	}

@@ -5,6 +5,24 @@ import "slices"
 // The steps that ask for phrases, several notes in a row: Repeat, Hang,
 // its phrase left hanging, and PlayLine, a line of a grid.
 
+// A phrase of `longPhrase` notes or more is long for a beginner: rushed,
+// a key held, a finger slipping. At its first miss, the walker adds
+// `slowly` to his bubble, once: one note after the other, one finger if
+// need be.
+const (
+	longPhrase = 5
+	slowly     = "remind.slowly"
+)
+
+// remind adds `slowly` under the bubble at the first miss of a long
+// phrase of `n` notes; `done` tells whether it was added already.
+func remind(s Stage, n int, done *bool) {
+	if n >= longPhrase && !*done {
+		s.Add(slowly)
+		*done = true
+	}
+}
+
 // Repeat is "Répéter après lui": the walker plays a phrase, then the
 // player plays it back, note after note, without a mistake. A wrong
 // note sounds the casserole, and the walker plays the phrase again, to
@@ -19,12 +37,14 @@ type Repeat struct {
 	Keys   []int    // what the walker plays, MIDI numbers; nil to say it only
 	Want   []Target // a target for each note
 
-	at int // the note expected next, -1 while the walker plays
+	at       int  // the note expected next, -1 while the walker plays
+	reminded bool // `slowly` added
 }
 
 func (st *Repeat) said() string { return st.Phrase }
 
 func (st *Repeat) begin(s Stage) {
+	st.reminded = false
 	s.Say(st.Phrase)
 	s.Light(nil)
 	if st.Keys == nil {
@@ -47,6 +67,7 @@ func (st *Repeat) pressed(s Stage, held []int) bool {
 		return false // he is still playing: the keys sound, nothing counts
 	}
 	if st.Want[st.at].Judge(held) != Hit {
+		remind(s, len(st.Want), &st.reminded)
 		if st.Keys == nil {
 			s.Miss(st.hint(), st.at)
 			st.at = 0
@@ -100,8 +121,9 @@ type Hang struct {
 	Resolve Note     // what resolves it
 	Thanks  string   // said once resolved
 
-	at   int // the note expected next
-	held int // the key left hanging, 0 before
+	at       int  // the note expected next
+	held     int  // the key left hanging, 0 before
+	reminded bool // `slowly` added
 }
 
 func (st *Hang) said() string { return st.Phrase }
@@ -113,7 +135,7 @@ func (st *Hang) begin(s Stage) {
 		s.Release()
 		s.Blink(0)
 	}
-	st.at, st.held = 0, 0
+	st.at, st.held, st.reminded = 0, 0, false
 	s.Say(st.Phrase)
 	s.Light(nil)
 }
@@ -122,6 +144,7 @@ func (st *Hang) pressed(s Stage, held []int) bool {
 	if st.held == 0 {
 		r := Repeat{Want: st.Want}
 		if st.Want[st.at].Judge(held) != Hit {
+			remind(s, len(st.Want), &st.reminded)
 			s.Miss(r.hint(), st.at)
 			st.at = 0
 			return false
