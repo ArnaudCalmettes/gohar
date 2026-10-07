@@ -411,8 +411,9 @@ que le joueur termine au clavier ne passe pas aussitôt la main non
 plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.
 
-**L'avancement.** Les leçons 1.1 à 1.3 et leurs activités sont
-écrites ; les leçons suivantes restent à faire. Une fois une leçon dans le jeu,
+**L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
+sont écrites ; restent l'activité qui le clôt, le palier 0, et les
+chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

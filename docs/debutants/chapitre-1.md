@@ -178,31 +178,33 @@ G♯ A♯ B♯.
 
 ### 1.4 Les bémols
 
-**La leçon 1.4** est le miroir de 1.3 : les bémols, en descendant.
+La leçon 1.4 est le miroir de 1.3 : les bémols, en descendant. Elle est
+écrite dans le jeu ; ce qui suit la résume.
 
-1. *Dire* : « Un bémol, c'est une note qu'on a fait descendre d'un cran,
-   vers la gauche. » Puis le signe et les deux notations : ré♭ et D♭.
-2. *Jouer*, puis *répéter après lui* : ré puis ré♭, si puis si♭.
-3. *Demander* : les cinq touches noires par leur bémol, ré♭ mi♭ sol♭ la♭
-   si♭, en do ré mi puis en lettres, mélangées.
-4. *Dire*, puis *demander* : « joue do♯ », puis « joue ré♭ » ; c'est la
-   même touche. Chaque touche noire a deux noms, et le bonhomme le
-   prend sur un ton léger : « Les musiciens aiment bien compliquer les
-   choses. » Do♯ et ré♭ sont enharmoniques, comme mi♯ et fa.
-5. *Demander*, à deviner, comme à la leçon 1.3 : fa♭, puis do♭, trois
-   chances chacun, la casserole à chaque raté avec « Non, il n'est pas
-   là. Rappelle-toi : un bémol, c'est une note qu'on a fait descendre
-   d'un cran. » Au bout de trois essais, la réponse : « Fa♭ est sur le
-   mi, et do♭ est sur le si. »
-6. *Demander*, la séquence longue, qui descend cette fois :
-   « joue C B B♭ A A♭ G G♭ F E E♭ D D♭ C ».
-7. *Dire*, en conclusion : les douze notes jouées touche par touche, en
-   montant à la leçon 1.3 et en descendant ici, forment l'**échelle
-   chromatique**.
+1. Un bémol, c'est une note qu'on a fait descendre d'un cran, vers la
+   gauche. Puis le signe, ♭, et les deux notations : ré♭ et D♭.
+2. Ré puis ré♭, si puis si♭, répétés après lui.
+3. Les cinq touches noires à trouver par leur bémol, en do ré mi puis
+   en lettres, dans un ordre tiré à chaque leçon.
+4. Do♯, puis ré♭, à trouver l'un après l'autre : c'est la même touche.
+   Chaque touche noire a deux noms, et le bonhomme le prend sur un ton
+   léger : les musiciens aiment bien compliquer les choses. Do♯ et ré♭
+   sont enharmoniques, comme mi♯ et fa.
+5. Deux notes à deviner, comme à la leçon 1.3 : fa♭, puis do♭, trois
+   chances chacune, la casserole à chaque raté avec le rappel, un bémol
+   descend la note d'un cran. Au bout de trois essais, la réponse : fa♭
+   est sur le mi, do♭ sur le si.
+6. La séquence longue, qui descend cette fois, dite en lettres :
+   C B B♭ A A♭ G G♭ F E E♭ D D♭ C.
+7. En conclusion, le nom de la chose : les douze touches jouées une à
+   une, en montant à la leçon 1.3 et en descendant ici, forment
+   l'**échelle chromatique**.
 
-L'activité de la leçon 1.4 demande des séquences de notes bémolisées,
-dites en do ré mi et en lettres, et y glisse de temps en temps un fa♭ ou
-un do♭.
+**L'activité de la leçon 1.4** suit le modèle de celle de 1.3, en
+bémols : une touche blanche, sa voisine noire nommée par son bémol, la
+touche blanche suivante, en montant (C D♭ D) comme en descendant
+(D D♭ C), dites en lettres. Le second tour y glisse fa♭ et do♭ :
+F F♭ E♭, C C♭ B♭, G♭ F♭ E♭ et D♭ C♭ B♭.
 
 ## Le palier 0
 

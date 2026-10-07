@@ -11,6 +11,7 @@ var scripts = map[string]func() []Step{
 	"1.1": firstSteps,
 	"1.2": cMajorScale,
 	"1.3": sharps,
+	"1.4": flats,
 }
 
 // Script returns the steps of lesson `id`, or nil while it is not
@@ -45,6 +46,9 @@ func Phrases() []string {
 	for _, n := range slices.Concat(sevenNotes, fiveSharps) { // drawn by a script, not all said each time
 		out = append(out, findLetter[n], findSolfege[n])
 	}
+	for _, n := range fiveFlats {
+		out = append(out, findLetterFlat[n], findSolfegeFlat[n])
+	}
 	return out
 }
 
@@ -67,6 +71,8 @@ const (
 
 	cs4 = c4 + 1
 	fs4 = f4 + 1
+	db4 = d4 - 1
+	bb4 = b4 - 1
 )
 
 // firstSteps is lesson 1.1, "Premiers pas" (see
@@ -213,4 +219,58 @@ func reversed[T any](s []T) []T {
 		out[len(s)-1-i] = v
 	}
 	return out
+}
+
+// The black keys by their flats, and the phrases that ask for each: the
+// same keys as the sharps, kept apart since a key has both names.
+var (
+	fiveFlats      = []Note{ReFlat, MiFlat, SolFlat, LaFlat, SiFlat}
+	findLetterFlat = map[Note]string{
+		ReFlat: "find.Db", MiFlat: "find.Eb", SolFlat: "find.Gb", LaFlat: "find.Ab", SiFlat: "find.Bb",
+	}
+	findSolfegeFlat = map[Note]string{
+		ReFlat: "find.reb", MiFlat: "find.mib", SolFlat: "find.solb", LaFlat: "find.lab", SiFlat: "find.sib",
+	}
+)
+
+// flats is lesson 1.4, "Les bémols" (see docs/debutants/chapitre-1.md),
+// the mirror of 1.3: a note that goes down a notch, the five black keys
+// by their flats, two names for one key, F♭ and C♭ to work out, the
+// twelve keys down from C, and the chromatic scale named.
+func flats() []Step {
+	steps := []Step{
+		Say{Phrase: "l1.4.hello"},
+		Say{Phrase: "l1.4.sign"},
+
+		// A note, then its flat: down a notch.
+		&Repeat{Phrase: "l1.4.d.down", Keys: []int{d4, db4}, Want: []Target{Re, ReFlat}},
+		&Repeat{Phrase: "l1.4.b.down", Keys: []int{b4, bb4}, Want: []Target{Si, SiFlat}},
+
+		Say{Phrase: "l1.4.find"},
+	}
+	// The five black keys by their flats, in solfège, then in letters,
+	// each time in a new order.
+	for _, find := range []map[Note]string{findSolfegeFlat, findLetterFlat} {
+		for _, i := range rand.Perm(len(fiveFlats)) {
+			n := fiveFlats[i]
+			steps = append(steps, &Ask{Phrase: find[n], Want: n})
+		}
+	}
+	return append(steps,
+		// Two names for one key.
+		&Ask{Phrase: "l1.4.play.cs", Want: DoSharp},
+		&Ask{Phrase: "l1.4.play.db", Want: ReFlat},
+		Say{Phrase: "l1.4.two.names"},
+
+		// F♭ and C♭, to work out, three chances each.
+		&Guess{Phrase: "l1.4.guess.fb", Want: FaFlat, Nope: "l1.4.nope", Answer: "l1.4.answer.fb", Chances: 3},
+		&Guess{Phrase: "l1.4.guess.cb", Want: DoFlat, Nope: "l1.4.nope", Answer: "l1.4.answer.cb", Chances: 3},
+
+		// The twelve keys, down from C, key by key; then their name.
+		&Repeat{Phrase: "l1.4.chromatic", Want: []Target{
+			Do, Si, SiFlat, La, LaFlat, Sol, SolFlat, Fa, Mi, MiFlat, Re, ReFlat, Do,
+		}},
+		Say{Phrase: "l1.4.chromatic.scale"},
+		Say{Phrase: "l1.4.bravo"},
+	)
 }

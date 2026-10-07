@@ -52,6 +52,17 @@ const (
 	// two names for one key.
 	MiSharp = Fa
 	SiSharp = Do
+
+	// The black keys again, by their flats: each has two names.
+	ReFlat  = DoSharp
+	MiFlat  = ReSharp
+	SolFlat = FaSharp
+	LaFlat  = SolSharp
+	SiFlat  = LaSharp
+
+	// F♭ and C♭, the white keys E and B.
+	FaFlat = Mi
+	DoFlat = Si
 )
 
 // Judge looks at the key that went down last only: a key still held,

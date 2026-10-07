@@ -12,7 +12,8 @@ import (
 var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.1": func(rng *rand.Rand) []Step { return motifActivity(rng, motifsUp, runUp, runDown) },
 	"1.2": func(rng *rand.Rand) []Step { return motifActivity(rng, slices.Concat(motifsUp, motifsDown), scaleUp) },
-	"1.3": sharpsActivity,
+	"1.3": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.3.hello", sharpsPlain, sharpsTraps) },
+	"1.4": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.4.hello", flatsPlain, flatsTraps) },
 }
 
 // Activity returns the steps of the activity of lesson `id`, drawn
@@ -107,10 +108,14 @@ func motifActivity(rng *rand.Rand, motifs []motif, runs ...motif) []Step {
 // said is a sequence only said, in letters: `phrase` gives `want`.
 func said(phrase string, want ...Target) motif { return motif{want: want, letters: phrase} }
 
-// The sequences of lesson 1.3's activity: a white key, its neighbour a
-// notch up or down, then the next white key, every black key that way;
-// and the traps, E♯ and B♯ among them.
+// The sequences of the activities of lessons 1.3 and 1.4: a white key,
+// a black key by its sharp or its flat, then the next white key, up and
+// down, every black key that way; and the traps, E♯ and B♯, or F♭ and
+// C♭, among them.
 var (
+	sharpsPlain = slices.Concat(sharpsUp, sharpsDown)
+	flatsPlain  = slices.Concat(flatsUp, flatsDown)
+
 	sharpsUp = []motif{
 		said("letters.C-Cs-D", Do, DoSharp, Re),
 		said("letters.D-Ds-E", Re, ReSharp, Mi),
@@ -133,10 +138,33 @@ var (
 	}
 )
 
-// sharpsActivity is the activity of lesson 1.3 (see
-// docs/debutants/chapitre-1.md): sequences of sharps, said in letters,
-// in a new order each time; then again, with E♯ and B♯ slipped in.
-func sharpsActivity(rng *rand.Rand) []Step {
+var (
+	flatsUp = []motif{
+		said("letters.C-Db-D", Do, ReFlat, Re),
+		said("letters.D-Eb-E", Re, MiFlat, Mi),
+		said("letters.F-Gb-G", Fa, SolFlat, Sol),
+		said("letters.G-Ab-A", Sol, LaFlat, La),
+		said("letters.A-Bb-B", La, SiFlat, Si),
+	}
+	flatsDown = []motif{
+		said("letters.D-Db-C", Re, ReFlat, Do),
+		said("letters.E-Eb-D", Mi, MiFlat, Re),
+		said("letters.G-Gb-F", Sol, SolFlat, Fa),
+		said("letters.A-Ab-G", La, LaFlat, Sol),
+		said("letters.B-Bb-A", Si, SiFlat, La),
+	}
+	flatsTraps = []motif{
+		said("letters.F-Fb-Eb", Fa, FaFlat, MiFlat),
+		said("letters.C-Cb-Bb", Do, DoFlat, SiFlat),
+		said("letters.Gb-Fb-Eb", SolFlat, FaFlat, MiFlat),
+		said("letters.Db-Cb-Bb", ReFlat, DoFlat, SiFlat),
+	}
+)
+
+// accidentalActivity is the activity of lessons 1.3 and 1.4 (see
+// docs/debutants/chapitre-1.md): `plain` sequences, said in letters, in
+// a new order each time; then again, with the `traps` slipped in.
+func accidentalActivity(rng *rand.Rand, hello string, plain, traps []motif) []Step {
 	shuffled := func(ms []motif) []Step {
 		var steps []Step
 		for _, i := range rng.Perm(len(ms)) {
@@ -144,10 +172,9 @@ func sharpsActivity(rng *rand.Rand) []Step {
 		}
 		return steps
 	}
-	plain := slices.Concat(sharpsUp, sharpsDown)
-	steps := []Step{Say{Phrase: "a1.3.hello"}}
+	steps := []Step{Say{Phrase: hello}}
 	steps = append(steps, shuffled(plain)...)
-	steps = append(steps, Say{Phrase: "a1.3.traps"})
-	steps = append(steps, shuffled(slices.Concat(plain, sharpsTraps))...)
+	steps = append(steps, Say{Phrase: "activity.traps"})
+	steps = append(steps, shuffled(slices.Concat(plain, traps))...)
 	return append(steps, Say{Phrase: "activity.bravo"})
 }
