@@ -12,8 +12,8 @@ const shoulder = 3.0
 
 // DrawTeacher draws the walker as he gives a lesson: standing on (`x`,
 // `y`), facing the player, `s` times the size of his sketch, in `col`.
-// One hand on the hip, the other free; when `snap` is true, the free
-// hand is up by his shoulder, snapping, for a right answer.
+// Both hands in his pockets; when `snap` is true, the right one is out,
+// up by his shoulder, snapping, for a right answer.
 //
 // The sketch is the walker's (see Walker.Draw), seen from the front:
 // the same lengths, angles in radians from the downward vertical,
@@ -32,12 +32,15 @@ func DrawTeacher(c screen.Canvas, x, y float32, s float64, snap bool, col color.
 
 		stance = 0.2 // each leg, apart
 
-		pocketX = 1.0 // the hand in the pocket: against the hip, from the middle
-		pocketY = 1.5 // and a little under it, where the leg starts
+		// The hands in the pockets: at the sides of the hips, low
+		// enough for the arms to hang almost straight, the elbows barely
+		// out, relaxed. Nearer the middle, both hands would meet where
+		// they should not; higher, the elbows flare.
+		pocketX = 2.5
+		pocketY = 1.8
 
-		hang    = 0.12 // the free arm at rest, straight down, a little out
-		snapUp  = 0.5  // the free arm out...
-		snapFor = 2.6  // ...the forearm up, the hand by the shoulder
+		snapUp  = 0.5 // the snapping arm out...
+		snapFor = 2.6 // ...the forearm up, the hand by the shoulder
 
 		spark     = 0.6
 		sparkFrom = 3.0
@@ -60,26 +63,31 @@ func DrawTeacher(c screen.Canvas, x, y float32, s float64, snap bool, col color.
 	c.Line(float32(hipX), float32(hipY), float32(hipX), float32(neckY), stroke, col)
 	c.Circle(float32(hipX), float32(neckY-neckGap*head), float32(head), col)
 
-	// The hand in the pocket, on the left: the hand on the hip, the
-	// elbow where the arm's two lengths put it, as little out as they
-	// allow.
+	// The shoulders, and a hand in each pocket: the elbow where the
+	// arm's two lengths put it, out. elbowOut bends to the left going
+	// down, out for the left arm: the right one is mirrored there and
+	// back.
 	shY := neckY + shoulderDrop*head
-	lx := hipX - shoulder
-	c.Line(float32(hipX), float32(neckY), float32(lx), float32(shY), stroke, col)
-	hx, hy := hipX-pocketX, hipY+pocketY
-	ex, ey := elbowOut(lx, shY, hx, hy, upper, fore)
-	c.Line(float32(lx), float32(shY), float32(ex), float32(ey), stroke, col)
-	c.Line(float32(ex), float32(ey), float32(hx), float32(hy), stroke, col)
-
-	// The free arm, on the right: straight down at rest, up snapping.
-	rx := hipX + shoulder
-	c.Line(float32(hipX), float32(neckY), float32(rx), float32(shY), stroke, col)
+	pocket := func(side float64) {
+		sx, hx, hy := hipX+side*shoulder, hipX+side*pocketX, hipY+pocketY
+		m := -side
+		ex, ey := elbowOut(m*(sx-hipX), shY, m*(hx-hipX), hy, upper, fore)
+		ex = hipX + m*ex
+		c.Line(float32(sx), float32(shY), float32(ex), float32(ey), stroke, col)
+		c.Line(float32(ex), float32(ey), float32(hx), float32(hy), stroke, col)
+	}
+	for _, side := range []float64{-1, 1} {
+		c.Line(float32(hipX), float32(neckY), float32(hipX+side*shoulder), float32(shY), stroke, col)
+	}
+	pocket(-1)
 	if !snap {
-		limb(rx, shY, upper+fore, hang)
+		pocket(1)
 		return
 	}
-	ex, ey = limb(rx, shY, upper, snapUp)
-	hx, hy = limb(ex, ey, fore, snapFor)
+
+	// The right hand out of its pocket, up by the shoulder, snapping.
+	ex, ey := limb(hipX+shoulder, shY, upper, snapUp)
+	hx, hy := limb(ex, ey, fore, snapFor)
 	for _, a := range []float64{-spark, 0, spark} {
 		dx, dy := math.Sin(math.Pi/2+a), -math.Cos(math.Pi/2+a) // out, away from the head
 		c.Line(float32(hx+sparkFrom*dx), float32(hy+sparkFrom*dy), float32(hx+sparkTo*dx), float32(hy+sparkTo*dy), stroke/2, col)

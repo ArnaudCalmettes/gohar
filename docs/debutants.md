@@ -371,7 +371,7 @@ des chapitres et la règle qui ouvre les leçons sont dans
 `course.json` de ses réglages.
 
 **L'écran d'une leçon** (`games/walk/lesson.go`). Le bonhomme se tient
-à gauche, face au joueur, une main dans la poche et l'autre libre (voir
+à gauche, face au joueur, les deux mains dans les poches (voir
 « Le bonhomme » dans `walk.md`). Sa bulle court sur plusieurs lignes à
 droite, et sa queue part du point de la bulle le plus proche de sa
 tête, qu'elle vise. Le clavier de la partie, en bas, est réduit à trois

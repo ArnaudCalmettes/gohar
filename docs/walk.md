@@ -394,9 +394,9 @@ Ce qui suit est notre lecture des sources.
   isolée ne le fait pas trébucher, une série oui. **Ses bulles** suivent
   la jauge de tension, usure comprise.
 - **Professeur**, dans les leçons du cours des débutants, il change de
-  pose : de face, une main dans la poche, l'autre libre, qui claque des
-  doigts à une bonne réponse (`figure/teacher.go`, et « Dans le jeu »
-  dans `debutants.md`). Quand l'easter egg l'a poussé à bout, il sort
+  pose : de face, les deux mains dans les poches ; la droite en sort
+  pour claquer des doigts à une bonne réponse (`figure/teacher.go`, et
+  « Dans le jeu » dans `debutants.md`). Quand l'easter egg l'a poussé à bout, il sort
   de l'écran, de profil, et revient de même, tourné vers la gauche ; les
   fois suivantes, il s'assoit dans l'herbe, puis se met en lotus
   (`gags.go`). Toutes ses poses partagent les proportions du croquis
