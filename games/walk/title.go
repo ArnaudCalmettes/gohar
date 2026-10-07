@@ -62,10 +62,14 @@ func (t *title) Leave() {}
 func (t *title) Update() scene.Transition {
 	t.drain(nil) // the keys sound, from the callback; nothing to mark
 	t.menu.move()
+	tp, tapped := t.tapped()
+	if tapped {
+		t.menu.chosen = tp.item
+	}
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		return scene.Quit
-	case confirmed():
+	case confirmed() || tapped:
 		switch t.menu.chosen {
 		case itemQuit:
 			return scene.Quit

@@ -44,6 +44,7 @@ const (
 
 	// The walker, in a palier of the course.
 	msgPalierGo    = "palier.go"
+	msgPalierNext  = "palier.next" // a grid played through, another to come
 	msgPalierBravo = "palier.bravo"
 
 	msgModeTempo = "mode.tempo"
@@ -137,7 +138,7 @@ const (
 var phrases = []string{
 	msgTempo, msgFreeTempo, msgNoMIDI, msgMark,
 	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeyGrid, msgKeyMenu, msgKeyBack,
-	msgPalierGo, msgPalierBravo,
+	msgPalierGo, msgPalierNext, msgPalierBravo,
 	msgModeTempo, msgModeFree, msgModeDemo,
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,

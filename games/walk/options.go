@@ -64,15 +64,24 @@ func (o *options) Leave() {
 func (o *options) Update() scene.Transition {
 	o.drain(nil)
 	o.menu.move()
+	// A tap on a value changes it, down left of its middle, up right of
+	// it, as the arrows; on the others, it opens them.
+	tp, tapped := o.tapped()
+	if tapped {
+		o.menu.chosen = tp.item
+	}
+	value := o.menu.chosen == optTempo || o.menu.chosen == optLang
 	step := 0
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		return scene.Replace(o.back)
+	case tapped && value:
+		step = tp.side
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft):
 		step = -1
 	case inpututil.IsKeyJustPressed(ebiten.KeyArrowRight):
 		step = 1
-	case confirmed():
+	case confirmed() || tapped:
 		switch o.menu.chosen {
 		case optCalibrate:
 			return o.calibrate()

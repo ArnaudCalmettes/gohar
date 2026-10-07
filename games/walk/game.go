@@ -100,6 +100,7 @@ type game struct {
 	// chart was played through.
 	back   scene.Scene
 	passed func()
+	queue  []grids.Tune // the grids still to play after this one
 	hint   bool
 	doneAt time.Time
 
@@ -154,24 +155,25 @@ func newGame(a *app) *game {
 	return g
 }
 
-// newPalier plays `t` at palier 0, the roots without tempo, from the
-// course `back`, where it comes back once the chart is played through
-// (see "Le palier 0" in docs/debutants/chapitre-1.md), and calls
-// `passed` then. It starts at once: no key but Escape, which goes back
-// too, `passed` not called.
-func newPalier(a *app, back scene.Scene, t grids.Tune, passed func()) *game {
+// newPalier plays `tunes` at palier 0, the roots without tempo, one
+// after the other, from the course `back`, where it comes back once
+// the last is played through (see "Le palier 0" in
+// docs/debutants/chapitre-1.md), and calls `passed` then. It starts at
+// once: no key but Escape, which goes back too, `passed` not called.
+func newPalier(a *app, back scene.Scene, tunes []grids.Tune, passed func()) *game {
 	rules := mark.Palier0
 	rules.Split = a.band.Split
 	g := &game{
 		app:        a,
 		back:       back,
 		passed:     passed,
+		queue:      tunes[1:],
 		bpm:        a.bpm,
 		rules:      rules,
 		practicing: true,
 		piano:      newPiano(),
 	}
-	g.setTune(t)
+	g.setTune(tunes[0])
 	return g
 }
 
@@ -361,15 +363,26 @@ func (g *game) Update() scene.Transition {
 	return scene.Stay
 }
 
-// palierOver ends a palier once the chart is played through: the walker
-// says bravo, the chart stays a while, marked, then the course is back.
+// palierOver moves a palier on once a chart is played through: the
+// walker says bravo, the chart stays a while, marked, then the next
+// grid comes; after the last, the course.
 func (g *game) palierOver(now time.Time) scene.Transition {
 	switch {
 	case g.doneAt.IsZero() && g.practice.Choruses() > 0:
 		g.doneAt, g.hint = now, false
+		if len(g.queue) > 0 {
+			g.speak(msgPalierNext, now)
+			break
+		}
 		g.speak(msgPalierBravo, now)
 		g.passed()
-	case !g.doneAt.IsZero() && now.Sub(g.doneAt) > palierOut:
+	case g.doneAt.IsZero() || now.Sub(g.doneAt) <= palierOut:
+	case len(g.queue) > 0:
+		g.setTune(g.queue[0])
+		g.queue, g.doneAt = g.queue[1:], time.Time{}
+		g.start(now)
+		g.speak(msgPalierGo, now)
+	default:
 		return scene.Replace(g.back)
 	}
 	return scene.Stay

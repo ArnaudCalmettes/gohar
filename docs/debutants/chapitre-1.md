@@ -266,10 +266,16 @@ correction vient tout de suite, la bonne touche sous les yeux.
 
 **Dans le jeu**, le palier 0 se joue dans la scène de jeu de *Walk with
 me*, en mode déchiffrage, lancé depuis « S'entraîner » sous la leçon :
-la grille entière du blues, une fois, puis retour au cours. Le
-bonhomme annonce la règle, une fondamentale par mesure, et dit bravo à
-la fin ; la grille reste affichée un moment, toutes ses mesures
-marquées. Seule Échap fonctionne, pour revenir au cours.
+deux grilles à la suite, chacune une fois, puis retour au cours. D'abord
+le blues entier, un accord par mesure ; puis la section A de *Satin
+Doll*, huit mesures, deux accords par mesure sauf les deux dernières,
+avec A♭m7 et D♭7 qui font jouer les bémols tout juste appris. Le
+bonhomme annonce la règle, la fondamentale de chaque accord ; à la fin
+d'une grille il dit bravo, elle reste affichée un moment, toutes ses
+marques posées, puis vient la suivante. Dans une mesure de deux
+accords, le curseur s'arrête au milieu de la mesure pour le second.
+Seule Échap fonctionne, pour revenir au cours ; l'activité ne compte
+pour faite qu'une fois les deux grilles jouées.
 
 Deux écarts avec le déchiffrage ordinaire. Une mesure où l'accord se
 répète, le %, attend elle aussi sa fondamentale : le premier palier y
@@ -278,11 +284,11 @@ comptent, comme dans les leçons, des deux côtés de la séparation entre
 la basse et le piano : le débutant ne la connaît pas encore.
 
 Le blues du jeu est écrit en F ; le palier le joue en C, la tonalité
-des leçons, transposé à la volée. Le jeu entend la tonalité de la
+des leçons, transposé à la volée. *Satin Doll* est déjà en C : sa
+section A, seule dans un fichier à part (`satin-doll-a.cho`), reste où
+elle est. Le jeu entend la tonalité de la
 grille, comme partout, plutôt que de la lire dans l'armure, puis
 déplace chaque accord d'autant, lettre par lettre, comme un musicien
 transpose une grille : de F à D♭, B♭7 devient G♭7, jamais F♯7. Les
 leçons ne connaissent que le nom de la grille et la tonique visée
 (`lessons.Palier`), la transposition est dans `grids.InKey`.
-
-Reste la section A de *Satin Doll*, la suite prévue.

@@ -61,15 +61,17 @@ func TestFinished(t *testing.T) {
 	}
 }
 
-// Every palier reads its grid and moves it to its key.
+// Every palier reads its grids and moves them to its key.
 func TestPaliers(t *testing.T) {
 	for id, p := range paliers {
-		tune, err := grids.Read(p.Grid)
-		if err == nil {
-			_, err = grids.InKey(tune, p.Tonic)
-		}
-		if err != nil {
-			t.Errorf("palier of %s: %v", id, err)
+		for _, file := range p.Grids {
+			tune, err := grids.Read(file)
+			if err == nil {
+				_, err = grids.InKey(tune, p.Tonic)
+			}
+			if err != nil {
+				t.Errorf("palier of %s: %v", id, err)
+			}
 		}
 	}
 }

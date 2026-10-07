@@ -393,7 +393,9 @@ des chapitres et la règle qui ouvre les leçons sont dans
 `games/walk/lessons`, la progression du joueur dans le fichier
 `course.json` de ses réglages : chaque leçon faite sous son
 identifiant (« 1.1 »), chaque activité pratiquée sous le sien
-(« 1.1.practised »). La liste des leçons est un arbre (voir
+(« 1.1.practised »). Un clic, ou un doigt, sur une leçon fait comme
+Entrée : il montre ses branches, ou la lance quand elle n'en a qu'une ;
+sur une branche, il la lance. La liste des leçons est un arbre (voir
 « L'activité de la leçon »).
 
 **L'écran d'une leçon** (`games/walk/lesson.go`). Le bonhomme se tient
@@ -442,8 +444,8 @@ temps d'une noire, pour ne pas le presser.
 
 **L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
 sont écrites, ainsi que la leçon qui le clôt et son activité, le
-palier 0, sur le blues transposé en C ; restent *Satin Doll* et les
-chapitres suivants. Une fois une leçon dans le jeu,
+palier 0, sur le blues transposé en C puis la section A de *Satin
+Doll* ; restent les chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

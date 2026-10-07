@@ -67,6 +67,39 @@ type course struct {
 	inside  bool              // down in the branches of the lesson chosen
 	branch  menu              // the branch chosen there
 	rng     *rand.Rand        // the order of the activities
+	targets []target          // what each item of the list drawn leads to, for a tap
+}
+
+// A target is what an item of the course's lists leads to: a chapter,
+// in the list of chapters; a lesson, or one of its branches; -1 for
+// Back.
+type target struct {
+	index  int // the chapter or the lesson, -1 for Back
+	branch int // the branch of the lesson, -1 for the lesson itself
+}
+
+// tap does what a tap on an item leading to `t` does: Enter on it,
+// chosen; a lesson tapped shows its branches, or starts when it has
+// only one.
+func (c *course) tap(t target) scene.Transition {
+	switch {
+	case c.chapter < 0 && t.index < 0:
+		return scene.Replace(c.back)
+	case c.chapter < 0:
+		c.showLessons(t.index, 0)
+	case t.index < 0:
+		c.showChapters(c.chapter)
+	case t.branch >= 0:
+		c.menu.chosen = t.index
+		return c.play(c.id(), c.branches(c.id())[t.branch] == branchPractise)
+	default:
+		c.menu.chosen, c.inside = t.index, false
+		if len(c.branches(c.id())) == 1 {
+			return c.play(c.id(), false)
+		}
+		c.goDown(branchLesson)
+	}
+	return scene.Stay
 }
 
 // The branches of a lesson: the lesson, and its activity once done.
@@ -124,15 +157,12 @@ func (c *course) branches(id string) []int {
 func (c *course) play(id string, activity bool) scene.Transition {
 	if activity {
 		if p, ok := lessons.PalierOf(id); ok {
-			t, err := grids.Read(p.Grid)
-			if err == nil {
-				t, err = grids.InKey(t, p.Tonic)
-			}
+			tunes, err := palierTunes(p)
 			if err != nil {
-				log.Println("course:", err) // a grid of the game, tested: cannot fail
+				log.Println("course:", err) // grids of the game, tested: cannot fail
 				return scene.Stay
 			}
-			return scene.Replace(newPalier(c.app, c, t, func() { c.practised(id) }))
+			return scene.Replace(newPalier(c.app, c, tunes, func() { c.practised(id) }))
 		}
 		if steps := lessons.Activity(id, c.rng); steps != nil {
 			return scene.Replace(newLesson(c.app, c, steps, func() { c.practised(id) }))
@@ -143,6 +173,22 @@ func (c *course) play(id string, activity bool) scene.Transition {
 		return scene.Replace(newLesson(c.app, c, steps, func() { c.finish(id) }))
 	}
 	return scene.Stay
+}
+
+// palierTunes reads the grids of `p`, in its key.
+func palierTunes(p lessons.Palier) ([]grids.Tune, error) {
+	var tunes []grids.Tune
+	for _, file := range p.Grids {
+		t, err := grids.Read(file)
+		if err == nil {
+			t, err = grids.InKey(t, p.Tonic)
+		}
+		if err != nil {
+			return nil, err
+		}
+		tunes = append(tunes, t)
+	}
+	return tunes, nil
 }
 
 // finish marks lesson `id` done, saves it, and opens what follows: its
@@ -191,6 +237,9 @@ func (c *course) Leave() {}
 func (c *course) Update() scene.Transition {
 	c.drain(nil)
 	c.jam.Play(time.Now(), band.Light)
+	if tp, ok := c.tapped(); ok && tp.item < len(c.targets) {
+		return c.tap(c.targets[tp.item])
+	}
 	right := inpututil.IsKeyJustPressed(ebiten.KeyArrowRight)
 	up := inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft)
 	down := confirmed() || right
@@ -229,11 +278,14 @@ func (c *course) Update() scene.Transition {
 
 func (c *course) Draw(dst *ebiten.Image) {
 	var items []entry
+	c.targets = c.targets[:0]
 	if c.chapter < 0 {
 		for i, ch := range c.open {
 			items = append(items, entry{label: c.lang.T(chapterPhrase(ch.ID)), done: c.done.Finished(lessons.Course[i])})
+			c.targets = append(c.targets, target{index: i, branch: -1})
 		}
 		items = append(items, entry{label: c.lang.T(msgOptBack)})
+		c.targets = append(c.targets, target{index: -1, branch: -1})
 		c.drawList(dst, &c.walker, c.walker.Gait(true), c.lang.T(msgMenuLearn), c.fonts.count, items, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
 		return
 	}
@@ -244,6 +296,7 @@ func (c *course) Draw(dst *ebiten.Image) {
 			chosen = len(items)
 		}
 		items = append(items, entry{label: c.lang.T(lessonPhrase(l.ID)), done: c.done.Checked(l.ID)})
+		c.targets = append(c.targets, target{index: i, branch: -1})
 		if i != c.menu.chosen {
 			continue
 		}
@@ -252,12 +305,14 @@ func (c *course) Draw(dst *ebiten.Image) {
 				chosen = len(items)
 			}
 			items = append(items, entry{label: c.lang.T(c.branchPhrase(l.ID, b)), done: c.branchDone(l.ID, b), branch: true})
+			c.targets = append(c.targets, target{index: i, branch: j})
 		}
 	}
 	if c.menu.chosen == c.menu.items-1 {
 		chosen = len(items)
 	}
 	items = append(items, entry{label: c.lang.T(msgOptBack)})
+	c.targets = append(c.targets, target{index: -1, branch: -1})
 	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID))
 	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, items, chosen, c.lang.T(msgCourseKeys), lessonsLayout)
 }

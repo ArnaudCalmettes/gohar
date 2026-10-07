@@ -613,7 +613,8 @@ scènes : le premier écran titre se contente de la position finale.
   occupe pendant la partie, qui marche en claquant des doigts ; le
   titre et le menu au milieu, « Apprendre », « Jouer une grille »,
   « Options » et « Quitter », choisis avec les flèches et validés par
-  Entrée. « Apprendre » ouvre le cours des grands débutants
+  Entrée, ou d'un clic, d'un doigt sur un écran tactile : les menus se
+  parcourent ainsi sur un téléphone. « Apprendre » ouvre le cours des grands débutants
   (`debutants.md`), en premier parce qu'un nouveau venu lit le menu de
   haut en bas.
 - **Ce qu'on entend** : à 160 à la noire, plus enlevé que la partie
@@ -646,7 +647,8 @@ scènes : le premier écran titre se contente de la position finale.
 - **Les options** : le tempo de la partie, de 5 en 5 entre 60 et 240,
   la langue, qui change tout de suite, et la calibration (voir
   `architecture.md`), qui n'est jamais imposée : le jeu se joue sans.
-  Les flèches gauche et droite changent une valeur. Le tempo et la
+  Les flèches gauche et droite changent une valeur ; un clic à gauche
+  du milieu de l'option la baisse, à droite il la monte. Le tempo et la
   langue sont gardés d'une séance à l'autre (`walk.json`, parmi les
   réglages communs) ; ils servent de valeurs par défaut aux drapeaux
   `-bpm` et `-lang`, de sorte qu'un drapeau passé au programme

@@ -19,17 +19,17 @@ var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.4": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.4.hello", flatsPlain, flatsTraps) },
 }
 
-// A Palier is an activity played in the game scene: a grid of the game
-// (see grids.Files), moved to the key of the lessons.
+// A Palier is an activity played in the game scene: grids of the game,
+// one after the other, each moved to the key of the lessons.
 type Palier struct {
-	Grid  string
-	Tonic naming.SpelledNote // where the tonality heard in the grid lands
+	Grids []string           // files of the package grids
+	Tonic naming.SpelledNote // where the tonality heard in each grid lands
 }
 
 // paliers are the paliers, by lesson. The lessons of chapter 1 are in
-// C: so is its blues.
+// C: so are the blues and the A of Satin Doll.
 var paliers = map[string]Palier{
-	"1.end": {Grid: grids.JazzBlues, Tonic: naming.SpelledNote{Letter: naming.LetterC}},
+	"1.end": {Grids: []string{grids.JazzBlues, grids.SatinDollA}, Tonic: naming.SpelledNote{Letter: naming.LetterC}},
 }
 
 // PalierOf returns the palier that is the activity of lesson `id`, and

@@ -18,6 +18,9 @@ var files embed.FS
 // JazzBlues is the first grid, and the one tests play most.
 const JazzBlues = "blues.cho"
 
+// SatinDollA is the A of Satin Doll alone, for the lessons.
+const SatinDollA = "satin-doll-a.cho"
+
 // Files are the grids the game offers, in the order the player goes
 // round them: the blues first, then II-V in many keys, to vary the
 // paths, then II-V-I in major, then in major and minor.

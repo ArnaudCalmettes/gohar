@@ -1,0 +1,16 @@
+{title: Satin Doll (A)}
+{composer: Duke Ellington}
+{composer: Billy Strayhorn}
+{meta: style Medium Swing}
+{meta: chart_author gohar}
+{meta: chart_license CC0-1.0}
+
+# The A of Satin Doll alone, the one that ends on C held, for the
+# lessons of the beginners: eight bars, two chords a bar but the last
+# two, its roots on white keys and on A♭ and D♭. Not in the game's
+# list (see Files): the whole tune is.
+
+{start_of_grid shape="4x2"}
+| Dm7 G7 | Dm7 G7 | Em7 A7 | Em7 A7 |
+| Am7 D7 | Abm7 Db7 | Cmaj7 | % |.
+{end_of_grid}

@@ -28,6 +28,7 @@ type app struct {
 	scale  float64   // the window's, set by layout
 	rec    *recorder // nil without -record
 	jam    *band.Jam // the music of the menus, nil while a game plays
+	hits   []hit     // the boxes of the list last drawn (see tapped)
 
 	// fedUp counts the times the walker was fed up in the lessons, over
 	// the whole session: each time a worse gag (see gags.go).

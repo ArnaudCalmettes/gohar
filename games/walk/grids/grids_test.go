@@ -63,3 +63,23 @@ func TestInKey(t *testing.T) {
 		t.Errorf("in D♭: %s, want %s", got, want)
 	}
 }
+
+// The A of Satin Doll, in C, heard in C: InKey leaves it where it is.
+func TestSatinDollA(t *testing.T) {
+	a, err := Read(SatinDollA)
+	if err != nil {
+		t.Fatal(err)
+	}
+	inC, err := InKey(a, naming.SpelledNote{Letter: naming.LetterC})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, w := range inC.Written {
+		got = append(got, w.String())
+	}
+	want := "Dm7 G7 Dm7 G7 Em7 A7 Em7 A7 Am7 D7 Abm7 Db7 Cmaj7"
+	if strings.Join(got, " ") != want || len(inC.Grid.Bars) != 8 {
+		t.Errorf("%s in %d bars, want %s in 8", strings.Join(got, " "), len(inC.Grid.Bars), want)
+	}
+}

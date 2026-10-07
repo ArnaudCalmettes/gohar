@@ -273,8 +273,7 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
       plaisir, pas urgent.
 - [ ] le cours des grands débutants (`debutants.md`) : les cinq
       chapitres du *ramp up* et leurs leçons (les chapitres 1 à 3 sont
-      écrits ; le chapitre 1 est dans le jeu, palier 0 compris, sur le
-      blues transposé en C ; reste *Satin Doll*), la gamme majeure dans les
+      écrits ; le chapitre 1 est dans le jeu, palier 0 compris), la gamme majeure dans les
       douze tons en alternant dièses et bémols, le microdex des
       prérequis ; à éprouver avec de vrais débutants. Reste à décider
       où ranger le microdex dans le dépôt, et son nom.

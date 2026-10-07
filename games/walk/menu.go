@@ -24,6 +24,9 @@ const (
 	// The check of an item done, left of its label.
 	checkW   = 14
 	checkGap = 10
+
+	// tapPad widens the box of an item, left and right, for a finger.
+	tapPad = 12
 )
 
 // A menu is the list the menus share: the item chosen, moved by the
@@ -45,6 +48,43 @@ func (m *menu) move() {
 // confirmed tells whether the item chosen was just confirmed.
 func confirmed() bool {
 	return inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace)
+}
+
+// A hit is the box of an item of the list last drawn, in logical
+// units: where a click or a tap chooses it.
+type hit struct{ x, y, w, h float64 }
+
+// A tap is a click or a touch on an item of the list last drawn: its
+// index, and `side`, -1 left of its middle, 1 right of it, for the
+// options that a tap changes rather than opens.
+type tap struct {
+	item, side int
+}
+
+// tapped returns the item of the list last drawn just clicked or
+// touched, if any. The boxes are those of the last frame: Update runs
+// before Draw, and the list stays where it was.
+func (a *app) tapped() (tap, bool) {
+	var x, y int
+	switch ids := inpututil.AppendJustPressedTouchIDs(nil); {
+	case len(ids) > 0:
+		x, y = ebiten.TouchPosition(ids[0])
+	case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
+		x, y = ebiten.CursorPosition()
+	default:
+		return tap{}, false
+	}
+	lx, ly := float64(x)/a.scale, float64(y)/a.scale // the screen is scaled (see layout)
+	for i, h := range a.hits {
+		if lx >= h.x && lx < h.x+h.w && ly >= h.y && ly < h.y+h.h {
+			side := 1
+			if lx < h.x+h.w/2 {
+				side = -1
+			}
+			return tap{item: i, side: side}, true
+		}
+	}
+	return tap{}, false
 }
 
 // drawMenu draws a menu screen on the jam's beats: the walker `wk` in
@@ -89,7 +129,8 @@ func entries(labels []string, done []bool) []entry {
 }
 
 // drawList is drawMenu with its list of `items` laid out by `l`, a green
-// check left of each one done; the last item is Back.
+// check left of each one done; the last item is Back. It keeps the box
+// of each item, for tapped.
 func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, items []entry, chosen int, keys string, l layout) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: a.scale}
@@ -112,6 +153,7 @@ func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, head
 			widest = max(widest, w)
 		}
 	}
+	a.hits = a.hits[:0]
 	y := l.top
 	for i, it := range items {
 		back := i == len(items)-1
@@ -140,6 +182,8 @@ func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, head
 				x += branchIndent
 			}
 		}
+		// The box: the highlight, a little wider for a finger.
+		a.hits = append(a.hits, hit{x: x - menuPad - tapPad, y: y - menuPad, w: w + 2*(menuPad+tapPad), h: h + 2*menuPad})
 		var col color.Color = faint
 		if i == chosen {
 			c.Rect(float32(x-menuPad), float32(y-menuPad), float32(w+2*menuPad), float32(h+2*menuPad), pale)
