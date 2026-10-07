@@ -149,8 +149,11 @@ func (l *lesson) Leave() {
 
 // The lessons.Stage the lesson's runner plays on.
 
+// Say waits for the key held, as the walker's reactions do (see
+// react): a word at a wrong note, or at a note left hanging, comes once
+// the key is up. A step's own bubble comes with no key held.
 func (l *lesson) Say(phrase string) {
-	l.bubble = l.speech().Wrap(l.lang.T(phrase))
+	l.react(func() { l.bubble = l.speech().Wrap(l.lang.T(phrase)) })
 }
 
 func (l *lesson) Light(pcs []int) { l.shown = pcs }

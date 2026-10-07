@@ -240,6 +240,29 @@ func TestHang(t *testing.T) {
 	}
 }
 
+// "Et mi♯ ?" Two misses, a "no" each, nothing shown; at the third,
+// the answer given and F shown, to be played.
+func TestGuess(t *testing.T) {
+	s := &stage{}
+	r := NewRunner(s, []Step{&Guess{Phrase: "and E♯?", Want: MiSharp, Nope: "no", Answer: "on F", Chances: 3}})
+	r.Start()
+	s.take()
+	for _, n := range []string{"E4", "F♯4"} {
+		r.NoteOn(key(n))
+		r.NoteOff(key(n))
+		expect(t, s, "casserole, shows ", "says no")
+	}
+	r.NoteOn(key("G4"))
+	r.NoteOff(key("G4"))
+	expect(t, s, "casserole, shows F", "says on F")
+	r.NoteOn(key("F4"))
+	expect(t, s, "lights out", "right")
+	r.NoteOff(key("F4"))
+	if !r.Done() {
+		t.Error("not over once F is played")
+	}
+}
+
 func TestGroup(t *testing.T) {
 	for _, tc := range []struct {
 		group Group

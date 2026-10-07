@@ -40,6 +40,18 @@ const (
 	Sol Note = 7
 	La  Note = 9
 	Si  Note = 11
+
+	// The black keys, by their sharps.
+	DoSharp  Note = 1
+	ReSharp  Note = 3
+	FaSharp  Note = 6
+	SolSharp Note = 8
+	LaSharp  Note = 10
+
+	// E♯ and B♯ are white keys, F and C: the first enharmonic notes,
+	// two names for one key.
+	MiSharp = Fa
+	SiSharp = Do
 )
 
 // Judge looks at the key that went down last only: a key still held,

@@ -285,6 +285,7 @@ quelque chose.
 | Jouer | Il joue une note ou une phrase, qu'on entend et qu'on voit | La fin de la phrase |
 | Demander | « Trouve le do », « joue la quinte de F » | La bonne réponse ; un raté, c'est la casserole et la bonne touche montrée |
 | Répéter après lui | Il joue, le joueur reproduit ; ou il la dit seulement, « C, E, C » | La phrase rejouée juste |
+| Faire deviner | Il demande une note qu'il n'a pas montrée, « Et mi♯ ? » | La bonne réponse ; un raté, c'est la casserole et un rappel, et au bout de trois, la réponse donnée |
 | Laisser en suspens | Il dit une phrase ; sa dernière note reste en l'air, la note qui la résout clignote | La note qui la résout |
 | Jouer ensemble | L'orchestre tourne, il annonce ce qu'on fait | Un nombre de réussites d'affilée |
 
@@ -353,7 +354,7 @@ Le paquet a pris forme ainsi :
   que toutes ses touches ne sont pas là, et compte comme raté si on les
   relâche avant ;
 - **les étapes** : Dire, Montrer, Jouer, Demander, Répéter après lui,
-  et Laisser en suspens. Répéter se joue sans faute : une fausse note
+  Faire deviner et Laisser en suspens. Répéter se joue sans faute : une fausse note
   fait sonner la casserole, le bonhomme rejoue la phrase, et le joueur
   la reprend du début. Une gamme jouée de si à do contient « do sol
   do », elle ne le répète pas. Dite plutôt que jouée, une fausse note
@@ -398,8 +399,8 @@ Une bonne réponse a son signe à elle : le bonhomme sort une main de sa
 poche et claque des doigts, avec un mot d'approbation, jamais deux fois
 de suite le même. Lui ne réagit qu'une fois la touche relâchée, ou un
 temps après qu'elle a été enfoncée, qu'il s'agisse de saluer une bonne
-réponse ou de s'agacer : répondre à une touche encore tenue coupe la
-parole au joueur. Après une fausse note, il remontre la consigne, les
+réponse, de s'agacer ou de dire un mot après une fausse note :
+répondre à une touche encore tenue coupe la parole au joueur. Après une fausse note, il remontre la consigne, les
 bonnes touches ou la phrase rejouée, sur la mesure suivante, comme si
 le joueur jouait en rythme : une note par temps, quatre temps par
 mesure, la phrase commencée sur le 1. Un motif de trois notes raté sur
@@ -410,7 +411,7 @@ que le joueur termine au clavier ne passe pas aussitôt la main non
 plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.
 
-**L'avancement.** Les leçons 1.1 et 1.2 et leurs activités sont
+**L'avancement.** Les leçons 1.1 à 1.3 et leurs activités sont
 écrites ; les leçons suivantes restent à faire. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.

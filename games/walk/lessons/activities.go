@@ -12,6 +12,7 @@ import (
 var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.1": func(rng *rand.Rand) []Step { return motifActivity(rng, motifsUp, runUp, runDown) },
 	"1.2": func(rng *rand.Rand) []Step { return motifActivity(rng, slices.Concat(motifsUp, motifsDown), scaleUp) },
+	"1.3": sharpsActivity,
 }
 
 // Activity returns the steps of the activity of lesson `id`, drawn
@@ -100,5 +101,53 @@ func motifActivity(rng *rand.Rand, motifs []motif, runs ...motif) []Step {
 	steps = append(steps, mixed[:half]...)
 	steps = append(steps, Say{Phrase: "activity.sing.again"})
 	steps = append(steps, mixed[half:]...)
+	return append(steps, Say{Phrase: "activity.bravo"})
+}
+
+// said is a sequence only said, in letters: `phrase` gives `want`.
+func said(phrase string, want ...Target) motif { return motif{want: want, letters: phrase} }
+
+// The sequences of lesson 1.3's activity: a white key, its neighbour a
+// notch up or down, then the next white key, every black key that way;
+// and the traps, E♯ and B♯ among them.
+var (
+	sharpsUp = []motif{
+		said("letters.C-Cs-D", Do, DoSharp, Re),
+		said("letters.D-Ds-E", Re, ReSharp, Mi),
+		said("letters.F-Fs-G", Fa, FaSharp, Sol),
+		said("letters.G-Gs-A", Sol, SolSharp, La),
+		said("letters.A-As-B", La, LaSharp, Si),
+	}
+	sharpsDown = []motif{
+		said("letters.D-Cs-C", Re, DoSharp, Do),
+		said("letters.E-Ds-D", Mi, ReSharp, Re),
+		said("letters.G-Fs-F", Sol, FaSharp, Fa),
+		said("letters.A-Gs-G", La, SolSharp, Sol),
+		said("letters.B-As-A", Si, LaSharp, La),
+	}
+	sharpsTraps = []motif{
+		said("letters.E-Es-Fs", Mi, MiSharp, FaSharp),
+		said("letters.B-Bs-Cs", Si, SiSharp, DoSharp),
+		said("letters.Cs-Ds-Es", DoSharp, ReSharp, MiSharp),
+		said("letters.Gs-As-Bs", SolSharp, LaSharp, SiSharp),
+	}
+)
+
+// sharpsActivity is the activity of lesson 1.3 (see
+// docs/debutants/chapitre-1.md): sequences of sharps, said in letters,
+// in a new order each time; then again, with E♯ and B♯ slipped in.
+func sharpsActivity(rng *rand.Rand) []Step {
+	shuffled := func(ms []motif) []Step {
+		var steps []Step
+		for _, i := range rng.Perm(len(ms)) {
+			steps = append(steps, ms[i].spoken())
+		}
+		return steps
+	}
+	plain := slices.Concat(sharpsUp, sharpsDown)
+	steps := []Step{Say{Phrase: "a1.3.hello"}}
+	steps = append(steps, shuffled(plain)...)
+	steps = append(steps, Say{Phrase: "a1.3.traps"})
+	steps = append(steps, shuffled(slices.Concat(plain, sharpsTraps))...)
 	return append(steps, Say{Phrase: "activity.bravo"})
 }

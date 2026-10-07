@@ -49,6 +49,8 @@ func TestScripts(t *testing.T) {
 				for _, w := range st.Want {
 					play(r, w)
 				}
+			case *Guess:
+				play(r, st.Want)
 			case *Hang:
 				for _, w := range st.Want {
 					play(r, w)

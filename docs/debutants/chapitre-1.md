@@ -139,33 +139,42 @@ dans les deux leçons, en montant comme en descendant.
 
 ### 1.3 Les dièses
 
-**La leçon 1.3** nomme les touches noires par leurs dièses. Elle donne
-au joueur le sens de l'orientation, avec le vocabulaire qui va avec : on
-**monte** vers la droite du clavier, on descend vers la gauche.
+La leçon 1.3 nomme les touches noires par leurs dièses. Elle donne au
+joueur le sens de l'orientation, avec le vocabulaire qui va avec : on
+**monte** vers la droite du clavier, on descend vers la gauche. Elle
+est écrite dans le jeu ; ce qui suit la résume.
 
-1. *Dire* : « Les touches noires ont des noms aussi. Un dièse, c'est une
-   note qu'on a fait monter d'un cran, vers la droite. » Puis le signe
-   et les deux notations : do♯ et C♯.
-2. *Jouer*, puis *répéter après lui* : do puis do♯, fa puis fa♯. La
-   note monte d'un cran. Le mot de demi-ton attend le chapitre 3.
-3. *Demander* : les cinq touches noires par leur dièse, do♯ ré♯ fa♯ sol♯
-   la♯, en do ré mi puis en lettres, mélangées.
-4. *Demander*, à deviner : « Et mi♯ ? » Le joueur a trois chances, sans
-   qu'on les lui compte : chaque raté sonne la casserole, avec « Non, il
-   n'est pas là. Rappelle-toi : un dièse, c'est une note qu'on a fait
-   monter d'un cran. » Puis de même pour si♯. Au bout de trois essais
-   infructueux, le bonhomme donne la réponse : « Mi♯ est sur le fa, et
-   si♯ est sur le do. » Trouvées ou données, il nomme la chose : mi♯ et
-   fa sont des notes **enharmoniques**, deux noms pour une même touche.
-   L'astuce de 1.2 l'annonçait : mi et si sont collés à droite d'un
-   groupe de touches noires, sans touche noire après eux.
-5. *Demander*, la séquence longue :
-   « joue C C♯ D D♯ E F F♯ G G♯ A A♯ B C ». Elle monte touche par
-   touche et prépare la basse en chromatisme du chapitre 3.
+1. Les touches noires ont des noms, elles aussi : un dièse, c'est une
+   note qu'on a fait monter d'un cran, vers la droite. Puis le signe,
+   ♯, et les deux notations : do♯ et C♯.
+2. Do puis do♯, fa puis fa♯, répétés après lui : la note monte d'un
+   cran. Le mot de demi-ton attend le chapitre 3.
+3. Les cinq touches noires à trouver par leur dièse, en do ré mi puis
+   en lettres, dans un ordre tiré à chaque leçon.
+4. Deux notes à deviner : « Et mi♯ ? », puis « Et si♯ ? » Le joueur a
+   trois chances, sans qu'on les lui compte : chaque raté sonne la
+   casserole, sans rien montrer, avec un rappel, un dièse monte la
+   note d'un cran. Au troisième, le bonhomme donne la réponse et montre
+   la touche, à jouer : mi♯ est sur le fa, si♯ sur le do, faute de
+   touche noire entre les deux. Trouvées ou données, il nomme la chose :
+   deux noms pour une même touche, des notes **enharmoniques**. L'astuce
+   de 1.2 l'annonçait : mi et si sont collés à droite d'un groupe de
+   touches noires, sans touche noire après eux.
+5. La séquence longue, dite en lettres : C C♯ D D♯ E F F♯ G G♯ A A♯ B C.
+   Elle monte touche par touche et prépare la basse en chromatisme du
+   chapitre 3.
 
-L'activité de la leçon 1.3 ne reprend pas les motifs de 1.1 et 1.2.
-Elle demande des séquences de notes diésées, dites en do ré mi et en
-lettres, et y glisse de temps en temps un mi♯ ou un si♯.
+Dans le jeu, la devinette est une étape à part, « Faire deviner »
+(`Guess`) : une note demandée sans avoir été montrée, avec un nombre de
+chances avant la réponse.
+
+**L'activité de la leçon 1.3** ne reprend pas les motifs de 1.1 et 1.2.
+Elle demande des séquences de trois notes, dites en lettres : une
+touche blanche, sa voisine noire, la touche blanche suivante, en
+montant (C C♯ D) comme en descendant (D C♯ C), pour chaque touche
+noire. Un premier tour les passe toutes, dans un ordre tiré ; un second
+y glisse les pièges, mi♯ et si♯ : E E♯ F♯, B B♯ C♯, C♯ D♯ E♯ et
+G♯ A♯ B♯.
 
 ### 1.4 Les bémols
 

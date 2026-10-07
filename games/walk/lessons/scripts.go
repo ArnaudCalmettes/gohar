@@ -1,12 +1,16 @@
 package lessons
 
-import "math/rand/v2"
+import (
+	"math/rand/v2"
+	"slices"
+)
 
 // The scripts of the lessons written so far, by ID. Each call builds
 // fresh steps: Ask and Repeat keep where they are.
 var scripts = map[string]func() []Step{
 	"1.1": firstSteps,
 	"1.2": cMajorScale,
+	"1.3": sharps,
 }
 
 // Script returns the steps of lesson `id`, or nil while it is not
@@ -27,6 +31,9 @@ func Phrases() []string {
 			if p := st.said(); p != "" {
 				out = append(out, p)
 			}
+			if o, ok := st.(interface{ alsoSays() []string }); ok {
+				out = append(out, o.alsoSays()...)
+			}
 		}
 	}
 	for _, s := range scripts {
@@ -35,7 +42,7 @@ func Phrases() []string {
 	for _, a := range activities {
 		add(a(rand.New(rand.NewPCG(1, 2)))) // any order says the same phrases
 	}
-	for _, n := range sevenNotes { // drawn by a script, not all said each time
+	for _, n := range slices.Concat(sevenNotes, fiveSharps) { // drawn by a script, not all said each time
 		out = append(out, findLetter[n], findSolfege[n])
 	}
 	return out
@@ -57,6 +64,9 @@ const (
 	_
 	b4
 	c5
+
+	cs4 = c4 + 1
+	fs4 = f4 + 1
 )
 
 // firstSteps is lesson 1.1, "Premiers pas" (see
@@ -148,10 +158,53 @@ func cMajorScale() []Step {
 // The seven white notes, and the phrases that ask for each, in letters
 // and in solfège.
 var (
-	sevenNotes  = []Note{Do, Re, Mi, Fa, Sol, La, Si}
-	findLetter  = map[Note]string{Do: "find.C", Re: "find.D", Mi: "find.E", Fa: "find.F", Sol: "find.G", La: "find.A", Si: "find.B"}
-	findSolfege = map[Note]string{Do: "find.do", Re: "find.re", Mi: "find.mi", Fa: "find.fa", Sol: "find.sol", La: "find.la", Si: "find.si"}
+	sevenNotes = []Note{Do, Re, Mi, Fa, Sol, La, Si}
+	fiveSharps = []Note{DoSharp, ReSharp, FaSharp, SolSharp, LaSharp}
+	findLetter = map[Note]string{
+		Do: "find.C", Re: "find.D", Mi: "find.E", Fa: "find.F", Sol: "find.G", La: "find.A", Si: "find.B",
+		DoSharp: "find.Cs", ReSharp: "find.Ds", FaSharp: "find.Fs", SolSharp: "find.Gs", LaSharp: "find.As",
+	}
+	findSolfege = map[Note]string{
+		Do: "find.do", Re: "find.re", Mi: "find.mi", Fa: "find.fa", Sol: "find.sol", La: "find.la", Si: "find.si",
+		DoSharp: "find.dos", ReSharp: "find.res", FaSharp: "find.fas", SolSharp: "find.sols", LaSharp: "find.las",
+	}
 )
+
+// sharps is lesson 1.3, "Les dièses" (see docs/debutants/chapitre-1.md):
+// a note that goes up a notch, the five black keys by their sharps, E♯
+// and B♯ to work out, then the twelve keys from C to C.
+func sharps() []Step {
+	steps := []Step{
+		Say{Phrase: "l1.3.hello"},
+		Say{Phrase: "l1.3.sign"},
+
+		// A note, then its sharp: up a notch.
+		&Repeat{Phrase: "l1.3.c.up", Keys: []int{c4, cs4}, Want: []Target{Do, DoSharp}},
+		&Repeat{Phrase: "l1.3.f.up", Keys: []int{f4, fs4}, Want: []Target{Fa, FaSharp}},
+
+		Say{Phrase: "l1.3.find"},
+	}
+	// The five black keys by their sharps, in solfège, then in letters,
+	// each time in a new order.
+	for _, find := range []map[Note]string{findSolfege, findLetter} {
+		for _, i := range rand.Perm(len(fiveSharps)) {
+			n := fiveSharps[i]
+			steps = append(steps, &Ask{Phrase: find[n], Want: n})
+		}
+	}
+	return append(steps,
+		// E♯ and B♯, to work out, three chances each.
+		&Guess{Phrase: "l1.3.guess.es", Want: MiSharp, Nope: "l1.3.nope", Answer: "l1.3.answer.es", Chances: 3},
+		&Guess{Phrase: "l1.3.guess.bs", Want: SiSharp, Nope: "l1.3.nope", Answer: "l1.3.answer.bs", Chances: 3},
+		Say{Phrase: "l1.3.enharmonic"},
+
+		// The twelve keys, up from C, key by key.
+		&Repeat{Phrase: "l1.3.chromatic", Want: []Target{
+			Do, DoSharp, Re, ReSharp, Mi, Fa, FaSharp, Sol, SolSharp, La, LaSharp, Si, Do,
+		}},
+		Say{Phrase: "l1.3.bravo"},
+	)
+}
 
 // reversed returns a reversed copy of `s`.
 func reversed[T any](s []T) []T {

@@ -250,6 +250,8 @@ type Hang struct {
 
 func (st *Hang) said() string { return st.Phrase }
 
+func (st *Hang) alsoSays() []string { return []string{st.Humpf, st.Thanks} }
+
 func (st *Hang) begin(s Stage) {
 	if st.held != 0 { // played over, R: nothing left hanging
 		s.Release()
@@ -295,3 +297,52 @@ func (st *Hang) pressed(s Stage, held []int) bool {
 func (*Hang) released(Stage, []int) bool { return false }
 func (*Hang) phraseEnded(Stage) bool     { return false }
 func (*Hang) read() bool                 { return false }
+
+// Guess asks for a note the player has not been shown, to work out
+// from what he knows: "Et mi♯ ?" A miss sounds the casserole and says
+// `Nope`, showing nothing; at the `Chances`th, the walker gives
+// `Answer` and shows the key, to be played as an Ask's answer is. The
+// chances are not counted aloud.
+type Guess struct {
+	Phrase  string // the question
+	Want    Note
+	Nope    string // said at a miss, while chances are left
+	Answer  string // said once they are spent
+	Chances int
+
+	misses int
+}
+
+func (st *Guess) said() string { return st.Phrase }
+
+func (st *Guess) alsoSays() []string { return []string{st.Nope, st.Answer} }
+
+func (st *Guess) begin(s Stage) {
+	st.misses = 0
+	s.Say(st.Phrase)
+	s.Light(nil)
+}
+
+func (st *Guess) pressed(s Stage, held []int) bool {
+	if st.Want.Judge(held) == Hit {
+		s.Light(nil)
+		s.Hit()
+		return true
+	}
+	st.misses++
+	switch {
+	case st.misses < st.Chances:
+		s.Miss(nil, 0)
+		s.Say(st.Nope)
+	case st.misses == st.Chances:
+		s.Miss(st.Want.Hint(), 0)
+		s.Say(st.Answer)
+	default:
+		s.Miss(st.Want.Hint(), 0)
+	}
+	return false
+}
+
+func (*Guess) released(Stage, []int) bool { return false }
+func (*Guess) phraseEnded(Stage) bool     { return false }
+func (*Guess) read() bool                 { return false }
