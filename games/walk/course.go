@@ -23,10 +23,10 @@ const courseFile = "course.json"
 // a smaller hand, from higher up. Back stands apart below either.
 var (
 	chaptersLayout = layout{top: menuY, gap: menuGap, apart: backApart, left: true}
-	lessonsLayout  = layout{top: 122, gap: 31, apart: backApart, left: true}
+	lessonsLayout  = layout{heading: 48, top: 96, gap: 27, branchGap: 22, apart: backApart, left: true}
 )
 
-const backApart = 18
+const backApart = 14
 
 // The phrases of the course name its chapters and lessons by ID, as
 // lessons.Course gives them: "chapter.1", "lesson.1.1".
@@ -47,9 +47,12 @@ func init() {
 
 // course is the scene of the course for beginners, over the lighter
 // jam: first the chapters open, then the lessons of the one chosen, a
-// green check on what is done. A lesson written plays in a lesson
-// scene (see lesson.go), which comes back here. A lesson done that has
-// an activity opens a last list: practise, or see the lesson again.
+// green check on what is done. The lessons are a tree: the one chosen
+// shows its branches under it, the lesson itself and, once done, its
+// activity; Enter or the right arrow goes down to them, Escape or the
+// left arrow back up. A lesson with no other branch than itself, not
+// done yet, starts at once. A lesson or an activity plays in a lesson
+// scene (see lesson.go), which comes back here.
 type course struct {
 	*app
 
@@ -60,15 +63,15 @@ type course struct {
 	done    lessons.Progress
 	open    []lessons.Chapter // what the player sees, a prefix of lessons.Course
 	chapter int               // the chapter open, or -1 for the list of chapters
-	lesson  int               // the lesson open in it, or -1 for its list
+	inside  bool              // down in the branches of the lesson chosen
+	branch  menu              // the branch chosen there
 	rng     *rand.Rand        // the order of the activities
 }
 
-// The items of a lesson open, before Back.
+// The branches of a lesson: the lesson, and its activity once done.
 const (
-	itemPractise = iota // its activity
-	itemReview          // the lesson again
-	lessonItems
+	branchLesson = iota
+	branchPractise
 )
 
 func newCourse(a *app, back *title) *course {
@@ -88,29 +91,32 @@ func newCourse(a *app, back *title) *course {
 
 // showChapters lists the chapters, `chosen` chosen.
 func (c *course) showChapters(chosen int) {
-	c.chapter, c.lesson = -1, -1
+	c.chapter, c.inside = -1, false
 	c.menu = menu{chosen: chosen, items: len(c.open) + 1} // and Back
 }
 
 // showLessons lists the lessons of chapter `i`, `chosen` chosen.
 func (c *course) showLessons(i, chosen int) {
-	c.chapter, c.lesson = i, -1
+	c.chapter, c.inside = i, false
 	c.menu = menu{chosen: chosen, items: len(c.open[i].Lessons) + 1}
 }
 
-// showLesson opens lesson `i` of the chapter open, `chosen` chosen.
-func (c *course) showLesson(i, chosen int) {
-	c.lesson = i
-	c.menu = menu{chosen: chosen, items: lessonItems + 1}
+// goDown opens the branches of the lesson chosen, `chosen` chosen.
+func (c *course) goDown(chosen int) {
+	c.inside = true
+	c.branch = menu{chosen: chosen, items: len(c.branches(c.id()))}
 }
 
-// id is the ID of the lesson chosen in the chapter's list, or open.
-func (c *course) id() string {
-	i := c.menu.chosen
-	if c.lesson >= 0 {
-		i = c.lesson
+// id is the ID of the lesson chosen in the chapter's list.
+func (c *course) id() string { return c.open[c.chapter].Lessons[c.menu.chosen].ID }
+
+// branches lists the branches of lesson `id`: the lesson, and its
+// activity once the lesson is done, if written.
+func (c *course) branches(id string) []int {
+	if c.done[id] && lessons.Activity(id, c.rng) != nil {
+		return []int{branchLesson, branchPractise}
 	}
-	return c.open[c.chapter].Lessons[i].ID
+	return []int{branchLesson}
 }
 
 // play starts lesson `id`, or its activity when `activity`, if written.
@@ -127,8 +133,9 @@ func (c *course) play(id string, activity bool) scene.Transition {
 	return scene.Stay
 }
 
-// finish marks lesson `id` done, saves it, and opens what follows: the
-// next lesson appears, chosen, in the chapter's list.
+// finish marks lesson `id` done, saves it, and opens what follows: its
+// activity, chosen under it, not to be missed; or, without one, the
+// next lesson, chosen in the chapter's list.
 func (c *course) finish(id string) {
 	c.done[id] = true
 	if err := settings.Save(settings.Path(courseFile), c.done); err != nil {
@@ -136,8 +143,10 @@ func (c *course) finish(id string) {
 	}
 	c.open = lessons.Open(lessons.Course, c.done)
 	chosen := c.menu.chosen
-	if c.lesson >= 0 {
-		chosen = c.lesson // seen again from its own list
+	if len(c.branches(id)) > 1 {
+		c.showLessons(c.chapter, chosen)
+		c.goDown(branchPractise)
+		return
 	}
 	if chosen+1 < len(c.open[c.chapter].Lessons) {
 		chosen++
@@ -157,57 +166,85 @@ func (c *course) Leave() {}
 
 func (c *course) Update() scene.Transition {
 	c.drain(nil)
-	c.menu.move()
-	back := c.menu.chosen == c.menu.items-1
-	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyEscape), confirmed() && back:
-		switch {
-		case c.chapter < 0:
-			return scene.Replace(c.back)
-		case c.lesson >= 0:
-			c.showLessons(c.chapter, c.lesson)
-		default:
-			c.showChapters(c.chapter)
-		}
-	case confirmed() && c.chapter < 0:
-		c.showLessons(c.menu.chosen, 0)
-	case confirmed() && c.lesson >= 0:
-		return c.play(c.id(), c.menu.chosen == itemPractise)
-	case confirmed():
-		id := c.id()
-		if c.done[id] && lessons.Activity(id, c.rng) != nil {
-			c.showLesson(c.menu.chosen, itemPractise)
-			break
-		}
-		return c.play(id, false)
-	}
 	c.jam.Play(time.Now(), band.Light)
+	right := inpututil.IsKeyJustPressed(ebiten.KeyArrowRight)
+	up := inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft)
+	down := confirmed() || right
+	switch {
+	case c.chapter < 0:
+		c.menu.move()
+		back := c.menu.chosen == c.menu.items-1
+		switch {
+		case up, down && back:
+			return scene.Replace(c.back)
+		case down:
+			c.showLessons(c.menu.chosen, 0)
+		}
+	case c.inside:
+		c.branch.move()
+		switch {
+		case up:
+			c.inside = false
+		case down:
+			return c.play(c.id(), c.branches(c.id())[c.branch.chosen] == branchPractise)
+		}
+	default:
+		c.menu.move()
+		back := c.menu.chosen == c.menu.items-1
+		switch {
+		case up, down && back:
+			c.showChapters(c.chapter)
+		case down && len(c.branches(c.id())) == 1:
+			return c.play(c.id(), false) // a single branch: no tree to go down
+		case down:
+			c.goDown(branchLesson)
+		}
+	}
 	return scene.Stay
 }
 
 func (c *course) Draw(dst *ebiten.Image) {
-	var labels []string
-	var done []bool
+	var items []entry
 	if c.chapter < 0 {
 		for i, ch := range c.open {
-			labels = append(labels, c.lang.T(chapterPhrase(ch.ID)))
-			done = append(done, c.done.Finished(lessons.Course[i]))
+			items = append(items, entry{label: c.lang.T(chapterPhrase(ch.ID)), done: c.done.Finished(lessons.Course[i])})
 		}
-		labels = append(labels, c.lang.T(msgOptBack))
-		c.drawList(dst, &c.walker, c.walker.Gait(true), c.lang.T(msgMenuLearn), c.fonts.count, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
+		items = append(items, entry{label: c.lang.T(msgOptBack)})
+		c.drawList(dst, &c.walker, c.walker.Gait(true), c.lang.T(msgMenuLearn), c.fonts.count, items, c.menu.chosen, c.lang.T(msgCourseKeys), chaptersLayout)
 		return
 	}
-	if c.lesson >= 0 {
-		labels = []string{c.lang.T(msgCoursePractise), c.lang.T(msgCourseReview), c.lang.T(msgOptBack)}
-		heading := c.lang.T(lessonPhrase(c.id()))
-		c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, labels, nil, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
-		return
+	// The lessons, the one chosen with its branches under it.
+	chosen := c.menu.chosen
+	for i, l := range c.open[c.chapter].Lessons {
+		if i == c.menu.chosen {
+			chosen = len(items)
+		}
+		items = append(items, entry{label: c.lang.T(lessonPhrase(l.ID)), done: c.done[l.ID]})
+		if i != c.menu.chosen {
+			continue
+		}
+		for j, b := range c.branches(l.ID) {
+			if c.inside && j == c.branch.chosen {
+				chosen = len(items)
+			}
+			items = append(items, entry{label: c.lang.T(c.branchPhrase(l.ID, b)), branch: true})
+		}
 	}
-	for _, l := range c.open[c.chapter].Lessons {
-		labels = append(labels, c.lang.T(lessonPhrase(l.ID)))
-		done = append(done, c.done[l.ID])
+	if c.menu.chosen == c.menu.items-1 {
+		chosen = len(items)
 	}
-	labels = append(labels, c.lang.T(msgOptBack))
-	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID)) // longer than a menu's: smaller than its heading
-	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+	items = append(items, entry{label: c.lang.T(msgOptBack)})
+	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID))
+	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, items, chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+}
+
+// branchPhrase names branch `b` of lesson `id`.
+func (c *course) branchPhrase(id string, b int) string {
+	switch {
+	case b == branchPractise:
+		return msgCoursePractise
+	case c.done[id]:
+		return msgCourseReview
+	}
+	return msgCourseStart
 }

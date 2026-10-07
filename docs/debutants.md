@@ -299,8 +299,14 @@ touche saute ce que le joueur sait déjà.
 activité, sur laquelle le joueur s'entraîne aussi longtemps et aussi
 souvent qu'il veut, avant de passer à la leçon suivante. L'activité de
 la leçon 1.1 (`debutants/chapitre-1.md`) en donne le modèle. Dans le
-jeu, une leçon faite qui a une activité ouvre un dernier choix :
-« S'entraîner », ou « Revoir la leçon ».
+jeu, la liste des leçons est un arbre : la leçon choisie montre ses
+branches sous elle, « Commencer la leçon », ou « Revoir la leçon » une
+fois faite, et alors « S'entraîner », son activité. Entrée ou la flèche
+droite y descend, Échap ou la flèche gauche en remonte ; une leçon
+pas encore faite, qui n'a qu'une branche, se lance directement. Une coche seule
+laisserait croire qu'il n'y a plus rien à voir dans une leçon faite :
+l'activité, sous elle, se voit dès qu'on la survole. Au retour d'une
+leçon, c'est son activité qui est choisie.
 
 **Le passage à la leçon suivante**, c'est le joueur qui le décide, quand
 il se sent prêt. Une leçon donnée est marquée faite, d'une coche verte ;
@@ -380,7 +386,8 @@ puis les leçons du chapitre choisi : celles qui sont faites, d'une
 coche verte, et la suivante ; les autres restent cachées. Le catalogue
 des chapitres et la règle qui ouvre les leçons sont dans
 `games/walk/lessons`, la progression du joueur dans le fichier
-`course.json` de ses réglages.
+`course.json` de ses réglages. La liste des leçons est un arbre (voir
+« L'activité de la leçon »).
 
 **L'écran d'une leçon** (`games/walk/lesson.go`). Le bonhomme se tient
 à gauche, face au joueur, les deux mains dans les poches (voir

@@ -51,54 +51,102 @@ func confirmed() bool {
 // gait `g`, the heading in `head`, the `labels`, and the keys in the
 // status line.
 func (a *app) drawMenu(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, labels []string, chosen int, keys string) {
-	a.drawList(dst, wk, g, heading, head, labels, nil, chosen, keys, layout{top: menuY, gap: menuGap})
+	a.drawList(dst, wk, g, heading, head, entries(labels, nil), chosen, keys, layout{top: menuY, gap: menuGap})
 }
 
-// A layout places a list: its first item at `top`, `gap` from one item
-// to the next, and `apart` more before the last one, Back, so that it
-// does not read as one of the list. `left` aligns the items but Back on
-// their left, the block of them centred: their checks fall in a column.
+// A layout places a list: its heading at `heading` (headingY when 0),
+// its first item at `top`, `gap` from one item to the next, and `apart`
+// more before the last one, Back, so that it does not read as one of
+// the list. `left` aligns the items but Back on their left, the block of
+// them centred: their checks fall in a column. The items under another,
+// a tree's branches, come `branchGap` apart, indented, in a smaller
+// hand, a little further from the next item, for their highlight to
+// stay clear of it.
 type layout struct {
-	top, gap, apart float64
-	left            bool
+	heading, top, gap, apart, branchGap float64
+	left                                bool
 }
 
-// drawList is drawMenu with its list laid out by `l`, and a green check
-// left of each item `done` marks. `done` may be nil, or shorter than
-// `labels`.
-func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, labels []string, done []bool, chosen int, keys string, l layout) {
+// An entry is an item of a list as drawList draws it: its label, a check
+// when done, and whether it is a branch, under the item before it.
+type entry struct {
+	label  string
+	done   bool
+	branch bool
+}
+
+// branchIndent is how far a branch stands right of its item.
+const branchIndent = 28
+
+// entries makes plain entries of `labels`, a check on those `done`
+// marks; `done` may be nil, or shorter than `labels`.
+func entries(labels []string, done []bool) []entry {
+	out := make([]entry, len(labels))
+	for i, l := range labels {
+		out[i] = entry{label: l, done: i < len(done) && done[i]}
+	}
+	return out
+}
+
+// drawList is drawMenu with its list of `items` laid out by `l`, a green
+// check left of each one done; the last item is Back.
+func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, items []entry, chosen int, keys string, l layout) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: a.scale}
 	now := time.Now()
 	wk.Draw(c, walkerX, walkerY, walkerScale, g, a.jam.Metronome().Beats(now), now, faint)
 
 	const mid = screenWidth / 2
-	c.Centred(heading, head, mid, headingY, ink)
-
-	// The left edge of the items, Back aside, when aligned on it.
-	widest := 0.0
-	for _, label := range labels[:len(labels)-1] {
-		w, _ := c.Measure(label, a.fonts.chord)
-		widest = max(widest, w)
+	hy := l.heading
+	if hy == 0 {
+		hy = headingY
 	}
-	for i, label := range labels {
-		y := l.top + float64(i)*l.gap
-		back := i == len(labels)-1
-		if back {
-			y += l.apart
+	c.Centred(heading, head, mid, hy, ink)
+
+	// The left edge of the items, Back and the branches aside, when
+	// aligned on it.
+	widest := 0.0
+	for _, it := range items[:len(items)-1] {
+		if !it.branch {
+			w, _ := c.Measure(it.label, a.fonts.chord)
+			widest = max(widest, w)
 		}
-		w, h := c.Measure(label, a.fonts.chord)
+	}
+	y := l.top
+	for i, it := range items {
+		back := i == len(items)-1
+		switch {
+		case i == 0:
+		case back:
+			y += l.gap + l.apart
+		case it.branch && !items[i-1].branch:
+			y += l.gap // under its item
+		case it.branch:
+			y += l.branchGap
+		case items[i-1].branch:
+			y += l.gap + menuPad
+		default:
+			y += l.gap
+		}
+		font := a.fonts.chord
+		if it.branch {
+			font = a.fonts.chordSmall
+		}
+		w, h := c.Measure(it.label, font)
 		x := mid - w/2
 		if l.left && !back {
 			x = mid - widest/2
+			if it.branch {
+				x += branchIndent
+			}
 		}
 		var col color.Color = faint
 		if i == chosen {
 			c.Rect(float32(x-menuPad), float32(y-menuPad), float32(w+2*menuPad), float32(h+2*menuPad), pale)
 			col = ink
 		}
-		c.Text(label, a.fonts.chord, x, y, col)
-		if i < len(done) && done[i] {
+		c.Text(it.label, font, x, y, col)
+		if it.done {
 			drawCheck(c, x-menuPad-checkGap-checkW, y+h/2)
 		}
 	}

@@ -85,7 +85,7 @@ fait rejouer par le bonhomme. Dit, un raté allume toutes les touches
 du motif, jusqu'à ce qu'il soit rejoué depuis le début.
 
 Elle est écrite dans le jeu (`games/walk/lessons/activities.go`) ; on
-l'ouvre d'une leçon faite, par « S'entraîner ».
+l'ouvre d'une leçon faite, par « S'entraîner », sous la leçon.
 
 ### 1.2 La gamme de do majeur
 
