@@ -102,7 +102,13 @@ type lesson struct {
 	cheer   int       // the last cheer said, in cheers
 
 	walker figure.Walker // for his walkout, in profile
-	out    walkout       // the easter egg (see walkout.go)
+	out    walkout       // the easter egg's first gag (see gags.go)
+	pose   figure.Pose   // its others: sitting, then the lotus
+
+	// The frame between standing and sitting, and since when (see
+	// poseAt).
+	shift   figure.Pose
+	shiftAt time.Time
 
 	turned [screen.MIDIKeys]bool // the keys that turned a page, silent, until they go up
 }
@@ -170,8 +176,19 @@ func (l *lesson) Hit() { l.react(l.hit) }
 
 func (l *lesson) hit() {
 	now := time.Now()
+	// Sitting or in the lotus, he gets up first, and snaps once on his
+	// feet; out of the lotus, he thanks rather than cheers.
+	thanks := l.pose == figure.Lotus
+	if l.pose != figure.Standing {
+		l.setPose(figure.Standing, now)
+		now = now.Add(shiftTime)
+	}
 	l.band.SnapAt(cheerVel, now)
 	l.cheerAt = now
+	if thanks {
+		l.Say(msgTeaseThanks)
+		return
+	}
 	l.cheer = (l.cheer + 1 + rand.IntN(len(cheers)-1)) % len(cheers)
 	l.bubble = []string{l.lang.T(cheers[l.cheer])}
 }
@@ -268,10 +285,11 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	c := screen.Canvas{Dst: dst, Scale: l.scale}
 	now := time.Now()
 	if !l.drawWalkout(dst, c, now) {
-		figure.DrawTeacher(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
+		l.drawTeacher(c, now)
 	}
 	if len(l.bubble) > 0 {
-		l.speech().Draw(c, l.bubble, l.walkerAt(now), walkerY, walkerScale)
+		hx, hy, r := l.head(now)
+		l.speech().Draw(c, l.bubble, hx, hy, r)
 	}
 
 	l.piano.Draw(c, func(k int) screen.Dress {

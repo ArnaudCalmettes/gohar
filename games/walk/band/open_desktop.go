@@ -77,7 +77,7 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 		if err != nil {
 			return nil, err
 		}
-		b.bass, b.Piano, b.snap, b.kit = hands, hands, noise, noise
+		b.bass, b.Piano, b.snap, b.kit, b.bowl = hands, hands, noise, noise, hands
 		b.hat, b.ride, b.chip = noiseKey, chipRide, true
 		b.ta, b.ti = noiseKey, chipRide
 		mix.Add(hands, chipHandsGain)
@@ -101,10 +101,15 @@ func newBand(mix *synth.Mixer, sf *synth.SoundFont, bassPreset synth.Preset, spl
 	if err != nil {
 		return nil, err
 	}
-	b.bass, b.Piano, b.kit, b.snap = bass, piano, kit, snap
+	bowl, err := synth.LoadClip(bytes.NewReader(bowlWAV))
+	if err != nil {
+		return nil, err
+	}
+	b.bass, b.Piano, b.kit, b.snap, b.bowl = bass, piano, kit, snap, bowl
 	mix.Add(bass, bassGain)
 	mix.Add(piano, pianoGain)
 	mix.Add(kit, kitGain)
 	mix.Add(snap, snapGain)
+	mix.Add(bowl, bowlGain)
 	return b, nil
 }

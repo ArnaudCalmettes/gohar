@@ -17,8 +17,8 @@ const (
 )
 
 // Open builds the band in the browser: FluidSynth on the audio
-// thread plays the embedded soundfont, Web Audio the recorded snap (see
-// synth/web, and "Le navigateur" in docs/architecture.md). The volumes
+// thread plays the embedded soundfont, Web Audio the snap and the bowl
+// (see synth/web, and "Le navigateur" in docs/architecture.md). The volumes
 // keep the desktop mix's proportions, the loudest at full volume. The
 // chip sounds, another soundfont and the presets' listing stay on the
 // desktop; so does the buffer, which the browser sizes itself.
@@ -35,6 +35,9 @@ func Open(f Flags) (*Band, func(), error) {
 	b.Piano = s.Instrument(acousticGrand.Bank, acousticGrand.Patch, pianoChannel, pianoGain/loudest)
 	b.kit = s.Instrument(jazzKit.Bank, jazzKit.Patch, 0, kitGain/loudest)
 	if b.snap, err = s.Clip(snapWAV, snapGain); err != nil {
+		return nil, nil, err
+	}
+	if b.bowl, err = s.Clip(bowlWAV, bowlGain); err != nil {
 		return nil, nil, err
 	}
 	return b, func() { s.Close() }, nil

@@ -29,6 +29,10 @@ type app struct {
 	rec    *recorder // nil without -record
 	jam    *band.Jam // the music of the menus, nil while a game plays
 
+	// fedUp counts the times the walker was fed up in the lessons, over
+	// the whole session: each time a worse gag (see gags.go).
+	fedUp int
+
 	// pair names the keyboard and the output, for the calibration;
 	// latency is the offset measured for it, zero until one is.
 	pair    string

@@ -18,6 +18,12 @@ import (
 //go:embed sounds/snap.wav
 var snapWAV []byte
 
+// bowlWAV is the singing bowl of the walker's meditation, synthesized
+// by sounds/bowl.go (see sounds/CREDITS.md).
+//
+//go:embed sounds/bowl.wav
+var bowlWAV []byte
+
 // walkSF2 is GeneralUser GS slimmed down to what the band plays: the
 // double bass, the piano, and the keys of the Jazz kit below (see
 // sounds/CREDITS.md and `make slim`).
@@ -75,6 +81,7 @@ const (
 	pianoGain = 2
 	kitGain   = 2
 	snapGain  = 0.25
+	bowlGain  = 0.3 // a first guess, to set by ear
 
 	chipHandsGain = 0.6
 	chipNoiseGain = 0.8
@@ -86,7 +93,14 @@ const (
 	noiseKey = 84
 	chipRide = 96
 	hold     = 30 * time.Millisecond
+
+	// The bowl of the chip: a long triangle, high.
+	chipBowl     = 86
+	chipBowlHold = 1500 * time.Millisecond
 )
+
+// BowlVel is the singing bowl's velocity.
+const BowlVel = 0.8
 
 // A Band is everything the game sounds: the drums, the snaps when the
 // walker snaps, the reference bass when it plays, and the player's two
@@ -99,6 +113,7 @@ const (
 // ScheduleOn.
 type Band struct {
 	kit, snap   synth.Instrument
+	bowl        synth.Instrument // the singing bowl, a clip; a triangle on the chip
 	bass, Piano synth.Instrument // the player's hands, split at `Split`
 	Split       int
 	BassHand    atomic.Bool // the split holds: only while a grid is played
@@ -171,6 +186,12 @@ func (bd *Band) Strike(key int, vel float64, at time.Time) {
 func (bd *Band) SnapAt(vel float64, at time.Time) {
 	bd.snap.ScheduleOn(noiseKey, vel, at)
 	bd.snap.ScheduleOff(noiseKey, at.Add(hold)) // a clip ignores it
+}
+
+// Bowl strikes the singing bowl at `at`: the walker meditates.
+func (bd *Band) Bowl(at time.Time) {
+	bd.bowl.ScheduleOn(chipBowl, BowlVel, at)
+	bd.bowl.ScheduleOff(chipBowl, at.Add(chipBowlHold)) // a clip ignores it
 }
 
 // Stop releases what the reference bass holds, at `at`.

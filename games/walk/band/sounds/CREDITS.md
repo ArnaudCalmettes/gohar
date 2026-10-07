@@ -9,6 +9,14 @@
 - **Edits**: cut 3 ms before the attack, with a 1 ms fade in; 150 ms of
   tail ending in a 20 ms fade out; mono, 48 kHz, 16 bits.
 
+## bowl.wav
+
+- **Source**: synthesized by `bowl.go`, in this directory (`go run
+  bowl.go`): four inharmonic modes, at the ratios measured on Tibetan
+  singing bowls, each split in two close frequencies that beat.
+- **License**: the repository's.
+- **Format**: 5 seconds, mono, 48 kHz, 16 bits.
+
 ## GeneralUser GS
 
 The double bass, the piano and the drum kit come from GeneralUser GS

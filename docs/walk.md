@@ -396,11 +396,13 @@ Ce qui suit est notre lecture des sources.
 - **Professeur**, dans les leçons du cours des débutants, il change de
   pose : de face, une main dans la poche, l'autre libre, qui claque des
   doigts à une bonne réponse (`figure/teacher.go`, et « Dans le jeu »
-  dans `debutants.md`). Il sort de l'écran, de profil, quand l'easter egg
-  l'a poussé à bout, et revient de même, tourné vers la gauche
-  (`walkout.go`). Ses deux poses partagent les proportions du croquis
+  dans `debutants.md`). Quand l'easter egg l'a poussé à bout, il sort
+  de l'écran, de profil, et revient de même, tourné vers la gauche ; les
+  fois suivantes, il s'assoit dans l'herbe, puis se met en lotus
+  (`gags.go`). Toutes ses poses partagent les proportions du croquis
   (`figure/walker.go`), et ses bulles, dans la partie comme dans les
-  leçons, le même dessin (`figure/bubble.go`).
+  leçons, le même dessin (`figure/bubble.go`), la queue visant sa tête
+  où qu'elle soit.
 - Les états, du plus bas au plus haut :
   1. **il cherche le tempo** : pas hésitant, regard vers le joueur ;
      l'état de la phase sans tempo et du décompte ;

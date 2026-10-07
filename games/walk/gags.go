@@ -13,9 +13,16 @@ import (
 
 // The easter egg of the lessons (see "Rendre le cours amusant" in
 // docs/debutants.md): ten casseroles in a row on a request nobody misses
-// in good faith, and the walker, fed up, walks out of the screen. GAME
-// OVER. A key, and he walks back; the lesson goes on where it was,
-// nothing lost.
+// in good faith, and the walker is fed up. A gag each time, worse and
+// worse, counted over the whole session: a player who plays for the gag
+// soon finds it more tiresome than the lesson.
+//
+//  1. He walks out of the screen. GAME OVER. A key, and he walks back;
+//     the lesson goes on where it was, nothing lost.
+//  2. He sits down on the grass, and waits for the right answer.
+//  3. He sits in the lotus position, to the sound of a singing bowl,
+//     and stays there, silent, until the right answer. The same from
+//     then on.
 
 // The GAME OVER jingle, on the piano, high: four tritones going down
 // a semitone at a time, the last one shaken in a tremolo.
@@ -61,8 +68,11 @@ type walkout struct {
 }
 
 // Tease answers misses in a row on a teasing request, once the key is
-// up: a word in the bubble, then the walkout.
+// up: a word in the bubble, then a gag. In the lotus, he hears nothing.
 func (l *lesson) Tease(a lessons.Annoyance) {
+	if l.pose == figure.Lotus {
+		return
+	}
 	l.react(func() {
 		switch a {
 		case lessons.Hey:
@@ -70,11 +80,43 @@ func (l *lesson) Tease(a lessons.Annoyance) {
 		case lessons.OnPurpose:
 			l.Say(msgTeaseOnPurpose)
 		case lessons.FedUp:
-			l.Say(msgTeaseFedUp)
-			l.out = walkout{stage: leaving, since: time.Now(), mirror: l.out.mirror}
-			l.shown = nil
+			l.fedUp++
+			l.gag()
 		}
 	})
+}
+
+// gag plays the gag of the walker fed up for the `fedUp`th time.
+func (l *lesson) gag() {
+	now := time.Now()
+	switch l.fedUp {
+	case 1:
+		l.Say(msgTeaseFedUp)
+		l.out = walkout{stage: leaving, since: now, mirror: l.out.mirror}
+		l.shown = nil
+	case 2:
+		l.Say(msgTeaseSit)
+		l.setPose(figure.Sitting, now)
+	default:
+		l.Say(msgTeaseLotus)
+		l.setPose(figure.Lotus, now)
+		l.band.Bowl(now.Add(band.Lookahead))
+	}
+}
+
+// setPose changes the walker's pose at `now`, through the frame between
+// the two, held a moment: from standing, on his way down; from a
+// resting pose, to another or back on his feet, a hand on the ground,
+// on his way up.
+func (l *lesson) setPose(p figure.Pose, now time.Time) {
+	if p == l.pose {
+		return
+	}
+	l.shift = figure.GettingUp
+	if l.pose == figure.Standing {
+		l.shift = figure.SittingDown
+	}
+	l.pose, l.shiftAt = p, now
 }
 
 // teaching tells whether the walker is there to teach: the lesson's
@@ -145,9 +187,34 @@ func (l *lesson) walkerAt(now time.Time) float64 {
 	return walkerX
 }
 
+// shiftTime is how long the walker holds the frame between standing
+// and sitting, on his way down or on his way up.
+const shiftTime = 300 * time.Millisecond
+
+// poseAt is the walker's pose at `now`: the frame between for a moment
+// after his pose changed (see setPose), his pose otherwise.
+func (l *lesson) poseAt(now time.Time) figure.Pose {
+	if now.Sub(l.shiftAt) < shiftTime {
+		return l.shift
+	}
+	return l.pose
+}
+
+// drawTeacher draws the walker in place, in his pose: snapping for a
+// right answer when standing.
+func (l *lesson) drawTeacher(c screen.Canvas, now time.Time) {
+	l.poseAt(now).Draw(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
+}
+
+// head is the centre of the walker's head now, and its radius: where
+// the tail of his bubble aims.
+func (l *lesson) head(now time.Time) (x, y, r float64) {
+	return l.poseAt(now).Head(l.walkerAt(now), walkerY, walkerScale)
+}
+
 // drawWalkout draws the walker as the walkout has him: walking out in
 // profile, GAME OVER while he is gone, coming back mirrored, facing
-// left. It returns false while he is in place, for the teacher's pose.
+// left. It returns false while he is in place, for drawTeacher.
 func (l *lesson) drawWalkout(dst *ebiten.Image, c screen.Canvas, now time.Time) bool {
 	t := now.Sub(l.out.since).Seconds()
 	switch l.out.stage {

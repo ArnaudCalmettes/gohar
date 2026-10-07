@@ -26,13 +26,12 @@ type Bubble struct {
 	Width, LineH float64
 }
 
-// Draw draws `lines` in the bubble, and the tail toward the walker
-// standing straight, his feet on (`x`, `y`), `s` times the size of his
-// sketch. The tail leaves the line at the point nearest his head,
-// straight above it when he stands under the line, and aims at the
-// centre of his head, wherever he walks; it stops a few pixels short of
-// it.
-func (b Bubble) Draw(c screen.Canvas, lines []string, x, y, s float64) {
+// Draw draws `lines` in the bubble, and the tail toward the walker's
+// head, its centre on (`hx`, `hy`), `r` its radius (see Pose.Head). The
+// tail leaves the line at the point nearest his head, straight above
+// it when he stands under the line, and aims at the centre of his head,
+// wherever he walks; it stops a few pixels short of it.
+func (b Bubble) Draw(c screen.Canvas, lines []string, hx, hy, r float64) {
 	ly := b.Top
 	for _, line := range lines {
 		c.Text(line, b.Font, b.Left, ly, b.Ink)
@@ -41,11 +40,10 @@ func (b Bubble) Draw(c screen.Canvas, lines []string, x, y, s float64) {
 	under := ly + BubbleGap
 	c.Line(float32(b.Left), float32(under), float32(b.Left+b.Width), float32(under), 1, b.Ink)
 
-	hx, hy := x, y-sketchHeadAbove*s
 	fx := min(max(hx, b.Left), b.Left+b.Width)
 	dx, dy := hx-fx, hy-under
 	d := math.Hypot(dx, dy)
-	stop := sketchHead*s + tailGap
+	stop := r + tailGap
 	if dy <= 0 || d <= stop {
 		return // his head level with the line: no tail
 	}

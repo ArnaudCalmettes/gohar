@@ -212,12 +212,27 @@ saura ce que sont un II, un V et un I.
   d'abord, puis « Tu le fais exprès ? », et à la dixième : « Bon, j'en
   ai marre ! Je peux pas travailler dans ces conditions. » Il part à
   pied vers la droite, sort de l'écran, et un GAME OVER s'affiche. Une
-  touche, et il revient (« Bon, d'accord. Mais
-  c'est la dernière fois ! ») : la leçon reprend où elle en était, rien
-  n'est perdu. Une étape le permet ou non ; le compte repart de zéro à
-  la première bonne note.
+  touche, et il revient (« Bon, d'accord. Mais c'est la dernière
+  fois ! ») : la leçon reprend où elle en était, rien n'est perdu. Une
+  étape le permet ou non ; le compte repart de zéro à la première bonne
+  note.
 
-  Dans le jeu (`games/walk/walkout.go`), une étape « Demander » le
+  Le joueur qui a ri une fois recommence. Le gag change donc à chaque
+  fois, de pire en pire, pour qu'il finisse par trouver plus long de
+  désobéir que d'écouter :
+  1. la première fois, la sortie et le GAME OVER ;
+  2. la deuxième, il s'assoit dans l'herbe, les mains derrière lui :
+     « Bon, je me pose là et j'attends que tu veuilles bien faire ce
+     que je t'ai demandé. » Il se relève à la bonne réponse ;
+  3. la troisième, il se met en lotus, au son d'un bol chantant : « Je
+     suis calme. Je suis très calme. » Il ne réagit plus à rien, et
+     n'en sort qu'à la bonne réponse : « Ah. Merci. » Toutes les fois
+     suivantes, le lotus encore.
+
+  Le compte des gags vaut pour toute la session : sortir de la leçon
+  et y revenir ne le remet pas à zéro.
+
+  Dans le jeu (`games/walk/gags.go`), une étape « Demander » le
   permet par son drapeau `Teasing` : à la leçon 1.1, la paire et le
   groupe de trois. « Hé… » vient à la quatrième casserole d'affilée,
   « Tu le fais exprès ? » à la septième, la sortie à la dixième. Le
@@ -227,7 +242,12 @@ saura ce que sont un II, un V et un I.
   l'ordinateur ou du clavier MIDI, et il revient de la droite, du même
   pas, tourné vers la gauche ; une touche encore, et l'étape reprend.
   Comme ses autres répliques, ses mots attendent que la touche soit
-  relâchée.
+  relâchée. Assis puis en lotus, il reste à sa place et la leçon
+  continue : les touches comptent, les casseroles sonnent. D'une pose à
+  l'autre, une image tenue un instant : de debout, accroupi, une main
+  derrière lui au sol ; d'une pose assise, vers l'autre ou pour se
+  relever, une main au sol devant lui. Relevé, il claque des doigts. Le bol
+  chantant est synthétisé (`games/walk/band/sounds/bowl.go`).
 
 ## Plus loin
 

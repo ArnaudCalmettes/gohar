@@ -76,11 +76,14 @@ const (
 	msgCheerGood  = "cheer.good"
 	msgCheerRight = "cheer.right"
 
-	// The walker's annoyance, the easter egg of the lessons (walkout.go).
+	// The walker's annoyance, the easter egg of the lessons (gags.go).
 	msgTeaseHey       = "tease.hey"
 	msgTeaseOnPurpose = "tease.onpurpose"
 	msgTeaseFedUp     = "tease.fedup"
 	msgTeaseBack      = "tease.back"
+	msgTeaseSit       = "tease.sit"
+	msgTeaseLotus     = "tease.lotus"
+	msgTeaseThanks    = "tease.thanks" // out of the lotus
 
 	// What the walker says (see figure.Coach).
 	msgRushing  = "coach.rushing"
@@ -133,7 +136,7 @@ var phrases = []string{
 	msgMenuLearn, msgMenuPlay, msgMenuOptions, msgMenuQuit, msgTitleKeys,
 	msgOptLang, msgLangName, msgOptCalibrate, msgOptBack, msgOptKeys,
 	msgCourseKeys, msgLessonKeys, msgLessonPlay, msgCheerYes, msgCheerGood, msgCheerRight,
-	msgTeaseHey, msgTeaseOnPurpose, msgTeaseFedUp, msgTeaseBack,
+	msgTeaseHey, msgTeaseOnPurpose, msgTeaseFedUp, msgTeaseBack, msgTeaseSit, msgTeaseLotus, msgTeaseThanks,
 	msgRushing, msgRelax, msgDragging, msgItDrags,
 	msgCool, msgYeah, msgKeepItUp, msgSwinging, msgGroovy, msgGreat, msgIDig,
 	msgReviewTitle, msgReviewWorked, msgReviewConsolidate,

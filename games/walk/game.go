@@ -482,7 +482,8 @@ func (g *game) drawBubble(c screen.Canvas) {
 	x := max(float64(margin), walkerX-w/2) // never off the screen
 	under := float64(walkerY - bubbleLift)
 	b := figure.Bubble{Font: g.fonts.bubble, Ink: ink, Left: x, Top: under - figure.BubbleGap - h, Width: w, LineH: h}
-	b.Draw(c, []string{g.bubble}, walkerX, walkerY, walkerScale)
+	hx, hy, r := figure.Standing.Head(walkerX, walkerY, walkerScale)
+	b.Draw(c, []string{g.bubble}, hx, hy, r)
 }
 
 // keys says the keys of the game as they stand, each with what it does
