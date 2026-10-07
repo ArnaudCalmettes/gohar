@@ -76,6 +76,7 @@ func (Play) phraseEnded(Stage) bool { return true }
 type Ask struct {
 	Phrase string
 	Want   Target
+	Chords []string // written while it asks, if any: "the root of this one"
 
 	// Teasing marks a request nobody misses in good faith, "press the
 	// two black keys of a pair": misses in a row there are on purpose,
@@ -99,6 +100,9 @@ func (st *Ask) said() string { return st.Phrase }
 func (st *Ask) begin(s Stage) {
 	st.partial, st.misses = false, 0
 	s.Say(st.Phrase)
+	if st.Chords != nil {
+		s.Chords(st.Chords)
+	}
 }
 
 func (st *Ask) pressed(s Stage, held []int) bool {
@@ -346,3 +350,82 @@ func (st *Guess) pressed(s Stage, held []int) bool {
 func (*Guess) released(Stage, []int) bool { return false }
 func (*Guess) phraseEnded(Stage) bool     { return false }
 func (*Guess) read() bool                 { return false }
+
+// Write is "Écrire": the walker writes chord symbols, `Chords` in
+// ChordPro, side by side, or as a line of a grid, a chord a bar, when
+// `AsLine`, and says what they are. Over once its bubble is read; what
+// it wrote stays until another step writes.
+type Write struct {
+	still
+	Phrase string
+	Chords []string
+	AsLine bool
+}
+
+func (st Write) said() string { return st.Phrase }
+
+func (st Write) begin(s Stage) {
+	s.Say(st.Phrase)
+	if st.AsLine {
+		s.Chords(nil)
+		s.Line(st.Chords, -1)
+		return
+	}
+	s.Line(nil, -1)
+	s.Chords(st.Chords)
+}
+
+func (Write) read() bool { return true }
+
+// PlayLine plays a line of a grid on the bass, the roots of its chords,
+// a note a bar. With Keys, the walker plays it, the bar he plays shaded,
+// over when his phrase ends. Without, the player plays `Want`, a target
+// a bar, the line waiting for him, without tempo, as the first palier
+// does: a wrong root sounds the casserole and shows the right one, and
+// the line stays on its bar.
+type PlayLine struct {
+	Phrase string
+	Chords []string
+	Keys   []int    // the walker's roots, MIDI numbers; nil for the player's turn
+	Want   []Target // the player's, a target a bar
+
+	at int // the bar played next
+}
+
+func (st *PlayLine) said() string { return st.Phrase }
+
+func (st *PlayLine) begin(s Stage) {
+	s.Chords(nil)
+	s.Bass(true)
+	s.Say(st.Phrase)
+	s.Light(nil)
+	if st.Keys != nil {
+		s.Line(st.Chords, -1)
+		s.PlayBars(st.Keys)
+		return
+	}
+	st.at = 0
+	s.Line(st.Chords, 0)
+}
+
+func (st *PlayLine) pressed(s Stage, held []int) bool {
+	if st.Keys != nil {
+		return false // he plays: the keys sound, nothing counts
+	}
+	if st.Want[st.at].Judge(held) != Hit {
+		s.Miss(st.Want[st.at].Hint(), 0) // a bar of its own: shown on the next one
+		return false
+	}
+	s.Light(nil)
+	if st.at++; st.at < len(st.Want) {
+		s.Line(st.Chords, st.at)
+		return false
+	}
+	s.Line(st.Chords, -1)
+	s.Hit()
+	return true
+}
+
+func (st *PlayLine) phraseEnded(Stage) bool  { return st.Keys != nil }
+func (*PlayLine) released(Stage, []int) bool { return false }
+func (*PlayLine) read() bool                 { return false }

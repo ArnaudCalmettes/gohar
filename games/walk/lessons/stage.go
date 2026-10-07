@@ -18,6 +18,10 @@ type Stage interface {
 	// other. The game calls Runner.PhraseEnded once the last one is over.
 	Play(keys []int)
 
+	// PlayBars is Play, a note a bar, held through it: the roots of a
+	// line of a grid.
+	PlayBars(keys []int)
+
 	// Miss answers a wrong note: the casserole sounds, and the right
 	// keys, every key of the pitch classes `pcs`, are shown. `beat` is
 	// where the wrong note fell in the phrase asked, from 0: the game
@@ -41,6 +45,19 @@ type Stage interface {
 	// Blink has MIDI key `key` blink on the keyboard on the screen, a
 	// key asked for without a word; 0 stops it.
 	Blink(key int)
+
+	// Chords writes chord symbols, in ChordPro ("Eb7"), side by side,
+	// in the hand of the charts. Nil wipes them.
+	Chords(chords []string)
+
+	// Line shows a line of a grid, a chord a bar, the bar `bar` shaded
+	// as the bar played, -1 for none. Nil wipes it.
+	Line(chords []string, bar int)
+
+	// Bass has the player play the bass: under the split, his keys and
+	// the walker's phrases sound a double bass, and the keyboard on the
+	// screen shows the low octaves.
+	Bass(on bool)
 
 	// Tease answers misses in a row where nobody misses in good faith:
 	// the walker's annoyance, as far as `level`. At FedUp he walks out,

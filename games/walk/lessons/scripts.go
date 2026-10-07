@@ -8,10 +8,11 @@ import (
 // The scripts of the lessons written so far, by ID. Each call builds
 // fresh steps: Ask and Repeat keep where they are.
 var scripts = map[string]func() []Step{
-	"1.1": firstSteps,
-	"1.2": cMajorScale,
-	"1.3": sharps,
-	"1.4": flats,
+	"1.1":   firstSteps,
+	"1.2":   cMajorScale,
+	"1.3":   sharps,
+	"1.4":   flats,
+	"1.end": firstGrids,
 }
 
 // Script returns the steps of lesson `id`, or nil while it is not
@@ -273,4 +274,35 @@ func flats() []Step {
 		Say{Phrase: "l1.4.chromatic.scale"},
 		Say{Phrase: "l1.4.bravo"},
 	)
+}
+
+// MIDI numbers of the walker's roots on the bass.
+const (
+	c2 = 36
+	f2 = 41
+)
+
+// firstGrids is the lesson that closes chapter 1, "Premières grilles,
+// sans tempo" (see docs/debutants/chapitre-1.md): a chord and its root,
+// a few roots to find, a line of the blues, what the player does with
+// it, then his turn. The first palier, the whole grid, is its activity.
+func firstGrids() []Step {
+	line := []string{"C7", "F7", "C7", "C7"}
+	return []Step{
+		// A chord, and its root.
+		Write{Phrase: "l1e.chord", Chords: []string{"Eb7"}},
+		Write{Phrase: "l1e.root", Chords: []string{"Eb7", "Eb6", "Ebm", "Ebmaj7(#11)"}},
+		&Ask{Phrase: "l1e.find.root", Want: MiFlat, Chords: []string{"Eb7"}},
+		&Ask{Phrase: "l1e.find.next", Want: Fa, Chords: []string{"F7"}},
+		&Ask{Phrase: "l1e.find.next", Want: SiFlat, Chords: []string{"Bbm7"}},
+		&Ask{Phrase: "l1e.find.next", Want: LaFlat, Chords: []string{"Abmaj7"}},
+
+		// A grid, a line of it, and what the player does with it.
+		Write{Phrase: "l1e.grid", Chords: line, AsLine: true},
+		Say{Phrase: "l1e.bass"},
+		&PlayLine{Phrase: "l1e.listen", Chords: line, Keys: []int{c2, f2, c2, c2}},
+		Say{Phrase: "l1e.octave"},
+		&PlayLine{Phrase: "l1e.your.turn", Chords: line, Want: []Target{Do, Fa, Do, Do}},
+		Say{Phrase: "l1e.bravo"},
+	}
 }

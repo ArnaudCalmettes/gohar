@@ -56,9 +56,11 @@ func (a *app) drawMenu(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, head
 
 // A layout places a list: its first item at `top`, `gap` from one item
 // to the next, and `apart` more before the last one, Back, so that it
-// does not read as one of the list.
+// does not read as one of the list. `left` aligns the items but Back on
+// their left, the block of them centred: their checks fall in a column.
 type layout struct {
 	top, gap, apart float64
+	left            bool
 }
 
 // drawList is drawMenu with its list laid out by `l`, and a green check
@@ -72,20 +74,32 @@ func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, head
 
 	const mid = screenWidth / 2
 	c.Centred(heading, head, mid, headingY, ink)
+
+	// The left edge of the items, Back aside, when aligned on it.
+	widest := 0.0
+	for _, label := range labels[:len(labels)-1] {
+		w, _ := c.Measure(label, a.fonts.chord)
+		widest = max(widest, w)
+	}
 	for i, label := range labels {
 		y := l.top + float64(i)*l.gap
-		if i == len(labels)-1 {
+		back := i == len(labels)-1
+		if back {
 			y += l.apart
 		}
 		w, h := c.Measure(label, a.fonts.chord)
+		x := mid - w/2
+		if l.left && !back {
+			x = mid - widest/2
+		}
 		var col color.Color = faint
 		if i == chosen {
-			c.Rect(float32(mid-w/2-menuPad), float32(y-menuPad), float32(w+2*menuPad), float32(h+2*menuPad), pale)
+			c.Rect(float32(x-menuPad), float32(y-menuPad), float32(w+2*menuPad), float32(h+2*menuPad), pale)
 			col = ink
 		}
-		c.Centred(label, a.fonts.chord, mid, y, col)
+		c.Text(label, a.fonts.chord, x, y, col)
 		if i < len(done) && done[i] {
-			drawCheck(c, mid-w/2-menuPad-checkGap-checkW, y+h/2)
+			drawCheck(c, x-menuPad-checkGap-checkW, y+h/2)
 		}
 	}
 	c.Text(keys, a.fonts.ui, margin, statusY, faint)

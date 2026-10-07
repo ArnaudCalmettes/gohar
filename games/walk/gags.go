@@ -203,7 +203,7 @@ func (l *lesson) poseAt(now time.Time) figure.Pose {
 // drawTeacher draws the walker in place, in his pose: snapping for a
 // right answer when standing.
 func (l *lesson) drawTeacher(c screen.Canvas, now time.Time) {
-	l.poseAt(now).Draw(c, walkerX, walkerY, walkerScale, now.Sub(l.cheerAt) < cheerTime, ink)
+	l.poseAt(now).Draw(c, walkerX, walkerY, walkerScale, l.snapping(now), ink)
 }
 
 // head is the centre of the walker's head now, and its radius: where

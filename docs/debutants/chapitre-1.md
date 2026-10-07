@@ -14,8 +14,9 @@ Il compte quatre leçons :
 | 1.3 | Les dièses : une note qu'on fait monter d'un cran ; mi♯ et si♯, les premières notes enharmoniques |
 | 1.4 | Les bémols : une note qu'on fait descendre d'un cran ; deux noms par touche noire ; fa♭ et do♭ ; l'échelle chromatique |
 
-Il se clôt par une activité qui ramène au jeu : une grille jouée hors
-tempo, au palier 0 (voir plus bas). Ce n'est pas tout à fait le mode
+Il se clôt par une leçon qui ramène au jeu, « Premières grilles, sans
+tempo », dont l'activité est une grille jouée hors tempo, au palier 0
+(voir plus bas). Ce n'est pas tout à fait le mode
 déchiffrage : il faut viser juste, et donner la bonne note du premier
 coup. La grille est une vraie grille du jeu : une section A entière de
 *Satin Doll*, ou le blues, ou les deux. Leurs fondamentales demandent ce
@@ -205,6 +206,41 @@ bémols : une touche blanche, sa voisine noire nommée par son bémol, la
 touche blanche suivante, en montant (C D♭ D) comme en descendant
 (D D♭ C), dites en lettres. Le second tour y glisse fa♭ et do♭ :
 F F♭ E♭, C C♭ B♭, G♭ F♭ E♭ et D♭ C♭ B♭.
+
+### Premières grilles, sans tempo
+
+La leçon qui clôt le chapitre explique ce qu'est une grille, et ce
+qu'on attend du joueur. Elle est écrite dans le jeu ; ce qui suit la
+résume.
+
+1. Un accord, tel qu'une grille l'écrit : E♭7, à la main des grilles.
+2. Sa fondamentale : E♭ est celle de E♭7, comme de E♭6, de E♭m ou de
+   E♭maj7(♯11), écrits côte à côte. C'est la note du début, avec son
+   altération ; ce que veut dire le reste du symbole, on le découvrira
+   plus loin.
+3. Quelques fondamentales à trouver, l'accord écrit : E♭7, F7, B♭m7,
+   A♭maj7. Les altérations viennent d'être apprises ; ces accords
+   préparent le blues et *Satin Doll*.
+4. La grille : la musique derrière une chanson, ses accords écrits
+   mesure par mesure. Une ligne du blues en C s'affiche, comme dans le
+   jeu : | C7 | F7 | C7 | C7 |.
+5. Ce qu'on attend du joueur : la basse, la fondamentale de chaque
+   accord, une note par mesure. Le bonhomme joue la ligne à la
+   contrebasse, chaque fondamentale tenue toute la mesure, quatre
+   temps, la mesure qu'il joue grisée. Il claque des doigts sur 2 et 4 :
+   on entend que c'est lent exprès.
+6. Un conseil, en « si » faute de pouvoir connaître le clavier : un
+   clavier de deux octaves descend de deux octaves en appuyant deux
+   fois sur « Oct − », et la basse sonne alors là où elle doit.
+7. Au joueur, sur la même ligne : la contrebasse sous ses doigts, la
+   grille qui l'attend, mesure par mesure, et la casserole à une fausse
+   fondamentale, la ligne restant sur sa mesure. C'est le palier 0 en
+   petit.
+
+Dans le jeu, l'accord écrit est une étape à part, « Écrire » (`Write`),
+et la ligne jouée une autre, « Jouer une ligne » (`PlayLine`), par le
+bonhomme ou par le joueur. Le clavier à l'écran descend d'une octave
+quand le joueur joue la basse.
 
 ## Le palier 0
 

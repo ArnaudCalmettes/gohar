@@ -226,6 +226,14 @@ func (bd *Band) Key(e keyboard.Event) {
 	}
 }
 
+// Pluck schedules a note of the double bass, `key` at `vel` from `on`
+// to `off`, out of any part: the walker's phrases in a lesson on the
+// bass.
+func (bd *Band) Pluck(key int, vel float64, on, off time.Time) {
+	bd.bass.ScheduleOn(key, vel, on)
+	bd.bass.ScheduleOff(key, off)
+}
+
 // Hold keeps key `k` sounding once the player lets it go, until
 // Unhold: a note left hanging in a lesson. The scene asks for it as it
 // hears the key go down, within a frame: well before a finger lifts.

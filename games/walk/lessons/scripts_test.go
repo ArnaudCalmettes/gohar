@@ -49,6 +49,15 @@ func TestScripts(t *testing.T) {
 				for _, w := range st.Want {
 					play(r, w)
 				}
+			case *PlayLine:
+				if st.Keys != nil {
+					r.PhraseEnded()
+				}
+				for _, w := range st.Want {
+					play(r, w)
+				}
+			case Write:
+				r.Read()
 			case *Guess:
 				play(r, st.Want)
 			case *Hang:

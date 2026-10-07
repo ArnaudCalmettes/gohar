@@ -2,6 +2,7 @@ package main
 
 import (
 	"image/color"
+	"log"
 	"math/rand/v2"
 	"slices"
 	"time"
@@ -9,10 +10,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 
+	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
 	"github.com/ArnaudCalmettes/gohar/games/keyboard"
 	"github.com/ArnaudCalmettes/gohar/games/scene"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
 	"github.com/ArnaudCalmettes/gohar/games/walk/band"
+	"github.com/ArnaudCalmettes/gohar/games/walk/chart"
 	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
@@ -25,6 +28,17 @@ import (
 const (
 	lessonLow  = 48 // C3
 	lessonHigh = 84 // C6
+
+	// On the bass (see lessons.Stage.Bass), the keyboard an octave down.
+	bassLow  = 36 // C2
+	bassHigh = 72 // C5
+
+	// What the walker writes, between his bubble and the keyboard:
+	// chords side by side, or a line of a grid, a bar as wide as the
+	// game's.
+	writtenY  = 168
+	chordsGap = 28
+	lineBarH  = 46
 
 	// The bubble: a block of lines right of the walker, and a stroke
 	// from under it down to his head.
@@ -47,6 +61,10 @@ const (
 	// moment.
 	cheerTime = 400 * time.Millisecond
 	cheerVel  = 0.9
+
+	// His snaps on 2 and 4 under a line of a grid: it is slow on
+	// purpose, and the snaps say so.
+	grooveVel = 0.6
 )
 
 // cheers are what the walker says to a right answer, one at random,
@@ -81,11 +99,13 @@ type lesson struct {
 	bubble []string // the walker's phrase, in lines
 	shown  []int    // the pitch classes lit
 
-	// The walker's phrase playing: its keys, from `phraseAt`; `playing`
-	// until the runner is told it ended.
-	phrase   []int
-	phraseAt time.Time
-	playing  bool
+	// The walker's phrase playing: its keys, from `phraseAt`, a note
+	// every `phraseStep`; `playing` until the runner is told it ended.
+	phrase     []int
+	phraseAt   time.Time
+	phraseStep time.Duration
+	phraseSnap bool // he snaps on 2 and 4 as he plays it
+	playing    bool
 
 	upAt time.Time // when the last key went up
 
@@ -107,6 +127,13 @@ type lesson struct {
 	cheer   int       // the last cheer said, in cheers
 
 	blink int // a key blinking, asked for without a word; 0 for none
+
+	// What the walker writes (see Chords and Line), and the bar played,
+	// -1 for none; and whether the player plays the bass.
+	chords  []chart.Symbol
+	line    [][]chart.Cell
+	lineBar int
+	bass    bool
 
 	walker figure.Walker // for his walkout, in profile
 	out    walkout       // the easter egg's first gag (see gags.go)
@@ -140,10 +167,11 @@ func (l *lesson) Enter() {
 	l.runner.Start()
 }
 
-// Leave gives the keys their sound back, and lets go of a note left
-// hanging.
+// Leave gives the keys their sound back, the piano everywhere, and lets
+// go of a note left hanging.
 func (l *lesson) Leave() {
 	l.band.Silent.Store(false)
+	l.band.BassHand.Store(false)
 	l.band.Unhold(time.Now())
 }
 
@@ -164,6 +192,39 @@ func (l *lesson) Release() { l.band.Unhold(time.Now()) }
 
 func (l *lesson) Blink(key int) { l.blink = key }
 
+func (l *lesson) Chords(chords []string) { l.chords = symbols(chords) }
+
+func (l *lesson) Line(chords []string, bar int) {
+	l.line, l.lineBar = nil, bar
+	for _, s := range symbols(chords) {
+		l.line = append(l.line, []chart.Cell{{Symbol: s}})
+	}
+}
+
+func (l *lesson) Bass(on bool) {
+	l.bass = on
+	l.band.BassHand.Store(on)
+	l.piano.Low, l.piano.High = lessonLow, lessonHigh
+	if on {
+		l.piano.Low, l.piano.High = bassLow, bassHigh
+	}
+}
+
+// symbols reads `chords`, in ChordPro, as a chart draws them. A lesson
+// writes them in its script: one it cannot read is a bug, and logged.
+func symbols(chords []string) []chart.Symbol {
+	var out []chart.Symbol
+	for _, s := range chords {
+		c, err := chordpro.ReadChord(s)
+		if err != nil {
+			log.Println("lesson:", err)
+			continue
+		}
+		out = append(out, chart.SymbolOf(c))
+	}
+	return out
+}
+
 // blinkPeriod is how long a blinking key stays lit, then out.
 const blinkPeriod = 300 * time.Millisecond
 
@@ -183,22 +244,42 @@ const beatsPerBar = 4
 
 // Play plays `keys` from now, scheduled ahead as the band is; after a
 // wrong note, from the next bar (see Miss).
-func (l *lesson) Play(keys []int) {
+func (l *lesson) Play(keys []int) { l.playEvery(keys, phraseNote) }
+
+// PlayBars plays `keys` a bar each, as the roots of a line of a grid.
+func (l *lesson) PlayBars(keys []int) { l.playEvery(keys, beatsPerBar*phraseNote) }
+
+// playEvery plays `keys`, a note every `step`, as Play says.
+func (l *lesson) playEvery(keys []int, step time.Duration) {
 	if len(l.corrections) > 0 {
-		l.corrections = append(l.corrections, func() { l.play(keys, l.correctAt) })
+		l.corrections = append(l.corrections, func() { l.play(keys, step, l.correctAt) })
 		return
 	}
-	l.react(func() { l.play(keys, time.Now().Add(band.Lookahead)) })
+	l.react(func() { l.play(keys, step, time.Now().Add(band.Lookahead)) })
 }
 
-// play plays `keys` from `now`, a note a beat.
-func (l *lesson) play(keys []int, now time.Time) {
-	for i, k := range keys {
-		at := now.Add(time.Duration(i) * phraseNote)
-		l.band.Piano.ScheduleOn(k, phraseVel, at)
-		l.band.Piano.ScheduleOff(k, at.Add(time.Duration(phraseHold*float64(phraseNote))))
+// play plays `keys` from `now`, a note every `step`, each held almost to
+// the next. A note a bar, he snaps on 2 and 4.
+func (l *lesson) play(keys []int, step time.Duration, now time.Time) {
+	snaps := step == beatsPerBar*phraseNote
+	if snaps {
+		for i := range keys {
+			bar := now.Add(time.Duration(i) * step)
+			l.band.SnapAt(grooveVel, bar.Add(phraseNote))
+			l.band.SnapAt(grooveVel, bar.Add(3*phraseNote))
+		}
 	}
-	l.phrase, l.phraseAt, l.playing = keys, now, true
+	for i, k := range keys {
+		at := now.Add(time.Duration(i) * step)
+		off := at.Add(time.Duration(phraseHold * float64(step)))
+		if l.bass {
+			l.band.Pluck(k, phraseVel, at, off)
+			continue
+		}
+		l.band.Piano.ScheduleOn(k, phraseVel, at)
+		l.band.Piano.ScheduleOff(k, off)
+	}
+	l.phrase, l.phraseAt, l.phraseStep, l.phraseSnap, l.playing = keys, now, step, snaps, true
 }
 
 // Hit snaps, has the walker raise his free hand, snapping, and says a
@@ -291,7 +372,7 @@ func (l *lesson) Update() scene.Transition {
 	if l.teaching() && l.runner.Waiting() && !l.runner.Held() && now.Sub(l.upAt) >= phraseNote {
 		l.runner.Resume()
 	}
-	if l.playing && now.After(l.phraseAt.Add(time.Duration(len(l.phrase))*phraseNote)) {
+	if l.playing && now.After(l.phraseAt.Add(time.Duration(len(l.phrase))*l.phraseStep)) {
 		l.playing = false
 		l.runner.PhraseEnded()
 	}
@@ -318,7 +399,7 @@ func (l *lesson) Update() scene.Transition {
 	}
 	var walker [screen.MIDIKeys]bool // the note of his phrase sounding now
 	if l.playing && !now.Before(l.phraseAt) {
-		if i := int(now.Sub(l.phraseAt) / phraseNote); i < len(l.phrase) {
+		if i := int(now.Sub(l.phraseAt) / l.phraseStep); i < len(l.phrase) {
 			walker[l.phrase[i]] = true
 		}
 	}
@@ -346,11 +427,48 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 		return screen.Dress{}
 	})
 	l.drawNames(c)
+	l.drawWritten(c, now)
 	keys := msgLessonKeys
 	if l.teaching() && !l.runner.Reading() {
 		keys = msgLessonPlay // the walker waits for notes, not for a page turned
 	}
 	c.Text(l.lang.T(keys), l.fonts.ui, margin, statusY, faint)
+}
+
+// snapping tells whether the walker's hand is up, snapping, at `now`:
+// for a right answer, or on 2 and 4 under his line of a grid.
+func (l *lesson) snapping(now time.Time) bool {
+	if now.Sub(l.cheerAt) < cheerTime {
+		return true
+	}
+	if !l.playing || !l.phraseSnap || now.Before(l.phraseAt) {
+		return false
+	}
+	t := now.Sub(l.phraseAt)
+	beat := int(t / phraseNote)
+	return beat%2 == 1 && t%phraseNote < cheerTime
+}
+
+// drawWritten draws what the walker wrote: chords side by side, or a
+// line of a grid, its bar played shaded; while he plays the line, the
+// bar of the note he plays.
+func (l *lesson) drawWritten(c screen.Canvas, now time.Time) {
+	pen := l.pen()
+	x := float64(bubbleX)
+	for _, s := range l.chords {
+		x = pen.DrawSymbol(c, s, x, writtenY) + chordsGap
+	}
+	bar := l.lineBar
+	if l.playing && !now.Before(l.phraseAt) {
+		bar = int(now.Sub(l.phraseAt) / l.phraseStep)
+	}
+	for i, cells := range l.line {
+		var fill color.Color
+		if i == bar {
+			fill = pale
+		}
+		pen.DrawBar(c, cells, float32(bubbleX+i*barW), writtenY, barW, lineBarH, fill, false, i == len(l.line)-1)
+	}
 }
 
 // speech is the walker's bubble in a lesson.

@@ -22,8 +22,8 @@ const courseFile = "course.json"
 // title's menu does; a chapter's lessons, up to five, under its name in
 // a smaller hand, from higher up. Back stands apart below either.
 var (
-	chaptersLayout = layout{top: menuY, gap: menuGap, apart: backApart}
-	lessonsLayout  = layout{top: 120, gap: 32, apart: backApart}
+	chaptersLayout = layout{top: menuY, gap: menuGap, apart: backApart, left: true}
+	lessonsLayout  = layout{top: 122, gap: 31, apart: backApart, left: true}
 )
 
 const backApart = 18
@@ -200,7 +200,7 @@ func (c *course) Draw(dst *ebiten.Image) {
 	if c.lesson >= 0 {
 		labels = []string{c.lang.T(msgCoursePractise), c.lang.T(msgCourseReview), c.lang.T(msgOptBack)}
 		heading := c.lang.T(lessonPhrase(c.id()))
-		c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.chord, labels, nil, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+		c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, labels, nil, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
 		return
 	}
 	for _, l := range c.open[c.chapter].Lessons {
@@ -208,6 +208,6 @@ func (c *course) Draw(dst *ebiten.Image) {
 		done = append(done, c.done[l.ID])
 	}
 	labels = append(labels, c.lang.T(msgOptBack))
-	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID)) // longer than a menu's: in the chords' hand
-	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.chord, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID)) // longer than a menu's: smaller than its heading
+	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, labels, done, c.menu.chosen, c.lang.T(msgCourseKeys), lessonsLayout)
 }

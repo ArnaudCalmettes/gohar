@@ -88,10 +88,16 @@ func (p Pen) DrawBar(c screen.Canvas, cells []Cell, x, y, w, h float32, fill col
 	}
 }
 
+// DrawSymbol draws the symbol `s` alone from (`x`, `y`), in the large
+// hand, and returns where it ends: a chord shown outside a grid.
+func (p Pen) DrawSymbol(c screen.Canvas, s Symbol, x, y float64) float64 {
+	return p.drawSymbol(c, s, p.Chord, p.ChordRaised, x, y)
+}
+
 // drawSymbol draws the symbol `s` from (`x`, `y`): its line in `font`,
 // its raised run in the smaller `raised`, a little above, as an
-// exponent.
-func (p Pen) drawSymbol(c screen.Canvas, s Symbol, font, raised *screen.Font, x, y float64) {
+// exponent. It returns where the symbol ends.
+func (p Pen) drawSymbol(c screen.Canvas, s Symbol, font, raised *screen.Font, x, y float64) float64 {
 	c.Text(s.Line, font, x, y, p.Ink)
 	w, _ := c.Measure(s.Line, font)
 	x += w
@@ -101,6 +107,8 @@ func (p Pen) drawSymbol(c screen.Canvas, s Symbol, font, raised *screen.Font, x,
 		x += w
 	}
 	c.Text(s.Bass, font, x, y, p.Ink)
+	w, _ = c.Measure(s.Bass, font)
+	return x + w
 }
 
 // The marks of the arrivals: landed, missed, doubled.

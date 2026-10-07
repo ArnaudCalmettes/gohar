@@ -286,6 +286,8 @@ quelque chose.
 | Demander | « Trouve le do », « joue la quinte de F » | La bonne réponse ; un raté, c'est la casserole et la bonne touche montrée |
 | Répéter après lui | Il joue, le joueur reproduit ; ou il la dit seulement, « C, E, C » | La phrase rejouée juste |
 | Faire deviner | Il demande une note qu'il n'a pas montrée, « Et mi♯ ? » | La bonne réponse ; un raté, c'est la casserole et un rappel, et au bout de trois, la réponse donnée |
+| Écrire | Il écrit des accords, côte à côte ou en ligne de grille, et dit ce que c'est | Sa bulle lue ; ce qu'il a écrit reste |
+| Jouer une ligne | Une ligne de grille, jouée à la basse par lui, ou par le joueur, mesure par mesure | La fin de sa phrase ; ou la ligne jouée jusqu'au bout |
 | Laisser en suspens | Il dit une phrase ; sa dernière note reste en l'air, la note qui la résout clignote | La note qui la résout |
 | Jouer ensemble | L'orchestre tourne, il annonce ce qu'on fait | Un nombre de réussites d'affilée |
 
@@ -354,7 +356,7 @@ Le paquet a pris forme ainsi :
   que toutes ses touches ne sont pas là, et compte comme raté si on les
   relâche avant ;
 - **les étapes** : Dire, Montrer, Jouer, Demander, Répéter après lui,
-  Faire deviner et Laisser en suspens. Répéter se joue sans faute : une fausse note
+  Faire deviner, Laisser en suspens, Écrire et Jouer une ligne. Répéter se joue sans faute : une fausse note
   fait sonner la casserole, le bonhomme rejoue la phrase, et le joueur
   la reprend du début. Une gamme jouée de si à do contient « do sol
   do », elle ne le répète pas. Dite plutôt que jouée, une fausse note
@@ -412,8 +414,8 @@ plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.
 
 **L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
-sont écrites ; restent l'activité qui le clôt, le palier 0, et les
-chapitres suivants. Une fois une leçon dans le jeu,
+sont écrites, ainsi que la leçon qui le clôt ; restent son activité, le
+palier 0, et les chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

@@ -65,6 +65,19 @@ func (s *stage) Blink(k int) {
 	s.log = append(s.log, "blinks "+keyName(k))
 }
 
+func (s *stage) PlayBars(ks []int) {
+	s.Play(ks)
+	s.log[len(s.log)-1] += ", a bar each"
+}
+
+func (s *stage) Chords(cs []string) { s.log = append(s.log, "writes "+strings.Join(cs, " ")) }
+
+func (s *stage) Line(cs []string, bar int) {
+	s.log = append(s.log, fmt.Sprintf("line %s, bar %d", strings.Join(cs, " | "), bar))
+}
+
+func (s *stage) Bass(on bool) { s.log = append(s.log, fmt.Sprint("bass ", on)) }
+
 func (s *stage) Tease(a Annoyance) {
 	s.log = append(s.log, [...]string{Hey: "Hé…", OnPurpose: "on purpose?", FedUp: "walks out"}[a])
 }
@@ -260,6 +273,36 @@ func TestGuess(t *testing.T) {
 	r.NoteOff(key("F4"))
 	if !r.Done() {
 		t.Error("not over once F is played")
+	}
+}
+
+// The first line of the blues, played on the bass: a root a bar, the
+// line waiting for the player; a wrong root, the casserole, and the
+// line stays on its bar.
+func TestPlayLine(t *testing.T) {
+	s := &stage{}
+	r := NewRunner(s, []Step{&PlayLine{
+		Phrase: "your turn", Chords: []string{"C7", "F7", "C7", "C7"},
+		Want: []Target{Do, Fa, Do, Do},
+	}})
+	r.Start()
+	expect(t, s, "writes ", "bass true", "says your turn", "lights out", "line C7 | F7 | C7 | C7, bar 0")
+	r.NoteOn(key("C2"))
+	r.NoteOff(key("C2"))
+	expect(t, s, "lights out", "line C7 | F7 | C7 | C7, bar 1")
+	r.NoteOn(key("G2"))
+	r.NoteOff(key("G2"))
+	expect(t, s, "casserole, shows F")
+	for _, n := range []string{"F2", "C2", "C2"} {
+		r.NoteOn(key(n))
+		r.NoteOff(key(n))
+	}
+	expect(t, s,
+		"lights out", "line C7 | F7 | C7 | C7, bar 2",
+		"lights out", "line C7 | F7 | C7 | C7, bar 3",
+		"lights out", "line C7 | F7 | C7 | C7, bar -1", "right")
+	if !r.Done() {
+		t.Error("not over after the fourth bar")
 	}
 }
 

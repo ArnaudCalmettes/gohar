@@ -38,6 +38,7 @@ var (
 // the countdown and the walker's bubbles, Go Regular for the rest.
 type fonts struct {
 	chord, chordSmall, count, bubble, ui *screen.Font
+	heading                              *screen.Font // a chapter's or a lesson's name, over its list
 	chordRaised, chordSmallRaised        *screen.Font // the exponents of a symbol
 }
 
@@ -48,6 +49,7 @@ const (
 	chordRaisedSize      = 16
 	chordSmallRaisedSize = 12
 	countSize            = 64
+	headingSize          = 34
 	bubbleSize           = 14
 	uiSize               = 11
 )
@@ -68,6 +70,9 @@ func newFonts() (fonts, error) {
 		return fs, err
 	}
 	if fs.count, err = screen.NewFont(countSize, museJazzText); err != nil {
+		return fs, err
+	}
+	if fs.heading, err = screen.NewFont(headingSize, museJazzText); err != nil {
 		return fs, err
 	}
 	if fs.bubble, err = screen.NewFont(bubbleSize, museJazzText, screen.GoRegular); err != nil { // Go Regular for any letter the hand lacks
