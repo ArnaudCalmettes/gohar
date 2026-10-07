@@ -277,6 +277,12 @@ accepte une note de l'accord, le palier 0 non. Et toutes les touches
 comptent, comme dans les leçons, des deux côtés de la séparation entre
 la basse et le piano : le débutant ne la connaît pas encore.
 
-Le blues est pour l'instant en F, tel que le jeu le propose. La
-progression prévue : le transposer en C à la volée, la tonalité des
-leçons, puis la section A de *Satin Doll*.
+Le blues du jeu est écrit en F ; le palier le joue en C, la tonalité
+des leçons, transposé à la volée. Le jeu entend la tonalité de la
+grille, comme partout, plutôt que de la lire dans l'armure, puis
+déplace chaque accord d'autant, lettre par lettre, comme un musicien
+transpose une grille : de F à D♭, B♭7 devient G♭7, jamais F♯7. Les
+leçons ne connaissent que le nom de la grille et la tonique visée
+(`lessons.Palier`), la transposition est dans `grids.InKey`.
+
+Reste la section A de *Satin Doll*, la suite prévue.

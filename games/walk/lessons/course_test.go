@@ -3,6 +3,8 @@ package lessons
 import (
 	"slices"
 	"testing"
+
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
 )
 
 // ids lists what a player sees: each chapter, then its lessons.
@@ -56,5 +58,18 @@ func TestFinished(t *testing.T) {
 	done[Practised("1.end")] = true
 	if !done.Finished(Course[0]) {
 		t.Error("chapter 1 not finished with all its lessons and activities done")
+	}
+}
+
+// Every palier reads its grid and moves it to its key.
+func TestPaliers(t *testing.T) {
+	for id, p := range paliers {
+		tune, err := grids.Read(p.Grid)
+		if err == nil {
+			_, err = grids.InKey(tune, p.Tonic)
+		}
+		if err != nil {
+			t.Errorf("palier of %s: %v", id, err)
+		}
 	}
 }

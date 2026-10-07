@@ -5,6 +5,7 @@ import (
 	"slices"
 
 	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
+	"github.com/ArnaudCalmettes/gohar/harmony/naming"
 )
 
 // The activities of the lessons written so far, by the lesson's ID (see
@@ -18,21 +19,32 @@ var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.4": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.4.hello", flatsPlain, flatsTraps) },
 }
 
-// paliers are the activities played in the game scene, by lesson: the
-// file of the grid played (see grids.Files).
-var paliers = map[string]string{
-	"1.end": grids.JazzBlues,
+// A Palier is an activity played in the game scene: a grid of the game
+// (see grids.Files), moved to the key of the lessons.
+type Palier struct {
+	Grid  string
+	Tonic naming.SpelledNote // where the tonality heard in the grid lands
 }
 
-// Palier returns the grid of the palier that is the activity of lesson
-// `id`, or "" when its activity is steps, or not written.
-func Palier(id string) string { return paliers[id] }
+// paliers are the paliers, by lesson. The lessons of chapter 1 are in
+// C: so is its blues.
+var paliers = map[string]Palier{
+	"1.end": {Grid: grids.JazzBlues, Tonic: naming.SpelledNote{Letter: naming.LetterC}},
+}
+
+// PalierOf returns the palier that is the activity of lesson `id`, and
+// false when its activity is steps, or not written.
+func PalierOf(id string) (Palier, bool) {
+	p, ok := paliers[id]
+	return p, ok
+}
 
 // HasActivity tells whether lesson `id` has an activity written, steps
 // or a palier.
 func HasActivity(id string) bool {
 	_, steps := activities[id]
-	return steps || paliers[id] != ""
+	_, palier := paliers[id]
+	return steps || palier
 }
 
 // Activity returns the steps of the activity of lesson `id`, drawn

@@ -123,10 +123,13 @@ func (c *course) branches(id string) []int {
 // play starts lesson `id`, or its activity when `activity`, if written.
 func (c *course) play(id string, activity bool) scene.Transition {
 	if activity {
-		if file := lessons.Palier(id); file != "" {
-			t, err := grids.Read(file)
+		if p, ok := lessons.PalierOf(id); ok {
+			t, err := grids.Read(p.Grid)
+			if err == nil {
+				t, err = grids.InKey(t, p.Tonic)
+			}
 			if err != nil {
-				log.Println("course:", err) // a grid of the game: cannot fail
+				log.Println("course:", err) // a grid of the game, tested: cannot fail
 				return scene.Stay
 			}
 			return scene.Replace(newPalier(c.app, c, t, func() { c.practised(id) }))

@@ -442,8 +442,8 @@ temps d'une noire, pour ne pas le presser.
 
 **L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
 sont écrites, ainsi que la leçon qui le clôt et son activité, le
-palier 0, sur le blues en F ; restent le blues transposé en C,
-*Satin Doll*, et les chapitres suivants. Une fois une leçon dans le jeu,
+palier 0, sur le blues transposé en C ; restent *Satin Doll* et les
+chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 
