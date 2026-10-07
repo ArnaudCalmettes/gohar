@@ -152,7 +152,8 @@ const (
 	lotusLift  = 4.0  // the hip above the ground, on the crossed legs
 	lotusKnee  = 11.0 // each knee, sideways from the middle, just off the ground
 	lotusFoot  = 4.0  // each foot, on the ground across the middle
-	lotusHandX = 8.0  // the hands on the thighs, level with the hip
+	lotusHandX = 10.0 // the hands on the knees, out...
+	lotusHandY = -1.0 // ...and a little above the hip, near enough for the elbows to bend in
 
 	// Crouching, sitting down: the seat low, a little behind the feet,
 	// the torso leaning back toward the hand behind him on the ground;
@@ -225,7 +226,7 @@ func DrawSitting(c screen.Canvas, x, y float32, s float64, col color.Color) {
 
 // DrawLotus draws him in the lotus position, facing the player, his
 // seat above (`x`, `y`): the legs crossed on the ground, each foot on
-// the other side, the back straight, the hands on the thighs.
+// the other side, the back straight, the hands on the knees.
 func DrawLotus(c screen.Canvas, x, y float32, s float64, col color.Color) {
 	c.Scale *= s
 	x, y = x/float32(s), y/float32(s)
@@ -247,15 +248,17 @@ func DrawLotus(c screen.Canvas, x, y float32, s float64, col color.Color) {
 	hx, hy, _ := Lotus.Head(hipX, ground, 1)
 	c.Circle(float32(hx), float32(hy), sketchHead, col)
 
-	// The arms, from the shoulders to the thighs, the elbows out.
+	// The arms, relaxed: the elbows in, by the body, the forearms out
+	// to the knees. Elbows out, he would seem to lean on them, anything
+	// but calm.
 	shY := neckY + sketchShoulderDrop*sketchHead
 	for _, side := range []float64{-1, 1} {
 		sx := hipX + side*shoulder
-		hx, hy := hipX+side*lotusHandX, hipY
+		hx, hy := hipX+side*lotusHandX, hipY+lotusHandY
 		line(hipX, neckY, sx, shY)
-		// elbowOut bends to the left going down, out for the left arm:
-		// the right one is mirrored there and back.
-		m := -side
+		// elbowOut bends to the left going down, in for the right arm:
+		// the left one is mirrored there and back.
+		m := side
 		ex, ey := elbowOut(m*(sx-hipX), shY, m*(hx-hipX), hy, sketchUpper, sketchFore)
 		ex = hipX + m*ex
 		line(sx, shY, ex, ey)
