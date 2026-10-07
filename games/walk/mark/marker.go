@@ -109,6 +109,11 @@ var FirstPalier = Rules{
 	HeldChordTone: true,
 }
 
+// Palier0 is the palier of the beginners, without tempo (see
+// docs/debutants/chapitre-1.md): the root of every bar, a bar repeated
+// included.
+var Palier0 = Rules{Split: FirstPalier.Split}
+
 // A Marker marks the notes of one run.
 type Marker struct {
 	rules Rules

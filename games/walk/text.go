@@ -38,8 +38,13 @@ const (
 	msgKeyDemoOff = "keys.demo.off"
 	msgKeyGrid    = "keys.grid" // the arrows: the grid and the tempo
 	msgKeyMenu    = "keys.menu"
+	msgKeyBack    = "keys.back" // Escape, in a palier of the course
 	msgNoMIDI     = "status.nomidi"
 	msgMark       = "status.mark" // {{.Note}}, {{.Words}}: what a note was
+
+	// The walker, in a palier of the course.
+	msgPalierGo    = "palier.go"
+	msgPalierBravo = "palier.bravo"
 
 	msgModeTempo = "mode.tempo"
 	msgModeFree  = "mode.free"
@@ -131,7 +136,8 @@ const (
 
 var phrases = []string{
 	msgTempo, msgFreeTempo, msgNoMIDI, msgMark,
-	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeyGrid, msgKeyMenu,
+	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeyGrid, msgKeyMenu, msgKeyBack,
+	msgPalierGo, msgPalierBravo,
 	msgModeTempo, msgModeFree, msgModeDemo,
 	msgOnTime, msgEarly, msgLate, msgBetween,
 	msgRoot, msgChordTone, msgOutside,

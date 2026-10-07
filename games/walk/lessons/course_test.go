@@ -43,12 +43,18 @@ func TestOpen(t *testing.T) {
 }
 
 func TestFinished(t *testing.T) {
-	done := Progress{"1.1": true, "1.2": true, "1.3": true, "1.4": true}
-	if done.Finished(Course[0]) {
-		t.Error("chapter 1 finished before its closing activity")
+	done := Progress{"1.1": true, "1.2": true, "1.3": true, "1.4": true, "1.end": true}
+	if done.Checked("1.1") || done.Finished(Course[0]) {
+		t.Error("lesson 1.1 checked, or chapter 1 finished, before any activity")
 	}
-	done["1.end"] = true
+	for _, id := range []string{"1.1", "1.2", "1.3", "1.4"} {
+		done[Practised(id)] = true
+	}
+	if !done.Checked("1.1") || done.Finished(Course[0]) {
+		t.Error("want lesson 1.1 checked, chapter 1 not finished before palier 0")
+	}
+	done[Practised("1.end")] = true
 	if !done.Finished(Course[0]) {
-		t.Error("chapter 1 not finished with all its lessons done")
+		t.Error("chapter 1 not finished with all its lessons and activities done")
 	}
 }

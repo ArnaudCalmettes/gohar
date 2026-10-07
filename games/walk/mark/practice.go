@@ -12,6 +12,7 @@ type Practice struct {
 	arrivals []int  // the beats that wait for a note: arrivals, held bars
 	at       int    // the arrival waited for, in arrivals
 	landed   map[int]bool
+	choruses int // the choruses played through
 }
 
 // NewPractice waits, by the rules `r`, on the arrivals of `beats`, one
@@ -39,10 +40,18 @@ func (p *Practice) Arrival() int { return p.at }
 // round.
 func (p *Practice) Landed(n int) bool { return p.landed[n] }
 
+// Choruses is how many times the player went through the chart.
+func (p *Practice) Choruses() int { return p.choruses }
+
 // Play marks a note of the bass against the beat waited for, and moves
 // on when it lands it, by the same rules as the marker. The chart
-// loops: after the last beat, the first one again, its marks cleared.
+// loops: after the last beat, the first one again. The marks of a
+// chorus stay until the next one starts, with a note: the chart shows
+// the chorus done.
 func (p *Practice) Play(key int) Pitch {
+	if p.at == 0 {
+		clear(p.landed)
+	}
 	b := p.Waiting()
 	pitch := pitchOf(key, b.Chord)
 	if p.rules.lands(b, pitch) {
@@ -50,7 +59,7 @@ func (p *Practice) Play(key int) Pitch {
 		p.at++
 		if p.at == len(p.arrivals) {
 			p.at = 0
-			clear(p.landed)
+			p.choruses++
 		}
 	}
 	return pitch

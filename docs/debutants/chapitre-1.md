@@ -223,7 +223,11 @@ résume.
    préparent le blues et *Satin Doll*.
 4. La grille : la musique derrière une chanson, ses accords écrits
    mesure par mesure. Une ligne du blues en C s'affiche, comme dans le
-   jeu : | C7 | F7 | C7 | C7 |.
+   jeu : | C7 | F7 | C7 | % |.
+   Le signe % de la dernière mesure veut dire qu'on rejoue la mesure
+   d'avant, ici encore C7. Les grilles du jeu l'écrivent partout où un
+   accord dure plus d'une mesure : le joueur doit le lire avant le
+   palier 0.
 5. Ce qu'on attend du joueur : la basse, la fondamentale de chaque
    accord, une note par mesure. Le bonhomme joue la ligne à la
    contrebasse, chaque fondamentale tenue toute la mesure, quatre
@@ -259,3 +263,20 @@ nouvelle fausse note sonne de même, jusqu'à ce que la bonne soit jouée ;
 alors seulement la grille passe à l'accord suivant. La casserole est un
 gag plus qu'une sanction : le raté s'entend, il fait sourire, et la
 correction vient tout de suite, la bonne touche sous les yeux.
+
+**Dans le jeu**, le palier 0 se joue dans la scène de jeu de *Walk with
+me*, en mode déchiffrage, lancé depuis « S'entraîner » sous la leçon :
+la grille entière du blues, une fois, puis retour au cours. Le
+bonhomme annonce la règle, une fondamentale par mesure, et dit bravo à
+la fin ; la grille reste affichée un moment, toutes ses mesures
+marquées. Seule Échap fonctionne, pour revenir au cours.
+
+Deux écarts avec le déchiffrage ordinaire. Une mesure où l'accord se
+répète, le %, attend elle aussi sa fondamentale : le premier palier y
+accepte une note de l'accord, le palier 0 non. Et toutes les touches
+comptent, comme dans les leçons, des deux côtés de la séparation entre
+la basse et le piano : le débutant ne la connaît pas encore.
+
+Le blues est pour l'instant en F, tel que le jeu le propose. La
+progression prévue : le transposer en C à la volée, la tonalité des
+leçons, puis la section A de *Satin Doll*.

@@ -20,6 +20,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/walk/bass"
 	"github.com/ArnaudCalmettes/gohar/games/walk/chart"
 	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
 	"github.com/ArnaudCalmettes/gohar/games/walk/mark"
 	"github.com/ArnaudCalmettes/gohar/harmony"
 	"github.com/ArnaudCalmettes/gohar/harmony/analysis"
@@ -75,13 +76,32 @@ const (
 	bubbleLift = 130 // from his feet to the line under the phrase
 )
 
+// In a palier of the beginners: how long the walker's phrases stay, and
+// how long the chart stays once played through, before the course.
+const (
+	palierHold = 3 * time.Second
+	palierOut  = 3 * time.Second
+)
+
 // game is the game scene of Walk With Me: the chart, the count-in, the
 // band, the player's hands, and the marks of the first palier. Two
 // phases: with the tempo, the band plays and the marker marks; without,
 // the chart waits for the player (practice). At rest, the arrows choose
 // the grid and the tempo; Escape goes back to the title.
+//
+// The course plays its paliers in it too (see newPalier): one grid,
+// without tempo, once through, then back to the course.
 type game struct {
 	*app
+
+	// In a palier of the course: the course to go back to, nil
+	// otherwise, and what to tell it once the chart is played through;
+	// whether the root waited for is lit, after a wrong note; when the
+	// chart was played through.
+	back   scene.Scene
+	passed func()
+	hint   bool
+	doneAt time.Time
 
 	// The grid chosen, and the tempo: the options' at first, changed
 	// here for the session.
@@ -134,11 +154,36 @@ func newGame(a *app) *game {
 	return g
 }
 
+// newPalier plays `t` at palier 0, the roots without tempo, from the
+// course `back`, where it comes back once the chart is played through
+// (see "Le palier 0" in docs/debutants/chapitre-1.md), and calls
+// `passed` then. It starts at once: no key but Escape, which goes back
+// too, `passed` not called.
+func newPalier(a *app, back scene.Scene, t grids.Tune, passed func()) *game {
+	rules := mark.Palier0
+	rules.Split = a.band.Split
+	g := &game{
+		app:        a,
+		back:       back,
+		passed:     passed,
+		bpm:        a.bpm,
+		rules:      rules,
+		practicing: true,
+		piano:      newPiano(),
+	}
+	g.setTune(t)
+	return g
+}
+
 // load makes the grid `i` of the game the one played, and remembers it
 // for the session.
 func (g *game) load(i int) {
 	g.current = i
-	t := g.tunes[i]
+	g.setTune(g.tunes[i])
+}
+
+// setTune makes `t` the grid played.
+func (g *game) setTune(t grids.Tune) {
 	g.title, g.grid = t.Title, t.Grid
 	g.namer = namerFor(t.Grid)
 	g.written = map[analysis.Ticks]chordpro.Chord{}
@@ -160,6 +205,11 @@ func (g *game) Enter() {
 		g.jam = nil
 	}
 	g.band.BassHand.Store(true) // the left hand walks: a double bass under the split
+	if g.back != nil && !g.running {
+		now := time.Now()
+		g.start(now)
+		g.speak(msgPalierGo, now)
+	}
 }
 
 // Leave stops the run, if any: the bass released, the recording
@@ -216,8 +266,11 @@ func (g *game) stop(now time.Time) {
 func (g *game) Update() scene.Transition {
 	now := time.Now()
 	switch {
+	case inpututil.IsKeyJustPressed(ebiten.KeyEscape) && g.back != nil:
+		return scene.Replace(g.back)
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
 		return scene.Replace(newTitle(g.app))
+	case g.back != nil: // a palier: no other key
 	case inpututil.IsKeyJustPressed(ebiten.KeySpace) && g.running:
 		g.stop(now)
 	case inpututil.IsKeyJustPressed(ebiten.KeySpace):
@@ -253,6 +306,9 @@ func (g *game) Update() scene.Transition {
 	}
 	g.piano.Update(screen.Lit{Down: &g.down, Color: playerLit}, screen.Lit{Down: &demo, Color: demoLit})
 
+	if g.back != nil {
+		return g.palierOver(now)
+	}
 	if !g.running || g.practicing {
 		return scene.Stay
 	}
@@ -305,6 +361,20 @@ func (g *game) Update() scene.Transition {
 	return scene.Stay
 }
 
+// palierOver ends a palier once the chart is played through: the walker
+// says bravo, the chart stays a while, marked, then the course is back.
+func (g *game) palierOver(now time.Time) scene.Transition {
+	switch {
+	case g.doneAt.IsZero() && g.practice.Choruses() > 0:
+		g.doneAt, g.hint = now, false
+		g.speak(msgPalierBravo, now)
+		g.passed()
+	case !g.doneAt.IsZero() && now.Sub(g.doneAt) > palierOut:
+		return scene.Replace(g.back)
+	}
+	return scene.Stay
+}
+
 // demoKey is the key the reference bass sounds at `now`, 0 for none,
 // lit for the first `demoHold` of the beat only.
 func (g *game) demoKey(now time.Time) int {
@@ -324,16 +394,27 @@ func (g *game) demoKey(now time.Time) int {
 
 // mark hands a key pressed in the bass zone to the marker, or to the
 // practice, and keeps what it was for the status line.
+//
+// In a palier, every key counts, as in the lessons: a beginner does not
+// know the split yet. A note that does not land the chord sounds the
+// casserole and lights its root, until it is played.
 func (g *game) mark(e keyboard.Event) {
-	if !g.running || e.Key >= g.band.Split {
+	palier := g.back != nil
+	if !g.running || e.Key >= g.band.Split && !palier || !g.doneAt.IsZero() {
 		return
 	}
 	if g.practicing {
+		now := time.Now()
 		chord, at := g.practice.Waiting().Chord, g.practice.Arrival()
 		pitch := g.practice.Play(e.Key)
 		g.lastMark = g.lang.T(msgMark, "Note", g.noteName(e.Key, chord), "Words", g.lang.T(pitchPhrase[pitch]))
-		if g.practice.Arrival() != at {
-			g.walker.Mark(mark.Landed, time.Now())
+		switch {
+		case g.practice.Arrival() != at || g.practice.Choruses() > 0:
+			g.walker.Mark(mark.Landed, now)
+			g.hint = false
+		case palier:
+			g.band.Strike(band.Casserole, band.CasseroleVel, now)
+			g.hint = true
 		}
 		return
 	}
@@ -424,7 +505,7 @@ func (g *game) Draw(dst *ebiten.Image) {
 
 	pos := math.Inf(-1)
 	switch {
-	case g.running && g.practicing:
+	case g.running && g.practicing && g.doneAt.IsZero():
 		pos = float64(g.practice.Waiting().N)
 	case g.running:
 		pos = g.m.Beats(time.Now())
@@ -438,8 +519,10 @@ func (g *game) Draw(dst *ebiten.Image) {
 		c.Centred(fmt.Sprint(p.Beat), g.fonts.count, chartX+barsPerRow*barW/2, chartY+rowH/2, ink)
 	}
 
-	g.piano.Draw(c, nil)
-	drawSplit(c, &g.piano, g.band.Split)
+	g.piano.Draw(c, g.dressHint)
+	if g.back == nil {
+		drawSplit(c, &g.piano, g.band.Split)
+	}
 	g.drawWalker(c)
 	g.drawBubble(c)
 
@@ -451,6 +534,14 @@ func (g *game) Draw(dst *ebiten.Image) {
 		status = g.lastMark + "   " + status
 	}
 	c.Text(status, g.fonts.ui, margin, statusY, faint)
+}
+
+// dressHint lights the root waited for, after a wrong note in a palier.
+func (g *game) dressHint(k int) screen.Dress {
+	if g.hint && k%octave == int(g.practice.Waiting().Chord.Chord.Root) {
+		return screen.Dress{Base: shownTint}
+	}
+	return screen.Dress{}
 }
 
 // drawWalker draws the stick figure left of the chart: on the beats
@@ -472,18 +563,24 @@ func (g *game) drawWalker(c screen.Canvas) {
 	g.walker.Draw(c, walkerX, walkerY, walkerScale, g.walker.Gait(onBeat), beats, now, col)
 }
 
-// drawBubble draws what the walker says above his head, for a while: one
-// line, centred over him (see figure.Bubble).
+// drawBubble draws what the walker says above his head, for a while,
+// centred over him, on as many lines as the room left of the chart
+// takes (see figure.Bubble).
 func (g *game) drawBubble(c screen.Canvas) {
-	if g.bubble == "" || time.Since(g.bubbleAt) > bubbleHold {
+	hold := bubbleHold
+	if g.back != nil {
+		hold = palierHold
+	}
+	if g.bubble == "" || time.Since(g.bubbleAt) > hold {
 		return
 	}
 	w, h := c.Measure(g.bubble, g.fonts.bubble)
-	x := max(float64(margin), walkerX-w/2) // never off the screen
-	under := float64(walkerY - bubbleLift)
-	b := figure.Bubble{Font: g.fonts.bubble, Ink: ink, Left: x, Top: under - figure.BubbleGap - h, Width: w, LineH: h}
+	b := figure.Bubble{Font: g.fonts.bubble, Ink: ink, Width: min(w, chartX-2*margin), LineH: h}
+	lines := b.Wrap(g.bubble) // left of the chart
+	b.Left = walkerX - b.Width/2
+	b.Top = walkerY - bubbleLift - figure.BubbleGap - h*float64(len(lines))
 	hx, hy, r := figure.Standing.Head(walkerX, walkerY, walkerScale)
-	b.Draw(c, []string{g.bubble}, hx, hy, r)
+	b.Draw(c, lines, hx, hy, r)
 }
 
 // keys says the keys of the game as they stand, each with what it does
@@ -492,6 +589,9 @@ func (g *game) drawBubble(c screen.Canvas) {
 // only means something with the tempo: without, the chart waits for
 // the player.
 func (g *game) keys() string {
+	if g.back != nil {
+		return g.lang.T(msgKeyBack)
+	}
 	if g.running {
 		return g.lang.T(msgKeyStop) + "   " + g.lang.T(msgKeyMenu)
 	}

@@ -8,6 +8,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
 	"github.com/ArnaudCalmettes/gohar/games/screen"
 	"github.com/ArnaudCalmettes/gohar/games/walk/chart"
+	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
 
 // What the walker writes in a lesson, chords or a line of a grid, and
@@ -17,8 +18,14 @@ func (l *lesson) Chords(chords []string) { l.chords = symbols(chords) }
 
 func (l *lesson) Line(chords []string, bar int) {
 	l.line, l.lineBar = nil, bar
-	for _, s := range symbols(chords) {
-		l.line = append(l.line, []chart.Cell{{Symbol: s}})
+	for _, ch := range chords {
+		if ch == lessons.RepeatBar {
+			l.line = append(l.line, nil) // drawn as the repeat sign
+			continue
+		}
+		for _, s := range symbols([]string{ch}) {
+			l.line = append(l.line, []chart.Cell{{Symbol: s}})
+		}
 	}
 }
 

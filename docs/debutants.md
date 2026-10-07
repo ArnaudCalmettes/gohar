@@ -309,9 +309,13 @@ l'activité, sous elle, se voit dès qu'on la survole. Au retour d'une
 leçon, c'est son activité qui est choisie.
 
 **Le passage à la leçon suivante**, c'est le joueur qui le décide, quand
-il se sent prêt. Une leçon donnée est marquée faite, d'une coche verte ;
-la suivante apparaît, prête à être lancée quand il le voudra. Une leçon
-faite se rejoue à volonté, et son activité reste ouverte.
+il se sent prêt. Une leçon donnée ouvre la suivante, prête à être
+lancée quand il le voudra. Sa coche verte, elle, attend aussi
+l'activité : une leçon n'est cochée que suivie et pratiquée, et un
+chapitre que toutes ses leçons cochées, palier compris. Sous la leçon,
+chaque branche porte sa propre coche, si bien que ce qui manque se voit
+d'un coup d'œil. Une leçon faite se rejoue à volonté, et son activité
+reste ouverte.
 
 **Chanter est un conseil, jamais une obligation.** Le jeu n'écoute pas
 et n'écoutera pas : pas de micro. Certains joueurs sont mal à l'aise à
@@ -382,11 +386,14 @@ Le paquet a pris forme ainsi :
 
 **Le menu.** Pour l'instant, le cours vit dans *Walk with me*, sous
 « Apprendre » au menu du titre. L'écran liste les chapitres ouverts,
-puis les leçons du chapitre choisi : celles qui sont faites, d'une
-coche verte, et la suivante ; les autres restent cachées. Le catalogue
+puis les leçons du chapitre choisi : celles qui sont faites, cochées
+une fois leur activité pratiquée, et la suivante ; les autres restent
+cachées. Le catalogue
 des chapitres et la règle qui ouvre les leçons sont dans
 `games/walk/lessons`, la progression du joueur dans le fichier
-`course.json` de ses réglages. La liste des leçons est un arbre (voir
+`course.json` de ses réglages : chaque leçon faite sous son
+identifiant (« 1.1 »), chaque activité pratiquée sous le sien
+(« 1.1.practised »). La liste des leçons est un arbre (voir
 « L'activité de la leçon »).
 
 **L'écran d'une leçon** (`games/walk/lesson.go`). Le bonhomme se tient
@@ -434,8 +441,9 @@ plus : la suivante attend que ses touches soient relâchées, puis le
 temps d'une noire, pour ne pas le presser.
 
 **L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
-sont écrites, ainsi que la leçon qui le clôt ; restent son activité, le
-palier 0, et les chapitres suivants. Une fois une leçon dans le jeu,
+sont écrites, ainsi que la leçon qui le clôt et son activité, le
+palier 0, sur le blues en F ; restent le blues transposé en C,
+*Satin Doll*, et les chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

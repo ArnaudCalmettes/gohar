@@ -3,6 +3,8 @@ package lessons
 import (
 	"math/rand/v2"
 	"slices"
+
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
 )
 
 // The activities of the lessons written so far, by the lesson's ID (see
@@ -14,6 +16,23 @@ var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.2": func(rng *rand.Rand) []Step { return motifActivity(rng, slices.Concat(motifsUp, motifsDown), scaleUp) },
 	"1.3": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.3.hello", sharpsPlain, sharpsTraps) },
 	"1.4": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.4.hello", flatsPlain, flatsTraps) },
+}
+
+// paliers are the activities played in the game scene, by lesson: the
+// file of the grid played (see grids.Files).
+var paliers = map[string]string{
+	"1.end": grids.JazzBlues,
+}
+
+// Palier returns the grid of the palier that is the activity of lesson
+// `id`, or "" when its activity is steps, or not written.
+func Palier(id string) string { return paliers[id] }
+
+// HasActivity tells whether lesson `id` has an activity written, steps
+// or a palier.
+func HasActivity(id string) bool {
+	_, steps := activities[id]
+	return steps || paliers[id] != ""
 }
 
 // Activity returns the steps of the activity of lesson `id`, drawn

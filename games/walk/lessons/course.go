@@ -31,8 +31,20 @@ var Course = []Chapter{
 	{ID: "3", Lessons: []Lesson{{ID: "3.1"}, {ID: "3.2"}, {ID: "3.3"}, {ID: "3.4"}}},
 }
 
-// Progress is the lessons a player has done, by ID.
+// Progress is what a player has done, by ID: the lessons, under their
+// own ID, and their activities, under Practised's.
 type Progress map[string]bool
+
+// Practised is the ID of the activity of lesson `id` in a Progress:
+// "1.1.practised".
+func Practised(id string) string { return id + ".practised" }
+
+// Checked tells whether lesson `id` is done through: the lesson, and its
+// activity if it has one. A lesson done is enough to open the next one;
+// its check waits for the activity.
+func (p Progress) Checked(id string) bool {
+	return p[id] && (!HasActivity(id) || p[Practised(id)])
+}
 
 // Open returns `course` as the player sees it: the lessons done, and the
 // first one not done yet, ready whenever he wants it. The rest stays
@@ -60,10 +72,11 @@ func Open(course []Chapter, done Progress) []Chapter {
 	return out
 }
 
-// Finished tells whether every lesson of `c` is done.
+// Finished tells whether every lesson of `c` is checked, activities
+// included.
 func (p Progress) Finished(c Chapter) bool {
 	for _, l := range c.Lessons {
-		if !p[l.ID] {
+		if !p.Checked(l.ID) {
 			return false
 		}
 	}

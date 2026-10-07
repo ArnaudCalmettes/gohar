@@ -12,6 +12,7 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/settings"
 	"github.com/ArnaudCalmettes/gohar/games/walk/band"
 	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
+	"github.com/ArnaudCalmettes/gohar/games/walk/grids"
 	"github.com/ArnaudCalmettes/gohar/games/walk/lessons"
 )
 
@@ -111,9 +112,9 @@ func (c *course) goDown(chosen int) {
 func (c *course) id() string { return c.open[c.chapter].Lessons[c.menu.chosen].ID }
 
 // branches lists the branches of lesson `id`: the lesson, and its
-// activity once the lesson is done, if written.
+// activity once the lesson is done, if written: steps, or a palier.
 func (c *course) branches(id string) []int {
-	if c.done[id] && lessons.Activity(id, c.rng) != nil {
+	if c.done[id] && lessons.HasActivity(id) {
 		return []int{branchLesson, branchPractise}
 	}
 	return []int{branchLesson}
@@ -122,8 +123,16 @@ func (c *course) branches(id string) []int {
 // play starts lesson `id`, or its activity when `activity`, if written.
 func (c *course) play(id string, activity bool) scene.Transition {
 	if activity {
+		if file := lessons.Palier(id); file != "" {
+			t, err := grids.Read(file)
+			if err != nil {
+				log.Println("course:", err) // a grid of the game: cannot fail
+				return scene.Stay
+			}
+			return scene.Replace(newPalier(c.app, c, t, func() { c.practised(id) }))
+		}
 		if steps := lessons.Activity(id, c.rng); steps != nil {
-			return scene.Replace(newLesson(c.app, c, steps, func() {}))
+			return scene.Replace(newLesson(c.app, c, steps, func() { c.practised(id) }))
 		}
 		return scene.Stay
 	}
@@ -138,9 +147,7 @@ func (c *course) play(id string, activity bool) scene.Transition {
 // next lesson, chosen in the chapter's list.
 func (c *course) finish(id string) {
 	c.done[id] = true
-	if err := settings.Save(settings.Path(courseFile), c.done); err != nil {
-		log.Println("course:", err)
-	}
+	c.save()
 	c.open = lessons.Open(lessons.Course, c.done)
 	chosen := c.menu.chosen
 	if len(c.branches(id)) > 1 {
@@ -152,6 +159,20 @@ func (c *course) finish(id string) {
 		chosen++
 	}
 	c.showLessons(c.chapter, chosen)
+}
+
+// practised marks the activity of lesson `id` done, and saves it: the
+// lesson gets its check.
+func (c *course) practised(id string) {
+	c.done[lessons.Practised(id)] = true
+	c.save()
+}
+
+// save writes the progress down; on failure, it stays for the session.
+func (c *course) save() {
+	if err := settings.Save(settings.Path(courseFile), c.done); err != nil {
+		log.Println("course:", err)
+	}
 }
 
 // Enter starts the jam again on the way back from a lesson, which stops
@@ -219,7 +240,7 @@ func (c *course) Draw(dst *ebiten.Image) {
 		if i == c.menu.chosen {
 			chosen = len(items)
 		}
-		items = append(items, entry{label: c.lang.T(lessonPhrase(l.ID)), done: c.done[l.ID]})
+		items = append(items, entry{label: c.lang.T(lessonPhrase(l.ID)), done: c.done.Checked(l.ID)})
 		if i != c.menu.chosen {
 			continue
 		}
@@ -227,7 +248,7 @@ func (c *course) Draw(dst *ebiten.Image) {
 			if c.inside && j == c.branch.chosen {
 				chosen = len(items)
 			}
-			items = append(items, entry{label: c.lang.T(c.branchPhrase(l.ID, b)), branch: true})
+			items = append(items, entry{label: c.lang.T(c.branchPhrase(l.ID, b)), done: c.branchDone(l.ID, b), branch: true})
 		}
 	}
 	if c.menu.chosen == c.menu.items-1 {
@@ -236,6 +257,15 @@ func (c *course) Draw(dst *ebiten.Image) {
 	items = append(items, entry{label: c.lang.T(msgOptBack)})
 	heading := c.lang.T(chapterPhrase(c.open[c.chapter].ID))
 	c.drawList(dst, &c.walker, c.walker.Gait(true), heading, c.fonts.heading, items, chosen, c.lang.T(msgCourseKeys), lessonsLayout)
+}
+
+// branchDone tells whether branch `b` of lesson `id` is done: what the
+// lesson still waits for, before its check, shows under it.
+func (c *course) branchDone(id string, b int) bool {
+	if b == branchPractise {
+		return c.done[lessons.Practised(id)]
+	}
+	return c.done[id]
 }
 
 // branchPhrase names branch `b` of lesson `id`.

@@ -1,5 +1,9 @@
 package lessons
 
+// RepeatBar is the bar of a grid that repeats the one before, as a chart
+// writes it: "%".
+const RepeatBar = "%"
+
 // A Stage is what the game lends a lesson: the walker's bubble, the
 // keyboard on the screen, the walker's own playing, and the casserole.
 // The lesson never draws nor sounds anything itself, so that it runs in
@@ -55,7 +59,8 @@ type Stage interface {
 	Chords(chords []string)
 
 	// Line shows a line of a grid, a chord a bar, the bar `bar` shaded
-	// as the bar played, -1 for none. Nil wipes it.
+	// as the bar played, -1 for none; RepeatBar for a bar repeats the one
+	// before. Nil wipes it.
 	Line(chords []string, bar int)
 
 	// Bass has the player play the bass: under the split, his keys and

@@ -237,9 +237,10 @@ const (
 // firstGrids is the lesson that closes chapter 1, "Premières grilles,
 // sans tempo" (see docs/debutants/chapitre-1.md): a chord and its root,
 // a few roots to find, a line of the blues, what the player does with
-// it, then his turn. The first palier, the whole grid, is its activity.
+// it, then his turn. The first palier, the whole grid, is its activity
+// (see paliers, in the game).
 func firstGrids() []Step {
-	line := []string{"C7", "F7", "C7", "C7"}
+	line := []string{"C7", "F7", "C7", RepeatBar}
 	return []Step{
 		// A chord, and its root.
 		Write{Phrase: "l1e.chord", Chords: []string{"Eb7"}},
@@ -251,6 +252,7 @@ func firstGrids() []Step {
 
 		// A grid, a line of it, and what the player does with it.
 		Write{Phrase: "l1e.grid", Chords: line, AsLine: true},
+		Write{Phrase: "l1e.repeat", Chords: line, AsLine: true},
 		Say{Phrase: "l1e.bass"},
 		&PlayLine{Phrase: "l1e.listen", Chords: line, Keys: []int{c2, f2, c2, c2}},
 		Say{Phrase: "l1e.octave"},
