@@ -13,6 +13,7 @@ var scripts = map[string]func() []Step{
 	"1.3":   sharps,
 	"1.4":   flats,
 	"1.end": firstGrids,
+	"2.1":   theMeter,
 }
 
 // Script returns the steps of lesson `id`, or nil while it is not

@@ -42,9 +42,40 @@ coupe rien (voir « Ne jamais casser la pulse » dans
 `../architecture.md`) : il se marque discrètement, l'orchestre continue,
 et le bonhomme propose de réessayer une fois la série finie.
 
-**L'activité de la leçon 2.1** : une note par mesure, sur le 1,
-lentement, avec toutes les aides, le charley qui bat chaque temps et le
-bonhomme qui compte.
+La leçon est écrite dans le jeu ; ce qui suit la résume.
+
+1. L'orchestre entre, le charley seul, sur chaque temps, tous pareils :
+   c'est la pulsation.
+2. Le bonhomme compte : « 1 2 3 4 » s'affiche, le temps en cours
+   allumé. Quatre temps font une mesure.
+3. Le 1 ouvre la mesure, la musique se pose sur lui.
+4. Au joueur : une touche quelconque sur chaque temps, deux mesures de
+   suite.
+5. Puis le 1 seul, deux mesures : jouer, puis compter 2, 3, 4 sans
+   jouer.
+
+   La série ne commence que lorsque le joueur la lance, sur le 1 de
+   son choix, à temps, et sur la bonne note quand une note est
+   demandée. Avant, ses notes ne comptent pas : un départ manqué ne
+   l'oblige pas à tout recommencer. Après une série ratée, elle attend
+   de nouveau un 1.
+6. La mesure a le plus souvent quatre temps, parfois trois ou cinq ; le
+   jazz joue presque toujours à quatre, et ce sera toujours quatre ici.
+7. Bravo, et l'orchestre s'arrête.
+
+Dans le jeu, l'orchestre est une étape, « L'orchestre » (`Band`), et
+le jeu en rythme une autre, « Jouer ensemble » (`Groove`).
+
+**L'activité de la leçon 2.1** : la première ligne du blues en C,
+celui du palier 0, | C7 | F7 | C7 | % |, la fondamentale de chaque
+mesure sur le 1, à n'importe quelle octave, lentement, avec toutes les
+aides, le charley qui bat chaque temps et le bonhomme qui compte. La
+grille s'affiche au-dessous du compte. Le blues entier revient à
+l'activité qui clôt le chapitre : la grille complète a été jouée au
+chapitre 1, et la rejouer en rythme sur le 1 est un vrai défi. La
+grille s'y affiche une ligne à la fois, celle de la mesure jouée ; les
+deux mesures du turnaround portent leurs deux accords, la fondamentale
+du premier tombant sur le 1.
 
 ### 2.2 Compter dans sa tête
 

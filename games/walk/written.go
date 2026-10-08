@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/ArnaudCalmettes/gohar/charts/chordpro"
@@ -23,9 +24,12 @@ func (l *lesson) Line(chords []string, bar int) {
 			l.line = append(l.line, nil) // drawn as the repeat sign
 			continue
 		}
-		for _, s := range symbols([]string{ch}) {
-			l.line = append(l.line, []chart.Cell{{Symbol: s}})
+		// Two chords in a bar, "C6 A7", share it: the second on beat 3.
+		var cells []chart.Cell
+		for i, s := range symbols(strings.Fields(ch)) {
+			cells = append(cells, chart.Cell{Symbol: s, Beat: i * 2})
 		}
+		l.line = append(l.line, cells)
 	}
 }
 
@@ -55,7 +59,8 @@ func symbols(chords []string) []chart.Symbol {
 
 // drawWritten draws what the walker wrote: chords side by side, or a
 // line of a grid, its bar played shaded; while he plays the line, the
-// bar of the note he plays.
+// bar of the note he plays. A grid longer than a row shows the row of
+// the bar played, the first one before.
 func (l *lesson) drawWritten(c screen.Canvas, now time.Time) {
 	pen := l.pen()
 	x := float64(bubbleX)
@@ -66,11 +71,16 @@ func (l *lesson) drawWritten(c screen.Canvas, now time.Time) {
 	if l.playing && !now.Before(l.phraseAt) {
 		bar = int(now.Sub(l.phraseAt) / l.phraseStep)
 	}
+	row := max(bar, 0) / barsPerRow
 	for i, cells := range l.line {
+		if i/barsPerRow != row {
+			continue
+		}
 		var fill color.Color
 		if i == bar {
 			fill = pale
 		}
-		pen.DrawBar(c, cells, float32(bubbleX+i*barW), writtenY, barW, lineBarH, fill, false, i == len(l.line)-1)
+		x := float32(bubbleX + i%barsPerRow*barW)
+		pen.DrawBar(c, cells, x, writtenY, barW, lineBarH, fill, false, i == len(l.line)-1 || i%barsPerRow == barsPerRow-1)
 	}
 }

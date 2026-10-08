@@ -16,11 +16,11 @@ import (
 // lessons.Stage): chapter 2, where the band comes in.
 
 // The count of the bar: its digits, `countGap` apart, centred under the
-// bubble, where the lessons write; the marks of the beats `countMarkDY`
-// under their tops.
+// bubble, where the lessons write; the marks of the beats under them.
 const (
-	countGap    = 70
-	countMarkDY = 80
+	countGap     = 70
+	countMarkGap = 4  // from the digit's bottom to its mark
+	countAbove   = 50 // above a line of the grid
 )
 
 // lastOf returns the beat marked at position `beat` of the bar within
@@ -92,20 +92,26 @@ func (l *lesson) drawCount(c screen.Canvas, now time.Time) {
 	if x >= 0 {
 		playing = m.Position(int(math.Floor(x))).Beat
 	}
-	mid := float64(bubbleX + bubbleW/2)
+	// Under the bubble; above a line of the grid, smaller, when one
+	// shows.
+	mid, y, font := float64(bubbleX+bubbleW/2), float64(writtenY), l.fonts.count
+	if len(l.line) > 0 {
+		y, font = writtenY-countAbove, l.fonts.heading
+	}
 	for beat := 1; beat <= m.PerBar(); beat++ {
 		var col color.Color = faint
 		if beat == playing {
 			col = ink
 		}
 		bx := mid + float64(beat-1)*countGap - float64(m.PerBar()-1)*countGap/2
-		c.Centred(fmt.Sprint(beat), l.fonts.count, bx, writtenY, col)
+		c.Centred(fmt.Sprint(beat), font, bx, y, col)
 		if n, ok := l.lastOf(beat, x); ok {
 			kind := mark.Missed
 			if l.beatMarks[n] {
 				kind = mark.Landed
 			}
-			chart.DrawMark(c, kind, float32(bx), writtenY+countMarkDY)
+			_, h := c.Measure("1", font)
+			chart.DrawMark(c, kind, float32(bx), float32(y+h+countMarkGap))
 		}
 	}
 }

@@ -94,6 +94,10 @@ func (st Band) begin(s Stage) {
 	s.Say(st.Phrase)
 	s.Pulse(st.BPM)
 	s.Count(st.Count)
+	if st.BPM == 0 {
+		s.Line(nil, -1) // what a Groove showed goes with the band
+		s.Bass(false)
+	}
 }
 
 func (Band) read() bool { return true }

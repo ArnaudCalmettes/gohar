@@ -31,8 +31,10 @@ func TestScripts(t *testing.T) {
 		all["activity "+id] = Activity(id, rand.New(rand.NewPCG(1, 2)))
 	}
 	for id, steps := range all {
-		r := NewRunner(&stage{}, steps)
+		s := &stage{}
+		r := NewRunner(s, steps)
 		r.Start()
+		beat := 0 // the pulse, through the steps in rhythm
 		for i, st := range steps {
 			if r.Done() {
 				t.Fatalf("%s: done at step %d of %d", id, i, len(steps))
@@ -60,6 +62,8 @@ func TestScripts(t *testing.T) {
 				r.Read()
 			case *Guess:
 				play(r, st.Want)
+			case *Groove:
+				beat = groove(r, s, st, beat)
 			case *Hang:
 				r.PhraseEnded()
 				for _, w := range st.Want {
@@ -76,4 +80,27 @@ func TestScripts(t *testing.T) {
 	if len(Phrases()) == 0 {
 		t.Error("no phrases")
 	}
+}
+
+// groove plays `st` through as a student who gets every beat right,
+// from beat `n` of the pulse on, and returns the beat after it ends.
+func groove(r *Runner, s *stage, st *Groove, n int) int {
+	on := func() bool { return !r.Done() && r.steps[r.at] == Step(st) }
+	for ; on(); n++ {
+		r.Beat(n)
+		bar, ok := st.wanted[n]
+		if st.first < 0 && n%beatsPerBar == 0 {
+			bar, ok = 0, true // the 1 that starts the series
+		}
+		if ok && on() {
+			s.at, s.off = n, 0
+			if st.Want != nil {
+				play(r, st.Want[bar])
+				continue
+			}
+			r.NoteOn(60)
+			r.NoteOff(60)
+		}
+	}
+	return n
 }

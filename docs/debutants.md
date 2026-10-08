@@ -290,7 +290,7 @@ quelque chose.
 | Jouer une ligne | Une ligne de grille, jouée à la basse par lui, ou par le joueur, mesure par mesure | La fin de sa phrase ; ou la ligne jouée jusqu'au bout |
 | Laisser en suspens | Il dit une phrase ; sa dernière note reste en l'air, la note qui la résout clignote | La note qui la résout |
 | L'orchestre | L'orchestre se met à battre la pulse, ou s'arrête ; le compte de la mesure s'affiche, « 1 2 3 4 », le temps en cours allumé ; il dit ce que c'est | Sa bulle lue ; la pulse continue sous les étapes suivantes |
-| Jouer ensemble | Sur la pulse, le joueur joue les temps demandés, tous ou le 1 seul, une touche à son choix ou la fondamentale de chaque mesure, à n'importe quelle octave ; chaque temps se marque sous le compte, réussi ou raté, sans rien arrêter | Une série de mesures sans raté ; sinon, la série recommence une mesure plus loin |
+| Jouer ensemble | Sur la pulse, le joueur joue les temps demandés, tous ou le 1 seul, une touche à son choix ou la fondamentale de chaque mesure, à n'importe quelle octave ; chaque temps se marque sous le compte, réussi ou raté, sans rien arrêter | Une série de mesures sans raté, lancée par le joueur sur le 1 de son choix ; ratée, elle attend de nouveau un 1 |
 
 « Demander » est le palier 0 ; « Jouer ensemble », une mini-partie sur
 une petite grille. R fait réentendre ou relire la dernière étape ; une
@@ -455,7 +455,8 @@ temps d'une noire, pour ne pas le presser.
 **L'avancement.** Les quatre leçons du chapitre 1 et leurs activités
 sont écrites, ainsi que la leçon qui le clôt et son activité, le
 palier 0, sur le blues transposé en C puis la section A de *Satin
-Doll* ; restent les chapitres suivants. Une fois une leçon dans le jeu,
+Doll*. Au chapitre 2, la leçon 2.1 et son activité sont écrites ;
+restent les leçons 2.2 à 2.4, le palier 1, et les chapitres suivants. Une fois une leçon dans le jeu,
 sa doc la résume, étape par étape, sans recopier ses bulles : le texte
 exact vit dans les fichiers de phrases, où on le retouche.
 

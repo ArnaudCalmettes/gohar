@@ -17,6 +17,7 @@ var activities = map[string]func(rng *rand.Rand) []Step{
 	"1.2": func(rng *rand.Rand) []Step { return motifActivity(rng, slices.Concat(motifsUp, motifsDown), scaleUp) },
 	"1.3": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.3.hello", sharpsPlain, sharpsTraps) },
 	"1.4": func(rng *rand.Rand) []Step { return accidentalActivity(rng, "a1.4.hello", flatsPlain, flatsTraps) },
+	"2.1": func(*rand.Rand) []Step { return meterActivity() },
 }
 
 // A Palier is an activity played in the game scene: grids of the game,
