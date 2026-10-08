@@ -109,19 +109,20 @@ func (*Repeat) released(Stage, []int) bool { return false }
 func (*Repeat) read() bool                 { return false }
 
 // Hang is a phrase left hanging, the gag of lesson 1.2 (see
-// docs/debutants/chapitre-1.md): said, and played back from the words
-// as a Repeat without Keys is, but its last note is held by the game
-// once the player lets it go. The walker frets, and the note that
+// docs/debutants/chapitre-1.md): played back after the walker, or from
+// the words without Keys, as a Repeat is, but its last note is held by
+// the game once the player lets it go. The walker frets, and the note that
 // resolves it, the first one of its pitch class above, blinks; played,
 // it lets go of the held note, and he thanks the player.
 type Hang struct {
 	Phrase  string   // what is asked, said
+	Keys    []int    // what the walker plays first, MIDI numbers; nil to say it only
 	Want    []Target // a target for each note, the last one left hanging
 	Humpf   string   // said while it hangs
 	Resolve Note     // what resolves it
 	Thanks  string   // said once resolved
 
-	at       int  // the note expected next
+	at       int  // the note expected next, -1 while the walker plays
 	held     int  // the key left hanging, 0 before
 	reminded bool // `slowly` added
 }
@@ -138,13 +139,33 @@ func (st *Hang) begin(s Stage) {
 	st.at, st.held, st.reminded = 0, 0, false
 	s.Say(st.Phrase)
 	s.Light(nil)
+	if st.Keys != nil {
+		st.at = -1
+		s.Play(st.Keys)
+	}
+}
+
+func (st *Hang) phraseEnded(Stage) bool {
+	if st.Keys != nil && st.held == 0 {
+		st.at = 0
+	}
+	return false
 }
 
 func (st *Hang) pressed(s Stage, held []int) bool {
 	if st.held == 0 {
+		if st.at < 0 {
+			return false // he is still playing: the keys sound, nothing counts
+		}
 		r := Repeat{Want: st.Want}
 		if st.Want[st.at].Judge(held) != Hit {
 			remind(s, len(st.Want), &st.reminded)
+			if st.Keys != nil { // he plays it again, as a Repeat does
+				s.Miss(nil, st.at)
+				st.at = -1
+				s.Play(st.Keys)
+				return false
+			}
 			s.Miss(r.hint(), st.at)
 			st.at = 0
 			return false
@@ -174,7 +195,6 @@ func (st *Hang) pressed(s Stage, held []int) bool {
 }
 
 func (*Hang) released(Stage, []int) bool { return false }
-func (*Hang) phraseEnded(Stage) bool     { return false }
 func (*Hang) read() bool                 { return false }
 
 // PlayLine plays a line of a grid on the bass, the roots of its chords,

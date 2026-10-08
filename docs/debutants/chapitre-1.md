@@ -97,23 +97,24 @@ dans le jeu, comme la 1.1 ; ce qui suit la résume.
 1. Le bonhomme reprend où la leçon 1.1 s'est arrêtée : une dernière
    révision de C D E F G, demandés en lettres, avant de les dire
    acquis.
-2. La gamme entière, de do au do du dessus, en montant puis en
-   descendant, répétée après lui en chantant. La suite s'installe, dans
-   l'oreille et dans les mots. La consigne précise, entre parenthèses,
-   qu'elle ne se joue pas en rythme : les doigtés viendront plus tard,
-   et le passage du pouce est hors de portée d'un grand débutant. Un
-   seul doigt suffit.
-3. Les mêmes notes en lettres, C D E F G A B, avec la mise en garde :
-   après G, l'alphabet repart de A. Puis il les demande, dites, sans
-   les jouer.
+2. La gamme, répétée après lui en chantant, en montant de do à si. La
+   suite s'installe, dans l'oreille et dans les mots. La consigne
+   précise, entre parenthèses, qu'elle ne se joue pas en rythme : les
+   doigtés viendront plus tard, et le passage du pouce est hors de
+   portée d'un grand débutant. Un seul doigt suffit.
 
-   Un gag en guise de chute, la sensible avant son nom. Sur le dernier
-   B, le jeu garde la note : le son reste quand le joueur lâche la
-   touche, sans que le clavier à l'écran la montre tenue. Le bonhomme
-   s'impatiente, il manque quelque chose ; le C au-dessus clignote.
+   Un gag en guise de chute, la sensible avant son nom. Sur le si, le
+   jeu garde la note : le son reste quand le joueur lâche la touche,
+   sans que le clavier à l'écran la montre tenue. Le bonhomme
+   s'impatiente, il manque quelque chose ; le do au-dessus clignote.
    Le joueur le joue, la note tenue s'arrête, et le bonhomme, soulagé,
    remercie. Le mot de sensible ne vient qu'au chapitre 4 ; le joueur
-   en a déjà senti l'effet.
+   en a déjà senti l'effet. La gamme monte d'abord jusqu'au si
+   seulement : le joueur ne l'a jamais finie, et la chute tombe juste.
+   Puis, depuis ce do, il la redescend après le bonhomme.
+3. Les mêmes notes en lettres, C D E F G A B, avec la mise en garde :
+   après G, l'alphabet repart de A. Puis il demande la gamme entière,
+   C au C du dessus, dite, sans la jouer.
 4. Une astuce pour deux notes : do et fa sont à gauche des groupes de
    deux et de trois touches noires ; mi et si sont à droite de ces
    mêmes groupes. Les quatre touches s'allument, le temps de la bulle,
@@ -130,8 +131,9 @@ dans le jeu, comme la 1.1 ; ce qui suit la résume.
    doigts.
 
 Dans le jeu, la note tenue est une étape à part, « Laisser en
-suspens » (`Hang`) : une suite demandée comme « Répéter après lui »,
-dont la dernière note reste en l'air jusqu'à la note qui la résout.
+suspens » (`Hang`) : une suite répétée après lui, ou demandée en mots,
+comme « Répéter après lui », dont la dernière note reste en l'air
+jusqu'à la note qui la résout.
 
 **L'activité de la leçon 1.2** suit le modèle de celle de 1.1. Elle met
 ensemble tous les motifs de 1.1 et de 1.2, et sa séquence longue est la

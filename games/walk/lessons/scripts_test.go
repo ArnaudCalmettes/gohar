@@ -56,11 +56,12 @@ func TestScripts(t *testing.T) {
 				for _, w := range st.Want {
 					play(r, w)
 				}
-			case Write:
+			case Write, Band:
 				r.Read()
 			case *Guess:
 				play(r, st.Want)
 			case *Hang:
+				r.PhraseEnded()
 				for _, w := range st.Want {
 					play(r, w)
 				}

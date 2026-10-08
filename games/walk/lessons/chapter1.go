@@ -77,17 +77,18 @@ func cMajorScale() []Step {
 		&Repeat{Phrase: "l1.2.review", Want: scale[:5]},
 		Say{Phrase: "l1.2.hello"},
 
-		// The whole scale, sung up and down, in no hurry: the fingering
-		// comes later, the thumb passing under is beyond a beginner.
-		&Repeat{Phrase: "l1.2.scale.up", Keys: up, Want: scale},
-		&Repeat{Phrase: "l1.2.scale.down", Keys: reversed(up), Want: reversed(scale)},
-
-		// The letters, and the B left hanging until the C resolves it.
-		Say{Phrase: "l1.2.letters"},
+		// The scale sung up, in no hurry, the fingering for later, the
+		// thumb passing under beyond a beginner: up to B, left hanging
+		// until the C above resolves it; then down from that C.
 		&Hang{
-			Phrase: "l1.2.play.letters", Want: scale[:7],
+			Phrase: "l1.2.scale.up", Keys: up[:7], Want: scale[:7],
 			Humpf: "l1.2.humpf", Resolve: Do, Thanks: "l1.2.thanks",
 		},
+		&Repeat{Phrase: "l1.2.scale.down", Keys: reversed(up), Want: reversed(scale)},
+
+		// The letters, the whole scale asked in them, said only.
+		Say{Phrase: "l1.2.letters"},
+		&Repeat{Phrase: "l1.2.play.letters", Want: scale},
 
 		// C and F left of the groups, E and B right of them: said once,
 		// the keys lit, no drill.
