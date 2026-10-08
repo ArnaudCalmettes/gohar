@@ -11,6 +11,7 @@ type Step interface {
 	released(s Stage, held []int) bool // a key went up, `held` the keys still down
 	phraseEnded(s Stage) bool          // the walker's phrase is over
 	read() bool                        // the bubble is read: a key, or its reading time; no side effect
+	beat(s Stage, n int) bool          // beat `n` of the pulse begins, counted from its start
 }
 
 // still is the step that waits for nothing it does not name.
@@ -20,6 +21,15 @@ func (still) pressed(Stage, []int) bool  { return false }
 func (still) released(Stage, []int) bool { return false }
 func (still) phraseEnded(Stage) bool     { return false }
 func (still) read() bool                 { return false }
+func (still) beat(Stage, int) bool       { return false }
+
+// The steps out of rhythm, whose own methods leave no room for still,
+// let the pulse go by.
+func (*Ask) beat(Stage, int) bool      { return false }
+func (*Guess) beat(Stage, int) bool    { return false }
+func (*Repeat) beat(Stage, int) bool   { return false }
+func (*Hang) beat(Stage, int) bool     { return false }
+func (*PlayLine) beat(Stage, int) bool { return false }
 
 // Say is "Dire": a bubble, over once read.
 type Say struct {
@@ -66,6 +76,27 @@ func (st Play) begin(s Stage) {
 }
 
 func (Play) phraseEnded(Stage) bool { return true }
+
+// Band is "L'orchestre": the band keeps the pulse at `BPM`, or stops
+// at 0, and the count of the bar shows when `Count`, as the walker says
+// what they are. Over once its bubble is read; the pulse and the count
+// stay as they are for the steps after it.
+type Band struct {
+	still
+	Phrase string
+	BPM    float64
+	Count  bool
+}
+
+func (st Band) said() string { return st.Phrase }
+
+func (st Band) begin(s Stage) {
+	s.Say(st.Phrase)
+	s.Pulse(st.BPM)
+	s.Count(st.Count)
+}
+
+func (Band) read() bool { return true }
 
 // Write is "Écrire": the walker writes chord symbols, `Chords` in
 // ChordPro, side by side, or as a line of a grid, a chord a bar, when

@@ -164,6 +164,14 @@ func TestRecall(t *testing.T) {
 	if got[len(got)-1] != "16.1 G7" || !slices.Contains(got, "9.1 E7") || !slices.Contains(got, "11.1 A7") {
 		t.Errorf("got %q", got)
 	}
+	marks, err := s.Rehearsals()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Rehearsal{{"A", 0}, {"A", 4}, {"B", 8}, {"A", 12}}
+	if !slices.Equal(marks, want) {
+		t.Errorf("rehearsal marks %v, want %v", marks, want)
+	}
 }
 
 // Written again, the song reads the same, and writes the same.

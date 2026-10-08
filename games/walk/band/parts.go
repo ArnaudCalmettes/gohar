@@ -69,6 +69,7 @@ const (
 	beatVel     = 0.4 // the ride on 1 and 3
 	andVel      = 0.5 // the ride on the "and" of 2 and 4
 	hatVel      = 0.6 // the hi-hat on 2 and 4
+	pulseVel    = 0.6 // the hi-hat on every beat, in the lessons
 	endVel      = 0.7 // the ride on the demo's last note
 	snapVel     = 1
 	bassVel     = 0.8  // the reference bass
@@ -103,6 +104,12 @@ var (
 			return []Stroke{{sound: rideSound, vel: beatVel}}
 		}
 		return []Stroke{{sound: rideSound, vel: backbeatVel}, {sound: rideSound, vel: andVel, at: swingRatio}}
+	}
+
+	// hatEveryBeat closes the hi-hat on every beat, all alike: the
+	// pulse of the lessons, which counts nothing for the player.
+	hatEveryBeat part = func(Cue) []Stroke {
+		return []Stroke{{sound: hatSound, vel: pulseVel}}
 	}
 
 	// hatOnTwoAndFour closes the hi-hat with the foot on 2 and 4.
@@ -152,4 +159,5 @@ var (
 	Light       = Arrangement{hatOnTwoAndFour, walkingBass}              // the options
 	BassOnly    = Arrangement{softBass}                                  // under the calibration's bar
 	Ending      = Arrangement{endRide, walkingBass}                      // the demo's last note
+	Hat         = Arrangement{hatEveryBeat}                              // the lessons' pulse
 )

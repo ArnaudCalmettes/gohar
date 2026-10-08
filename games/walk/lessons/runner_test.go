@@ -28,8 +28,13 @@ func keys(names ...string) []int {
 
 func keyName(k int) string { return fmt.Sprintf("%s%d", names[pc(k)], k/12-1) }
 
-// stage writes down what the lesson does, in words.
-type stage struct{ log []string }
+// stage writes down what the lesson does, in words. `at` and `off` are
+// where the next key pressed falls on the pulse.
+type stage struct {
+	log []string
+	at  int
+	off float64
+}
 
 func (s *stage) Say(phrase string) { s.log = append(s.log, "says "+phrase) }
 
@@ -79,6 +84,16 @@ func (s *stage) Line(cs []string, bar int) {
 }
 
 func (s *stage) Bass(on bool) { s.log = append(s.log, fmt.Sprint("bass ", on)) }
+
+func (s *stage) Pulse(bpm float64) { s.log = append(s.log, fmt.Sprint("pulse at ", bpm)) }
+
+func (s *stage) Count(on bool) { s.log = append(s.log, fmt.Sprint("count ", on)) }
+
+func (s *stage) Timing() (int, float64) { return s.at, s.off }
+
+func (s *stage) MarkBeat(n int, landed bool) {
+	s.log = append(s.log, fmt.Sprintf("beat %d %s", n, map[bool]string{true: "landed", false: "missed"}[landed]))
+}
 
 func (s *stage) Tease(a Annoyance) {
 	s.log = append(s.log, [...]string{Hey: "Hé…", OnPurpose: "on purpose?", FedUp: "walks out"}[a])

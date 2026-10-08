@@ -28,15 +28,16 @@ func newLang(tag string) (*lang.Lang, error) {
 // The IDs of the phrases. Every one is in each file of locales/, which
 // TestPhrases checks: call them through these names only.
 const (
-	msgTempo      = "tempo"      // {{.BPM}}
-	msgFreeTempo  = "tempo.free" // the chart waits for the root
-	msgKeyPlay    = "keys.play"  // the keys of the game, each as it stands
+	msgTempo      = "tempo"       // {{.BPM}}
+	msgFreeTempo  = "tempo.free"  // the chart waits for the root
+	msgTempoAside = "tempo.aside" // {{.BPM}}, {{.Grid}}: the player's, the grid's beside
+	msgKeyPlay    = "keys.play"   // the keys of the game, each as it stands
 	msgKeyStop    = "keys.stop"
 	msgKeyFree    = "keys.free"  // T, to the phase without tempo
 	msgKeyTempo   = "keys.tempo" // T, back to the tempo
 	msgKeyDemoOn  = "keys.demo.on"
 	msgKeyDemoOff = "keys.demo.off"
-	msgKeyGrid    = "keys.grid" // the arrows: the grid and the tempo
+	msgKeySetup   = "keys.setup" // Tab: the settings of the grid
 	msgKeyMenu    = "keys.menu"
 	msgKeyBack    = "keys.back" // Escape, in a palier of the course
 	msgNoMIDI     = "status.nomidi"
@@ -46,6 +47,15 @@ const (
 	msgPalierGo    = "palier.go"
 	msgPalierNext  = "palier.next" // a grid played through, another to come
 	msgPalierBravo = "palier.bravo"
+
+	// The settings of a grid.
+	msgSetTitle     = "setup.title"
+	msgSetGrid      = "setup.grid" // {{.Title}}
+	msgSetModeTempo = "setup.mode.tempo"
+	msgSetModeFree  = "setup.mode.free"
+	msgSetDemoOn    = "setup.demo.on"
+	msgSetDemoOff   = "setup.demo.off"
+	msgSetKeys      = "setup.keys"
 
 	msgModeTempo = "mode.tempo"
 	msgModeFree  = "mode.free"
@@ -136,8 +146,9 @@ const (
 )
 
 var phrases = []string{
-	msgTempo, msgFreeTempo, msgNoMIDI, msgMark,
-	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeyGrid, msgKeyMenu, msgKeyBack,
+	msgTempo, msgFreeTempo, msgTempoAside, msgNoMIDI, msgMark,
+	msgSetTitle, msgSetGrid, msgSetModeTempo, msgSetModeFree, msgSetDemoOn, msgSetDemoOff, msgSetKeys,
+	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeySetup, msgKeyMenu, msgKeyBack,
 	msgPalierGo, msgPalierNext, msgPalierBravo,
 	msgModeTempo, msgModeFree, msgModeDemo,
 	msgOnTime, msgEarly, msgLate, msgBetween,

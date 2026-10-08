@@ -570,21 +570,56 @@ la partie.
 - **Trois rangées à la fois.** Une grille plus longue tourne ses pages
   d'une rangée à la fois, comme on lit un Real Book : la rangée jouée en
   deuxième position, celle d'avant au-dessus, la suivante en dessous,
-  pour lire en avance. Une mesure à deux accords les écrit plus petits,
+  pour lire en avance. La page glisse d'une rangée à l'autre, en un
+  tiers de seconde qui ralentit à l'arrivée, plutôt que de sauter :
+  l'œil suit la grille au lieu de la chercher. Une rangée à moitié
+  sortie est coupée net au bord de la page. Au repos, la molette ou le
+  doigt glissé sur la grille la font défiler, pour la lire en entier
+  avant de la jouer ; un chevron au-dessus ou en dessous dit qu'il
+  reste des rangées cachées de ce côté. Une mesure à deux accords les écrit plus petits,
   et alors toute la grille avec eux : une seule taille d'accord par
   grille, pour que la page se lise d'un œil égal.
+- **Les marques de sections.** Chaque section porte sa lettre, encadrée
+  à gauche de sa première mesure, comme dans un Real Book : celle que
+  la grille écrit, son label, rappels compris (A1, A2, B, A1 pour *Satin
+  Doll*). Le jeu ne la déduit pas des accords : une grille est un
+  niveau de jeu, qu'un joueur pourra un jour écrire lui-même, et le jeu
+  la montre telle qu'elle est écrite. La forme trouvée par l'analyse
+  (`analysis.Sections`) reste l'affaire des outils d'analyse. Une
+  grille sans label, comme le blues, n'en montre aucune.
 - **Les exposants.** La fondamentale et le type de tétrade restent sur
   la ligne (D7, Am7, Cmaj7) ; la quinte altérée et les extensions
   montent en exposant : Am7<sup>♭5</sup>, D7<sup>(♭13)</sup>. Restent
   encore sur la ligne, à ajuster quand le cas se présentera : le
   mineur-majeur avec ses extensions, Cm(maj7,9), l'alt du 7alt, et les
   extensions écrites à la place de la septième, C9, C13.
-- **À l'arrêt, dans la partie**, ↑ et ↓ changent de grille, ← et → de
-  tempo, de 5 en 5. Le tempo des options sert de départ, et ce qu'on
-  change en jouant vaut pour la séance, sans toucher aux options ; la
-  grille choisie aussi.
-- **La démo, au même endroit** : D l'allume ou l'éteint, avec le
-  tempo seulement. Face à une grille dont il ne voit pas comment elle
+- **Le tempo est celui de la grille** : le `{tempo}` que le fichier
+  écrit, sinon celui de son style (`{meta: style Medium Swing}`), que
+  le jeu traduit par une table à lui (Ballad 70, Medium Swing 120,
+  Medium Up Swing 160, Up Tempo Swing 200), sinon 120. Le joueur s'en
+  écarte pour s'entraîner, de 5 en 5 entre 60 et 240, et l'écran
+  rappelle celui de la grille à côté (« 100 BPM (grille : 120) ») ;
+  l'écart vaut jusqu'au changement de grille, sans être gardé d'une
+  séance à l'autre. Le drapeau `-bpm` impose un tempo à toutes les
+  grilles. La progression du joueur en tempo (« Tune Up à 135, monte à
+  140 ») viendra plus tard.
+- **Les boutons**, pour une souris ou un doigt : la partie se joue
+  aussi sur un écran tactile, si peu de place qu'il y ait. Trois
+  boutons, que l'écran montrait déjà, et la grille qui défile :
+  - le chevron à gauche du titre ramène au titre (Échap) ;
+  - le bloc du titre et du tempo, souligné au repos, ouvre les
+    réglages de la grille (Tab) ;
+  - le cadre du mode, en haut à droite, lance et arrête (Espace).
+
+  Dans un palier, seul le retour reste. Le bilan se ferme d'une touche
+  ou d'un toucher n'importe où.
+- **Les réglages de la grille**, au repos : la grille, son tempo, le
+  mode, a tempo ou déchiffrage, et la démo. ↑ et ↓ choisissent, ← et →
+  changent, comme un toucher à gauche ou à droite du milieu d'une
+  valeur ; la grille choisie vaut pour la séance. T et D restent des
+  raccourcis dans la partie.
+- **La démo**, dans les réglages ou d'un D : elle s'allume ou s'éteint,
+  avec le tempo seulement. Face à une grille dont il ne voit pas comment elle
   doit sonner, le joueur met la démo à 160 pour en saisir la logique et
   trouver des chemins, puis la travaille lui-même. Sans clavier MIDI,
   elle est allumée d'office : le bonhomme joue, le joueur écoute. Le
@@ -592,7 +627,7 @@ la partie.
 - **La ligne d'état dit les touches telles qu'elles sont** : « Espace :
   jouer » à l'arrêt, « Espace : arrêter » pendant un run ; T et D
   nomment ce vers quoi ils basculent (« T : déchiffrage », « D : démo
-  ON »).
+  ON ») ; « Tab : réglages » ouvre ceux de la grille.
 
 ## L'écran titre
 
@@ -644,15 +679,14 @@ scènes : le premier écran titre se contente de la position finale.
   son tempo.
   Échap ramène de la partie au titre, où le blues reprend avec son
   décompte de claquements, et du titre quitte le jeu.
-- **Les options** : le tempo de la partie, de 5 en 5 entre 60 et 240,
-  la langue, qui change tout de suite, et la calibration (voir
-  `architecture.md`), qui n'est jamais imposée : le jeu se joue sans.
-  Les flèches gauche et droite changent une valeur ; un clic à gauche
-  du milieu de l'option la baisse, à droite il la monte. Le tempo et la
-  langue sont gardés d'une séance à l'autre (`walk.json`, parmi les
-  réglages communs) ; ils servent de valeurs par défaut aux drapeaux
-  `-bpm` et `-lang`, de sorte qu'un drapeau passé au programme
-  l'emporte encore.
+- **Les options** : la langue, qui change tout de suite, et la
+  calibration (voir `architecture.md`), qui n'est jamais imposée : le
+  jeu se joue sans. Les flèches gauche et droite changent une valeur ;
+  un clic à gauche du milieu de l'option la baisse, à droite il la
+  monte. La langue est gardée d'une séance à l'autre (`walk.json`,
+  parmi les réglages communs) ; elle sert de valeur par défaut au
+  drapeau `-lang`, de sorte qu'un drapeau passé au programme l'emporte
+  encore. Le tempo n'y est plus : il est celui de chaque grille.
 - **On passe toujours par le titre**, même avec des drapeaux sur la
   ligne de commande. Quand les options auront repris tous les
   drapeaux, en passer au programme voudra dire qu'on le teste, et un

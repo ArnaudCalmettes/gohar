@@ -44,7 +44,7 @@ type app struct {
 	current int
 
 	// The options.
-	bpm      float64
+	bpm      float64 // forced on every grid by -bpm, 0 for each grid's own
 	choruses int
 	untimed  bool // a game starts without tempo
 }

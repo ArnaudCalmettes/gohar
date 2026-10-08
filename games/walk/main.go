@@ -46,7 +46,7 @@ func main() {
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "options:", err)
 	}
-	bpm := flag.Float64("bpm", saved.BPM, "tempo of the game, in beats per minute")
+	bpm := flag.Float64("bpm", 0, "tempo of every grid, in beats per minute; 0 for each grid's own")
 	choruses := flag.Int("choruses", 2, "choruses to play after the count-in")
 	demo := flag.Bool("demo", false, "the band walks the bass itself, the reference line")
 	practicing := flag.Bool("practice", false, "start without tempo: the chart waits for the roots")

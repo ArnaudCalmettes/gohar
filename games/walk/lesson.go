@@ -97,6 +97,12 @@ type lesson struct {
 	bubble []string // the walker's phrase, in lines
 	shown  []int    // the pitch classes lit
 
+	pulse     *band.Pulse  // the band keeping the pulse, nil for none
+	counting  bool         // the count of the bar shows
+	beat      int          // the beat of the pulse last told the runner
+	beatMarks map[int]bool // the beats marked by a step in rhythm, landed or not
+	strikeAt  time.Time    // when the key last pressed was heard, the latency off
+
 	// The walker's phrase playing: its keys, from `phraseAt`, a note
 	// every `phraseStep`; `playing` until the runner is told it ended.
 	phrase     []int
@@ -168,6 +174,7 @@ func (l *lesson) Enter() {
 // Leave gives the keys their sound back, the piano everywhere, and lets
 // go of a note left hanging.
 func (l *lesson) Leave() {
+	l.pulse = nil
 	l.band.Silent.Store(false)
 	l.band.BassHand.Store(false)
 	l.band.Unhold(time.Now())
@@ -251,6 +258,7 @@ func (l *lesson) Miss(pcs []int, beat int) {
 
 func (l *lesson) Update() scene.Transition {
 	now := time.Now()
+	l.keepPulse(now)
 	l.drain(func(e keyboard.Event) {
 		if l.turned[e.Key] {
 			l.turned[e.Key] = e.Down // up at last: a key like the others
@@ -275,6 +283,7 @@ func (l *lesson) Update() scene.Transition {
 		}
 		l.held++
 		l.pressAt = now
+		l.strikeAt = e.At.Add(-l.latency)
 		if !l.teaching() {
 			l.walkoutKey(now) // the key sounds, and counts for nothing
 			return
@@ -307,9 +316,16 @@ func (l *lesson) Update() scene.Transition {
 		l.playing = false
 		l.runner.PhraseEnded()
 	}
+	// A tap on the back button goes back, as Escape; anywhere else, it
+	// is a key: it turns the page.
 	keys := inpututil.AppendJustPressedKeys(nil)
+	x, y, tapped := l.pressed()
+	back := tapped && lessonBack.has(x, y)
+	if tapped && !back {
+		keys = append(keys, ebiten.KeyEnter)
+	}
 	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
+	case inpututil.IsKeyJustPressed(ebiten.KeyEscape) || back:
 		return scene.Replace(l.back)
 	case !l.teaching():
 		if len(keys) > 0 {
@@ -338,6 +354,10 @@ func (l *lesson) Update() scene.Transition {
 	return scene.Stay
 }
 
+// lessonBack is the box of the back button of a lesson, top left, a
+// chevron as in the game.
+var lessonBack = hit{x: 0, y: 0, w: margin + backW + tapPad, h: titleY + 8 + 2*tapPad}
+
 func (l *lesson) Draw(dst *ebiten.Image) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: l.scale}
@@ -345,6 +365,7 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	if !l.drawWalkout(dst, c, now) {
 		l.drawTeacher(c, now)
 	}
+	drawChevronLeft(c, margin+backW/3, titleY+8)
 	if len(l.bubble) > 0 {
 		hx, hy, r := l.head(now)
 		l.speech().Draw(c, l.bubble, hx, hy, r)
@@ -359,6 +380,7 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	})
 	l.drawNames(c)
 	l.drawWritten(c, now)
+	l.drawCount(c, now)
 	keys := msgLessonKeys
 	if l.teaching() && !l.runner.Reading() {
 		keys = msgLessonPlay // the walker waits for notes, not for a page turned

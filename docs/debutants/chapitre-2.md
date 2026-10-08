@@ -35,6 +35,17 @@ bulle dit que la mesure a le plus souvent quatre temps, parfois trois ou
 cinq, et que le jazz joue presque toujours à quatre : c'est la seule
 mesure du chapitre.
 
+Le tempo est de 90 au moins. Plus lent, la leçon tomberait dans la
+difficulté inverse : jouer lentement est plus difficile que jouer vite,
+chaque temps laissant trop longtemps seul. Un coup à côté du temps ne
+coupe rien (voir « Ne jamais casser la pulse » dans
+`../architecture.md`) : il se marque discrètement, l'orchestre continue,
+et le bonhomme propose de réessayer une fois la série finie.
+
+**L'activité de la leçon 2.1** : une note par mesure, sur le 1,
+lentement, avec toutes les aides, le charley qui bat chaque temps et le
+bonhomme qui compte.
+
 ### 2.2 Compter dans sa tête
 
 **La leçon 2.2, compter dans sa tête.** Le but est un réflexe : battre

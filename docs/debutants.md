@@ -289,7 +289,8 @@ quelque chose.
 | Écrire | Il écrit des accords, côte à côte ou en ligne de grille, et dit ce que c'est | Sa bulle lue ; ce qu'il a écrit reste |
 | Jouer une ligne | Une ligne de grille, jouée à la basse par lui, ou par le joueur, mesure par mesure | La fin de sa phrase ; ou la ligne jouée jusqu'au bout |
 | Laisser en suspens | Il dit une phrase ; sa dernière note reste en l'air, la note qui la résout clignote | La note qui la résout |
-| Jouer ensemble | L'orchestre tourne, il annonce ce qu'on fait | Un nombre de réussites d'affilée |
+| L'orchestre | L'orchestre se met à battre la pulse, ou s'arrête ; le compte de la mesure s'affiche, « 1 2 3 4 », le temps en cours allumé ; il dit ce que c'est | Sa bulle lue ; la pulse continue sous les étapes suivantes |
+| Jouer ensemble | Sur la pulse, le joueur joue les temps demandés, tous ou le 1 seul, une touche à son choix ou la fondamentale de chaque mesure, à n'importe quelle octave ; chaque temps se marque sous le compte, réussi ou raté, sans rien arrêter | Une série de mesures sans raté ; sinon, la série recommence une mesure plus loin |
 
 « Demander » est le palier 0 ; « Jouer ensemble », une mini-partie sur
 une petite grille. R fait réentendre ou relire la dernière étape ; une
@@ -360,7 +361,15 @@ Le paquet a pris forme ainsi :
   bonhomme, une note par temps ou par mesure ; répondre à un raté, par
   la casserole et la bonne touche montrée ; tenir une note en suspens ;
   écrire des accords, ou une ligne de grille ; passer le joueur à la
-  basse. L'orchestre viendra avec « Jouer ensemble » ;
+  basse ; faire battre la pulse par l'orchestre, le charley sur chaque
+  temps (`band.Pulse`), à un tempo qu'une étape suivante au même tempo
+  ne relance pas, pour ne jamais la casser (voir « Ne jamais casser la
+  pulse » dans `architecture.md`), et afficher le compte de la mesure ;
+  dire où tombe la touche jouée sur la pulse, le temps le plus proche
+  et l'écart, la latence calibrée retirée, et marquer un temps réussi
+  ou raté sous le compte. Une étape en rythme (`Groove`) suit
+  l'orchestre temps par temps (`Runner.Beat`), et juge chaque coup
+  avec la fenêtre large du premier palier, un tiers de temps ;
 - **les cibles** (`Target`) : une note à n'importe quelle octave, jugée
   sur la dernière touche enfoncée, pour qu'un do tenu sous la main
   gauche ne compte pas comme une faute ; un groupe de touches noires
@@ -413,9 +422,10 @@ joue sans tempo, et les phrases du bonhomme s'entendent seules.
 **Les touches.** Quand une bulle attend d'être lue, n'importe quelle
 touche la tourne, de l'ordinateur ou du clavier MIDI ; celle du clavier
 ne sonne pas alors, et ne s'allume pas, pour qu'on ne la prenne pas
-pour une réponse. R rejoue l'étape, Échap revient au cours sans marquer
-la leçon faite. La ligne d'état dit ce qu'on attend : une touche pour
-continuer, ou des notes à jouer.
+pour une réponse. Un clic ou un doigt sur l'écran la tourne aussi. R
+rejoue l'étape, Échap revient au cours sans marquer la leçon faite,
+comme le chevron en haut à gauche, celui de la partie. La ligne d'état
+dit ce qu'on attend : une touche pour continuer, ou des notes à jouer.
 
 **Les réactions.** La casserole, la cloche du kit, sonne avec la fausse
 note, tout de suite : c'est le son de la note qui n'était pas attendue.

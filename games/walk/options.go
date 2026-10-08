@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"slices"
 	"time"
@@ -15,22 +14,13 @@ import (
 	"github.com/ArnaudCalmettes/gohar/games/walk/figure"
 )
 
-// The game's tempo, as the options set it: in steps, between two
-// bounds a walking bass can hold.
-const (
-	bpmStep = 5
-	minBPM  = 60
-	maxBPM  = 240
-)
-
 // languages are those the game speaks, in the order the options go
 // round them.
 var languages = []string{"fr", "en"}
 
 // The items of the options, in order.
 const (
-	optTempo = iota
-	optLang
+	optLang = iota
 	optCalibrate
 	optBack
 	optItems
@@ -56,7 +46,7 @@ func (o *options) Enter() {}
 
 // Leave saves the options.
 func (o *options) Leave() {
-	if err := (prefs{Lang: o.lang.Tag(), BPM: o.bpm}).save(); err != nil {
+	if err := (prefs{Lang: o.lang.Tag()}).save(); err != nil {
 		log.Println("options:", err)
 	}
 }
@@ -70,7 +60,7 @@ func (o *options) Update() scene.Transition {
 	if tapped {
 		o.menu.chosen = tp.item
 	}
-	value := o.menu.chosen == optTempo || o.menu.chosen == optLang
+	value := o.menu.chosen == optLang
 	step := 0
 	switch {
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
@@ -99,8 +89,6 @@ func (o *options) Update() scene.Transition {
 // change moves the value chosen one `step` along.
 func (o *options) change(step int) {
 	switch o.menu.chosen {
-	case optTempo:
-		o.bpm = min(max(o.bpm+float64(step*bpmStep), minBPM), maxBPM)
 	case optLang:
 		i := slices.Index(languages, o.lang.Tag())
 		tag := languages[(i+step+len(languages))%len(languages)]
@@ -145,7 +133,6 @@ func (o *options) calibrate() scene.Transition {
 
 func (o *options) Draw(dst *ebiten.Image) {
 	labels := make([]string, optItems)
-	labels[optTempo] = o.lang.T(msgTempo, "BPM", fmt.Sprintf("%.0f", o.bpm))
 	labels[optLang] = o.lang.T(msgOptLang, "Name", o.lang.T(msgLangName))
 	labels[optCalibrate] = o.lang.T(msgOptCalibrate)
 	labels[optBack] = o.lang.T(msgOptBack)

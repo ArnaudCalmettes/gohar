@@ -58,7 +58,7 @@ const (
 type Pen struct {
 	Chord, ChordRaised *screen.Font
 	Small, SmallRaised *screen.Font // two chords in a bar
-	Ink                color.Color
+	Ink, Paper         color.Color  // the paper fills a rehearsal mark
 }
 
 // DrawBar draws the bar `cells` from (`x`, `y`), `w` wide and `h`
@@ -86,6 +86,21 @@ func (p Pen) DrawBar(c screen.Canvas, cells []Cell, x, y, w, h float32, fill col
 		cx := float64(x) + chordDX + float64(cl.Beat)*float64(w)/mark.BeatsPerBar
 		p.drawSymbol(c, cl.Symbol, font, raised, cx, dy)
 	}
+}
+
+// rehearsalPad is the room around a rehearsal mark, inside its box.
+const rehearsalPad = 3
+
+// DrawRehearsal draws the rehearsal mark `label` framed, in the small
+// hand, its box ending on the barline at `x`, from the top `y` of the
+// bar: left of the bar it marks, as a Real Book prints it.
+func (p Pen) DrawRehearsal(c screen.Canvas, label string, x, y float32) {
+	w, h := c.Measure(label, p.Small)
+	bw, bh := float32(w)+2*rehearsalPad, float32(h)+2*rehearsalPad
+	bx := x - bw - rehearsalPad
+	c.Rect(bx, y, bw, bh, p.Ink)
+	c.Rect(bx+1, y+1, bw-2, bh-2, p.Paper)
+	c.Text(label, p.Small, float64(bx)+rehearsalPad, float64(y)+rehearsalPad, p.Ink)
 }
 
 // DrawSymbol draws the symbol `s` alone from (`x`, `y`), in the large

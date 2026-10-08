@@ -342,6 +342,17 @@ non plus. Quatre prises peuvent se chevaucher.
 Le WAV doit être échantillonné à 48 kHz, comme tout le paquet : une
 autre fréquence est une erreur plutôt qu'un rééchantillonnage.
 
+## Ne jamais casser la pulse
+
+Une règle vaut pour tous les jeux du dépôt : **une fois que la musique
+tourne en rythme, rien ne l'arrête**. Un raté se marque discrètement,
+une note qui rougit, un chiffre qui pâlit, et la musique continue ; on
+propose de réessayer après, une fois la phrase ou la série finie. Ni
+casserole qui coupe, ni écran d'échec au milieu d'une mesure. Un
+musicien qui se trompe ne s'arrête pas : le jeu lui apprend à ne pas
+le faire en ne le faisant jamais lui-même. La casserole reste aux
+exercices sans tempo, où il n'y a pas de pulse à casser.
+
 ## Les scènes
 
 Un jeu n'est pas qu'un écran de jeu. *Walk with me* en aura vite

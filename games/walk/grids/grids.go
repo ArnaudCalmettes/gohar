@@ -27,11 +27,15 @@ const SatinDollA = "satin-doll-a.cho"
 var Files = []string{JazzBlues, "satin-doll.cho", "tune-up.cho", "autumn-leaves.cho"}
 
 // A Tune is a grid to play: its title, its changes, and beside each
-// change the chord as the grid writes it, for the screen.
+// change the chord as the grid writes it, for the screen; its rehearsal
+// marks too, as written, the sections the player reads; and its tempo,
+// in beats per minute, which the player may change to practise.
 type Tune struct {
-	Title   string
-	Grid    analysis.Changes
-	Written []chordpro.Chord
+	Title      string
+	Tempo      int
+	Grid       analysis.Changes
+	Written    []chordpro.Chord
+	Rehearsals []chordpro.Rehearsal
 }
 
 // Read reads the grid `name`.
@@ -49,7 +53,11 @@ func Read(name string) (Tune, error) {
 	if err != nil {
 		return Tune{}, fmt.Errorf("walk: %s: %w", name, err)
 	}
-	return Tune{Title: s.Title, Grid: c, Written: written}, nil
+	marks, err := s.Rehearsals()
+	if err != nil {
+		return Tune{}, fmt.Errorf("walk: %s: %w", name, err)
+	}
+	return Tune{Title: s.Title, Tempo: tempoOf(s), Grid: c, Written: written, Rehearsals: marks}, nil
 }
 
 // Changes reads the changes of the grid `name`.

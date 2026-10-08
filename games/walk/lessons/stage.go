@@ -68,6 +68,24 @@ type Stage interface {
 	// screen shows the low octaves.
 	Bass(on bool)
 
+	// Pulse has the band keep the pulse at `bpm`, the hi-hat on every
+	// beat, from step to step; 0 stops it. At the tempo it already
+	// keeps, it plays on: a lesson never breaks the pulse.
+	Pulse(bpm float64)
+
+	// Count shows the count of the bar, "1 2 3 4", the beat playing
+	// lit, on the pulse; false hides it.
+	Count(on bool)
+
+	// Timing tells where the key just pressed falls on the pulse: the
+	// nearest beat, counted from the pulse's start, and how far from
+	// it, in beats, negative when early. The game takes its latency off.
+	Timing() (beat int, off float64)
+
+	// MarkBeat marks beat `n` of the pulse on the count of the bar,
+	// discreetly, landed or missed, without stopping anything.
+	MarkBeat(n int, landed bool)
+
 	// Tease answers misses in a row where nobody misses in good faith:
 	// the walker's annoyance, as far as `level`. At FedUp he walks out,
 	// and the game resumes the step with Runner.Again once he is back.

@@ -54,6 +54,26 @@ func confirmed() bool {
 // units: where a click or a tap chooses it.
 type hit struct{ x, y, w, h float64 }
 
+// has tells whether the point (`x`, `y`) is in the box.
+func (h hit) has(x, y float64) bool {
+	return x >= h.x && x < h.x+h.w && y >= h.y && y < h.y+h.h
+}
+
+// pressed returns where the screen was just clicked or touched, in
+// logical units, if it was.
+func (a *app) pressed() (x, y float64, ok bool) {
+	var px, py int
+	switch ids := inpututil.AppendJustPressedTouchIDs(nil); {
+	case len(ids) > 0:
+		px, py = ebiten.TouchPosition(ids[0])
+	case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
+		px, py = ebiten.CursorPosition()
+	default:
+		return 0, 0, false
+	}
+	return float64(px) / a.scale, float64(py) / a.scale, true // the screen is scaled (see layout)
+}
+
 // A tap is a click or a touch on an item of the list last drawn: its
 // index, and `side`, -1 left of its middle, 1 right of it, for the
 // options that a tap changes rather than opens.
@@ -65,18 +85,12 @@ type tap struct {
 // touched, if any. The boxes are those of the last frame: Update runs
 // before Draw, and the list stays where it was.
 func (a *app) tapped() (tap, bool) {
-	var x, y int
-	switch ids := inpututil.AppendJustPressedTouchIDs(nil); {
-	case len(ids) > 0:
-		x, y = ebiten.TouchPosition(ids[0])
-	case inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
-		x, y = ebiten.CursorPosition()
-	default:
+	lx, ly, ok := a.pressed()
+	if !ok {
 		return tap{}, false
 	}
-	lx, ly := float64(x)/a.scale, float64(y)/a.scale // the screen is scaled (see layout)
 	for i, h := range a.hits {
-		if lx >= h.x && lx < h.x+h.w && ly >= h.y && ly < h.y+h.h {
+		if h.has(lx, ly) {
 			side := 1
 			if lx < h.x+h.w/2 {
 				side = -1
@@ -134,8 +148,10 @@ func entries(labels []string, done []bool) []entry {
 func (a *app) drawList(dst *ebiten.Image, wk *figure.Walker, g figure.Gait, heading string, head *screen.Font, items []entry, chosen int, keys string, l layout) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: a.scale}
-	now := time.Now()
-	wk.Draw(c, walkerX, walkerY, walkerScale, g, a.jam.Metronome().Beats(now), now, faint)
+	if wk != nil { // none in the settings of a grid, over the game
+		now := time.Now()
+		wk.Draw(c, walkerX, walkerY, walkerScale, g, a.jam.Metronome().Beats(now), now, faint)
+	}
 
 	const mid = screenWidth / 2
 	hy := l.heading

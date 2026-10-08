@@ -13,14 +13,32 @@ import (
 // time, the second on the second. A % plays the bar before it again, %%
 // the two bars before.
 func (s Song) Played() ([]Bar, error) {
-	bars, _, err := s.played()
+	bars, _, _, err := s.played()
 	return bars, err
 }
 
-// played returns the bars as Played does, and the first bar of the
-// coda, -1 when there is none.
-func (s Song) played() ([]Bar, int, error) {
+// A Rehearsal is a rehearsal mark as the chart writes it: the label of
+// a grid, "A", "B", at the bar it starts from, an index in the bars
+// played. A grid played again by {x_play} is marked again.
+type Rehearsal struct {
+	Label string
+	Bar   int
+}
+
+// Rehearsals returns the rehearsal marks of the song, in the order they
+// sound, as written: a chart's own reading of its form, which nothing
+// checks (see analysis.Sections for the form found in the chords). A
+// grid without a label has none.
+func (s Song) Rehearsals() ([]Rehearsal, error) {
+	_, _, marks, err := s.played()
+	return marks, err
+}
+
+// played returns the bars as Played does, the first bar of the coda,
+// -1 when there is none, and the rehearsal marks.
+func (s Song) played() ([]Bar, int, []Rehearsal, error) {
 	var out []Bar
+	var marks []Rehearsal
 	coda := -1
 	for i, it := range s.Body {
 		if s.Coda != 0 && i == s.Coda {
@@ -29,12 +47,15 @@ func (s Song) played() ([]Bar, int, error) {
 		g := it.Grid
 		if g == nil {
 			if g = s.grid(it.Recall); g == nil {
-				return out, coda, fmt.Errorf("chordpro: x_play %q: no such grid", it.Recall)
+				return out, coda, marks, fmt.Errorf("chordpro: x_play %q: no such grid", it.Recall)
 			}
+		}
+		if g.Label != "" {
+			marks = append(marks, Rehearsal{Label: g.Label, Bar: len(out)})
 		}
 		bars, err := unfold(g)
 		if err != nil {
-			return out, coda, fmt.Errorf("chordpro: grid %q: %w", g.Label, err)
+			return out, coda, marks, fmt.Errorf("chordpro: grid %q: %w", g.Label, err)
 		}
 		for _, b := range bars {
 			switch b.Repeat {
@@ -42,13 +63,13 @@ func (s Song) played() ([]Bar, int, error) {
 				out = append(out, b)
 			default:
 				if len(out) < b.Repeat {
-					return out, coda, errors.New("chordpro: a repeat sign with nothing before it")
+					return out, coda, marks, errors.New("chordpro: a repeat sign with nothing before it")
 				}
 				out = append(out, out[len(out)-b.Repeat:]...)
 			}
 		}
 	}
-	return out, coda, nil
+	return out, coda, marks, nil
 }
 
 func (s Song) grid(label string) *Grid {
@@ -136,7 +157,7 @@ func (s Song) Changes() (analysis.Changes, error) {
 // Bbmaj7, never an A♯. A game shows them so; the analysis spells by the
 // tonality it hears, and a grid that modulates needs more than one.
 func (s Song) Spelled() (analysis.Changes, []Chord, error) {
-	bars, coda, err := s.played()
+	bars, coda, _, err := s.played()
 	if err != nil {
 		return analysis.Changes{}, nil, err
 	}

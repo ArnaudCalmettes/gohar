@@ -56,7 +56,11 @@ valide, qui s'ouvre ailleurs.
   plusieurs compositeurs), `{key}`, `{time}`, `{tempo}`, `{copyright}`,
   et `{meta: nom valeur}` pour tout le reste, avec des noms libres.
 - **Les sections** : une grille par section, `{start_of_grid
-  label="A" shape="4x4"}` … `{end_of_grid}`.
+  label="A" shape="4x4"}` … `{end_of_grid}`. Le label est la marque
+  de la section telle que la grille l'écrit ; `Song.Rehearsals` les
+  rend dans l'ordre où elles sonnent, chacune à sa première mesure, un
+  rappel `{x_play}` compris. Rien ne les vérifie : la forme trouvée
+  dans les accords est celle de `analysis.Sections`.
 - **Dans une grille** :
   - les barres `|`, `||` et `|.` ;
   - les reprises `|:` et `:|`, les fins `|1` et `:|2` ;

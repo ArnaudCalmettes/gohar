@@ -30,7 +30,9 @@ func (r *review) Enter() {}
 func (r *review) Leave() {}
 
 func (r *review) Update() scene.Transition {
-	done := len(inpututil.AppendJustPressedKeys(nil)) > 0
+	done := len(inpututil.AppendJustPressedKeys(nil)) > 0 ||
+		inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) ||
+		len(inpututil.AppendJustPressedTouchIDs(nil)) > 0 // a tap anywhere, as any key
 	r.g.drain(func(e keyboard.Event) { done = done || e.Down })
 	if done {
 		return scene.Pop
@@ -126,7 +128,7 @@ func (r *review) drawSituations(c screen.Canvas, y float64, worked bool, heading
 
 // drawMap draws the whole chart, its rows shrunk when the grid is long,
 // each bar tinted: worked, to consolidate, or left blank when it
-// expected nothing.
+// expected nothing; the rehearsal marks as in the game.
 func (r *review) drawMap(c screen.Canvas) {
 	g := r.g
 	rows := (len(g.bars) + barsPerRow - 1) / barsPerRow
@@ -143,5 +145,8 @@ func (r *review) drawMap(c screen.Canvas) {
 			fill = consolidateTint
 		}
 		pen.DrawBar(c, cells, x, y, barW, h-4, fill, h < rowH || g.small, i%barsPerRow == barsPerRow-1 || i == len(g.bars)-1)
+		if label, ok := g.rehearsals[i]; ok {
+			pen.DrawRehearsal(c, label, x, y)
+		}
 	}
 }

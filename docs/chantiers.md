@@ -285,8 +285,11 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
     modal bien plus tard) et choisira aussi le tempo. Les chantiers du
     dex et des voicings devraient s'y greffer ;
   - **à développer ensuite**, dans cet ordre :
-    1. le défilement fluide de la grille, à la place de la tourne de
-       page ;
+    1. la tonalité dans les réglages de la grille, à expérimenter : les
+       douze toniques sur le cycle des quintes, C majeur à midi, G♭/F♯
+       à six heures, un bouton pour basculer l'affichage entre les
+       majeures et leurs relatives mineures ; la grille transposée à la
+       volée (`grids.InKey`) ;
     2. les deux chefs d'orchestre, la partie et le `jam`, en un seul
        (« L'orchestre » dans `walk.md`), quand la partie voudra démarrer
        sans couper la musique du titre ou enchaîner les grilles ;
@@ -301,10 +304,9 @@ deux surfaces (oto dans `synth/device.go`, gomidi dans
     temps, des seuils du bonhomme et du mélange ;
   - **avec le cursus** : le catalogue de patterns de la basse de
     référence ;
-  - **avec le cours des débutants** : la transposition des grilles à la
-    volée, sans écrire un `.cho` par tonalité. D'abord le blues en C,
-    sans altérations, pour clore le chapitre 1 ; puis chaque grille dans
-    les tonalités dont le joueur possède la gamme.
+  - **avec le cours des débutants** : chaque grille dans les tonalités
+    dont le joueur possède la gamme, transposée à la volée comme le
+    blues du palier 0.
 - [ ] `ear`, la suite d'`oreille.md` : la réponse jouée (ce que joue le
       joueur s'allume, la séquence non), les réglages, les niveaux
       paramétrables, les paliers suivants des modes (les autres

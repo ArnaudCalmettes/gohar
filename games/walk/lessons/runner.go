@@ -86,6 +86,14 @@ func (r *Runner) PhraseEnded() {
 	}
 }
 
+// Beat tells that beat `n` of the pulse begins, counted from its
+// start: the steps in rhythm follow the band by it.
+func (r *Runner) Beat(n int) {
+	if !r.waiting && r.next(func(st Step) bool { return st.beat(r.stage, n) }) {
+		r.begin()
+	}
+}
+
 // Read tells that the bubble is read: the player pressed a key of the
 // computer's keyboard, or the game judged its reading time over.
 func (r *Runner) Read() {

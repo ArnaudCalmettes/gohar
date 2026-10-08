@@ -32,7 +32,7 @@ var errSpelling = errors.New("cannot spell")
 // moved letter by letter, as a musician transposes a chart: from F to
 // D♭, B♭7 becomes G♭7, never F♯7. The rhythm stays as it is.
 func Transpose(t Tune, steps int, by harmony.Semitones) (Tune, error) {
-	out := Tune{Title: t.Title, Grid: t.Grid, Written: make([]chordpro.Chord, len(t.Written))}
+	out := Tune{Title: t.Title, Tempo: t.Tempo, Grid: t.Grid, Written: make([]chordpro.Chord, len(t.Written)), Rehearsals: t.Rehearsals}
 	out.Grid.Chords = make([]analysis.Change, len(t.Grid.Chords))
 	for i, ch := range t.Grid.Chords {
 		if !ch.Silent {

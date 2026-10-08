@@ -106,13 +106,18 @@ type game struct {
 
 	// The grid chosen, and the tempo: the options' at first, changed
 	// here for the session.
-	title string
-	grid  analysis.Changes
-	bpm   float64
+	title   string
+	grid    analysis.Changes
+	bpm     float64
+	tuneBPM float64 // the grid's own tempo, from which the player strays to practise
 
 	namer      *naming.Namer                     // for a note over no chord
 	written    map[analysis.Ticks]chordpro.Chord // the chords as the grid writes them, by start
 	bars       [][]chart.Cell                    // the chart, bar by bar; empty for a chord held from before
+	rehearsals map[int]string                    // the rehearsal marks, by bar
+	scroll     scroll                            // the top row of the page, gliding
+	restRow    int                               // the top row at rest, where the player scrolled it
+	drag       *drag                             // a finger scrolling the chart at rest, nil for none
 	formulas   map[analysis.Ticks]mark.Formula   // the formulas its chords make, for the review
 	small      bool                              // a bar holds two chords: all are written small
 	chorusLen  int                               // beats in a chorus
@@ -146,7 +151,6 @@ func newGame(a *app) *game {
 	rules.Split = a.band.Split // -split moves the marker's zone with the sound's
 	g := &game{
 		app:        a,
-		bpm:        a.bpm,
 		rules:      rules,
 		practicing: a.untimed,
 		piano:      newPiano(),
@@ -168,7 +172,6 @@ func newPalier(a *app, back scene.Scene, tunes []grids.Tune, passed func()) *gam
 		back:       back,
 		passed:     passed,
 		queue:      tunes[1:],
-		bpm:        a.bpm,
 		rules:      rules,
 		practicing: true,
 		piano:      newPiano(),
@@ -187,12 +190,22 @@ func (g *game) load(i int) {
 // setTune makes `t` the grid played.
 func (g *game) setTune(t grids.Tune) {
 	g.title, g.grid = t.Title, t.Grid
+	g.tuneBPM, g.bpm = float64(t.Tempo), float64(t.Tempo)
+	if g.app.bpm > 0 {
+		g.bpm = g.app.bpm // -bpm, on every grid
+	}
 	g.namer = namerFor(t.Grid)
 	g.written = map[analysis.Ticks]chordpro.Chord{}
 	for i, ch := range t.Grid.Chords {
 		g.written[ch.Start] = t.Written[i]
 	}
 	g.bars = chart.Bars(t)
+	g.scroll.jump(0)
+	g.restRow, g.drag = 0, nil
+	g.rehearsals = map[int]string{}
+	for _, r := range t.Rehearsals {
+		g.rehearsals[r.Bar] = r.Label
+	}
 	g.formulas = mark.FormulasOf(t.Grid)
 	g.small = chart.Small(g.bars)
 	g.chorusLen = len(mark.Expect(t.Grid, tempo.NewMetronome(time.Time{}, g.bpm, perBar), 1))
@@ -260,6 +273,7 @@ func (g *game) start(now time.Time) {
 func (g *game) stop(now time.Time) {
 	g.band.Stop(now)
 	g.running = false
+	g.restRow = int(math.Round(g.scroll.to)) // the page stays where the run left it
 	if g.rec != nil {
 		g.rec.flush()
 	}
@@ -281,15 +295,15 @@ func (g *game) Update() scene.Transition {
 		g.practicing = !g.practicing
 	case inpututil.IsKeyJustPressed(ebiten.KeyD) && !g.running && !g.practicing:
 		g.band.Demo = !g.band.Demo
-	case g.running:
-	case inpututil.IsKeyJustPressed(ebiten.KeyArrowUp):
-		g.load((g.current + len(g.tunes) - 1) % len(g.tunes))
-	case inpututil.IsKeyJustPressed(ebiten.KeyArrowDown):
-		g.load((g.current + 1) % len(g.tunes))
-	case inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft):
-		g.bpm = max(g.bpm-bpmStep, minBPM)
-	case inpututil.IsKeyJustPressed(ebiten.KeyArrowRight):
-		g.bpm = min(g.bpm+bpmStep, maxBPM)
+	case inpututil.IsKeyJustPressed(ebiten.KeyTab) && !g.running:
+		return scene.Push(newSetup(g))
+	}
+	if t := g.pressed(now); t != scene.Stay {
+		return t
+	}
+
+	if !g.running {
+		g.scrollRest()
 	}
 
 	g.drain(func(e keyboard.Event) {
@@ -370,6 +384,7 @@ func (g *game) palierOver(now time.Time) scene.Transition {
 	switch {
 	case g.doneAt.IsZero() && g.practice.Choruses() > 0:
 		g.doneAt, g.hint = now, false
+		g.restRow = int(math.Round(g.scroll.to)) // the chart stays, marked, where it ended
 		if len(g.queue) > 0 {
 			g.speak(msgPalierNext, now)
 			break
@@ -508,13 +523,7 @@ func (g *game) markAt(n int, chorus int) (mark.BeatKind, bool) {
 func (g *game) Draw(dst *ebiten.Image) {
 	dst.Fill(paper)
 	c := screen.Canvas{Dst: dst, Scale: g.scale}
-	c.Text(g.title, g.fonts.ui, margin, titleY, ink)
-	pace := g.lang.T(msgTempo, "BPM", fmt.Sprintf("%.0f", g.bpm))
-	if g.practicing {
-		pace = g.lang.T(msgFreeTempo)
-	}
-	c.Text(pace, g.fonts.ui, margin, tempoY, faint)
-	g.drawMode(c)
+	g.drawButtons(c)
 
 	pos := math.Inf(-1)
 	switch {
@@ -598,9 +607,9 @@ func (g *game) drawBubble(c screen.Canvas) {
 
 // keys says the keys of the game as they stand, each with what it does
 // now: Space starts or stops; at rest, T and D name the phase and the
-// demo they switch to, and the arrows choose the grid and the tempo. D
-// only means something with the tempo: without, the chart waits for
-// the player.
+// demo they switch to, and Tab opens the settings of the grid. D only
+// means something with the tempo: without, the chart waits for the
+// player.
 func (g *game) keys() string {
 	if g.back != nil {
 		return g.lang.T(msgKeyBack)
@@ -619,14 +628,15 @@ func (g *game) keys() string {
 		}
 		keys = append(keys, g.lang.T(demo))
 	}
-	keys = append(keys, g.lang.T(msgKeyGrid), g.lang.T(msgKeyMenu))
+	keys = append(keys, g.lang.T(msgKeySetup), g.lang.T(msgKeyMenu))
 	return strings.Join(keys, "   ")
 }
 
 // drawMode draws, top right, the phase the space bar starts or is
 // playing: a framed label, filled while it plays, so that the mode
-// reads before the first note.
-func (g *game) drawMode(c screen.Canvas) {
+// reads before the first note. It is a button too, which starts and
+// stops as Space does: it returns its box.
+func (g *game) drawMode(c screen.Canvas) hit {
 	label := g.lang.T(msgModeTempo) // Italian, as on a score, in any language
 	switch {
 	case g.practicing:
@@ -645,6 +655,7 @@ func (g *game) drawMode(c screen.Canvas) {
 	c.Rect(x-1, y-1, bw+2, bh+2, ink)
 	c.Rect(x, y, bw, bh, fill)
 	c.Text(label, g.fonts.ui, float64(x)+pad, float64(y)+pad, text)
+	return hit{x: float64(x) - tapPad, y: float64(y) - tapPad, w: float64(bw) + 2*tapPad, h: float64(bh) + 2*tapPad}
 }
 
 // namerFor spells in the tonality the analysis hears in `grid`: the
