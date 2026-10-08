@@ -123,8 +123,9 @@ type Band struct {
 	ta, ti      int          // the calibration's
 	chip        bool         // the kit is a noise: each stroke needs its release
 
-	Demo bool // the band plays the bass itself, the reference line
-	held int  // the key the reference bass holds, 0 for none
+	Demo   bool      // the band plays the bass itself, the reference line
+	held   int       // the key the reference bass holds, 0 for none
+	heldAt time.Time // when it starts: a lookahead from now, at most
 }
 
 // Play schedules `strokes`, the parts of beat `n` of `m`, each at its
@@ -165,7 +166,7 @@ func (bd *Band) walk(key int, vel float64, at time.Time) {
 		bd.bass.ScheduleOff(bd.held, at)
 	}
 	bd.bass.ScheduleOn(key, vel, at)
-	bd.held = key
+	bd.held, bd.heldAt = key, at
 }
 
 // Strike schedules a stroke of the kit on `key`. A cymbal rings until
@@ -195,12 +196,24 @@ func (bd *Band) Bowl(at time.Time) {
 	bd.bowl.ScheduleOff(chipBowl, at.Add(chipBowlHold)) // a clip ignores it
 }
 
-// Stop releases what the reference bass holds, at `at`.
+// Stop releases what the reference bass holds, at `at`. The last note
+// may be scheduled to start later, within the lookahead, and nothing
+// takes back a date given: released at `at`, before it starts, it would
+// then ring on alone. It is released once started, `hold` later, a
+// pluck barely heard.
 func (bd *Band) Stop(at time.Time) {
 	if bd.held != 0 {
-		bd.bass.ScheduleOff(bd.held, at)
+		bd.bass.ScheduleOff(bd.held, maxTime(at, bd.heldAt.Add(hold)))
 		bd.held = 0
 	}
+}
+
+// maxTime is the later of `a` and `b`.
+func maxTime(a, b time.Time) time.Time {
+	if a.After(b) {
+		return a
+	}
+	return b
 }
 
 // Key sounds the player's key at once: the piano, and while a grid is
