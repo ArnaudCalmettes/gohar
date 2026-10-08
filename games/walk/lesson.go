@@ -354,9 +354,9 @@ func (l *lesson) Update() scene.Transition {
 	return scene.Stay
 }
 
-// lessonBack is the box of the back button of a lesson, top left, a
-// chevron as in the game.
-var lessonBack = hit{x: 0, y: 0, w: margin + backW + tapPad, h: titleY + 8 + 2*tapPad}
+// lessonBack is the box of the back button of a lesson, top left, as
+// in the game.
+var lessonBack = button(margin, buttonY, buttonSize)
 
 func (l *lesson) Draw(dst *ebiten.Image) {
 	dst.Fill(paper)
@@ -365,7 +365,7 @@ func (l *lesson) Draw(dst *ebiten.Image) {
 	if !l.drawWalkout(dst, c, now) {
 		l.drawTeacher(c, now)
 	}
-	drawChevronLeft(c, margin+backW/3, titleY+8)
+	drawBack(c, margin, buttonY)
 	if len(l.bubble) > 0 {
 		hx, hy, r := l.head(now)
 		l.speech().Draw(c, l.bubble, hx, hy, r)

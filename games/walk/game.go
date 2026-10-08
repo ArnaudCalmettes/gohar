@@ -40,8 +40,7 @@ const (
 // (see piano.go).
 const (
 	margin  = 20 // around the screen
-	titleY  = 24 // the title, then the tempo, in the margin
-	tempoY  = 40
+	titleY  = 24 // the title of the review, in the margin
 	modeY   = 18 // the mode, top right
 	statusY = screenHeight - 28
 
@@ -298,7 +297,7 @@ func (g *game) Update() scene.Transition {
 	case inpututil.IsKeyJustPressed(ebiten.KeyTab) && !g.running:
 		return scene.Push(newSetup(g))
 	}
-	if t := g.pressed(now); t != scene.Stay {
+	if t := g.clicked(now); t != scene.Stay {
 		return t
 	}
 
@@ -634,9 +633,8 @@ func (g *game) keys() string {
 
 // drawMode draws, top right, the phase the space bar starts or is
 // playing: a framed label, filled while it plays, so that the mode
-// reads before the first note. It is a button too, which starts and
-// stops as Space does: it returns its box.
-func (g *game) drawMode(c screen.Canvas) hit {
+// reads before the first note.
+func (g *game) drawMode(c screen.Canvas) {
 	label := g.lang.T(msgModeTempo) // Italian, as on a score, in any language
 	switch {
 	case g.practicing:
@@ -655,7 +653,6 @@ func (g *game) drawMode(c screen.Canvas) hit {
 	c.Rect(x-1, y-1, bw+2, bh+2, ink)
 	c.Rect(x, y, bw, bh, fill)
 	c.Text(label, g.fonts.ui, float64(x)+pad, float64(y)+pad, text)
-	return hit{x: float64(x) - tapPad, y: float64(y) - tapPad, w: float64(bw) + 2*tapPad, h: float64(bh) + 2*tapPad}
 }
 
 // namerFor spells in the tonality the analysis hears in `grid`: the

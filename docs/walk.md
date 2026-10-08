@@ -605,19 +605,28 @@ la partie.
   140 ») viendra plus tard.
 - **Les boutons**, pour une souris ou un doigt : la partie se joue
   aussi sur un écran tactile, si peu de place qu'il y ait. Trois
-  boutons, que l'écran montrait déjà, et la grille qui défile :
-  - le chevron à gauche du titre ramène au titre (Échap) ;
-  - le bloc du titre et du tempo, souligné au repos, ouvre les
-    réglages de la grille (Tab) ;
-  - le cadre du mode, en haut à droite, lance et arrête (Espace).
+  boutons, des carrés encadrés aux signes que tout le monde connaît,
+  et la grille qui défile :
+  - le chevron, en haut à gauche, ramène au titre (Échap) ;
+  - la roue crantée, à droite du titre, ouvre les réglages de la
+    grille (Tab), pâle pendant que l'orchestre joue ;
+  - le triangle de lecture, au milieu, la commande principale de
+    l'écran, lance ; il devient le carré d'arrêt pendant la partie
+    (Espace).
 
-  Dans un palier, seul le retour reste. Le bilan se ferme d'une touche
-  ou d'un toucher n'importe où.
-- **Les réglages de la grille**, au repos : la grille, son tempo, le
-  mode, a tempo ou déchiffrage, et la démo. ↑ et ↓ choisissent, ← et →
-  changent, comme un toucher à gauche ou à droite du milieu d'une
-  valeur ; la grille choisie vaut pour la séance. T et D restent des
-  raccourcis dans la partie.
+  Le mode reste en haut à droite, une étiquette qu'on lit sans la
+  toucher. Le texte n'est jamais un bouton : ce qui se touche se voit.
+  Dans un palier, seul le retour reste, comme dans les leçons. Le
+  bilan se ferme d'une touche ou d'un toucher n'importe où.
+- **Les réglages de la grille**, au repos : un cadre centré par-dessus
+  la grille, qu'on devine dessous, pâlie. La grille, son tempo, le
+  mode, a tempo ou déchiffrage, la démo, et Fermer. ↑ et ↓
+  choisissent, ← et → changent, comme un toucher à gauche ou à droite
+  du milieu d'une valeur ; Échap, Fermer ou un toucher à côté du cadre
+  le referment. La grille choisie vaut pour la séance. T et D restent
+  des raccourcis dans la partie. Le régisseur dessine la pile de bas
+  en haut : la partie se dessine sous les réglages sans rien savoir
+  d'eux.
 - **La démo**, dans les réglages ou d'un D : elle s'allume ou s'éteint,
   avec le tempo seulement. Face à une grille dont il ne voit pas comment elle
   doit sonner, le joueur met la démo à 160 pour en saisir la logique et

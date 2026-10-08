@@ -56,6 +56,7 @@ const (
 	msgSetDemoOn    = "setup.demo.on"
 	msgSetDemoOff   = "setup.demo.off"
 	msgSetKeys      = "setup.keys"
+	msgSetClose     = "setup.close"
 
 	msgModeTempo = "mode.tempo"
 	msgModeFree  = "mode.free"
@@ -147,7 +148,7 @@ const (
 
 var phrases = []string{
 	msgTempo, msgFreeTempo, msgTempoAside, msgNoMIDI, msgMark,
-	msgSetTitle, msgSetGrid, msgSetModeTempo, msgSetModeFree, msgSetDemoOn, msgSetDemoOff, msgSetKeys,
+	msgSetTitle, msgSetGrid, msgSetModeTempo, msgSetModeFree, msgSetDemoOn, msgSetDemoOff, msgSetKeys, msgSetClose,
 	msgKeyPlay, msgKeyStop, msgKeyFree, msgKeyTempo, msgKeyDemoOn, msgKeyDemoOff, msgKeySetup, msgKeyMenu, msgKeyBack,
 	msgPalierGo, msgPalierNext, msgPalierBravo,
 	msgModeTempo, msgModeFree, msgModeDemo,

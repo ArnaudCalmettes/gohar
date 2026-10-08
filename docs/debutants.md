@@ -424,7 +424,7 @@ touche la tourne, de l'ordinateur ou du clavier MIDI ; celle du clavier
 ne sonne pas alors, et ne s'allume pas, pour qu'on ne la prenne pas
 pour une réponse. Un clic ou un doigt sur l'écran la tourne aussi. R
 rejoue l'étape, Échap revient au cours sans marquer la leçon faite,
-comme le chevron en haut à gauche, celui de la partie. La ligne d'état
+comme le bouton de retour en haut à gauche, celui de la partie. La ligne d'état
 dit ce qu'on attend : une touche pour continuer, ou des notes à jouer.
 
 **Les réactions.** La casserole, la cloche du kit, sonne avec la fausse
